@@ -259,6 +259,26 @@ export function Social() {
 
 <ComponentPreview name="button-social" />
 
+### Custom Element
+
+HeroUI React overrides the rendered element with a `render` prop. This port uses
+Kobalte's polymorphic `as` prop instead — for example, an anchor that looks like a
+button:
+
+```tsx
+import { Button } from "heroui-solid";
+
+export function CustomElement() {
+  return (
+    <Button as="a" href="https://heroui.com" target="_blank" variant="outline">
+      Visit HeroUI
+    </Button>
+  );
+}
+```
+
+<ComponentPreview name="button-custom-element" />
+
 ## Related Components
 
 - **Popover**: Displays content in context with a trigger (not ported yet)
@@ -350,7 +370,8 @@ The button supports CSS pseudo-classes and data attributes:
 | `isPending`  | `boolean`                                                                                      | `false`     | Whether the button is in a loading state                      |
 | `isIconOnly` | `boolean`                                                                                      | `false`     | Whether the button contains only an icon                      |
 | `onClick`    | `JSX.EventHandlerUnion<HTMLElement, MouseEvent>`                                               | -           | Handler called when the button is clicked                     |
-| `children`   | `JSX.Element \| (state: ButtonRenderProps) => JSX.Element`                                     | -           | Button content or render prop                                 |
+| `children`   | `JSX.Element \| (state: { isPending: boolean }) => JSX.Element`                                     | -           | Button content or render prop                                 |
+| `as`         | `ValidComponent`                                                                               | `"button"`  | Overrides the default DOM element (Kobalte polymorphic `as`)  |
 
 ### ButtonRenderProps
 
@@ -369,10 +390,8 @@ When using the render prop pattern, these values are provided:
 
 ## Differences from HeroUI React
 
-- Renders a plain native `<button>` — all standard button attributes are forwarded.
 - Use `onClick` (Solid's native event) instead of React Aria's `onPress`.
-- No `render` prop / element override — the button is always a `<button>` element
-  (link-styled buttons are not supported yet).
+- Polymorphism uses Kobalte's `as` prop instead of React's `render` prop override.
 - The render-prop `state` exposes `isPending` only (no `isPressed`/`isHovered`/`isFocused`)
   — read fields off `state` inside JSX rather than destructuring, so updates stay reactive.
 - Hover/press styling relies on HeroUI's native `:hover` / `:active` CSS fallbacks rather

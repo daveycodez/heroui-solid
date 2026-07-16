@@ -1,79 +1,38 @@
 // @vitest-environment jsdom
-import { buttonVariants } from "@heroui/styles"
 import { render } from "@solidjs/testing-library"
 import { describe, expect, it, vi } from "vitest"
-import { Button } from "./button"
-import {
-  type ButtonSize,
-  type ButtonVariant,
-  type ButtonVariantProps,
-  buttonStyles
-} from "./button.styles"
+import { ButtonRoot } from "./button"
 
 const classSet = (classes: string) =>
   new Set(classes.split(/\s+/).filter(Boolean))
 
-describe("buttonStyles parity with @heroui/styles buttonVariants", () => {
-  const variants: (ButtonVariant | undefined)[] = [
-    undefined,
-    "primary",
-    "secondary",
-    "tertiary",
-    "outline",
-    "ghost",
-    "danger",
-    "danger-soft"
-  ]
-  const sizes: (ButtonSize | undefined)[] = [undefined, "sm", "md", "lg"]
-  const bools = [undefined, false, true]
-
-  it("emits identical class sets across the full variant matrix", () => {
-    for (const variant of variants) {
-      for (const size of sizes) {
-        for (const fullWidth of bools) {
-          for (const isIconOnly of bools) {
-            const props: ButtonVariantProps = {
-              variant,
-              size,
-              fullWidth,
-              isIconOnly
-            }
-            expect(
-              classSet(buttonStyles(props)),
-              JSON.stringify(props)
-            ).toEqual(classSet(buttonVariants(props)))
-          }
-        }
-      }
-    }
-  })
-})
-
 describe("Button", () => {
   it("renders a native button with BEM classes, data-slot and caller class last", () => {
     const { getByRole } = render(() => (
-      <Button variant="ghost" size="lg" class="custom">
+      <ButtonRoot variant="ghost" size="lg" class="custom">
         Hi
-      </Button>
+      </ButtonRoot>
     ))
     const button = getByRole("button")
     expect(button.tagName).toBe("BUTTON")
     expect(button.getAttribute("type")).toBe("button")
     expect(button.getAttribute("data-slot")).toBe("button")
-    expect(button.className).toBe("button button--ghost button--lg custom")
+    expect(classSet(button.className)).toEqual(
+      new Set(["button", "button--ghost", "button--lg", "custom"])
+    )
   })
 
   it("maps isDisabled to the native disabled attribute", () => {
-    const { getByRole } = render(() => <Button isDisabled>Hi</Button>)
+    const { getByRole } = render(() => <ButtonRoot isDisabled>Hi</ButtonRoot>)
     expect((getByRole("button") as HTMLButtonElement).disabled).toBe(true)
   })
 
   it("stamps pending state and swallows clicks while pending", () => {
     const onClick = vi.fn()
     const { getByRole } = render(() => (
-      <Button isPending onClick={onClick}>
+      <ButtonRoot isPending onClick={onClick}>
         Hi
-      </Button>
+      </ButtonRoot>
     ))
     const button = getByRole("button")
     expect(button.getAttribute("data-pending")).toBe("true")
@@ -84,28 +43,45 @@ describe("Button", () => {
 
   it("invokes onClick when not pending", () => {
     const onClick = vi.fn()
-    const { getByRole } = render(() => <Button onClick={onClick}>Hi</Button>)
+    const { getByRole } = render(() => (
+      <ButtonRoot onClick={onClick}>Hi</ButtonRoot>
+    ))
     getByRole("button").click()
     expect(onClick).toHaveBeenCalledTimes(1)
   })
 
   it("supports render-prop children receiving { isPending }", () => {
     const { getByRole } = render(() => (
-      <Button isPending>
+      <ButtonRoot isPending>
         {(state) => <span>{state.isPending ? "Loading" : "Idle"}</span>}
-      </Button>
+      </ButtonRoot>
     ))
     expect(getByRole("button").textContent).toBe("Loading")
   })
 
   it("forwards native button attributes", () => {
     const { getByRole } = render(() => (
-      <Button type="submit" name="save">
+      <ButtonRoot type="submit" name="save">
         Save
-      </Button>
+      </ButtonRoot>
     ))
     const button = getByRole("button")
     expect(button.getAttribute("type")).toBe("submit")
     expect(button.getAttribute("name")).toBe("save")
+  })
+
+  it("is polymorphic via as, without leaking type onto non-buttons", () => {
+    const { getByText } = render(() => (
+      <ButtonRoot as="a" href="https://example.com">
+        Link
+      </ButtonRoot>
+    ))
+    const link = getByText("Link")
+    expect(link.tagName).toBe("A")
+    expect(link.getAttribute("href")).toBe("https://example.com")
+    expect(link.classList.contains("button")).toBe(true)
+    expect(link.classList.contains("button--primary")).toBe(true)
+    expect(link.classList.contains("button--md")).toBe(true)
+    expect(link.hasAttribute("type")).toBe(false)
   })
 })

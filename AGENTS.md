@@ -37,6 +37,88 @@ Act as a world-class senior frontend engineer with deep expertise in InstantDB
 and UI/UX design. Your primary goal is to generate complete and functional apps
 with excellent visual aesthetics using InstantDB as the backend.
 
+## Component Porting Conventions (packages/heroui-solid)
+
+Mirror the official HeroUI React source as closely as possible, adapting only
+what Solid requires. Fetch the source before porting (heroui-react MCP
+`get_component_source_code`, or the `v3` branch of heroui-inc/heroui on GitHub).
+
+- **File structure mirrors upstream**: `XRoot` naming, internal `XPrimitive`
+  components, the same section banner comments where upstream has them,
+  trailing `export {XRoot}` / `export type {XRootProps}`.
+- **Match upstream comment density** — which is near zero. No prop JSDoc
+  unless the upstream file has it; no explanatory prose. The only allowed
+  additions are one-liners guarding a necessary workaround (e.g. the
+  single-read children rule), with the full story in AGENTS.md, not the code.
+- **index.ts uses the official compound layout**:
+  `export const X = Object.assign(XRoot, { Root: XRoot })`, a merged
+  `export type X = { Props: ComponentProps<typeof XRoot>; RootProps: ... }`
+  (`ComponentProps` from solid-js), named `XRoot` export,
+  `XRootProps as XProps` alias, and variants re-exported from `@heroui/styles`.
+- **Reuse `@heroui/styles` at runtime — never duplicate styling knowledge**:
+  the tv functions (`buttonVariants`), `cn`, and the `XVariants` types are the
+  exact code the React implementation uses. No local `*.styles.ts` modules, no
+  convenience types upstream doesn't export.
+- **`@heroui/styles` is pinned to an exact version (no `^`/`~`)** — classes,
+  `variantKeys`, and prop types all come from it at runtime, so bumps must be
+  deliberate: update the pin, re-run tests, and re-check docs parity.
+- **Variant keys are dynamic**: `splitProps(props, xVariants.variantKeys,
+  [/* behavior keys */])` — the tv function exposes its config at runtime.
+  Never hardcode a variant key list.
+- **Class composition**: `class={cn(xVariants(variantProps), local.class)}`.
+- **Behavior**: Kobalte primitives where they add value (our React Aria
+  equivalent); `callHandler` from `@kobalte/utils` when intercepting handlers.
+  Standard adaptations: `onClick` for `onPress`, Kobalte `as` for React's
+  `render` prop, `class` for `className`, `createSignal` for `useState`,
+  `splitProps` instead of destructuring (destructuring kills reactivity).
+- **Skip what isn't ported yet** (e.g. `BUTTON_GROUP_CHILD` until ButtonGroup
+  exists) and React-only machinery (`dom.span`, `composeTwRenderProps`).
+- **Never depend on react-aria/`@react-types`, even types-only**: public d.ts
+  references force it into consumers' deps (dragging React peer deps into
+  Solid apps), and its prop types are React-shaped (`ReactNode`). Write the
+  small framework-neutral shapes inline (e.g. `{ isPending: boolean }`).
+  Framework-agnostic satellites like `@internationalized/date` are fine as
+  real deps when a component needs them.
+
+## Solid SSR/Hydration Rules (hard-won — violations cost a full day)
+
+- **Read the `children` prop exactly once per evaluation.** Children are
+  create-on-access getters; a bare `typeof props.children` ternary in JSX
+  compiles into two reads, creating children twice and desyncing SSR hydration
+  keys ("Hydration Mismatch", then "template is not a function" cascades).
+  Capture to a local first, or forward via a single-read `get children()` in
+  `mergeProps` (see button.tsx).
+- **MDX authoring (apps/docs)**: no `import` statements in `.mdx`; no JSX
+  children of components written in MDX — multiline children get
+  paragraph-wrapped by MDX (`<Button>\nText\n</Button>` becomes
+  `<Button><p>Text</p></Button>`) and render-prop children loop children
+  resolution. Demos are TSX files in `apps/docs/src/demos/<component>/`,
+  registered in `src/demos/index.ts`, rendered via
+  `<ComponentPreview name="component-demo" />` (same structure as official
+  HeroUI docs; docs page content mirrors the official pages verbatim, adapted
+  only for documented API differences).
+- **Debugging hydration**: it's diagnosable without a browser — curl the dev
+  server and compare `data-hk` key suffixes between SSR HTML and the client's
+  expected key from the console error. HMR masks hydration bugs entirely
+  (client re-render, no hydration) — always verify with a full page reload.
+  The dev-mode "Hydration Mismatch ... Layout.jsx" console error on every page
+  is an upstream SolidBase bug; don't confuse it with real breakage.
+- **Known wart**: Kobalte's Button stamps `type="button"` on non-button `as`
+  elements in SSR HTML (ref-based tag detection can't run server-side); the
+  client removes it after mount. Upstream issue, not fixable from our side.
+
+## Dev Loop
+
+- `nx dev docs`: the docs vite config aliases `heroui-solid` to the package
+  **source** in dev, so component edits HMR instantly — no package build or
+  restart. The one-shot `^build` at startup only provides `dist/styles.css`
+  and `.d.ts` for editor types. Package CSS edits need `bun run build:css`
+  (or the `dev:css` watcher).
+- External projects consuming via `bun link` read `dist/` — run
+  `nx dev heroui-solid` (tsup + CSS watchers) for that workflow.
+- When checking Biome from scripts, surface the exit code — don't pipe output
+  through `tail`/`grep` in a way that swallows failures.
+
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->
 

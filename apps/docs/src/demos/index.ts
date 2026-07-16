@@ -1,5 +1,6 @@
 import type { Component } from "solid-js"
 import { Basic } from "./button/basic"
+import { CustomElement } from "./button/custom-element"
 import { Disabled } from "./button/disabled"
 import { FullWidth } from "./button/full-width"
 import { IconOnly } from "./button/icon-only"
@@ -23,5 +24,6 @@ export const demos: Record<string, Component> = {
   "button-sizes": Sizes,
   "button-full-width": FullWidth,
   "button-disabled": Disabled,
-  "button-social": Social
+  "button-social": Social,
+  "button-custom-element": CustomElement
 }
