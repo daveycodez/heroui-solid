@@ -1,0 +1,5 @@
+/* Kobalte stamps no data-focus-visible (React Aria does upstream), so the
+   focus ring must ride native :focus-visible instead. */
+.button:focus-visible {
+  @apply status-focused;
+}

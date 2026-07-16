@@ -1,16 +1,5 @@
 /*
- * heroui-solid — overrides-only entry, for consumers who already run
- * Tailwind v4 and import @heroui/styles themselves (avoids double preflight):
- *
- *   @import "@heroui/styles";
- *   @import "heroui-solid/overrides.css";
- *
- * Contains ONLY the Kobalte state-attribute bridge rules, written against
- * HeroUI's theme variables. Keep in sync with the layer(overrides) imports
- * in ./index.css.
+ * Barrel for the Kobalte state-attribute bridges, colocated with each
+ * component and imported by ./index.css. Add new component bridges here.
  */
-@layer overrides;
-
-/*
- * @import "../components/select/select.overrides.css" layer(overrides);
- */
+@import "../components/button/button.overrides.css" layer(overrides);

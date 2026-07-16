@@ -79,6 +79,22 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   small framework-neutral shapes inline (e.g. `{ isPending: boolean }`).
   Framework-agnostic satellites like `@internationalized/date` are fine as
   real deps when a component needs them.
+- **HeroUI CSS state selectors need bridging — audit every port.** Upstream
+  CSS keys interactive states off React Aria attributes (`data-focus-visible`,
+  `data-hovered`, `data-pressed`, `data-selected`…) that Kobalte doesn't stamp
+  (Button stamps only `data-disabled`), and some native fallbacks are dead
+  selectors (`:focus-visible:not(:focus)` never matches) — states silently
+  no-op (buttons shipped with no focus ring). Grep
+  `node_modules/@heroui/styles/dist/components/<x>.css` for `data-` selectors,
+  then bridge in a colocated `<x>.overrides.css` (working pseudo-class or
+  Kobalte's attrs → `@apply` the same HeroUI utility, e.g.
+  `.button:focus-visible { @apply status-focused; }`) registered in the
+  `src/styles/overrides.css` barrel with `layer(overrides)`; rebuild with
+  `bun run build:css`. `dist/styles.css` is the package's ONLY stylesheet —
+  the barrel is imported by `src/styles/styles.css`, never compiled as its own
+  entry (a split overrides-only entry was tried and removed; Tailwind
+  `@reference` also re-emits the referenced stylesheet when nested under
+  another entry's `@import`).
 
 ## Solid SSR/Hydration Rules (hard-won — violations cost a full day)
 

@@ -11,7 +11,5 @@
  * BEM component styles, default theme variables, utilities, variants. */
 @import "@heroui/styles/css";
 
-/*
- * Kobalte state-attribute bridges, colocated with each component, e.g.:
- * @import "../components/select/select.overrides.css" layer(overrides);
- */
+/* Kobalte state-attribute bridges (barrel). */
+@import "./overrides.css";

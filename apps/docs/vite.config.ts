@@ -21,7 +21,7 @@ export default defineConfig(({ command }) => ({
             {
               // Dev only: resolve heroui-solid to its TypeScript source so
               // component edits HMR instantly without a package build.
-              // Exact match — subpath imports like heroui-solid/styles.css
+              // Exact match — subpath imports like heroui-solid/styles
               // still resolve through dist (CSS needs the tailwind build).
               // Production builds use dist, same as published consumers.
               find: /^heroui-solid$/,

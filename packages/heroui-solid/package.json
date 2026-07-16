@@ -31,8 +31,7 @@
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
-    "./styles.css": "./dist/styles.css",
-    "./overrides.css": "./dist/overrides.css",
+    "./styles": "./dist/styles.css",
     "./package.json": "./package.json"
   },
   "sideEffects": [
@@ -49,10 +48,10 @@
   },
   "scripts": {
     "build:js": "tsup",
-    "build:css": "tailwindcss -i src/styles/index.css -o dist/styles.css --minify && tailwindcss -i src/styles/overrides.css -o dist/overrides.css --minify",
+    "build:css": "tailwindcss -i src/styles/styles.css -o dist/styles.css --minify",
     "build": "bun run build:js && bun run build:css",
     "dev": "tsup --watch",
-    "dev:css": "tailwindcss -i src/styles/index.css -o dist/styles.css --watch",
+    "dev:css": "tailwindcss -i src/styles/styles.css -o dist/styles.css --watch",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "check:publish": "publint && attw --pack . --profile esm-only --entrypoints ."
