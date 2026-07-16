@@ -1,3 +1,11 @@
 // heroui-solid — Unofficial SolidJS port of HeroUI v3.
 export * from "./components/button"
+export * from "./components/card"
+export * from "./components/description"
+export * from "./components/field-error"
+export * from "./components/input"
+export * from "./components/label"
 export * from "./components/spinner"
+export * from "./components/surface"
+export * from "./components/textarea"
+export * from "./components/textfield"

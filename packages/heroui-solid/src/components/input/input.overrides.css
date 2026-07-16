@@ -1,0 +1,10 @@
+/* HeroUI keys the invalid state off React Aria's data-invalid="true"; Kobalte
+   stamps data-invalid as an empty string, so match on attribute presence. */
+.input[data-invalid] {
+  @apply status-invalid-field;
+  background-color: var(--field-focus);
+}
+
+.input--secondary[data-invalid] {
+  background-color: var(--input-bg-focus);
+}

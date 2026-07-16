@@ -3,3 +3,5 @@
  * component and imported by ./index.css. Add new component bridges here.
  */
 @import "../components/button/button.overrides.css" layer(overrides);
+@import "../components/input/input.overrides.css" layer(overrides);
+@import "../components/textarea/textarea.overrides.css" layer(overrides);
