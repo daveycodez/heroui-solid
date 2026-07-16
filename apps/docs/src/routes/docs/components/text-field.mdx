@@ -1,0 +1,414 @@
+---
+title: TextField
+---
+
+# TextField
+
+Composition-friendly text fields with labels, descriptions, and inline validation.
+
+## Import
+
+```tsx
+import { TextField } from "heroui-solid";
+```
+
+### Usage
+
+```tsx
+import { Input, Label, TextField } from "heroui-solid";
+
+export function Basic() {
+  return (
+    <TextField class="w-full max-w-64" name="email">
+      <Label>Email</Label>
+      <Input placeholder="Enter your email" type="email" />
+    </TextField>
+  );
+}
+```
+
+<ComponentPreview name="textfield-basic" />
+
+### Anatomy
+
+```tsx
+import { TextField, Label, Input, Description, FieldError } from "heroui-solid";
+
+export default () => (
+  <TextField>
+    <Label />
+    <Input />
+    <Description />
+    <FieldError />
+  </TextField>
+);
+```
+
+> **TextField** combines label, input, description, and error into a single accessible component.
+> For standalone inputs, use **[Input](/docs/components/input)** or **[TextArea](/docs/components/text-area)**.
+
+### With Description
+
+```tsx
+import { Description, Input, Label, TextField } from "heroui-solid";
+
+export function WithDescription() {
+  return (
+    <TextField class="w-full max-w-64" name="username">
+      <Label>Username</Label>
+      <Input placeholder="Enter username" />
+      <Description>Choose a unique username for your account</Description>
+    </TextField>
+  );
+}
+```
+
+<ComponentPreview name="textfield-with-description" />
+
+### Required Field
+
+```tsx
+import { Description, Input, Label, TextField } from "heroui-solid";
+
+export function Required() {
+  return (
+    <TextField isRequired class="w-full max-w-64" name="fullName">
+      <Label>Full Name</Label>
+      <Input placeholder="John Doe" />
+      <Description>This field is required</Description>
+    </TextField>
+  );
+}
+```
+
+<ComponentPreview name="textfield-required" />
+
+### Validation
+
+Use `isInvalid` together with `FieldError` to surface validation messages.
+
+```tsx
+import { Description, FieldError, Input, Label, TextArea, TextField } from "heroui-solid";
+import { createSignal, Show } from "solid-js";
+
+export function Validation() {
+  const [username, setUsername] = createSignal("");
+  const [bio, setBio] = createSignal("");
+
+  const isUsernameInvalid = () => username().length > 0 && username().length < 3;
+  const isBioInvalid = () => bio().length > 0 && bio().length < 20;
+
+  return (
+    <div class="flex w-full max-w-64 flex-col gap-4">
+      <TextField
+        isRequired
+        isInvalid={isUsernameInvalid()}
+        name="username"
+        value={username()}
+        onChange={setUsername}
+      >
+        <Label>Username</Label>
+        <Input placeholder="jane_doe" />
+        <Show
+          when={isUsernameInvalid()}
+          fallback={<Description>Choose a unique username for your profile.</Description>}
+        >
+          <FieldError>Username must be at least 3 characters.</FieldError>
+        </Show>
+      </TextField>
+
+      <TextField
+        isRequired
+        isInvalid={isBioInvalid()}
+        name="bio"
+        value={bio()}
+        onChange={setBio}
+      >
+        <Label>Bio</Label>
+        <TextArea placeholder="Tell us about yourself..." />
+        <Show
+          when={isBioInvalid()}
+          fallback={<Description>Minimum 20 characters ({bio().length}/20).</Description>}
+        >
+          <FieldError>Bio must contain at least 20 characters.</FieldError>
+        </Show>
+      </TextField>
+    </div>
+  );
+}
+```
+
+<ComponentPreview name="textfield-validation" />
+
+### Controlled
+
+Control the value to synchronize counters, previews, or formatting.
+
+```tsx
+import { Description, Input, Label, TextArea, TextField } from "heroui-solid";
+import { createSignal } from "solid-js";
+
+export function Controlled() {
+  const [name, setName] = createSignal("");
+  const [bio, setBio] = createSignal("");
+
+  return (
+    <div class="flex w-full max-w-64 flex-col gap-4">
+      <TextField name="name" value={name()} onChange={setName}>
+        <Label>Display name</Label>
+        <Input placeholder="Jane" />
+        <Description>Characters: {name().length}</Description>
+      </TextField>
+      <TextField name="bio" value={bio()} onChange={setBio}>
+        <Label>Bio</Label>
+        <TextArea placeholder="Tell us about yourself..." />
+        <Description>Characters: {bio().length} / 200</Description>
+      </TextField>
+    </div>
+  );
+}
+```
+
+<ComponentPreview name="textfield-controlled" />
+
+### Error Message
+
+```tsx
+import { FieldError, Input, Label, TextField } from "heroui-solid";
+
+export function WithError() {
+  return (
+    <TextField isInvalid class="w-full max-w-64" name="email">
+      <Label>Email</Label>
+      <Input placeholder="user@example.com" type="email" />
+      <FieldError>Please enter a valid email address</FieldError>
+    </TextField>
+  );
+}
+```
+
+<ComponentPreview name="textfield-error-message" />
+
+### Disabled State
+
+```tsx
+import { Description, Input, Label, TextField } from "heroui-solid";
+
+export function Disabled() {
+  return (
+    <TextField isDisabled class="w-full max-w-64" name="accountId" value="USR-12345">
+      <Label>Account ID</Label>
+      <Input placeholder="Auto-generated" />
+      <Description>This field cannot be edited</Description>
+    </TextField>
+  );
+}
+```
+
+<ComponentPreview name="textfield-disabled" />
+
+### TextArea
+
+Use [TextArea](/docs/components/text-area) instead of [Input](/docs/components/input) for multiline content.
+
+```tsx
+import { Description, Label, TextArea, TextField } from "heroui-solid";
+
+export function TextAreaExample() {
+  return (
+    <TextField class="w-full max-w-64" name="message">
+      <Label>Message</Label>
+      <TextArea placeholder="Write your message here..." rows={4} />
+      <Description>Maximum 500 characters</Description>
+    </TextField>
+  );
+}
+```
+
+<ComponentPreview name="textfield-textarea" />
+
+### Input Types
+
+HeroUI React sets `type` on the TextField root; in this port `type` goes on the
+`Input` element instead (Kobalte keeps input attributes on the input).
+
+```tsx
+import { Input, Label, TextField } from "heroui-solid";
+
+export function InputTypes() {
+  return (
+    <div class="flex w-full max-w-64 flex-col gap-4">
+      <TextField name="password">
+        <Label>Password</Label>
+        <Input placeholder="••••••••" type="password" />
+      </TextField>
+
+      <TextField name="age">
+        <Label>Age</Label>
+        <Input max="150" min="0" placeholder="21" type="number" />
+      </TextField>
+
+      <TextField name="email">
+        <Label>Email</Label>
+        <Input placeholder="user@example.com" type="email" />
+      </TextField>
+
+      <TextField name="website">
+        <Label>Website</Label>
+        <Input placeholder="https://example.com" type="url" />
+      </TextField>
+
+      <TextField name="phone">
+        <Label>Phone</Label>
+        <Input placeholder="+1 (555) 000-0000" type="tel" />
+      </TextField>
+    </div>
+  );
+}
+```
+
+<ComponentPreview name="textfield-input-types" />
+
+### Full Width
+
+```tsx
+import { FieldError, Input, Label, TextField } from "heroui-solid";
+
+export function FullWidth() {
+  return (
+    <div class="w-[400px] space-y-4">
+      <TextField fullWidth name="name">
+        <Label>Your name</Label>
+        <Input placeholder="John" />
+      </TextField>
+      <TextField fullWidth isInvalid isRequired name="password">
+        <Label>Password</Label>
+        <Input type="password" />
+        <FieldError>Password must be longer than 8 characters</FieldError>
+      </TextField>
+    </div>
+  );
+}
+```
+
+<ComponentPreview name="textfield-full-width" />
+
+### In Surface
+
+When used inside a [Surface](/docs/components/surface) component, use `variant="secondary"` on the TextField to apply the lower emphasis variant suitable for surface backgrounds.
+
+```tsx
+import { Description, Input, Label, Surface, TextArea, TextField } from "heroui-solid";
+
+export function OnSurface() {
+  return (
+    <Surface class="flex w-full min-w-[340px] flex-col gap-4 rounded-3xl p-6">
+      <TextField name="name" variant="secondary">
+        <Label>Your name</Label>
+        <Input fullWidth placeholder="John" />
+        <Description>We'll never share this with anyone else</Description>
+      </TextField>
+      <TextField name="email" variant="secondary">
+        <Label>Email</Label>
+        <Input fullWidth placeholder="john@example.com" type="email" />
+      </TextField>
+      <TextField name="bio" variant="secondary">
+        <Label>Bio</Label>
+        <TextArea fullWidth placeholder="Tell us about yourself..." rows={4} />
+        <Description>Minimum 4 rows</Description>
+      </TextField>
+    </Surface>
+  );
+}
+```
+
+<ComponentPreview name="textfield-in-surface" />
+
+## Related Components
+
+- **Input**: Single-line text input
+- **TextArea**: Multiline text input
+- **Label**: Accessible label for form controls
+
+## Styling
+
+### Customizing the component classes
+
+TextField has minimal default styling. Override the `.textfield` class to customize the container styling.
+
+```css
+@layer components {
+  .textfield {
+    @apply flex flex-col gap-1;
+  }
+
+  /* When invalid, the description is hidden automatically */
+  .textfield[data-invalid="true"] [data-slot="description"],
+  .textfield[aria-invalid="true"] [data-slot="description"] {
+    @apply hidden;
+  }
+
+  /* Description has default padding */
+  .textfield [data-slot="description"] {
+    @apply px-1;
+  }
+}
+```
+
+### CSS Classes
+
+- `.textfield` – Root container with minimal styling (`flex flex-col gap-1`)
+- `.textfield--full-width` – Applied when `fullWidth` is set; also stretches child inputs
+
+> **Note:** Child components ([Label](/docs/components/label), [Input](/docs/components/input), [TextArea](/docs/components/text-area), [Description](/docs/components/description), [FieldError](/docs/components/field-error)) have their own CSS classes and styling. See their respective documentation for customization options.
+
+### Interactive States
+
+TextField automatically manages these data attributes based on its state:
+
+- **Invalid**: `[data-invalid="true"]` - Automatically hides the description slot when invalid
+- **Required**: `[data-required="true"]` - Shows the required asterisk on a child Label
+- **Disabled**: `[data-disabled="true"]` - Applied when `isDisabled` is true
+- **Read Only**: `[data-readonly="true"]` - Applied when `isReadOnly` is true
+
+## API Reference
+
+### TextField Props
+
+TextField is built on Kobalte's [TextField](https://kobalte.dev/docs/core/components/text-field) primitive.
+
+| Prop           | Type                        | Default     | Description                                                    |
+| -------------- | --------------------------- | ----------- | -------------------------------------------------------------- |
+| `variant`      | `"primary" \| "secondary"`  | `"primary"` | Variant applied to child Input/TextArea via context            |
+| `fullWidth`    | `boolean`                   | `false`     | Whether the text field should take full width of its container |
+| `value`        | `string`                    | -           | Current value (controlled)                                     |
+| `defaultValue` | `string`                    | -           | Default value (uncontrolled)                                   |
+| `onChange`     | `(value: string) => void`   | -           | Handler called when the value changes                          |
+| `name`         | `string`                    | -           | Name of the input element, for HTML form submission            |
+| `isRequired`   | `boolean`                   | `false`     | Whether user input is required before form submission          |
+| `isInvalid`    | `boolean`                   | -           | Whether the value is invalid                                   |
+| `isDisabled`   | `boolean`                   | -           | Whether the input is disabled                                  |
+| `isReadOnly`   | `boolean`                   | -           | Whether the input can be selected but not changed              |
+| `class`        | `string`                    | -           | Additional CSS classes                                         |
+| `children`     | `JSX.Element`               | -           | Child components (Label, Input, etc.)                          |
+| `as`           | `ValidComponent`            | `"div"`     | Overrides the default DOM element (Kobalte polymorphic)        |
+
+### Composition Components
+
+TextField works with these separate components that should be imported and used directly:
+
+- **Label** - Field label component from `heroui-solid`
+- **Input** - Single-line text input from `heroui-solid`
+- **TextArea** - Multi-line text input from `heroui-solid`
+- **Description** - Helper text component from `heroui-solid`
+- **FieldError** - Validation error message from `heroui-solid`
+
+## Differences from HeroUI React
+
+- `type` (and other input attributes like `min`/`max`/`autocomplete`) go on `Input`,
+  not on the TextField root.
+- No render-prop `children`/`className` and no `render` prop — use plain children and
+  Kobalte's polymorphic `as` for custom elements.
+- No `validate`/`validationBehavior`/`validationErrors` props — drive `isInvalid`
+  yourself (see the Validation example) or use a form library.
+- `autoFocus` belongs on the `Input` element.

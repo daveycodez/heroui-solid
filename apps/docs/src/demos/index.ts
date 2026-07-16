@@ -10,9 +10,40 @@ import { Sizes } from "./button/sizes"
 import { Social } from "./button/social"
 import { Variants } from "./button/variants"
 import { WithIcons } from "./button/with-icons"
+import { CardHorizontal } from "./card/horizontal"
+import { CardUsage } from "./card/usage"
+import { CardVariants } from "./card/variants"
+import { CardWithForm } from "./card/with-form"
+import { DescriptionBasic } from "./description/basic"
+import { FieldErrorBasic } from "./field-error/basic"
+import { InputBasic } from "./input/basic"
+import { InputControlled } from "./input/controlled"
+import { InputFullWidth } from "./input/full-width"
+import { InputInSurface } from "./input/in-surface"
+import { InputTypes } from "./input/types"
+import { InputVariants } from "./input/variants"
+import { LabelBasic } from "./label/basic"
 import { SpinnerBasic } from "./spinner/basic"
 import { SpinnerColors } from "./spinner/colors"
 import { SpinnerSizes } from "./spinner/sizes"
+import { SurfaceVariants } from "./surface/variants"
+import { TextAreaBasic } from "./textarea/basic"
+import { TextAreaControlled } from "./textarea/controlled"
+import { TextAreaFullWidth } from "./textarea/full-width"
+import { TextAreaInSurface } from "./textarea/in-surface"
+import { TextAreaRows } from "./textarea/rows"
+import { TextAreaVariants } from "./textarea/variants"
+import { TextFieldBasic } from "./textfield/basic"
+import { TextFieldControlled } from "./textfield/controlled"
+import { TextFieldDisabled } from "./textfield/disabled"
+import { TextFieldErrorMessage } from "./textfield/error-message"
+import { TextFieldFullWidth } from "./textfield/full-width"
+import { TextFieldInSurface } from "./textfield/in-surface"
+import { TextFieldInputTypes } from "./textfield/input-types"
+import { TextFieldRequired } from "./textfield/required"
+import { TextFieldTextArea } from "./textfield/textarea"
+import { TextFieldValidation } from "./textfield/validation"
+import { TextFieldWithDescription } from "./textfield/with-description"
 
 // Registry for <ComponentPreview name="..." /> in MDX pages. Follows the
 // official HeroUI docs structure (apps/docs/src/demos/<component>/<demo>.tsx,
@@ -29,7 +60,38 @@ export const demos: Record<string, Component> = {
   "button-disabled": Disabled,
   "button-social": Social,
   "button-custom-element": CustomElement,
+  "card-usage": CardUsage,
+  "card-variants": CardVariants,
+  "card-horizontal": CardHorizontal,
+  "card-with-form": CardWithForm,
+  "description-basic": DescriptionBasic,
+  "field-error-basic": FieldErrorBasic,
+  "input-basic": InputBasic,
+  "input-types": InputTypes,
+  "input-controlled": InputControlled,
+  "input-full-width": InputFullWidth,
+  "input-variants": InputVariants,
+  "input-in-surface": InputInSurface,
+  "label-basic": LabelBasic,
   "spinner-basic": SpinnerBasic,
   "spinner-colors": SpinnerColors,
-  "spinner-sizes": SpinnerSizes
+  "spinner-sizes": SpinnerSizes,
+  "surface-variants": SurfaceVariants,
+  "textarea-basic": TextAreaBasic,
+  "textarea-controlled": TextAreaControlled,
+  "textarea-rows": TextAreaRows,
+  "textarea-full-width": TextAreaFullWidth,
+  "textarea-variants": TextAreaVariants,
+  "textarea-in-surface": TextAreaInSurface,
+  "textfield-basic": TextFieldBasic,
+  "textfield-with-description": TextFieldWithDescription,
+  "textfield-required": TextFieldRequired,
+  "textfield-validation": TextFieldValidation,
+  "textfield-controlled": TextFieldControlled,
+  "textfield-error-message": TextFieldErrorMessage,
+  "textfield-disabled": TextFieldDisabled,
+  "textfield-textarea": TextFieldTextArea,
+  "textfield-input-types": TextFieldInputTypes,
+  "textfield-full-width": TextFieldFullWidth,
+  "textfield-in-surface": TextFieldInSurface
 }

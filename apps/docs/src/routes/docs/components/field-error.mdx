@@ -1,0 +1,99 @@
+---
+title: FieldError
+---
+
+# FieldError
+
+Displays validation error messages for form fields.
+
+## Import
+
+```tsx
+import { FieldError } from "heroui-solid";
+```
+
+## Usage
+
+The FieldError component displays validation error messages for form fields. It automatically appears when the parent field is marked as invalid and provides smooth opacity transitions.
+
+```tsx
+import { FieldError, Input, Label, TextField } from "heroui-solid";
+import { createSignal } from "solid-js";
+
+export function Basic() {
+  const [value, setValue] = createSignal("jr");
+  const isInvalid = () => value().length > 0 && value().length < 3;
+
+  return (
+    <TextField class="w-64" isInvalid={isInvalid()} value={value()} onChange={setValue}>
+      <Label>Username</Label>
+      <Input placeholder="Enter username" />
+      <FieldError>Username must be at least 3 characters</FieldError>
+    </TextField>
+  );
+}
+```
+
+<ComponentPreview name="field-error-basic" />
+
+## Related Components
+
+- **TextField**: Composition-friendly fields with labels and validation
+- **Input**: Single-line text input
+- **TextArea**: Multiline text input
+
+## Accessibility
+
+The FieldError component ensures accessibility by:
+
+- Registering itself in the field's `aria-describedby` for error announcement
+- Supporting screen readers with semantic HTML
+- Providing visual and programmatic error indication
+- Automatically managing visibility based on validation state
+
+## Styling
+
+The FieldError component uses the following CSS classes:
+
+- `.field-error` - Base error styles with danger color
+- Only shows when the `data-visible` attribute is present
+
+## Examples
+
+### Custom Validation Logic
+
+```tsx
+import { FieldError, Input, Label, TextField } from "heroui-solid";
+import { createSignal } from "solid-js";
+
+function EmailField() {
+  const [email, setEmail] = createSignal("");
+  const isInvalid = () => email().length > 0 && !email().includes("@");
+
+  return (
+    <TextField isInvalid={isInvalid()} value={email()} onChange={setEmail}>
+      <Label>Email</Label>
+      <Input type="email" />
+      <FieldError>Email must include @ symbol</FieldError>
+    </TextField>
+  );
+}
+```
+
+## API Reference
+
+### FieldError Props
+
+| Prop         | Type          | Default | Description                                                     |
+| ------------ | ------------- | ------- | --------------------------------------------------------------- |
+| `class`      | `string`      | -       | Additional CSS classes                                          |
+| `children`   | `JSX.Element` | -       | Error message content                                           |
+| `forceMount` | `boolean`     | `false` | Render the error even while the field is valid (Kobalte extra)  |
+
+## Differences from HeroUI React
+
+- Use `class` instead of `className`.
+- No render-prop `children` — there is no React Aria `ValidationResult`; drive the
+  message content from your own state (see the Usage example).
+- Renders only inside a field (`TextField` for now); standalone usage renders nothing,
+  matching upstream behavior.
