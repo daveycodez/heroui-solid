@@ -1,13 +1,17 @@
+import path from "node:path"
+import { fileURLToPath } from "node:url"
 import type { SolidBaseConfig } from "@kobalte/solidbase/config"
-import type { DefaultThemeConfig } from "@kobalte/solidbase/default-theme"
+import {
+  createDefaultThemeFilesystemSidebar,
+  type DefaultThemeConfig
+} from "@kobalte/solidbase/default-theme"
 
-// Sidebar mirrors the official HeroUI docs (heroui-inc/heroui#v3, meta.json
-// files under apps/docs/content/docs/en/react): curated sections, components
-// listed alphabetically. Add new component pages to `components` in order.
-const components = [
-  { title: "Button", link: "/docs/components/button" },
-  { title: "Spinner", link: "/docs/components/spinner" }
-]
+// Sidebar mirrors the official HeroUI docs (heroui-inc/heroui#v3): a curated
+// Overview section, then Components generated from the filesystem — every
+// .mdx in src/routes/docs/components lists itself, alphabetically, titled by
+// its frontmatter `title` (badge via `status: new | updated`).
+const relativeToCwd = (url: string) =>
+  path.relative(process.cwd(), fileURLToPath(new URL(url, import.meta.url)))
 
 const config: SolidBaseConfig<DefaultThemeConfig> = {
   title: "HeroUI Solid",
@@ -28,7 +32,10 @@ const config: SolidBaseConfig<DefaultThemeConfig> = {
         {
           title: "Components",
           collapsed: false,
-          items: components
+          base: "docs/components",
+          items: createDefaultThemeFilesystemSidebar(
+            relativeToCwd("./src/routes/docs/components")
+          )
         }
       ]
     }

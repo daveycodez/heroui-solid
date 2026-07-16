@@ -5,3 +5,13 @@
 @import "@fontsource-variable/lexend";
 @import "@fontsource-variable/jetbrains-mono";
 @import "heroui-solid/styles.css";
+
+/* SolidBase's sidebar sections play an entry animation whose first frame is
+   opacity:0; while hydration blocks the main thread the links sit on that
+   frame, so they "flicker in" after load. Upstream default-theme issue —
+   suppress it (sections snap open/closed instead of fading). */
+@layer overrides {
+  aside nav ul[id^="collapsible-"] {
+    animation: none !important;
+  }
+}
