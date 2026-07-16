@@ -4,90 +4,363 @@ title: Button
 
 # Button
 
-A button lets users take an action with a click or keyboard. Built on
-[`@kobalte/core/button`](https://kobalte.dev/docs/core/components/button), styled with
-HeroUI's `button` classes.
+A clickable button component with multiple variants and states.
 
-## Variants
+## Import
 
-<Demo path="button/variants" height="220px" />
+```tsx
+import { Button } from "heroui-solid";
+```
+
+### Usage
 
 ```tsx
 import { Button } from "heroui-solid";
 
-<Button variant="primary">Primary</Button>
-<Button variant="secondary">Secondary</Button>
-<Button variant="tertiary">Tertiary</Button>
-<Button variant="outline">Outline</Button>
-<Button variant="ghost">Ghost</Button>
-<Button variant="danger">Danger</Button>
-<Button variant="danger-soft">Danger Soft</Button>
+export function Basic() {
+  return <Button onClick={() => console.log("Button pressed")}>Click me</Button>;
+}
 ```
 
-## Sizes
+<ComponentPreview name="button-basic" />
 
-<Demo path="button/sizes" />
+### Variants
 
 ```tsx
-<Button size="sm">Small</Button>
-<Button size="md">Medium</Button>
-<Button size="lg">Large</Button>
+import { Button } from "heroui-solid";
+
+export function Variants() {
+  return (
+    <div class="flex flex-wrap gap-3">
+      <Button>Primary</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="tertiary">Tertiary</Button>
+      <Button variant="outline">Outline</Button>
+      <Button variant="ghost">Ghost</Button>
+      <Button variant="danger">Danger</Button>
+      <Button variant="danger-soft">Danger Soft</Button>
+    </div>
+  );
+}
 ```
 
-## Disabled
+<ComponentPreview name="button-variants" />
 
-<Demo path="button/disabled" />
+### With Icons
 
 ```tsx
-<Button isDisabled>Primary</Button>
+import { Button } from "heroui-solid";
+import Envelope from "~icons/gravity-ui/envelope";
+import Globe from "~icons/gravity-ui/globe";
+import Plus from "~icons/gravity-ui/plus";
+import TrashBin from "~icons/gravity-ui/trash-bin";
+
+export function WithIcons() {
+  return (
+    <div class="flex flex-wrap gap-3">
+      <Button>
+        <Globe />
+        Search
+      </Button>
+      <Button variant="secondary">
+        <Plus />
+        Add Member
+      </Button>
+      <Button variant="tertiary">
+        <Envelope />
+        Email
+      </Button>
+      <Button variant="danger">
+        <TrashBin />
+        Delete
+      </Button>
+    </div>
+  );
+}
 ```
 
-## Pending
+<ComponentPreview name="button-with-icons" />
 
-A pending button stays focusable but ignores activation. Use the render-prop form of
-`children` to swap in a `Spinner`:
+### Icon Only
 
-<Demo path="button/pending" />
+```tsx
+import { Button } from "heroui-solid";
+import Ellipsis from "~icons/gravity-ui/ellipsis";
+import Gear from "~icons/gravity-ui/gear";
+import TrashBin from "~icons/gravity-ui/trash-bin";
+
+export function IconOnly() {
+  return (
+    <div class="flex gap-3">
+      <Button isIconOnly variant="tertiary">
+        <Ellipsis />
+      </Button>
+      <Button isIconOnly variant="secondary">
+        <Gear />
+      </Button>
+      <Button isIconOnly variant="danger">
+        <TrashBin />
+      </Button>
+    </div>
+  );
+}
+```
+
+<ComponentPreview name="button-icon-only" />
+
+### Loading
 
 ```tsx
 import { Button, Spinner } from "heroui-solid";
 
-<Button isPending={saving()} onClick={save}>
-  {(state) => (
-    <>
-      {state.isPending && <Spinner color="current" size="sm" />}
-      Save
-    </>
-  )}
-</Button>
+export function Loading() {
+  return (
+    <Button isPending>
+      {(state) => (
+        <>
+          {state.isPending && <Spinner color="current" size="sm" />}
+          Uploading...
+        </>
+      )}
+    </Button>
+  );
+}
 ```
 
-## Link button
+<ComponentPreview name="button-loading" />
 
-`Button` is polymorphic via `as` — render an anchor that looks like a button:
-
-<Demo path="button/link" />
+### Loading State
 
 ```tsx
-<Button as="a" href="https://heroui.com" variant="outline">
-  Visit HeroUI
-</Button>
+import { Button, Spinner } from "heroui-solid";
+import { createSignal } from "solid-js";
+import Paperclip from "~icons/gravity-ui/paperclip";
+
+export function LoadingState() {
+  const [isLoading, setLoading] = createSignal(false);
+
+  const handleClick = () => {
+    setLoading(true);
+    setTimeout(() => setLoading(false), 2000);
+  };
+
+  return (
+    <Button isPending={isLoading()} onClick={handleClick}>
+      {(state) => (
+        <>
+          {state.isPending ? <Spinner color="current" size="sm" /> : <Paperclip />}
+          {state.isPending ? "Uploading..." : "Upload File"}
+        </>
+      )}
+    </Button>
+  );
+}
 ```
 
-## API
+<ComponentPreview name="button-loading-state" />
 
-| Prop         | Type                                                                                    | Default     | Description                                        |
-| ------------ | --------------------------------------------------------------------------------------- | ----------- | -------------------------------------------------- |
-| `variant`    | `"primary" \| "secondary" \| "tertiary" \| "outline" \| "ghost" \| "danger" \| "danger-soft"` | `"primary"` | Visual style.                                       |
-| `size`       | `"sm" \| "md" \| "lg"`                                                                   | `"md"`      | Button size.                                        |
-| `fullWidth`  | `boolean`                                                                                | `false`     | Stretch to fill the container.                      |
-| `isIconOnly` | `boolean`                                                                                | `false`     | Square padding for icon-only content.               |
-| `isDisabled` | `boolean`                                                                                | `false`     | Disables the button.                                |
-| `isPending`  | `boolean`                                                                                | `false`     | Loading state: focusable, but activation is ignored. |
-| `as`         | `ValidComponent`                                                                         | `"button"`  | Element or component to render.                     |
-| `children`   | `JSX.Element \| (state: { isPending: boolean }) => JSX.Element`                          | —           | Content, or render function for pending swaps.      |
+### Sizes
 
-### Spinner
+```tsx
+import { Button } from "heroui-solid";
+
+export function Sizes() {
+  return (
+    <div class="flex items-center gap-3">
+      <Button size="sm">Small</Button>
+      <Button size="md">Medium</Button>
+      <Button size="lg">Large</Button>
+    </div>
+  );
+}
+```
+
+<ComponentPreview name="button-sizes" />
+
+### Full Width
+
+```tsx
+import { Button } from "heroui-solid";
+import Plus from "~icons/gravity-ui/plus";
+
+export function FullWidth() {
+  return (
+    <div class="w-[400px] space-y-3">
+      <Button fullWidth>Primary Button</Button>
+      <Button fullWidth>
+        <Plus />
+        With Icon
+      </Button>
+    </div>
+  );
+}
+```
+
+<ComponentPreview name="button-full-width" />
+
+### Disabled State
+
+```tsx
+import { Button } from "heroui-solid";
+
+export function Disabled() {
+  return (
+    <div class="flex flex-wrap gap-3">
+      <Button isDisabled>Primary</Button>
+      <Button isDisabled variant="secondary">
+        Secondary
+      </Button>
+      <Button isDisabled variant="tertiary">
+        Tertiary
+      </Button>
+      <Button isDisabled variant="outline">
+        Outline
+      </Button>
+      <Button isDisabled variant="ghost">
+        Ghost
+      </Button>
+      <Button isDisabled variant="danger">
+        Danger
+      </Button>
+    </div>
+  );
+}
+```
+
+<ComponentPreview name="button-disabled" />
+
+### Social Buttons
+
+```tsx
+import { Button } from "heroui-solid";
+import GoogleIcon from "~icons/devicon/google";
+import AppleIcon from "~icons/ion/logo-apple";
+import GitHubIcon from "~icons/mdi/github";
+
+export function Social() {
+  return (
+    <div class="flex w-full max-w-xs flex-col gap-3">
+      <Button class="w-full" variant="tertiary">
+        <GoogleIcon />
+        Sign in with Google
+      </Button>
+      <Button class="w-full" variant="tertiary">
+        <GitHubIcon />
+        Sign in with GitHub
+      </Button>
+      <Button class="w-full" variant="tertiary">
+        <AppleIcon />
+        Sign in with Apple
+      </Button>
+    </div>
+  );
+}
+```
+
+<ComponentPreview name="button-social" />
+
+## Related Components
+
+- **Popover**: Displays content in context with a trigger (not ported yet)
+- **Tooltip**: Contextual information on hover or focus (not ported yet)
+- **Form**: Form validation and submission handling (not ported yet)
+
+## Styling
+
+### Passing Tailwind CSS classes
+
+```tsx
+import { Button } from "heroui-solid";
+
+function CustomButton() {
+  return (
+    <Button class="bg-purple-500 text-white hover:bg-purple-600">
+      Purple Button
+    </Button>
+  );
+}
+```
+
+### Customizing the component classes
+
+To customize the Button component classes, you can use the `@layer components` directive.
+[Learn more](https://tailwindcss.com/docs/adding-custom-styles#adding-component-classes).
+
+```css
+@layer components {
+  .button {
+    @apply bg-purple-500 text-white hover:bg-purple-600;
+  }
+
+  .button--icon-only {
+    @apply rounded-lg bg-blue-500;
+  }
+}
+```
+
+HeroUI follows the [BEM](https://getbem.com/) methodology to ensure component variants and states are reusable and easy to customize.
+
+### CSS Classes
+
+The Button component uses these CSS classes ([View source styles](https://github.com/heroui-inc/heroui/blob/v3/packages/styles/components/button.css)):
+
+#### Base & Size Classes
+
+- `.button` - Base button styles
+- `.button--sm` - Small size variant
+- `.button--md` - Medium size variant
+- `.button--lg` - Large size variant
+
+#### Variant Classes
+
+- `.button--primary`
+- `.button--secondary`
+- `.button--tertiary`
+- `.button--outline`
+- `.button--ghost`
+- `.button--danger`
+- `.button--danger-soft`
+
+#### Modifier Classes
+
+- `.button--icon-only`
+- `.button--icon-only.button--sm`
+- `.button--icon-only.button--lg`
+
+### Interactive States
+
+The button supports CSS pseudo-classes and data attributes:
+
+- **Hover**: `:hover`
+- **Active/Pressed**: `:active` (includes scale transform)
+- **Focus**: `:focus-visible` (shows focus ring)
+- **Disabled**: `:disabled` or `[aria-disabled="true"]` (reduced opacity, no pointer events)
+- **Pending**: `[data-pending]` (no pointer events during loading)
+
+## API Reference
+
+### Button Props
+
+| Prop         | Type                                                                                          | Default     | Description                                                  |
+| ------------ | --------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------- |
+| `variant`    | `"primary" \| "secondary" \| "tertiary" \| "outline" \| "ghost" \| "danger" \| "danger-soft"` | `"primary"` | Visual style variant                                          |
+| `size`       | `"sm" \| "md" \| "lg"`                                                                         | `"md"`      | Size of the button                                            |
+| `fullWidth`  | `boolean`                                                                                      | `false`     | Whether the button should take full width of its container    |
+| `isDisabled` | `boolean`                                                                                      | `false`     | Whether the button is disabled                                |
+| `isPending`  | `boolean`                                                                                      | `false`     | Whether the button is in a loading state                      |
+| `isIconOnly` | `boolean`                                                                                      | `false`     | Whether the button contains only an icon                      |
+| `onClick`    | `JSX.EventHandlerUnion<HTMLElement, MouseEvent>`                                               | -           | Handler called when the button is clicked                     |
+| `children`   | `JSX.Element \| (state: ButtonRenderProps) => JSX.Element`                                     | -           | Button content or render prop                                 |
+
+### ButtonRenderProps
+
+When using the render prop pattern, these values are provided:
+
+| Prop        | Type      | Description                              |
+| ----------- | --------- | ---------------------------------------- |
+| `isPending` | `boolean` | Whether the button is in a loading state |
+
+### Spinner Props
 
 | Prop    | Type                                                          | Default    |
 | ------- | ------------------------------------------------------------- | ---------- |
@@ -96,7 +369,11 @@ import { Button, Spinner } from "heroui-solid";
 
 ## Differences from HeroUI React
 
+- Renders a plain native `<button>` — all standard button attributes are forwarded.
 - Use `onClick` (Solid's native event) instead of React Aria's `onPress`.
-- Polymorphism uses Kobalte's `as` prop instead of React's `render` prop override.
+- No `render` prop / element override — the button is always a `<button>` element
+  (link-styled buttons are not supported yet).
+- The render-prop `state` exposes `isPending` only (no `isPressed`/`isHovered`/`isFocused`)
+  — read fields off `state` inside JSX rather than destructuring, so updates stay reactive.
 - Hover/press styling relies on HeroUI's native `:hover` / `:active` CSS fallbacks rather
   than React Aria's `data-hovered` / `data-pressed` attributes — visuals are identical.

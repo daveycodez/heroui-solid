@@ -1,7 +1,5 @@
-import { Root as ButtonPrimitive } from "@kobalte/core/button"
-import type { PolymorphicProps } from "@kobalte/core/polymorphic"
 import clsx from "clsx"
-import { type JSX, splitProps, type ValidComponent } from "solid-js"
+import { type JSX, splitProps } from "solid-js"
 import { type ButtonVariantProps, buttonStyles } from "./button.styles"
 
 export interface ButtonRenderProps {
@@ -9,7 +7,9 @@ export interface ButtonRenderProps {
   isPending: boolean
 }
 
-export interface ButtonProps extends ButtonVariantProps {
+export interface ButtonProps
+  extends Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "children">,
+    ButtonVariantProps {
   /** Whether the button is disabled. @default false */
   isDisabled?: boolean
   /**
@@ -18,20 +18,15 @@ export interface ButtonProps extends ButtonVariantProps {
    * HeroUI/React Aria semantics. @default false
    */
   isPending?: boolean
-  class?: string
   /** Content, or a render function receiving `{ isPending }` to swap in a Spinner. */
   children?: JSX.Element | ((state: ButtonRenderProps) => JSX.Element)
-  onClick?: JSX.EventHandlerUnion<HTMLElement, MouseEvent>
 }
 
 /**
- * HeroUI-styled button on top of `@kobalte/core/button`.
- * Polymorphic via `as` (e.g. `<Button as="a" href="…">` for link-buttons).
+ * HeroUI-styled native `<button>`.
  */
-export function Button<T extends ValidComponent = "button">(
-  props: PolymorphicProps<T, ButtonProps>
-) {
-  const [local, rest] = splitProps(props as ButtonProps, [
+export function Button(props: ButtonProps) {
+  const [local, rest] = splitProps(props, [
     "variant",
     "size",
     "fullWidth",
@@ -43,7 +38,9 @@ export function Button<T extends ValidComponent = "button">(
     "onClick"
   ])
 
-  const handleClick: JSX.EventHandler<HTMLElement, MouseEvent> = (event) => {
+  const handleClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (
+    event
+  ) => {
     if (local.isPending) {
       // Pending buttons stay focusable but ignore activation.
       event.preventDefault()
@@ -61,8 +58,19 @@ export function Button<T extends ValidComponent = "button">(
     }
   }
 
+  // Read the children getter exactly once per evaluation. Children props are
+  // create-on-access getters, and a bare `typeof local.children` ternary in
+  // JSX compiles into TWO accesses (a typeof memo + the render branch) —
+  // children get created twice, consuming SSR hydration keys asymmetrically
+  // and desyncing hydration for element children (e.g. icons).
+  const renderChildren = () => {
+    const children = local.children
+    return typeof children === "function" ? children(state) : children
+  }
+
   return (
-    <ButtonPrimitive
+    <button
+      type="button"
       data-slot="button"
       class={clsx(buttonStyles(local), local.class)}
       disabled={local.isDisabled}
@@ -71,9 +79,7 @@ export function Button<T extends ValidComponent = "button">(
       onClick={handleClick}
       {...rest}
     >
-      {typeof local.children === "function"
-        ? local.children(state)
-        : local.children}
-    </ButtonPrimitive>
+      {renderChildren()}
+    </button>
   )
 }

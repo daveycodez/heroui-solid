@@ -17,7 +17,12 @@
     },
     "dev": {
       "dependsOn": ["^build"],
-      "cache": false
+      "cache": false,
+      "continuous": true
+    },
+    "dev:css": {
+      "cache": false,
+      "continuous": true
     }
   },
   "analytics": true

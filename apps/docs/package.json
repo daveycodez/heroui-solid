@@ -5,11 +5,11 @@
   "scripts": {
     "dev": "vite dev --port 3000",
     "build": "vite build",
-    "start": "node .output/server/index.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
     "@iconify-json/ri": "^1.2.5",
+    "@kobalte/core": "^0.13.12",
     "@kobalte/solidbase": "0.6.9",
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^0.15.3",
@@ -22,5 +22,11 @@
   },
   "engines": {
     "node": ">=24"
+  },
+  "devDependencies": {
+    "@iconify-json/devicon": "^1.2.62",
+    "@iconify-json/gravity-ui": "^1.2.13",
+    "@iconify-json/ion": "^1.2.7",
+    "@iconify-json/mdi": "^1.2.3"
   }
 }

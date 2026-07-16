@@ -98,15 +98,14 @@ describe("Button", () => {
     expect(getByRole("button").textContent).toBe("Loading")
   })
 
-  it("is polymorphic via as", () => {
+  it("forwards native button attributes", () => {
     const { getByRole } = render(() => (
-      <Button as="a" href="https://example.com">
-        Link
+      <Button type="submit" name="save">
+        Save
       </Button>
     ))
-    const link = getByRole("link")
-    expect(link.tagName).toBe("A")
-    expect(link.getAttribute("href")).toBe("https://example.com")
-    expect(link.className).toContain("button button--primary button--md")
+    const button = getByRole("button")
+    expect(button.getAttribute("type")).toBe("submit")
+    expect(button.getAttribute("name")).toBe("save")
   })
 })
