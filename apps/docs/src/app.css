@@ -1,1 +1,7 @@
+/* SolidStart's dev style crawler drops SolidBase's virtual fonts.css, so the
+   @font-face rules must enter through a real file to be SSR-inlined (FOUT
+   otherwise). Duplicates SolidBase's font list; harmless in prod (deduped). */
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/lexend";
+@import "@fontsource-variable/jetbrains-mono";
 @import "heroui-solid/styles.css";
