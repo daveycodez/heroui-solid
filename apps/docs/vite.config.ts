@@ -4,6 +4,7 @@ import defaultTheme from "@kobalte/solidbase/default-theme"
 import { solidStart } from "@solidjs/start/config"
 import { nitro } from "nitro/vite"
 import { defineConfig } from "vite"
+import solidbaseConfig from "./solidbase.config"
 
 const theme = defineTheme({
   componentsPath: new URL("./src/theme/", import.meta.url).href,
@@ -49,31 +50,7 @@ export default defineConfig(({ command }) => ({
         }
       }
     },
-    solidbase.plugin({
-      title: "HeroUI Solid",
-      titleTemplate: ":title - HeroUI Solid",
-      description:
-        "Unofficial SolidJS port of HeroUI v3, built on Kobalte and @heroui/styles",
-      themeConfig: {
-        sidebar: {
-          "/": [
-            {
-              title: "Overview",
-              collapsed: false,
-              items: [
-                { title: "Home", link: "/" },
-                { title: "Getting Started", link: "/docs/getting-started" }
-              ]
-            },
-            {
-              title: "Components",
-              collapsed: false,
-              items: [{ title: "Button", link: "/docs/components/button" }]
-            }
-          ]
-        }
-      }
-    }),
+    solidbase.plugin(solidbaseConfig),
     solidStart(solidbase.startConfig()),
     nitro({
       // TODO: switch to `preset: "static"` once the nitro vite plugin supports

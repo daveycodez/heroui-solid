@@ -10,6 +10,9 @@ import { Sizes } from "./button/sizes"
 import { Social } from "./button/social"
 import { Variants } from "./button/variants"
 import { WithIcons } from "./button/with-icons"
+import { SpinnerBasic } from "./spinner/basic"
+import { SpinnerColors } from "./spinner/colors"
+import { SpinnerSizes } from "./spinner/sizes"
 
 // Registry for <ComponentPreview name="..." /> in MDX pages. Follows the
 // official HeroUI docs structure (apps/docs/src/demos/<component>/<demo>.tsx,
@@ -25,5 +28,8 @@ export const demos: Record<string, Component> = {
   "button-full-width": FullWidth,
   "button-disabled": Disabled,
   "button-social": Social,
-  "button-custom-element": CustomElement
+  "button-custom-element": CustomElement,
+  "spinner-basic": SpinnerBasic,
+  "spinner-colors": SpinnerColors,
+  "spinner-sizes": SpinnerSizes
 }
