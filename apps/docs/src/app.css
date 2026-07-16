@@ -1,3 +1,10 @@
+/* Cascade order for the whole docs app. `solidbase` (stamped onto all
+   @kobalte/solidbase CSS by the postcss plugin in vite.config.ts) sits above
+   heroui's preflight (base) but below its component styles, so heroui
+   components always win over the docs theme. Must stay the first statement
+   so it's parsed before any layer blocks. */
+@layer properties, theme, base, solidbase, components, utilities, overrides;
+
 /* SolidStart's dev style crawler drops SolidBase's virtual fonts.css, so the
    @font-face rules must enter through a real file to be SSR-inlined (FOUT
    otherwise). Duplicates SolidBase's font list; harmless in prod (deduped). */
@@ -5,6 +12,25 @@
 @import "@fontsource-variable/lexend";
 @import "@fontsource-variable/jetbrains-mono";
 @import "heroui-solid/styles";
+
+/* Docs chrome adopts the heroui theme: remap solidbase's design tokens onto
+   heroui tokens. Unlayered, so it beats the layered solidbase defaults; dark
+   mode follows automatically — both systems key off html[data-theme]. */
+:root {
+  --sb-background-color: var(--background);
+  --sb-heading-color: var(--foreground);
+  --sb-text-color: var(--muted);
+  --sb-decoration-color: var(--muted);
+  --sb-active-link-color: var(--accent);
+  --sb-link-underline-color: color-mix(
+    in oklab,
+    var(--accent) 35%,
+    transparent
+  );
+  --sb-code-background-color: var(--surface);
+  --sb-border-radius: var(--radius);
+  --sb-font-headings: var(--sb-font-text);
+}
 
 /* SolidBase's sidebar sections play an entry animation whose first frame is
    opacity:0; while hydration blocks the main thread the links sit on that

@@ -123,6 +123,27 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   elements in SSR HTML (ref-based tag detection can't run server-side); the
   client removes it after mount. Upstream issue, not fixable from our side.
 
+## Docs CSS Cascade (apps/docs)
+
+- All `@kobalte/solidbase` CSS is demoted into `@layer solidbase` by the
+  postcss plugin in `apps/docs/vite.config.ts`; the `@layer` statement at the
+  top of `apps/docs/src/app.css` orders it `base < solidbase < components`,
+  so heroui components beat the docs theme and the theme beats the preflight.
+  Without this, solidbase's unlayered rules (e.g. reset.css
+  `button { font: inherit }`) silently override heroui's layered styles.
+- The docs chrome is themed via the `--sb-*` → heroui token remap in
+  `app.css` (unlayered `:root`, wins in both modes — both systems key dark
+  off `html[data-theme]`). Restyle chrome by extending that remap, not by
+  editing solidbase CSS.
+- Solidbase stamps `data-theme="sdark"/"slight"` when following the OS
+  (s-prefix = system), so the same postcss plugin rewrites heroui's exact
+  `[data-theme=dark|light]` selectors to substring matches (`*=`) — without
+  it, heroui tokens stay light in system-dark mode. The rewrite is scoped to
+  rules originating from `heroui-solid/dist` (per-rule source check, since
+  the import is inlined into app.css): solidbase's own CSS must keep exact
+  matches — its ThemeSelector tells "dark" from "sdark" to pick the trigger
+  icon (a global rewrite rendered two moons).
+
 ## Dev Loop
 
 - `nx dev docs`: the docs vite config aliases `heroui-solid` to the package

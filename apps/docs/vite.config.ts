@@ -14,6 +14,60 @@ const theme = defineTheme({
 const solidbase = createSolidBase(theme)
 
 export default defineConfig(({ command }) => ({
+  css: {
+    postcss: {
+      plugins: [
+        {
+          // Demote all @kobalte/solidbase CSS into the `solidbase` cascade
+          // layer, slotted between heroui's preflight and component styles
+          // (see the @layer statement in src/app.css): heroui components
+          // always beat the solidbase theme, solidbase chrome still beats
+          // the bare reset. Without this the theme's unlayered rules (e.g.
+          // reset.css `button { font: inherit }`) override heroui.
+          postcssPlugin: "solidbase-into-layer",
+          Once(root, { AtRule }) {
+            const file = root.source?.input.file
+            if (!file) {
+              return
+            }
+            // Solidbase stamps data-theme="sdark"/"slight" in system mode
+            // (the s-prefix means "follow the OS"), so heroui's exact
+            // [data-theme=dark|light] selectors must substring-match here,
+            // like solidbase's own [data-theme*="dark"] CSS does. Scoped per
+            // rule via its original source file: heroui-solid/styles reaches
+            // postcss inlined into app.css, and solidbase's own CSS must
+            // keep its exact matches (its ThemeSelector distinguishes
+            // "dark" from "sdark" to pick the trigger icon).
+            root.walkRules((rule) => {
+              if (
+                rule.source?.input.file?.includes("heroui-solid/dist") &&
+                rule.selector.includes("[data-theme=")
+              ) {
+                rule.selector = rule.selector.replace(
+                  /\[data-theme="?(dark|light)"?\]/g,
+                  '[data-theme*="$1"]'
+                )
+              }
+            })
+            if (!file.includes("@kobalte/solidbase")) {
+              return
+            }
+            const layer = new AtRule({ name: "layer", params: "solidbase" })
+            for (const node of [...root.nodes]) {
+              if (
+                node.type === "atrule" &&
+                (node.name === "charset" || node.name === "import")
+              ) {
+                continue
+              }
+              layer.append(node)
+            }
+            root.append(layer)
+          }
+        }
+      ]
+    }
+  },
   resolve: {
     alias:
       command === "serve"
