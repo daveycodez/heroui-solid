@@ -15,6 +15,11 @@ import { CardUsage } from "./card/usage"
 import { CardVariants } from "./card/variants"
 import { CardWithForm } from "./card/with-form"
 import { DescriptionBasic } from "./description/basic"
+import { DropdownControlledOpenState } from "./dropdown/controlled-open-state"
+import { DropdownDisabledItems } from "./dropdown/disabled-items"
+import { DropdownUsage } from "./dropdown/usage"
+import { DropdownWithDescriptions } from "./dropdown/with-descriptions"
+import { DropdownWithIcons } from "./dropdown/with-icons"
 import { FieldErrorBasic } from "./field-error/basic"
 import { InputBasic } from "./input/basic"
 import { InputControlled } from "./input/controlled"
@@ -74,6 +79,11 @@ export const demos: Record<string, Component> = {
   "card-horizontal": CardHorizontal,
   "card-with-form": CardWithForm,
   "description-basic": DescriptionBasic,
+  "dropdown-usage": DropdownUsage,
+  "dropdown-with-icons": DropdownWithIcons,
+  "dropdown-with-descriptions": DropdownWithDescriptions,
+  "dropdown-disabled-items": DropdownDisabledItems,
+  "dropdown-controlled-open-state": DropdownControlledOpenState,
   "field-error-basic": FieldErrorBasic,
   "input-basic": InputBasic,
   "input-types": InputTypes,

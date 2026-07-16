@@ -1,0 +1,241 @@
+---
+title: Dropdown
+---
+
+# Dropdown
+
+A dropdown displays a list of actions or options that a user can choose.
+
+## Import
+
+```tsx
+import { Dropdown } from "heroui-solid";
+```
+
+### Usage
+
+HeroUI React accepts a `Button` directly as the trigger; this port uses an explicit
+`Dropdown.Trigger` (Kobalte's trigger is itself a button) — style it with
+`buttonVariants` for the Button look.
+
+```tsx
+import { buttonVariants, Dropdown, Label } from "heroui-solid";
+
+export function Usage() {
+  return (
+    <Dropdown>
+      <Dropdown.Trigger aria-label="Menu" class={buttonVariants({ variant: "secondary" })}>
+        Actions
+      </Dropdown.Trigger>
+      <Dropdown.Popover>
+        <Dropdown.Menu onAction={(key) => console.log(`Selected: ${key}`)}>
+          <Dropdown.Item id="new-file" textValue="New file">
+            <Label>New file</Label>
+          </Dropdown.Item>
+          <Dropdown.Item id="copy-link" textValue="Copy link">
+            <Label>Copy link</Label>
+          </Dropdown.Item>
+          <Dropdown.Item id="edit-file" textValue="Edit file">
+            <Label>Edit file</Label>
+          </Dropdown.Item>
+          <Dropdown.Item id="delete-file" textValue="Delete file" variant="danger">
+            <Label>Delete file</Label>
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown.Popover>
+    </Dropdown>
+  );
+}
+```
+
+<ComponentPreview name="dropdown-usage" />
+
+### Anatomy
+
+Import the Dropdown component and access all parts using dot notation.
+
+```tsx
+import { Dropdown, Label, Description } from "heroui-solid";
+
+export default () => (
+  <Dropdown>
+    <Dropdown.Trigger />
+    <Dropdown.Popover>
+      <Dropdown.Menu>
+        <Dropdown.Item>
+          <Label />
+          <Description />
+        </Dropdown.Item>
+      </Dropdown.Menu>
+    </Dropdown.Popover>
+  </Dropdown>
+);
+```
+
+### With Icons
+
+```tsx
+import { buttonVariants, Dropdown, Label } from "heroui-solid";
+import SquarePlus from "~icons/gravity-ui/square-plus";
+
+<Dropdown.Item id="new-file" textValue="New file">
+  <SquarePlus class="size-4 shrink-0 text-muted" />
+  <Label>New file</Label>
+</Dropdown.Item>
+```
+
+<ComponentPreview name="dropdown-with-icons" />
+
+### With Descriptions
+
+```tsx
+<Dropdown.Item id="new-file" textValue="New file">
+  <SquarePlus class="size-4 shrink-0 text-muted" />
+  <div class="flex flex-col">
+    <Label>New file</Label>
+    <Description>Create a new file</Description>
+  </div>
+</Dropdown.Item>
+```
+
+<ComponentPreview name="dropdown-with-descriptions" />
+
+### With Disabled Items
+
+```tsx
+<Dropdown.Menu disabledKeys={["delete-file"]} onAction={(key) => console.log(key)}>
+  ...
+</Dropdown.Menu>
+```
+
+<ComponentPreview name="dropdown-disabled-items" />
+
+### Controlled Open State
+
+```tsx
+import { buttonVariants, Dropdown, Label } from "heroui-solid";
+import { createSignal } from "solid-js";
+
+export function ControlledOpenState() {
+  const [open, setOpen] = createSignal(false);
+
+  return (
+    <Dropdown isOpen={open()} onOpenChange={setOpen}>
+      ...
+    </Dropdown>
+  );
+}
+```
+
+<ComponentPreview name="dropdown-controlled-open-state" />
+
+## Related Components
+
+- **Select**: Collapsible list of options with selection
+- **Button**: Style the trigger with `buttonVariants`
+- **Label** / **Description**: Item content slots
+
+## Styling
+
+### Customizing the component classes
+
+```css
+@layer components {
+  .dropdown__trigger {
+    @apply rounded-lg;
+  }
+
+  .dropdown__popover {
+    @apply rounded-lg border border-border bg-surface;
+  }
+
+  .dropdown__menu {
+    @apply p-1;
+  }
+
+  .menu-item {
+    @apply rounded-xl;
+  }
+}
+```
+
+HeroUI follows the [BEM](https://getbem.com/) methodology to ensure component variants and states are reusable and easy to customize.
+
+### CSS Classes
+
+The Dropdown component uses these CSS classes ([View source styles](https://github.com/heroui-inc/heroui/blob/v3/packages/styles/components/dropdown.css)):
+
+#### Base Classes
+
+- `.dropdown__trigger` - The trigger button
+- `.dropdown__popover` - The popover container
+- `.dropdown__menu` - The menu list container
+- `.menu-item` - Menu items (`.menu-item--default` / `.menu-item--danger`)
+- `.menu-item__indicator` - Selection indicator (selection is not ported yet)
+
+### Interactive States
+
+- **Hover / highlighted item**: `:hover` or `[data-highlighted]` (Kobalte attribute)
+- **Focus**: `:focus-visible` on the trigger (shows focus ring)
+- **Pressed**: `:active` (scale transform)
+- **Disabled**: `[data-disabled]` on items, `:disabled` on the trigger
+- **Open animations**: `[data-expanded]` / `[data-closed]` on the popover (Kobalte attributes)
+
+## API Reference
+
+### Dropdown Props
+
+| Prop           | Type                        | Default | Description                                             |
+| -------------- | --------------------------- | ------- | ------------------------------------------------------- |
+| `isOpen`       | `boolean`                   | -       | Sets the open state of the menu (controlled)            |
+| `defaultOpen`  | `boolean`                   | -       | Sets the default open state of the menu (uncontrolled)  |
+| `onOpenChange` | `(isOpen: boolean) => void` | -       | Handler called when the open state changes              |
+| `children`     | `JSX.Element`               | -       | Trigger and popover                                     |
+
+### Dropdown.Trigger Props
+
+| Prop       | Type          | Default | Description                                                |
+| ---------- | ------------- | ------- | ---------------------------------------------------------- |
+| `class`    | `string`      | -       | Additional CSS classes (e.g. `buttonVariants({...})`)      |
+| `children` | `JSX.Element` | -       | Trigger content                                            |
+
+### Dropdown.Popover Props
+
+| Prop        | Type          | Default    | Description                                                          |
+| ----------- | ------------- | ---------- | -------------------------------------------------------------------- |
+| `placement` | `string`      | `"bottom"` | Placement relative to the trigger (Kobalte placements, e.g. `"top"`) |
+| `class`     | `string`      | -          | Additional CSS classes                                               |
+| `children`  | `JSX.Element` | -          | Content children                                                     |
+
+### Dropdown.Menu Props
+
+| Prop           | Type                    | Default | Description                                 |
+| -------------- | ----------------------- | ------- | ------------------------------------------- |
+| `onAction`     | `(key: string) => void` | -       | Handler called when an item is activated    |
+| `disabledKeys` | `Iterable<string>`      | -       | Keys of disabled items                      |
+| `class`        | `string`                | -       | Additional CSS classes                      |
+| `children`     | `JSX.Element`           | -       | Menu items                                  |
+
+### Dropdown.Item Props
+
+| Prop         | Type                     | Default     | Description                                  |
+| ------------ | ------------------------ | ----------- | -------------------------------------------- |
+| `id`         | `string`                 | -           | Item key passed to `onAction` (required)     |
+| `textValue`  | `string`                 | -           | Text used for typeahead                      |
+| `isDisabled` | `boolean`                | `false`     | Whether the item is disabled                 |
+| `onAction`   | `() => void`             | -           | Item-level activation handler                |
+| `variant`    | `"default" \| "danger"`  | `"default"` | Item visual variant                          |
+| `class`      | `string`                 | -           | Additional CSS classes                       |
+| `children`   | `JSX.Element`            | -           | Item content                                 |
+
+## Differences from HeroUI React
+
+- The trigger must be an explicit `Dropdown.Trigger` (Kobalte's trigger is its own
+  button); putting a `Button` inside would nest buttons. Use
+  `class={buttonVariants({...})}` on the trigger for the Button look.
+- Not ported yet: `Dropdown.Section`/`Header`, submenus (`Dropdown.SubmenuTrigger`),
+  selection (`selectionMode`, `Dropdown.ItemIndicator`), long-press trigger, and `Kbd`.
+- Item keys come from our `id` prop and reach `onAction`; Kobalte generates its own
+  internal collection keys.
+- Popover placements use Kobalte's syntax (`"top"`, `"bottom-start"`, …) and
+  enter/exit animations ride `data-expanded`/`data-closed`.
