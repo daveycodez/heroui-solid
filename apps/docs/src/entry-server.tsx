@@ -1,7 +1,9 @@
 // @refresh reload
 
-import { getHtmlProps } from "@kobalte/solidbase/server";
-import { createHandler, StartServer } from "@solidjs/start/server";
+import { getFontPreloadLinkAttrs } from "@kobalte/solidbase/default-theme/fonts.js"
+import { getHtmlProps } from "@kobalte/solidbase/server"
+import { createHandler, StartServer } from "@solidjs/start/server"
+import { For } from "solid-js"
 
 export default createHandler(() => (
   <StartServer
@@ -11,6 +13,9 @@ export default createHandler(() => (
           <meta charset="utf-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link rel="icon" href="/favicon.ico" />
+          {/* Preload the theme fonts so text doesn't flash in a fallback font
+              while the @fontsource stylesheets load. */}
+          <For each={getFontPreloadLinkAttrs()}>{(attrs) => <link {...attrs} />}</For>
           {assets}
         </head>
         <body>
@@ -20,4 +25,4 @@ export default createHandler(() => (
       </html>
     )}
   />
-));
+))
