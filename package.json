@@ -1,0 +1,19 @@
+{
+  "name": "heroui-solid-monorepo",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "nx run-many -t build",
+    "test": "nx run-many -t test",
+    "lint": "biome check .",
+    "format": "biome format --write ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.4",
+    "nx": "23.1.0",
+    "typescript": "~5.9.3"
+  }
+}

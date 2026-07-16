@@ -1,0 +1,61 @@
+---
+title: Getting Started
+---
+
+# Getting Started
+
+**heroui-solid** is an unofficial community port of [HeroUI v3](https://heroui.com) to
+[SolidJS](https://solidjs.com). It reproduces HeroUI's look and public API on top of
+[Kobalte](https://kobalte.dev) for behavior and accessibility, and consumes HeroUI's own
+CSS from the `@heroui/styles` npm package.
+
+## Installation
+
+```bash
+bun add heroui-solid solid-js
+```
+
+## Styles
+
+There are two ways to bring in the styles — pick one.
+
+### Standalone (no Tailwind required)
+
+Import the precompiled stylesheet once, e.g. in your app entry:
+
+```ts
+import "heroui-solid/styles.css";
+```
+
+This includes HeroUI's full theme (light + dark), base styles, all component styles, and
+the small Kobalte-bridge overrides layer. No Tailwind setup needed.
+
+### With Tailwind CSS v4
+
+If your app already runs Tailwind v4, install `@heroui/styles` yourself and layer our
+overrides on top — this avoids duplicating Tailwind's preflight and theme:
+
+```css
+/* app.css */
+@import "@heroui/styles";
+@import "heroui-solid/overrides.css";
+```
+
+## Usage
+
+```tsx
+import { Button } from "heroui-solid";
+
+export default function App() {
+  return <Button variant="primary">Click me</Button>;
+}
+```
+
+## Dark mode
+
+HeroUI's theme variables switch on the `dark` class or `data-theme="dark"` attribute on a
+root element:
+
+```html
+<html class="dark">
+```

@@ -1,0 +1,10 @@
+node_modules
+dist
+.output
+.vinxi
+.nitro
+.nx
+.solidbase
+*.tsbuildinfo
+*.log
+.DS_Store

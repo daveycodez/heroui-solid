@@ -1,0 +1,26 @@
+{
+  "name": "docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "start": "node .output/server/index.mjs",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@iconify-json/ri": "^1.2.5",
+    "@kobalte/solidbase": "0.6.9",
+    "@solidjs/meta": "^0.29.4",
+    "@solidjs/router": "^0.15.3",
+    "@solidjs/start": "2.0.0-beta.0",
+    "heroui-solid": "workspace:*",
+    "nitro": "^3.0.260610-beta",
+    "resolve": "^1.22.10",
+    "solid-js": "^1.9.14",
+    "vite": "^8.0.0"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

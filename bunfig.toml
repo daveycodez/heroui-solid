@@ -1,0 +1,4 @@
+# @kobalte/solidbase (beta) has phantom dependencies (e.g. imports `resolve`
+# without declaring it) that break under bun's default isolated linker.
+[install]
+linker = "hoisted"

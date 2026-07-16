@@ -1,0 +1,17 @@
+/*
+ * heroui-solid — standalone stylesheet entry (compiled with Tailwind v4).
+ *
+ * The @layer statement comes FIRST so the `overrides` layer sorts after every
+ * layer @heroui/styles declares; rules in `overrides` therefore beat the
+ * upstream `components` layer without specificity games.
+ */
+@layer theme, base, components, utilities, overrides;
+
+/* Full HeroUI stack: tailwind preflight + theme, tw-animate-css, base,
+ * BEM component styles, default theme variables, utilities, variants. */
+@import "@heroui/styles/css";
+
+/*
+ * Kobalte state-attribute bridges, colocated with each component, e.g.:
+ * @import "../components/select/select.overrides.css" layer(overrides);
+ */
