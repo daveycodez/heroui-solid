@@ -73,6 +73,16 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   `splitProps` instead of destructuring (destructuring kills reactivity).
 - **Skip what isn't ported yet** (e.g. `BUTTON_GROUP_CHILD` until ButtonGroup
   exists) and React-only machinery (`dom.span`, `composeTwRenderProps`).
+- **Form controls provide `FieldContext`** (`src/utils/field-context.tsx`,
+  value `true`): the field satellites (Label, Description, FieldError, Input,
+  TextArea) render the Kobalte form-control primitive when the marker is
+  present and a plain element otherwise (Kobalte's primitives throw outside
+  their provider). Every new Kobalte form-control root (Select, Checkbox…)
+  must provide it. Also re-stamp `data-invalid/required/disabled/readonly`
+  as `"true"` on the root — HeroUI CSS matches explicit values while Kobalte
+  stamps empty strings, and props spread after Kobalte's dataset, so the
+  re-stamp wins (see textfield.tsx); descendant-level Kobalte attrs are
+  bridged in overrides CSS instead (see input.overrides.css).
 - **Never depend on react-aria/`@react-types`, even types-only**: public d.ts
   references force it into consumers' deps (dragging React peer deps into
   Solid apps), and its prop types are React-shaped (`ReactNode`). Write the

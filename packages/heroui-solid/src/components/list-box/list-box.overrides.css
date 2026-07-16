@@ -1,0 +1,11 @@
+/* Kobalte highlights items with data-highlighted (virtual focus follows both
+   hover and keyboard); upstream keys these off React Aria's data-hovered /
+   data-focus-visible attributes. */
+.list-box-item[data-highlighted] {
+  @apply bg-default;
+}
+
+/* Kobalte stamps data-disabled as an empty string (React Aria stamps "true"). */
+.list-box-item[data-disabled] {
+  @apply status-disabled;
+}

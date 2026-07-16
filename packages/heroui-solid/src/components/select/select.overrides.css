@@ -1,0 +1,33 @@
+/* Kobalte stamps no data-focus-visible (React Aria does upstream), and the
+   native fallback `:focus-visible:not(:focus)` never matches — bridge the
+   trigger focus ring onto plain :focus-visible. */
+.select__trigger:focus-visible {
+  @apply status-focused;
+  border-color: var(--field-border-focus);
+  background-color: var(--field-focus);
+}
+
+.select--secondary .select__trigger:focus-visible {
+  background-color: var(--select-trigger-bg-focus);
+}
+
+/* Kobalte stamps data-placeholder-shown (empty string) instead of React
+   Aria's data-placeholder="true". */
+.select__value[data-placeholder-shown] {
+  @apply text-field-placeholder;
+}
+
+/* Kobalte signals presence with data-expanded/data-closed instead of React
+   Aria's data-entering/data-exiting, and exposes the popper origin via a CSS
+   variable instead of --trigger-anchor-point. */
+.select__popover {
+  transform-origin: var(--kb-select-content-transform-origin);
+}
+
+.select__popover[data-expanded] {
+  @apply animate-in duration-150 ease-smooth fade-in-0 zoom-in-95 slide-in-from-top-1;
+}
+
+.select__popover[data-closed] {
+  @apply animate-out duration-100 ease-smooth zoom-out-95 fade-out;
+}

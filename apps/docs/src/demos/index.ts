@@ -23,6 +23,15 @@ import { InputInSurface } from "./input/in-surface"
 import { InputTypes } from "./input/types"
 import { InputVariants } from "./input/variants"
 import { LabelBasic } from "./label/basic"
+import { SelectControlled } from "./select/controlled"
+import { SelectCustomIndicator } from "./select/custom-indicator"
+import { SelectDisabled } from "./select/disabled"
+import { SelectDisabledOptions } from "./select/disabled-options"
+import { SelectFullWidth } from "./select/full-width"
+import { SelectInSurface } from "./select/in-surface"
+import { SelectMultiple } from "./select/multiple"
+import { SelectUsage } from "./select/usage"
+import { SelectVariants } from "./select/variants"
 import { SpinnerBasic } from "./spinner/basic"
 import { SpinnerColors } from "./spinner/colors"
 import { SpinnerSizes } from "./spinner/sizes"
@@ -73,6 +82,15 @@ export const demos: Record<string, Component> = {
   "input-variants": InputVariants,
   "input-in-surface": InputInSurface,
   "label-basic": LabelBasic,
+  "select-usage": SelectUsage,
+  "select-multiple": SelectMultiple,
+  "select-disabled-options": SelectDisabledOptions,
+  "select-custom-indicator": SelectCustomIndicator,
+  "select-controlled": SelectControlled,
+  "select-variants": SelectVariants,
+  "select-full-width": SelectFullWidth,
+  "select-in-surface": SelectInSurface,
+  "select-disabled": SelectDisabled,
   "spinner-basic": SpinnerBasic,
   "spinner-colors": SpinnerColors,
   "spinner-sizes": SpinnerSizes,

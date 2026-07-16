@@ -4,4 +4,6 @@
  */
 @import "../components/button/button.overrides.css" layer(overrides);
 @import "../components/input/input.overrides.css" layer(overrides);
+@import "../components/list-box/list-box.overrides.css" layer(overrides);
+@import "../components/select/select.overrides.css" layer(overrides);
 @import "../components/textarea/textarea.overrides.css" layer(overrides);

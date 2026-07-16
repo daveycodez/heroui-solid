@@ -1,0 +1,316 @@
+---
+title: Select
+---
+
+# Select
+
+A select displays a collapsible list of options and allows a user to select one of them.
+
+## Import
+
+```tsx
+import { Select } from "heroui-solid";
+```
+
+### Usage
+
+```tsx
+import { Label, ListBox, Select } from "heroui-solid";
+
+const states = [
+  { id: "florida", name: "Florida" },
+  { id: "delaware", name: "Delaware" },
+  { id: "california", name: "California" },
+  { id: "texas", name: "Texas" },
+  { id: "new-york", name: "New York" },
+  { id: "washington", name: "Washington" },
+];
+
+export function Usage() {
+  return (
+    <Select class="w-[256px]" placeholder="Select one">
+      <Label>State</Label>
+      <Select.Trigger>
+        <Select.Value />
+        <Select.Indicator />
+      </Select.Trigger>
+      <Select.Popover>
+        <ListBox>
+          {states.map((state) => (
+            <ListBox.Item id={state.id} textValue={state.name}>
+              {state.name}
+              <ListBox.ItemIndicator />
+            </ListBox.Item>
+          ))}
+        </ListBox>
+      </Select.Popover>
+    </Select>
+  );
+}
+```
+
+<ComponentPreview name="select-usage" />
+
+### Anatomy
+
+Import the Select component and access all parts using dot notation.
+
+```tsx
+import { Select, Label, Description, ListBox } from "heroui-solid";
+
+export default () => (
+  <Select>
+    <Label />
+    <Select.Trigger>
+      <Select.Value />
+      <Select.Indicator />
+    </Select.Trigger>
+    <Description />
+    <Select.Popover>
+      <ListBox>
+        <ListBox.Item>
+          <ListBox.ItemIndicator />
+        </ListBox.Item>
+      </ListBox>
+    </Select.Popover>
+  </Select>
+);
+```
+
+### Multiple Select
+
+```tsx
+<Select placeholder="Select countries" selectionMode="multiple">
+  ...
+</Select>
+```
+
+<ComponentPreview name="select-multiple" />
+
+### With Disabled Options
+
+```tsx
+<Select disabledKeys={["cat", "kangaroo"]} placeholder="Select an animal">
+  ...
+</Select>
+```
+
+<ComponentPreview name="select-disabled-options" />
+
+### Custom Indicator
+
+```tsx
+import ChevronsExpandVertical from "~icons/gravity-ui/chevrons-expand-vertical";
+
+<Select.Indicator class="size-3">
+  <ChevronsExpandVertical />
+</Select.Indicator>
+```
+
+<ComponentPreview name="select-custom-indicator" />
+
+### Controlled
+
+```tsx
+import { Label, ListBox, Select } from "heroui-solid";
+import { createSignal } from "solid-js";
+
+export function Controlled() {
+  const [state, setState] = createSignal<string | null>("california");
+
+  return (
+    <Select
+      class="w-[256px]"
+      placeholder="Select a state"
+      value={state()}
+      onChange={(value) => setState(value as string | null)}
+    >
+      ...
+    </Select>
+  );
+}
+```
+
+<ComponentPreview name="select-controlled" />
+
+### Variants
+
+The Select component supports two visual variants:
+
+- **`primary`** (default) - Standard styling with shadow, suitable for most use cases
+- **`secondary`** - Lower emphasis variant without shadow, suitable for use in Surface components
+
+<ComponentPreview name="select-variants" />
+
+### Full Width
+
+```tsx
+<Select fullWidth placeholder="Select one">
+  ...
+</Select>
+```
+
+<ComponentPreview name="select-full-width" />
+
+### In Surface
+
+When used inside a [Surface](/docs/components/surface) component, use `variant="secondary"` to apply the lower emphasis variant suitable for surface backgrounds.
+
+<ComponentPreview name="select-in-surface" />
+
+### Disabled
+
+```tsx
+<Select isDisabled defaultValue="california" placeholder="Select one">
+  ...
+</Select>
+```
+
+<ComponentPreview name="select-disabled" />
+
+## Related Components
+
+- **TextField**: Composition-friendly fields with labels and validation
+- **Label** / **Description** / **FieldError**: Field satellites, all work inside Select
+
+## Styling
+
+### Customizing the component classes
+
+To customize the Select component classes, you can use the `@layer components` directive.
+
+```css
+@layer components {
+  .select {
+    @apply flex flex-col gap-1;
+  }
+
+  .select__trigger {
+    @apply rounded-lg border border-border bg-surface p-2;
+  }
+
+  .select__value {
+    @apply text-current;
+  }
+
+  .select__indicator {
+    @apply text-muted;
+  }
+
+  .select__popover {
+    @apply rounded-lg border border-border bg-surface p-2;
+  }
+}
+```
+
+HeroUI follows the [BEM](https://getbem.com/) methodology to ensure component variants and states are reusable and easy to customize.
+
+### CSS Classes
+
+The Select component uses these CSS classes ([View source styles](https://github.com/heroui-inc/heroui/blob/v3/packages/styles/components/select.css)):
+
+#### Base Classes
+
+- `.select` - Base select container
+- `.select__trigger` - The button that triggers the select
+- `.select__value` - The displayed value or placeholder
+- `.select__indicator` - The dropdown indicator icon
+- `.select__popover` - The popover container
+- `.list-box` / `.list-box-item` / `.list-box-item__indicator` - The options list
+
+#### Variant Classes
+
+- `.select--primary` - Primary variant with shadow (default)
+- `.select--secondary` - Secondary variant without shadow, suitable for use in surfaces
+
+### Interactive States
+
+- **Hover**: `:hover` on trigger
+- **Focus**: `:focus-visible` on trigger (shows focus ring)
+- **Disabled**: `:disabled` on trigger, `[data-disabled="true"]` on the root
+- **Invalid**: `[data-invalid="true"]` on the root
+- **Open**: `[data-open="true"]` on indicator (rotates it)
+- **Placeholder**: `[data-placeholder-shown]` on the value (Kobalte attribute)
+- **Highlighted item**: `[data-highlighted]` (Kobalte attribute)
+
+## API Reference
+
+### Select Props
+
+| Prop            | Type                                    | Default     | Description                                                                                                                                                        |
+| --------------- | --------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `placeholder`   | `JSX.Element`                           | -           | Temporary text that occupies the select when it is empty                                                                                                           |
+| `selectionMode` | `"single" \| "multiple"`                | `"single"`  | Whether single or multiple selection is enabled                                                                                                                    |
+| `isOpen`        | `boolean`                               | -           | Sets the open state of the menu (controlled)                                                                                                                       |
+| `defaultOpen`   | `boolean`                               | -           | Sets the default open state of the menu (uncontrolled)                                                                                                             |
+| `onOpenChange`  | `(isOpen: boolean) => void`             | -           | Handler called when the open state changes                                                                                                                         |
+| `disabledKeys`  | `Iterable<string>`                      | -           | Keys of disabled items                                                                                                                                             |
+| `isDisabled`    | `boolean`                               | -           | Whether the select is disabled                                                                                                                                     |
+| `value`         | `string \| string[] \| null`            | -           | Current value (controlled)                                                                                                                                         |
+| `defaultValue`  | `string \| string[] \| null`            | -           | Default value (uncontrolled)                                                                                                                                       |
+| `onChange`      | `(value: string \| string[] \| null) => void` | -     | Handler called when the value changes                                                                                                                              |
+| `isRequired`    | `boolean`                               | -           | Whether user input is required                                                                                                                                     |
+| `isInvalid`     | `boolean`                               | -           | Whether the select value is invalid                                                                                                                                |
+| `name`          | `string`                                | -           | The name of the input, used when submitting an HTML form                                                                                                           |
+| `fullWidth`     | `boolean`                               | `false`     | Whether the select should take full width of its container                                                                                                         |
+| `variant`       | `"primary" \| "secondary"`              | `"primary"` | Visual variant of the component. `primary` is the default style with shadow. `secondary` is a lower emphasis variant without shadow, suitable for use in surfaces. |
+| `class`         | `string`                                | -           | Additional CSS classes                                                                                                                                             |
+| `children`      | `JSX.Element`                           | -           | Select content                                                                                                                                                     |
+
+### Select.Trigger Props
+
+| Prop       | Type          | Default | Description            |
+| ---------- | ------------- | ------- | ---------------------- |
+| `class`    | `string`      | -       | Additional CSS classes |
+| `children` | `JSX.Element` | -       | Trigger content        |
+
+### Select.Value Props
+
+| Prop       | Type                                                    | Default | Description                       |
+| ---------- | ------------------------------------------------------- | ------- | --------------------------------- |
+| `class`    | `string`                                                 | -       | Additional CSS classes            |
+| `children` | `JSX.Element \| (state: SelectValueState) => JSX.Element` | -     | Value content or render function  |
+
+When using a render function, `state` exposes `selectedOption()`, `selectedOptions()`,
+`remove(option)`, and `clear()` (Kobalte's value state).
+
+### Select.Indicator Props
+
+| Prop       | Type          | Default | Description              |
+| ---------- | ------------- | ------- | ------------------------ |
+| `class`    | `string`      | -       | Additional CSS classes   |
+| `children` | `JSX.Element` | -       | Custom indicator content |
+
+### Select.Popover Props
+
+| Prop        | Type          | Default    | Description                                                            |
+| ----------- | ------------- | ---------- | ---------------------------------------------------------------------- |
+| `placement` | `string`      | `"bottom"` | Placement relative to the trigger (Kobalte placements, e.g. `"top"`)   |
+| `class`     | `string`      | -          | Additional CSS classes                                                 |
+| `children`  | `JSX.Element` | -          | Content children                                                       |
+
+### ListBox / ListBox.Item Props
+
+| Prop         | Type                      | Default     | Description                                             |
+| ------------ | ------------------------- | ----------- | ------------------------------------------------------- |
+| `id`         | `string`                  | -           | Item key (required)                                     |
+| `textValue`  | `string`                  | `id`        | Text used for typeahead and the default value rendering |
+| `isDisabled` | `boolean`                 | `false`     | Whether the item is disabled                            |
+| `variant`    | `"default" \| "danger"`   | `"default"` | Item visual variant                                     |
+| `class`      | `string`                  | -           | Additional CSS classes                                  |
+| `children`   | `JSX.Element`             | -           | Item content                                            |
+
+## Differences from HeroUI React
+
+- Built on Kobalte's Select, which is data-driven: this port bridges the JSX item API
+  by collecting `ListBox.Item` descriptors and registering them as Kobalte options.
+  `ListBox` and `ListBox.Item` therefore only work inside a `Select` for now
+  (standalone ListBox is not ported yet).
+- `ListBox.Section`, `Header`, and `Separator` are not ported yet — flat item lists only.
+- `Select.Value` render props expose Kobalte's state (`selectedOptions()` accessors)
+  instead of React Aria's `{ defaultChildren, isPlaceholder, state }`.
+- `Select.Popover` placements use Kobalte's syntax (`"top"`, `"bottom-start"`, …)
+  instead of React Aria's (`"top left"`).
+- Popover enter/exit animations ride Kobalte's `data-expanded`/`data-closed`
+  attributes; the placeholder state is `[data-placeholder-shown]`.
+- No `render` prop — use Kobalte's polymorphic `as` where supported.
