@@ -1,10 +1,15 @@
-import { createSolidBase } from "@kobalte/solidbase/config";
-import defaultTheme from "@kobalte/solidbase/default-theme";
-import { solidStart } from "@solidjs/start/config";
-import { nitro } from "nitro/vite";
-import { defineConfig } from "vite";
+import { createSolidBase, defineTheme } from "@kobalte/solidbase/config"
+import defaultTheme from "@kobalte/solidbase/default-theme"
+import { solidStart } from "@solidjs/start/config"
+import { nitro } from "nitro/vite"
+import { defineConfig } from "vite"
 
-const solidbase = createSolidBase(defaultTheme);
+const theme = defineTheme({
+  componentsPath: new URL("./src/theme/", import.meta.url).href,
+  extends: defaultTheme
+})
+
+const solidbase = createSolidBase(theme)
 
 export default defineConfig({
   plugins: [
@@ -16,14 +21,17 @@ export default defineConfig({
       enforce: "pre",
       resolveId(id, importer) {
         if (importer?.includes("@kobalte/solidbase") && id.endsWith(".js")) {
-          return this.resolve(id.replace(/\.js$/, ""), importer, { skipSelf: true });
+          return this.resolve(id.replace(/\.js$/, ""), importer, {
+            skipSelf: true
+          })
         }
-      },
+      }
     },
     solidbase.plugin({
       title: "HeroUI Solid",
       titleTemplate: ":title - HeroUI Solid",
-      description: "Unofficial SolidJS port of HeroUI v3, built on Kobalte and @heroui/styles",
+      description:
+        "Unofficial SolidJS port of HeroUI v3, built on Kobalte and @heroui/styles",
       themeConfig: {
         sidebar: {
           "/": [
@@ -32,23 +40,23 @@ export default defineConfig({
               collapsed: false,
               items: [
                 { title: "Home", link: "/" },
-                { title: "Getting Started", link: "/docs/getting-started" },
-              ],
+                { title: "Getting Started", link: "/docs/getting-started" }
+              ]
             },
             {
               title: "Components",
               collapsed: false,
-              items: [],
-            },
-          ],
-        },
-      },
+              items: [{ title: "Button", link: "/docs/components/button" }]
+            }
+          ]
+        }
+      }
     }),
     solidStart(solidbase.startConfig()),
     nitro({
       prerender: {
-        crawlLinks: true,
-      },
-    }),
-  ],
-});
+        crawlLinks: true
+      }
+    })
+  ]
+})

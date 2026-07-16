@@ -1,0 +1,102 @@
+---
+title: Button
+---
+
+# Button
+
+A button lets users take an action with a click or keyboard. Built on
+[`@kobalte/core/button`](https://kobalte.dev/docs/core/components/button), styled with
+HeroUI's `button` classes.
+
+## Variants
+
+<Demo path="button/variants" height="220px" />
+
+```tsx
+import { Button } from "heroui-solid";
+
+<Button variant="primary">Primary</Button>
+<Button variant="secondary">Secondary</Button>
+<Button variant="tertiary">Tertiary</Button>
+<Button variant="outline">Outline</Button>
+<Button variant="ghost">Ghost</Button>
+<Button variant="danger">Danger</Button>
+<Button variant="danger-soft">Danger Soft</Button>
+```
+
+## Sizes
+
+<Demo path="button/sizes" />
+
+```tsx
+<Button size="sm">Small</Button>
+<Button size="md">Medium</Button>
+<Button size="lg">Large</Button>
+```
+
+## Disabled
+
+<Demo path="button/disabled" />
+
+```tsx
+<Button isDisabled>Primary</Button>
+```
+
+## Pending
+
+A pending button stays focusable but ignores activation. Use the render-prop form of
+`children` to swap in a `Spinner`:
+
+<Demo path="button/pending" />
+
+```tsx
+import { Button, Spinner } from "heroui-solid";
+
+<Button isPending={saving()} onClick={save}>
+  {(state) => (
+    <>
+      {state.isPending && <Spinner color="current" size="sm" />}
+      Save
+    </>
+  )}
+</Button>
+```
+
+## Link button
+
+`Button` is polymorphic via `as` — render an anchor that looks like a button:
+
+<Demo path="button/link" />
+
+```tsx
+<Button as="a" href="https://heroui.com" variant="outline">
+  Visit HeroUI
+</Button>
+```
+
+## API
+
+| Prop         | Type                                                                                    | Default     | Description                                        |
+| ------------ | --------------------------------------------------------------------------------------- | ----------- | -------------------------------------------------- |
+| `variant`    | `"primary" \| "secondary" \| "tertiary" \| "outline" \| "ghost" \| "danger" \| "danger-soft"` | `"primary"` | Visual style.                                       |
+| `size`       | `"sm" \| "md" \| "lg"`                                                                   | `"md"`      | Button size.                                        |
+| `fullWidth`  | `boolean`                                                                                | `false`     | Stretch to fill the container.                      |
+| `isIconOnly` | `boolean`                                                                                | `false`     | Square padding for icon-only content.               |
+| `isDisabled` | `boolean`                                                                                | `false`     | Disables the button.                                |
+| `isPending`  | `boolean`                                                                                | `false`     | Loading state: focusable, but activation is ignored. |
+| `as`         | `ValidComponent`                                                                         | `"button"`  | Element or component to render.                     |
+| `children`   | `JSX.Element \| (state: { isPending: boolean }) => JSX.Element`                          | —           | Content, or render function for pending swaps.      |
+
+### Spinner
+
+| Prop    | Type                                                          | Default    |
+| ------- | ------------------------------------------------------------- | ---------- |
+| `color` | `"accent" \| "current" \| "danger" \| "success" \| "warning"` | `"accent"` |
+| `size`  | `"sm" \| "md" \| "lg" \| "xl"`                                 | `"md"`     |
+
+## Differences from HeroUI React
+
+- Use `onClick` (Solid's native event) instead of React Aria's `onPress`.
+- Polymorphism uses Kobalte's `as` prop instead of React's `render` prop override.
+- Hover/press styling relies on HeroUI's native `:hover` / `:active` CSS fallbacks rather
+  than React Aria's `data-hovered` / `data-pressed` attributes — visuals are identical.

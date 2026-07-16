@@ -7,7 +7,14 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!**/dist", "!**/.output", "!**/.vinxi", "!**/.nx", "!**/.solidbase"]
+    "includes": [
+      "**",
+      "!**/dist",
+      "!**/.output",
+      "!**/.vinxi",
+      "!**/.nx",
+      "!**/.solidbase"
+    ]
   },
   "formatter": {
     "enabled": true,

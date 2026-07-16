@@ -3,25 +3,16 @@
   "defaultBase": "main",
   "targetDefaults": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
+      "dependsOn": ["^build"],
       "cache": true,
-      "outputs": [
-        "{projectRoot}/dist",
-        "{projectRoot}/.output"
-      ]
+      "outputs": ["{projectRoot}/dist", "{projectRoot}/.output"]
     },
     "test": {
-      "dependsOn": [
-        "^build"
-      ],
+      "dependsOn": ["^build"],
       "cache": true
     },
     "check:publish": {
-      "dependsOn": [
-        "build"
-      ],
+      "dependsOn": ["build"],
       "cache": false
     },
     "dev": {

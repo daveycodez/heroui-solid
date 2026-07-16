@@ -15,7 +15,9 @@ export default createHandler(() => (
           <link rel="icon" href="/favicon.ico" />
           {/* Preload the theme fonts so text doesn't flash in a fallback font
               while the @fontsource stylesheets load. */}
-          <For each={getFontPreloadLinkAttrs()}>{(attrs) => <link {...attrs} />}</For>
+          <For each={getFontPreloadLinkAttrs()}>
+            {(attrs) => <link {...attrs} />}
+          </For>
           {assets}
         </head>
         <body>
