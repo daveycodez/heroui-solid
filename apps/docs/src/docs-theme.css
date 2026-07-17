@@ -1,0 +1,233 @@
+/* Docs chrome restyled after the official HeroUI docs (heroui-inc/heroui#v3
+ * apps/docs/src/app/global.css), adapted to solidbase's DOM. Imported into
+ * the `docs` cascade layer from app.css: above the solidbase theme (these
+ * rules win without specificity games) but below heroui components and
+ * Tailwind utilities (so component CSS and demo/home utility classes keep
+ * winning). Dark selectors substring-match [data-theme*="dark"] because
+ * solidbase stamps data-theme="sdark"/"slight" when following the OS.
+ *
+ * Rules that must beat expressive-code's page-injected <style> (which is
+ * unlayered, so it outranks every layer) live in docs-code.css instead,
+ * imported without a layer.
+ */
+
+/* --- Typography ------------------------------------------------------- */
+
+article h1 {
+  font-size: 1.875rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+article :is(h2, h3, h4, h5, h6) {
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+article h2 {
+  font-size: 1.375rem;
+}
+
+article h3 {
+  font-size: 1.125rem;
+}
+
+/* Inline code: bordered pill, 13px — official `code` style. Scoped to
+ * prose containers so expressive-code blocks stay untouched. */
+article :is(p, li, td, h1, h2, h3, h4) > code {
+  border: 1px solid var(--separator);
+  background: transparent;
+  border-radius: 5px;
+  padding: 2px 4px;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+/* --- Home showcase tiles ----------------------------------------------- */
+
+/* Demos are authored for the wide docs preview stage; inside a narrow home
+ * tile their root flex rows must wrap instead of overflowing the card. */
+.home-tile-demo > * {
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 100%;
+}
+
+/* --- Header ----------------------------------------------------------- */
+
+body header {
+  background: var(--background);
+  border-bottom: 1px solid var(--separator);
+
+  & a {
+    color: var(--muted);
+
+    &:hover {
+      color: var(--foreground);
+    }
+  }
+}
+
+/* --- Sidebar ---------------------------------------------------------- */
+
+/* Official box model (measured on heroui.com): items sit flush inside the
+ * column with uniform 8px padding — no nested indent, no overhang (the
+ * section ul has overflow:hidden for its collapse animation, so anything
+ * wider than the column gets its rounded corners clipped flat). Text
+ * alignment comes from the heading carrying the same 8px inset. */
+aside nav ul ul {
+  padding-left: 0;
+  border-left: none;
+}
+
+aside nav li a {
+  /* --radius-field / --shadow-surface aren't emitted by the compiled heroui
+   * stylesheet at runtime, so literals stand in for the official
+   * rounded-lg pill + shadow-surface card. */
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--muted);
+  transition: none;
+
+  &:hover {
+    background: var(--docs-hover-bg);
+    color: var(--foreground);
+  }
+
+  /* Active page: white card + subtle shadow, like the official sidebar. */
+  &[aria-current="page"] {
+    background: var(--surface);
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.04),
+      0 1px 2px rgba(0, 0, 0, 0.06);
+    color: var(--foreground);
+  }
+}
+
+/* Official dark sidebar: flat white-alpha pill, no shadow. */
+[data-theme*="dark"] aside nav li a[aria-current="page"] {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+}
+
+/* Section titles ("Overview", "Components"): same 8px inset as the item
+ * text, so headings and item labels align like the official sidebar. */
+aside nav > ul > li > :is(button, span, div) {
+  color: var(--foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding-left: 0.5rem;
+}
+
+/* --- Table of contents ------------------------------------------------ */
+
+/* Official "On this page" panel: icon + muted title, 13px links hanging off
+ * a faint left rail, active link in bright foreground, and a 1px thumb that
+ * glides along the rail (element injected by theme/Layout.tsx). */
+article > aside nav {
+  position: relative;
+
+  & > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--muted);
+    font-size: 0.875rem;
+    font-weight: 400;
+
+    &::before {
+      content: "";
+      width: 1rem;
+      height: 1rem;
+      background: currentColor;
+      mask:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 18H3'/%3E%3Cpath d='M17 6H3'/%3E%3Cpath d='M21 12H3'/%3E%3C/svg%3E")
+        no-repeat center / contain;
+    }
+  }
+
+  & > ol {
+    border-left: 1px solid
+      color-mix(in oklab, var(--foreground) 10%, transparent);
+  }
+
+  & li > a {
+    padding: 0.375rem 0.5rem 0.375rem 0.75rem;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--muted);
+    opacity: 1;
+    min-width: 0;
+
+    &:hover {
+      background: transparent;
+      border-radius: 0;
+      color: var(--foreground);
+    }
+
+    /* Neutralize solidbase's own scroll-spy color: the `toc-active` class
+     * set by theme/Layout.tsx is the single source of the bright state
+     * (solidbase's spy can't reach headings near the page bottom). */
+    &[class*="_active"] {
+      color: var(--muted);
+    }
+
+    &.toc-active {
+      color: var(--foreground);
+    }
+  }
+
+  /* Depth indentation, official ps-3 / ps-6 / ps-9. */
+  & ol ol a {
+    padding-left: 1.5rem;
+  }
+
+  & ol ol ol a {
+    padding-left: 2.25rem;
+  }
+}
+
+.toc-thumb {
+  position: absolute;
+  width: 1px;
+  background: var(--foreground);
+  opacity: 0;
+  transition:
+    top 0.15s linear,
+    height 0.15s linear,
+    opacity 0.15s linear;
+  pointer-events: none;
+}
+
+/* --- Tables (props/API): pill header row, borderless body -------------- */
+
+article table {
+  border-collapse: separate;
+  border-spacing: 0;
+
+  & th {
+    background: var(--default);
+    border: none;
+    font-weight: 500;
+    text-align: left;
+  }
+
+  & th:first-child {
+    border-radius: 0.75rem 0 0 0.75rem;
+  }
+
+  & th:last-child {
+    border-radius: 0 0.75rem 0.75rem 0;
+  }
+
+  & td {
+    border: none;
+    border-bottom: 1px solid var(--separator);
+  }
+
+  & tr:last-child td {
+    border-bottom: none;
+  }
+}

@@ -1,4 +1,12 @@
+import { Button } from "heroui-solid"
+import {
+  createSignal,
+  type JSX,
+  children as resolveChildren,
+  Show
+} from "solid-js"
 import { demos } from "../demos"
+import { HomePage } from "./home-page"
 
 // Components exported here are registered globally for all MDX pages via
 // solidbase's theme `mdx-components` convention.
@@ -13,25 +21,59 @@ import { demos } from "../demos"
 //   as regular TSX instead, referenced by <ComponentPreview name="..." /> —
 //   same structure as the official HeroUI docs.
 
-// Live demo showcase for MDX pages: looks up a demo component from the
-// registry and renders it in a bordered box.
-export function ComponentPreview(props: { name: string }) {
+export { HomePage }
+
+// Live demo showcase, visually identical to the official HeroUI docs
+// ComponentPreviewContainer: one card, demo centered in the top section,
+// its source attached below, collapsed to 150px behind a fade-out mask
+// with a floating "Expand code" button. The code block child is folded in
+// by remark-component-preview-code.ts (never authored in MDX — see above);
+// `resolveChildren` keeps the single-read children rule.
+export function ComponentPreview(props: {
+  name: string
+  children?: JSX.Element
+}) {
   const Demo = demos[props.name]
+  const code = resolveChildren(() => props.children)
+  const [expanded, setExpanded] = createSignal(false)
   return (
     <div
-      style={{
-        display: "flex",
-        "flex-wrap": "wrap",
-        gap: "0.75rem",
-        "align-items": "center",
-        "justify-content": "center",
-        "min-height": "9rem",
-        padding: "2.5rem 1rem",
-        border: "1px solid rgba(128, 128, 128, 0.25)",
-        "border-radius": "12px"
-      }}
+      class="component-preview group relative my-4 w-full"
+      data-name={props.name}
     >
-      {Demo ? <Demo /> : <code>Unknown demo: {props.name}</code>}
+      <div class="not-prose border-separator relative flex min-h-[350px] w-full items-center justify-center overflow-hidden rounded-t-xl border-t border-r border-l p-4 sm:p-10">
+        <div class="flex w-full flex-wrap items-center justify-center gap-3">
+          {Demo ? <Demo /> : <code>Unknown demo: {props.name}</code>}
+        </div>
+      </div>
+      <Show
+        when={code()}
+        fallback={<div class="border-separator rounded-b-xl border-b" />}
+      >
+        <div class="border-separator relative overflow-hidden rounded-b-xl border bg-transparent">
+          <div class="relative">
+            <div
+              classList={{
+                "code-block-wrapper": true,
+                "mask-to-bottom relative max-h-[150px] overflow-hidden":
+                  !expanded(),
+                "pb-10": expanded()
+              }}
+            >
+              {code()}
+            </div>
+            <Button
+              class="bg-surface absolute right-1/2 bottom-2 translate-x-1/2 text-xs shadow-sm shadow-black/5"
+              size="sm"
+              type="button"
+              variant="tertiary"
+              onClick={() => setExpanded(!expanded())}
+            >
+              {expanded() ? "Collapse code" : "Expand code"}
+            </Button>
+          </div>
+        </div>
+      </Show>
     </div>
   )
 }
