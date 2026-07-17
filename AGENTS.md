@@ -162,7 +162,8 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   and `.d.ts` for editor types. Package CSS edits need `bun run build:css`
   (or the `dev:css` watcher).
 - External projects consuming via `bun link` read `dist/` — run
-  `nx dev heroui-solid` (tsup + CSS watchers) for that workflow.
+  `nx dev heroui-solid` (vite bundle + tsc jsx/dts + CSS watchers) for that
+  workflow.
 - When checking Biome from scripts, surface the exit code — don't pipe output
   through `tail`/`grep` in a way that swallows failures.
 

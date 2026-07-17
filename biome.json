@@ -21,7 +21,9 @@
     "indentStyle": "space"
   },
   "linter": {
-    "enabled": true,
+    "domains": {
+      "solid": "all"
+    },
     "rules": {
       "preset": "recommended",
       "correctness": {

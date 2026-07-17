@@ -15,7 +15,7 @@
     "@kobalte/core": "^0.13.12",
     "@kobalte/solidbase": "0.6.9",
     "@solidjs/meta": "^0.29.4",
-    "@solidjs/router": "^0.15.3",
+    "@solidjs/router": "^0.16.2",
     "@solidjs/start": "2.0.0-beta.0",
     "heroui-solid": "workspace:*",
     "nitro": "^3.0.260610-beta",
@@ -30,6 +30,7 @@
     "@iconify-json/devicon": "^1.2.62",
     "@iconify-json/gravity-ui": "^1.2.13",
     "@iconify-json/ion": "^1.2.7",
-    "@iconify-json/mdi": "^1.2.3"
+    "@iconify-json/mdi": "^1.2.3",
+    "typescript": "~6.0.3"
   }
 }
