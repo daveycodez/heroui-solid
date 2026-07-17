@@ -9,18 +9,14 @@ import { demos } from "../demos"
 // a single self-closing element — see the MDX authoring rules in
 // mdx-components.tsx.
 
-// No Select tile: the select demos currently break hydration wherever they
-// render (pre-existing — /docs/components/select blanks on full reload too).
-// Add one back once that's fixed.
-const tiles: Array<{ title: string; demo: Component; span?: string }> = [
-  { title: "Card", demo: demos["card-with-form"], span: "lg:row-span-2" },
+// Six tiles — a uniform 3×2 grid on large screens.
+const tiles: Array<{ title: string; demo: Component }> = [
+  { title: "Card", demo: demos["card-usage"] },
   { title: "Button", demo: demos["button-variants"] },
+  { title: "Select", demo: demos["select-usage"] },
   { title: "Text Field", demo: demos["textfield-basic"] },
   { title: "Dropdown", demo: demos["dropdown-usage"] },
-  { title: "Input", demo: demos["input-variants"] },
-  { title: "Link", demo: demos["link-usage"] },
-  { title: "Spinner", demo: demos["spinner-colors"] },
-  { title: "Text Area", demo: demos["textarea-basic"] }
+  { title: "Spinner", demo: demos["spinner-colors"] }
 ]
 
 function GitHubIcon() {
@@ -86,9 +82,7 @@ export function HomePage() {
         <div class="border-separator bg-background grid grid-cols-1 gap-4 rounded-2xl border p-4 text-left md:grid-cols-2 lg:grid-cols-3">
           <For each={tiles}>
             {(tile) => (
-              <div
-                class={`border-separator flex min-h-44 flex-col gap-4 rounded-xl border p-6 ${tile.span ?? ""}`}
-              >
+              <div class="border-separator flex min-h-44 flex-col gap-4 rounded-xl border p-6">
                 <span class="text-muted text-xs font-medium tracking-wide uppercase">
                   {tile.title}
                 </span>

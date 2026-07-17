@@ -25,6 +25,7 @@ import {
   createMemo,
   createSignal,
   type JSX,
+  onMount,
   Show,
   splitProps,
   useContext,
@@ -32,6 +33,7 @@ import {
 } from "solid-js"
 
 import { FieldContext } from "../../utils/field-context"
+import { PreventScroll } from "../../utils/prevent-scroll"
 import { SurfaceContext } from "../surface/surface"
 
 type Key = string
@@ -55,9 +57,25 @@ type SelectContextValue = {
   slots?: ReturnType<typeof selectVariants>
   setItems?: (items: ListBoxItemDescriptor[]) => void
   setPlacement?: (placement: SelectPopoverPlacement) => void
+  mounted?: Accessor<boolean>
 }
 
 const SelectContext = createContext<SelectContextValue>({})
+
+// The ListBox resolves to this marker instead of JSX: popover children are
+// resolved eagerly (items must register during render), and real JSX would
+// create the closed listbox DOM during SSR/hydration (see AGENTS.md).
+const LIST_BOX_RENDER = Symbol("heroui-solid.list-box-render")
+
+interface ListBoxRenderMarker {
+  [LIST_BOX_RENDER]: true
+  render: () => JSX.Element
+}
+
+const isListBoxRenderMarker = (value: unknown): value is ListBoxRenderMarker =>
+  typeof value === "object" &&
+  value !== null &&
+  LIST_BOX_RENDER in (value as Record<PropertyKey, unknown>)
 
 /* -------------------------------------------------------------------------------------------------
  * Select Root
@@ -105,6 +123,8 @@ const SelectRoot = <T extends ValidComponent = "div">(
   const [items, setItems] = createSignal<ListBoxItemDescriptor[]>([])
   const [placement, setPlacement] =
     createSignal<SelectPopoverPlacement>("bottom")
+  const [mounted, setMounted] = createSignal(false)
+  onMount(() => setMounted(true))
 
   const isMultiple = () => local.selectionMode === "multiple"
   const disabledKeys = createMemo(() => new Set(local.disabledKeys ?? []))
@@ -188,10 +208,16 @@ const SelectRoot = <T extends ValidComponent = "div">(
               return slots()
             },
             setItems,
-            setPlacement
+            setPlacement,
+            mounted
           }}
         >
-          <HiddenSelectPrimitive />
+          {/* Client-only: it renders an <option> per item, but items register
+              after Kobalte snapshots them on the server (SSR memos never
+              re-run), so hydrating it desyncs hydration keys (see AGENTS.md). */}
+          <Show when={mounted()}>
+            <HiddenSelectPrimitive />
+          </Show>
           {local.children}
         </SelectContext.Provider>
       </FieldContext.Provider>
@@ -257,13 +283,20 @@ const SelectValue = <T extends ValidComponent = "span">(
         if (typeof body === "function") {
           return body(state)
         }
-        return (
-          body ??
-          state
-            .selectedOptions()
-            .map((option) => option.textValue)
-            .join(", ")
-        )
+        if (body != null) {
+          return body
+        }
+        // Until mounted, mirror SSR's empty text (items are frozen out of the
+        // server collection): item registration mid-hydration would settle
+        // Kobalte's value memo on the final text while the DOM write is
+        // dropped, leaving the trigger blank (see AGENTS.md).
+        if (context.mounted && !context.mounted()) {
+          return ""
+        }
+        return state
+          .selectedOptions()
+          .map((option) => option.textValue)
+          .join(", ")
       }}
     </SelectValuePrimitive>
   )
@@ -354,6 +387,8 @@ const SelectPopover = <T extends ValidComponent = "div">(
 
   // Resolve children eagerly so the ListBox registers its items before the
   // content mounts (Kobalte refuses to open a select with zero options).
+  // The ListBox resolves to a render marker, not DOM; its render() only runs
+  // below, inside the content, once the popover actually opens.
   const resolved = children(() => local.children)
 
   return (
@@ -364,7 +399,12 @@ const SelectPopover = <T extends ValidComponent = "div">(
           data-slot="select-popover"
           {...rest}
         >
-          {resolved()}
+          <PreventScroll />
+          {resolved
+            .toArray()
+            .map((child) =>
+              isListBoxRenderMarker(child) ? child.render() : child
+            )}
         </SelectContentPrimitive>
       </SelectPortalPrimitive>
     </SurfaceContext.Provider>
@@ -373,6 +413,7 @@ const SelectPopover = <T extends ValidComponent = "div">(
 
 export type {
   ListBoxItemDescriptor,
+  ListBoxRenderMarker,
   SelectContextValue,
   SelectIndicatorProps,
   SelectPopoverProps,
@@ -385,6 +426,7 @@ export type {
  * Exports
  * -----------------------------------------------------------------------------------------------*/
 export {
+  LIST_BOX_RENDER,
   SelectContext,
   SelectIndicator,
   SelectPopover,

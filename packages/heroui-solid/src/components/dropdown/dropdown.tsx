@@ -17,7 +17,7 @@ import {
   useContext,
   type ValidComponent
 } from "solid-js"
-
+import { PreventScroll } from "../../utils/prevent-scroll"
 import {
   MenuContext,
   MenuItemRoot,
@@ -66,6 +66,9 @@ const DropdownRoot = (props: DropdownRootProps) => {
       <DropdownPrimitive
         open={local.isOpen}
         placement={placement()}
+        // Kobalte's scroll lock targets body, breaking sticky headers; the
+        // popover applies an html-targeted PreventScroll instead.
+        preventScroll={false}
         {...rest}
       />
     </DropdownContext.Provider>
@@ -109,6 +112,7 @@ const DropdownPopover = <T extends ValidComponent = "div">(
 ) => {
   const [local, rest] = splitProps(props as DropdownPopoverProps, [
     "class",
+    "children",
     "placement"
   ])
   const context = useContext(DropdownContext)
@@ -126,7 +130,10 @@ const DropdownPopover = <T extends ValidComponent = "div">(
           class={cn(context.slots?.popover(), local.class)}
           data-slot="dropdown-popover"
           {...rest}
-        />
+        >
+          <PreventScroll />
+          {local.children}
+        </DropdownContentPrimitive>
       </DropdownPortalPrimitive>
     </SurfaceContext.Provider>
   )

@@ -20,7 +20,12 @@ import {
   type ValidComponent
 } from "solid-js"
 
-import { type ListBoxItemDescriptor, SelectContext } from "../select/select"
+import {
+  LIST_BOX_RENDER,
+  type ListBoxItemDescriptor,
+  type ListBoxRenderMarker,
+  SelectContext
+} from "../select/select"
 
 const LIST_BOX_ITEM = Symbol("heroui-solid.list-box-item")
 
@@ -57,13 +62,21 @@ const ListBoxRoot = <T extends ValidComponent = "ul">(
     )
   })
 
-  return (
-    <ListboxPrimitive
-      class={cn(listboxVariants(variantProps), local.class)}
-      data-slot="list-box"
-      {...rest}
-    />
-  )
+  // Resolves to a render marker instead of JSX so the popover's eager child
+  // resolution registers items without creating the closed listbox DOM
+  // during SSR/hydration (see AGENTS.md); the popover calls render() on open.
+  const marker: ListBoxRenderMarker = {
+    [LIST_BOX_RENDER]: true,
+    render: () => (
+      <ListboxPrimitive
+        class={cn(listboxVariants(variantProps), local.class)}
+        data-slot="list-box"
+        {...rest}
+      />
+    )
+  }
+
+  return marker as unknown as JSX.Element
 }
 
 /* -------------------------------------------------------------------------------------------------

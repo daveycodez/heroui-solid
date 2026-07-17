@@ -79,6 +79,26 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   stamps empty strings, and props spread after Kobalte's dataset, so the
   re-stamp wins (see textfield.tsx); descendant-level Kobalte attrs are
   bridged in overrides CSS instead (see input.overrides.css).
+- **Scroll-lock overlays with `PreventScroll`, never Kobalte's `preventScroll`.**
+  Kobalte's lock (solid-prevent-scroll) sets `overflow: hidden` on `body`;
+  when the scroll offset lives on `html` (the browser default), body becomes
+  the nearest scroll container and every `position: sticky` element in the
+  page snaps back to its in-flow position — the docs header visibly vanished
+  while a dropdown was open. React Aria locks `html` instead, which freezes
+  scrolling without breaking sticky. `src/utils/prevent-scroll.tsx` ports
+  React Aria's `usePreventScroll` (from react-aria 3.50): ref-counted, with
+  the standard path (`overflow: hidden` + `scrollbar-gutter`/padding
+  compensation on `documentElement`) and the full Mobile Safari path
+  (capture-phase `touchmove` prevention outside scrollables, injected
+  `overscroll-behavior: contain` layer — required before touchstart as of
+  iOS 26 — and focus/keyboard handling via a temporary
+  `HTMLElement.prototype.focus` override). iOS behavior is covered by jsdom
+  tests with a mocked platform (prevent-scroll.test.tsx), not a real device
+  — re-verify on Safari when it matters. Usage: pass
+  `preventScroll={false}` to the Kobalte root where it defaults on (Menu
+  does; Select doesn't) and render `<PreventScroll />` as the first child of
+  the portal'd content — mount/cleanup then spans exactly the content's
+  presence, and it's SSR-inert (see dropdown.tsx, select.tsx).
 - **Never depend on react-aria/`@react-types`, even types-only**: public d.ts
   references force it into consumers' deps (dragging React peer deps into
   Solid apps), and its prop types are React-shaped (`ReactNode`). Write the
@@ -110,6 +130,37 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   keys ("Hydration Mismatch", then "template is not a function" cascades).
   Capture to a local first, or forward via a single-read `get children()` in
   `mergeProps` (see button.tsx).
+- **Never evaluate closed portal/popover content during SSR or hydration.**
+  Content behind a closed Kobalte `Portal`/`Content` is not in the SSR
+  payload, so any eager evaluation of it while hydrating creates DOM whose
+  hydration-key lookups find nothing — the mismatch crash. Merely *accessing*
+  the children getter creates native-element children (compiled IIFEs), and
+  the `children()` helper (or any context `Provider`, which deep-resolves)
+  also forces Kobalte's deferred `Dynamic` trees. Select needs popover
+  children evaluated during render anyway (items must register before Kobalte
+  refuses to open with zero options, and before its deferred
+  prune-selection effect first subscribes — registering in `onMount` instead
+  makes that effect fire a spurious `onChange`, since Kobalte Select defaults
+  `allowDuplicateSelectionEvents: true`). The escape hatch: components inside
+  the popover resolve to plain **marker objects**, not JSX — `ListBox.Item`
+  yields an item descriptor, and `ListBox` itself yields a render marker
+  (`LIST_BOX_RENDER` in select.tsx) whose `render()` the popover only calls
+  inside the content, once it actually opens (client-side, post-hydration).
+  Corollary: `Select.Popover` children must resolve to markers/descriptors —
+  a bare `<div>` child would crash hydration again.
+- **Mid-hydration reactive updates don't reach the DOM — element creations
+  crash, text writes are silently dropped.** Select item registration happens
+  while the page is still hydrating, and anything reacting to it must cope:
+  Kobalte's `HiddenSelect` renders an `<option>` per item, but the server
+  froze its collection empty (server memos never re-run), so it's rendered
+  client-only after mount (`Show when={mounted()}` in select.tsx — the SSR'd
+  hidden select was valueless anyway). `Select.Value`'s text is worse: the
+  mid-hydration update settles Kobalte's value memo on the final text while
+  the DOM write is dropped (`insertExpression` returns early under
+  `sharedConfig.context`), so a post-mount re-read produces an *equal* memo
+  value and never patches — the trigger stays blank. Fix: mirror SSR's empty
+  text until `mounted()`, so the memo value actually changes after hydration
+  (see SelectValue in select.tsx).
 - **MDX authoring (apps/docs)**: no `import` statements in `.mdx`; no JSX
   children of components written in MDX — multiline children get
   paragraph-wrapped by MDX (`<Button>\nText\n</Button>` becomes
