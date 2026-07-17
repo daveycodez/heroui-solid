@@ -5,27 +5,14 @@ export function InputControlled() {
   const [value, setValue] = createSignal("heroui.com")
 
   return (
-    <div
-      style={{
-        display: "flex",
-        width: "20rem",
-        "flex-direction": "column",
-        gap: "0.5rem"
-      }}
-    >
+    <div class="flex w-80 flex-col gap-2">
       <Input
         aria-label="Domain"
         placeholder="domain"
         value={value()}
         onInput={(event) => setValue(event.currentTarget.value)}
       />
-      <span
-        style={{
-          padding: "0 0.25rem",
-          "font-size": "0.875rem",
-          color: "var(--muted)"
-        }}
-      >
+      <span class="px-1 text-sm text-muted">
         https://{value() || "your-domain"}
       </span>
     </div>

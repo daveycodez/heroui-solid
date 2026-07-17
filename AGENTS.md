@@ -119,6 +119,19 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   `<ComponentPreview name="component-demo" />` (same structure as official
   HeroUI docs; docs page content mirrors the official pages verbatim, adapted
   only for documented API differences).
+- **Component usage examples import the demo source — never inline it.** The
+  ```` ```tsx ```` block under each `<ComponentPreview />` must be
+  ```` ```tsx file=../../../demos/<component>/<demo>.tsx title="" ```` with an
+  empty body (solidbase's built-in remark-code-import). The demo file is the
+  single source of truth; `title=""` suppresses the auto filename tab
+  (duplicate meta keys resolve last-wins; the official docs show untitled
+  blocks — `title=null` would render a literal "null" tab). Exception:
+  teaching snippets (partial code, `...` placeholders, no `export function`)
+  stay inline. Caveat: editing a demo doesn't HMR the imported code block —
+  touch the `.mdx` or restart dev to see it. Demos may use Tailwind classes:
+  the docs app compiles its own utilities (`src/tailwind.css`, referencing
+  heroui's theme keys) — heroui-token utilities like `text-muted` work, but
+  check unfamiliar ones exist in the theme (no `--color-primary`, e.g.).
 - **Debugging hydration**: it's diagnosable without a browser — curl the dev
   server and compare `data-hk` key suffixes between SSR HTML and the client's
   expected key from the console error. HMR masks hydration bugs entirely

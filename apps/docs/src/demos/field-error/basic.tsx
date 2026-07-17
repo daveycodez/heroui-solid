@@ -7,10 +7,10 @@ export function FieldErrorBasic() {
 
   return (
     <TextField
+      class="w-64"
       isInvalid={isInvalid()}
       value={value()}
       onChange={setValue}
-      style={{ width: "16rem" }}
     >
       <Label>Username</Label>
       <Input placeholder="Enter username" />

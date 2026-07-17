@@ -12,7 +12,7 @@ const states = [
 
 export function SelectUsage() {
   return (
-    <Select placeholder="Select one" style={{ width: "256px" }}>
+    <Select class="w-[256px]" placeholder="Select one">
       <Label>State</Label>
       <Select.Trigger>
         <Select.Value />

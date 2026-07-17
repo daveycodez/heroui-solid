@@ -16,17 +16,8 @@ import { TextField } from "heroui-solid";
 
 <ComponentPreview name="textfield-basic" />
 
-```tsx
-import { Input, Label, TextField } from "heroui-solid";
+```tsx file=../../../demos/textfield/basic.tsx title=""
 
-export function Basic() {
-  return (
-    <TextField class="w-full max-w-64" name="email">
-      <Label>Email</Label>
-      <Input placeholder="Enter your email" type="email" />
-    </TextField>
-  );
-}
 ```
 
 ### Anatomy
@@ -51,36 +42,16 @@ export default () => (
 
 <ComponentPreview name="textfield-with-description" />
 
-```tsx
-import { Description, Input, Label, TextField } from "heroui-solid";
+```tsx file=../../../demos/textfield/with-description.tsx title=""
 
-export function WithDescription() {
-  return (
-    <TextField class="w-full max-w-64" name="username">
-      <Label>Username</Label>
-      <Input placeholder="Enter username" />
-      <Description>Choose a unique username for your account</Description>
-    </TextField>
-  );
-}
 ```
 
 ### Required Field
 
 <ComponentPreview name="textfield-required" />
 
-```tsx
-import { Description, Input, Label, TextField } from "heroui-solid";
+```tsx file=../../../demos/textfield/required.tsx title=""
 
-export function Required() {
-  return (
-    <TextField isRequired class="w-full max-w-64" name="fullName">
-      <Label>Full Name</Label>
-      <Input placeholder="John Doe" />
-      <Description>This field is required</Description>
-    </TextField>
-  );
-}
 ```
 
 ### Validation
@@ -89,55 +60,8 @@ Use `isInvalid` together with `FieldError` to surface validation messages.
 
 <ComponentPreview name="textfield-validation" />
 
-```tsx
-import { Description, FieldError, Input, Label, TextArea, TextField } from "heroui-solid";
-import { createSignal, Show } from "solid-js";
+```tsx file=../../../demos/textfield/validation.tsx title=""
 
-export function Validation() {
-  const [username, setUsername] = createSignal("");
-  const [bio, setBio] = createSignal("");
-
-  const isUsernameInvalid = () => username().length > 0 && username().length < 3;
-  const isBioInvalid = () => bio().length > 0 && bio().length < 20;
-
-  return (
-    <div class="flex w-full max-w-64 flex-col gap-4">
-      <TextField
-        isRequired
-        isInvalid={isUsernameInvalid()}
-        name="username"
-        value={username()}
-        onChange={setUsername}
-      >
-        <Label>Username</Label>
-        <Input placeholder="jane_doe" />
-        <Show
-          when={isUsernameInvalid()}
-          fallback={<Description>Choose a unique username for your profile.</Description>}
-        >
-          <FieldError>Username must be at least 3 characters.</FieldError>
-        </Show>
-      </TextField>
-
-      <TextField
-        isRequired
-        isInvalid={isBioInvalid()}
-        name="bio"
-        value={bio()}
-        onChange={setBio}
-      >
-        <Label>Bio</Label>
-        <TextArea placeholder="Tell us about yourself..." />
-        <Show
-          when={isBioInvalid()}
-          fallback={<Description>Minimum 20 characters ({bio().length}/20).</Description>}
-        >
-          <FieldError>Bio must contain at least 20 characters.</FieldError>
-        </Show>
-      </TextField>
-    </div>
-  );
-}
 ```
 
 ### Controlled
@@ -146,65 +70,24 @@ Control the value to synchronize counters, previews, or formatting.
 
 <ComponentPreview name="textfield-controlled" />
 
-```tsx
-import { Description, Input, Label, TextArea, TextField } from "heroui-solid";
-import { createSignal } from "solid-js";
+```tsx file=../../../demos/textfield/controlled.tsx title=""
 
-export function Controlled() {
-  const [name, setName] = createSignal("");
-  const [bio, setBio] = createSignal("");
-
-  return (
-    <div class="flex w-full max-w-64 flex-col gap-4">
-      <TextField name="name" value={name()} onChange={setName}>
-        <Label>Display name</Label>
-        <Input placeholder="Jane" />
-        <Description>Characters: {name().length}</Description>
-      </TextField>
-      <TextField name="bio" value={bio()} onChange={setBio}>
-        <Label>Bio</Label>
-        <TextArea placeholder="Tell us about yourself..." />
-        <Description>Characters: {bio().length} / 200</Description>
-      </TextField>
-    </div>
-  );
-}
 ```
 
 ### Error Message
 
 <ComponentPreview name="textfield-error-message" />
 
-```tsx
-import { FieldError, Input, Label, TextField } from "heroui-solid";
+```tsx file=../../../demos/textfield/error-message.tsx title=""
 
-export function WithError() {
-  return (
-    <TextField isInvalid class="w-full max-w-64" name="email">
-      <Label>Email</Label>
-      <Input placeholder="user@example.com" type="email" />
-      <FieldError>Please enter a valid email address</FieldError>
-    </TextField>
-  );
-}
 ```
 
 ### Disabled State
 
 <ComponentPreview name="textfield-disabled" />
 
-```tsx
-import { Description, Input, Label, TextField } from "heroui-solid";
+```tsx file=../../../demos/textfield/disabled.tsx title=""
 
-export function Disabled() {
-  return (
-    <TextField isDisabled class="w-full max-w-64" name="accountId" value="USR-12345">
-      <Label>Account ID</Label>
-      <Input placeholder="Auto-generated" />
-      <Description>This field cannot be edited</Description>
-    </TextField>
-  );
-}
 ```
 
 ### TextArea
@@ -213,18 +96,8 @@ Use [TextArea](/docs/components/text-area) instead of [Input](/docs/components/i
 
 <ComponentPreview name="textfield-textarea" />
 
-```tsx
-import { Description, Label, TextArea, TextField } from "heroui-solid";
+```tsx file=../../../demos/textfield/textarea.tsx title=""
 
-export function TextAreaExample() {
-  return (
-    <TextField class="w-full max-w-64" name="message">
-      <Label>Message</Label>
-      <TextArea placeholder="Write your message here..." rows={4} />
-      <Description>Maximum 500 characters</Description>
-    </TextField>
-  );
-}
 ```
 
 ### Input Types
@@ -234,63 +107,16 @@ HeroUI React sets `type` on the TextField root; in this port `type` goes on the
 
 <ComponentPreview name="textfield-input-types" />
 
-```tsx
-import { Input, Label, TextField } from "heroui-solid";
+```tsx file=../../../demos/textfield/input-types.tsx title=""
 
-export function InputTypes() {
-  return (
-    <div class="flex w-full max-w-64 flex-col gap-4">
-      <TextField name="password">
-        <Label>Password</Label>
-        <Input placeholder="••••••••" type="password" />
-      </TextField>
-
-      <TextField name="age">
-        <Label>Age</Label>
-        <Input max="150" min="0" placeholder="21" type="number" />
-      </TextField>
-
-      <TextField name="email">
-        <Label>Email</Label>
-        <Input placeholder="user@example.com" type="email" />
-      </TextField>
-
-      <TextField name="website">
-        <Label>Website</Label>
-        <Input placeholder="https://example.com" type="url" />
-      </TextField>
-
-      <TextField name="phone">
-        <Label>Phone</Label>
-        <Input placeholder="+1 (555) 000-0000" type="tel" />
-      </TextField>
-    </div>
-  );
-}
 ```
 
 ### Full Width
 
 <ComponentPreview name="textfield-full-width" />
 
-```tsx
-import { FieldError, Input, Label, TextField } from "heroui-solid";
+```tsx file=../../../demos/textfield/full-width.tsx title=""
 
-export function FullWidth() {
-  return (
-    <div class="w-[400px] space-y-4">
-      <TextField fullWidth name="name">
-        <Label>Your name</Label>
-        <Input placeholder="John" />
-      </TextField>
-      <TextField fullWidth isInvalid isRequired name="password">
-        <Label>Password</Label>
-        <Input type="password" />
-        <FieldError>Password must be longer than 8 characters</FieldError>
-      </TextField>
-    </div>
-  );
-}
 ```
 
 ### In Surface
@@ -299,29 +125,8 @@ When used inside a [Surface](/docs/components/surface) component, use `variant="
 
 <ComponentPreview name="textfield-in-surface" />
 
-```tsx
-import { Description, Input, Label, Surface, TextArea, TextField } from "heroui-solid";
+```tsx file=../../../demos/textfield/in-surface.tsx title=""
 
-export function OnSurface() {
-  return (
-    <Surface class="flex w-full min-w-[340px] flex-col gap-4 rounded-3xl p-6">
-      <TextField name="name" variant="secondary">
-        <Label>Your name</Label>
-        <Input fullWidth placeholder="John" />
-        <Description>We'll never share this with anyone else</Description>
-      </TextField>
-      <TextField name="email" variant="secondary">
-        <Label>Email</Label>
-        <Input fullWidth placeholder="john@example.com" type="email" />
-      </TextField>
-      <TextField name="bio" variant="secondary">
-        <Label>Bio</Label>
-        <TextArea fullWidth placeholder="Tell us about yourself..." rows={4} />
-        <Description>Minimum 4 rows</Description>
-      </TextField>
-    </Surface>
-  );
-}
 ```
 
 ## Related Components

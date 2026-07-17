@@ -5,24 +5,16 @@ import GitHubIcon from "~icons/mdi/github"
 
 export function Social() {
   return (
-    <div
-      style={{
-        display: "flex",
-        "flex-direction": "column",
-        gap: "0.75rem",
-        width: "100%",
-        "max-width": "20rem"
-      }}
-    >
-      <Button variant="tertiary" fullWidth>
+    <div class="flex w-full max-w-xs flex-col gap-3">
+      <Button class="w-full" variant="tertiary">
         <GoogleIcon />
         Sign in with Google
       </Button>
-      <Button variant="tertiary" fullWidth>
+      <Button class="w-full" variant="tertiary">
         <GitHubIcon />
         Sign in with GitHub
       </Button>
-      <Button variant="tertiary" fullWidth>
+      <Button class="w-full" variant="tertiary">
         <AppleIcon />
         Sign in with Apple
       </Button>

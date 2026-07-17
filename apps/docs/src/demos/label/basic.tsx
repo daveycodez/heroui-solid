@@ -2,16 +2,9 @@ import { Input, Label } from "heroui-solid"
 
 export function LabelBasic() {
   return (
-    <div
-      style={{ display: "flex", "flex-direction": "column", gap: "0.25rem" }}
-    >
+    <div class="flex flex-col gap-1">
       <Label for="name">Name</Label>
-      <Input
-        id="name"
-        placeholder="Enter your name"
-        style={{ width: "16rem" }}
-        type="text"
-      />
+      <Input class="w-64" id="name" placeholder="Enter your name" type="text" />
     </div>
   )
 }

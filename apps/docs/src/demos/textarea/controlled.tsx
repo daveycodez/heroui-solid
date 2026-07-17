@@ -5,15 +5,7 @@ export function TextAreaControlled() {
   const [value, setValue] = createSignal("")
 
   return (
-    <div
-      style={{
-        display: "flex",
-        width: "24rem",
-        "max-width": "100%",
-        "flex-direction": "column",
-        gap: "0.5rem"
-      }}
-    >
+    <div class="flex w-96 flex-col gap-2">
       <TextArea
         aria-describedby="textarea-controlled-description"
         aria-label="Announcement"

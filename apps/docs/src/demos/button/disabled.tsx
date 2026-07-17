@@ -2,7 +2,7 @@ import { Button } from "heroui-solid"
 
 export function Disabled() {
   return (
-    <>
+    <div class="flex flex-wrap gap-3">
       <Button isDisabled>Primary</Button>
       <Button isDisabled variant="secondary">
         Secondary
@@ -19,6 +19,6 @@ export function Disabled() {
       <Button isDisabled variant="danger">
         Danger
       </Button>
-    </>
+    </div>
   )
 }

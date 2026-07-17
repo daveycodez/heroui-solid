@@ -6,15 +6,7 @@ export function TextFieldControlled() {
   const [bio, setBio] = createSignal("")
 
   return (
-    <div
-      style={{
-        display: "flex",
-        width: "100%",
-        "max-width": "16rem",
-        "flex-direction": "column",
-        gap: "1rem"
-      }}
-    >
+    <div class="flex w-full max-w-64 flex-col gap-4">
       <TextField name="name" value={name()} onChange={setName}>
         <Label>Display name</Label>
         <Input placeholder="Jane" />

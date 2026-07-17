@@ -13,4 +13,10 @@
  * declared at the top of app.css.
  */
 @import "tailwindcss/theme" theme(reference);
+/* heroui's theme keys (--color-muted, --color-surface, ...) so heroui-token
+ * utilities like text-muted / bg-surface compile here too. `@theme inline` in
+ * the file makes utilities emit the underlying var (e.g. color: var(--muted)),
+ * which heroui-solid/styles defines at runtime. Same exact version pin as the
+ * package (see AGENTS.md). */
+@import "@heroui/styles/themes/shared/theme.css" theme(reference);
 @import "tailwindcss/utilities" layer(utilities);

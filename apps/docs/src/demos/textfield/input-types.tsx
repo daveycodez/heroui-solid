@@ -2,15 +2,7 @@ import { Input, Label, TextField } from "heroui-solid"
 
 export function TextFieldInputTypes() {
   return (
-    <div
-      style={{
-        display: "flex",
-        width: "100%",
-        "max-width": "16rem",
-        "flex-direction": "column",
-        gap: "1rem"
-      }}
-    >
+    <div class="flex w-full max-w-64 flex-col gap-4">
       <TextField name="password">
         <Label>Password</Label>
         <Input placeholder="••••••••" type="password" />

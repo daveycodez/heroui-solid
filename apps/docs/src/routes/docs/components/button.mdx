@@ -16,247 +16,80 @@ import { Button } from "heroui-solid";
 
 <ComponentPreview name="button-basic" />
 
-```tsx
-import { Button } from "heroui-solid";
+```tsx file=../../../demos/button/basic.tsx title=""
 
-export function Basic() {
-  return <Button onClick={() => console.log("Button pressed")}>Click me</Button>;
-}
 ```
 
 ### Variants
 
 <ComponentPreview name="button-variants" />
 
-```tsx
-import { Button } from "heroui-solid";
+```tsx file=../../../demos/button/variants.tsx title=""
 
-export function Variants() {
-  return (
-    <div class="flex flex-wrap gap-3">
-      <Button>Primary</Button>
-      <Button variant="secondary">Secondary</Button>
-      <Button variant="tertiary">Tertiary</Button>
-      <Button variant="outline">Outline</Button>
-      <Button variant="ghost">Ghost</Button>
-      <Button variant="danger">Danger</Button>
-      <Button variant="danger-soft">Danger Soft</Button>
-    </div>
-  );
-}
 ```
 
 ### With Icons
 
 <ComponentPreview name="button-with-icons" />
 
-```tsx
-import { Button } from "heroui-solid";
-import Envelope from "~icons/gravity-ui/envelope";
-import Globe from "~icons/gravity-ui/globe";
-import Plus from "~icons/gravity-ui/plus";
-import TrashBin from "~icons/gravity-ui/trash-bin";
+```tsx file=../../../demos/button/with-icons.tsx title=""
 
-export function WithIcons() {
-  return (
-    <div class="flex flex-wrap gap-3">
-      <Button>
-        <Globe />
-        Search
-      </Button>
-      <Button variant="secondary">
-        <Plus />
-        Add Member
-      </Button>
-      <Button variant="tertiary">
-        <Envelope />
-        Email
-      </Button>
-      <Button variant="danger">
-        <TrashBin />
-        Delete
-      </Button>
-    </div>
-  );
-}
 ```
 
 ### Icon Only
 
 <ComponentPreview name="button-icon-only" />
 
-```tsx
-import { Button } from "heroui-solid";
-import Ellipsis from "~icons/gravity-ui/ellipsis";
-import Gear from "~icons/gravity-ui/gear";
-import TrashBin from "~icons/gravity-ui/trash-bin";
+```tsx file=../../../demos/button/icon-only.tsx title=""
 
-export function IconOnly() {
-  return (
-    <div class="flex gap-3">
-      <Button isIconOnly variant="tertiary">
-        <Ellipsis />
-      </Button>
-      <Button isIconOnly variant="secondary">
-        <Gear />
-      </Button>
-      <Button isIconOnly variant="danger">
-        <TrashBin />
-      </Button>
-    </div>
-  );
-}
 ```
 
 ### Loading
 
 <ComponentPreview name="button-loading" />
 
-```tsx
-import { Button, Spinner } from "heroui-solid";
+```tsx file=../../../demos/button/loading.tsx title=""
 
-export function Loading() {
-  return (
-    <Button isPending>
-      {(state) => (
-        <>
-          {state.isPending && <Spinner color="current" size="sm" />}
-          Uploading...
-        </>
-      )}
-    </Button>
-  );
-}
 ```
 
 ### Loading State
 
 <ComponentPreview name="button-loading-state" />
 
-```tsx
-import { Button, Spinner } from "heroui-solid";
-import { createSignal } from "solid-js";
-import Paperclip from "~icons/gravity-ui/paperclip";
+```tsx file=../../../demos/button/loading-state.tsx title=""
 
-export function LoadingState() {
-  const [isLoading, setLoading] = createSignal(false);
-
-  const handleClick = () => {
-    setLoading(true);
-    setTimeout(() => setLoading(false), 2000);
-  };
-
-  return (
-    <Button isPending={isLoading()} onClick={handleClick}>
-      {(state) => (
-        <>
-          {state.isPending ? <Spinner color="current" size="sm" /> : <Paperclip />}
-          {state.isPending ? "Uploading..." : "Upload File"}
-        </>
-      )}
-    </Button>
-  );
-}
 ```
 
 ### Sizes
 
 <ComponentPreview name="button-sizes" />
 
-```tsx
-import { Button } from "heroui-solid";
+```tsx file=../../../demos/button/sizes.tsx title=""
 
-export function Sizes() {
-  return (
-    <div class="flex items-center gap-3">
-      <Button size="sm">Small</Button>
-      <Button size="md">Medium</Button>
-      <Button size="lg">Large</Button>
-    </div>
-  );
-}
 ```
 
 ### Full Width
 
 <ComponentPreview name="button-full-width" />
 
-```tsx
-import { Button } from "heroui-solid";
-import Plus from "~icons/gravity-ui/plus";
+```tsx file=../../../demos/button/full-width.tsx title=""
 
-export function FullWidth() {
-  return (
-    <div class="w-[400px] space-y-3">
-      <Button fullWidth>Primary Button</Button>
-      <Button fullWidth>
-        <Plus />
-        With Icon
-      </Button>
-    </div>
-  );
-}
 ```
 
 ### Disabled State
 
 <ComponentPreview name="button-disabled" />
 
-```tsx
-import { Button } from "heroui-solid";
+```tsx file=../../../demos/button/disabled.tsx title=""
 
-export function Disabled() {
-  return (
-    <div class="flex flex-wrap gap-3">
-      <Button isDisabled>Primary</Button>
-      <Button isDisabled variant="secondary">
-        Secondary
-      </Button>
-      <Button isDisabled variant="tertiary">
-        Tertiary
-      </Button>
-      <Button isDisabled variant="outline">
-        Outline
-      </Button>
-      <Button isDisabled variant="ghost">
-        Ghost
-      </Button>
-      <Button isDisabled variant="danger">
-        Danger
-      </Button>
-    </div>
-  );
-}
 ```
 
 ### Social Buttons
 
 <ComponentPreview name="button-social" />
 
-```tsx
-import { Button } from "heroui-solid";
-import GoogleIcon from "~icons/devicon/google";
-import AppleIcon from "~icons/ion/logo-apple";
-import GitHubIcon from "~icons/mdi/github";
+```tsx file=../../../demos/button/social.tsx title=""
 
-export function Social() {
-  return (
-    <div class="flex w-full max-w-xs flex-col gap-3">
-      <Button class="w-full" variant="tertiary">
-        <GoogleIcon />
-        Sign in with Google
-      </Button>
-      <Button class="w-full" variant="tertiary">
-        <GitHubIcon />
-        Sign in with GitHub
-      </Button>
-      <Button class="w-full" variant="tertiary">
-        <AppleIcon />
-        Sign in with Apple
-      </Button>
-    </div>
-  );
-}
 ```
 
 ### Custom Element
@@ -267,16 +100,8 @@ button:
 
 <ComponentPreview name="button-custom-element" />
 
-```tsx
-import { Button } from "heroui-solid";
+```tsx file=../../../demos/button/custom-element.tsx title=""
 
-export function CustomElement() {
-  return (
-    <Button as="a" href="https://heroui.com" target="_blank" variant="outline">
-      Visit HeroUI
-    </Button>
-  );
-}
 ```
 
 ## Related Components

@@ -6,7 +6,7 @@ import TrashBin from "~icons/gravity-ui/trash-bin"
 
 export function WithIcons() {
   return (
-    <>
+    <div class="flex flex-wrap gap-3">
       <Button>
         <Globe />
         Search
@@ -23,6 +23,6 @@ export function WithIcons() {
         <TrashBin />
         Delete
       </Button>
-    </>
+    </div>
   )
 }

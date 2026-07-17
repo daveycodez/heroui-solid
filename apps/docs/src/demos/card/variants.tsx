@@ -1,47 +1,55 @@
 import { Card } from "heroui-solid"
-import { For } from "solid-js"
-
-const variants = [
-  {
-    variant: "transparent",
-    description: "Minimal prominence with transparent background",
-    content: "Use for less important content or nested cards"
-  },
-  {
-    variant: "default",
-    description: "Standard card appearance (bg-surface)",
-    content: "The default card variant for most use cases"
-  },
-  {
-    variant: "secondary",
-    description: "Medium prominence (bg-surface-secondary)",
-    content: "Use to draw moderate attention"
-  },
-  {
-    variant: "tertiary",
-    description: "Higher prominence (bg-surface-tertiary)",
-    content: "Use for primary or featured content"
-  }
-] as const
 
 export function CardVariants() {
   return (
-    <div style={{ display: "flex", "flex-direction": "column", gap: "1rem" }}>
-      <For each={variants}>
-        {(entry) => (
-          <Card style={{ width: "320px" }} variant={entry.variant}>
-            <Card.Header>
-              <Card.Title style={{ "text-transform": "capitalize" }}>
-                {entry.variant}
-              </Card.Title>
-              <Card.Description>{entry.description}</Card.Description>
-            </Card.Header>
-            <Card.Content>
-              <p>{entry.content}</p>
-            </Card.Content>
-          </Card>
-        )}
-      </For>
+    <div class="flex flex-col gap-4">
+      <Card class="w-[320px]" variant="transparent">
+        <Card.Header>
+          <Card.Title>Transparent</Card.Title>
+          <Card.Description>
+            Minimal prominence with transparent background
+          </Card.Description>
+        </Card.Header>
+        <Card.Content>
+          <p>Use for less important content or nested cards</p>
+        </Card.Content>
+      </Card>
+
+      <Card class="w-[320px]" variant="default">
+        <Card.Header>
+          <Card.Title>Default</Card.Title>
+          <Card.Description>
+            Standard card appearance (bg-surface)
+          </Card.Description>
+        </Card.Header>
+        <Card.Content>
+          <p>The default card variant for most use cases</p>
+        </Card.Content>
+      </Card>
+
+      <Card class="w-[320px]" variant="secondary">
+        <Card.Header>
+          <Card.Title>Secondary</Card.Title>
+          <Card.Description>
+            Medium prominence (bg-surface-secondary)
+          </Card.Description>
+        </Card.Header>
+        <Card.Content>
+          <p>Use to draw moderate attention</p>
+        </Card.Content>
+      </Card>
+
+      <Card class="w-[320px]" variant="tertiary">
+        <Card.Header>
+          <Card.Title>Tertiary</Card.Title>
+          <Card.Description>
+            Higher prominence (bg-surface-tertiary)
+          </Card.Description>
+        </Card.Header>
+        <Card.Content>
+          <p>Use for primary or featured content</p>
+        </Card.Content>
+      </Card>
     </div>
   )
 }

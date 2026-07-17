@@ -18,39 +18,16 @@ import { Input } from "heroui-solid";
 
 <ComponentPreview name="input-basic" />
 
-```tsx
-import { Input } from "heroui-solid";
+```tsx file=../../../demos/input/basic.tsx title=""
 
-export function Basic() {
-  return <Input aria-label="Name" class="w-64" placeholder="Enter your name" />;
-}
 ```
 
 ### Input Types
 
 <ComponentPreview name="input-types" />
 
-```tsx
-import { Input, Label } from "heroui-solid";
+```tsx file=../../../demos/input/types.tsx title=""
 
-export function Types() {
-  return (
-    <div class="flex w-80 flex-col gap-4">
-      <div class="flex flex-col gap-1">
-        <Label for="input-type-email">Email</Label>
-        <Input id="input-type-email" placeholder="jane@example.com" type="email" />
-      </div>
-      <div class="flex flex-col gap-1">
-        <Label for="input-type-number">Age</Label>
-        <Input id="input-type-number" min={0} placeholder="30" type="number" />
-      </div>
-      <div class="flex flex-col gap-1">
-        <Label for="input-type-password">Password</Label>
-        <Input id="input-type-password" placeholder="••••••••" type="password" />
-      </div>
-    </div>
-  );
-}
 ```
 
 ### Controlled
@@ -60,41 +37,16 @@ uses React's `onChange`, which fires per keystroke — Solid's `onChange` fires 
 
 <ComponentPreview name="input-controlled" />
 
-```tsx
-import { Input } from "heroui-solid";
-import { createSignal } from "solid-js";
+```tsx file=../../../demos/input/controlled.tsx title=""
 
-export function Controlled() {
-  const [value, setValue] = createSignal("heroui.com");
-
-  return (
-    <div class="flex w-80 flex-col gap-2">
-      <Input
-        aria-label="Domain"
-        placeholder="domain"
-        value={value()}
-        onInput={(event) => setValue(event.currentTarget.value)}
-      />
-      <span class="px-1 text-sm text-muted">https://{value() || "your-domain"}</span>
-    </div>
-  );
-}
 ```
 
 ### Full Width
 
 <ComponentPreview name="input-full-width" />
 
-```tsx
-import { Input } from "heroui-solid";
+```tsx file=../../../demos/input/full-width.tsx title=""
 
-export function FullWidth() {
-  return (
-    <div class="w-[400px] space-y-3">
-      <Input fullWidth placeholder="Full width input" />
-    </div>
-  );
-}
 ```
 
 ### Variants
@@ -106,17 +58,8 @@ The Input component supports two visual variants:
 
 <ComponentPreview name="input-variants" />
 
-```tsx
-import { Input } from "heroui-solid";
+```tsx file=../../../demos/input/variants.tsx title=""
 
-export function Variants() {
-  return (
-    <div class="flex w-[240px] flex-col gap-2">
-      <Input fullWidth placeholder="Primary input" variant="primary" />
-      <Input fullWidth placeholder="Secondary input" variant="secondary" />
-    </div>
-  );
-}
 ```
 
 ### In Surface
@@ -125,16 +68,8 @@ When used inside a [Surface](/docs/components/surface) component, use `variant="
 
 <ComponentPreview name="input-in-surface" />
 
-```tsx
-import { Input, Surface } from "heroui-solid";
+```tsx file=../../../demos/input/in-surface.tsx title=""
 
-export function OnSurface() {
-  return (
-    <Surface class="flex h-[180px] w-[280px] items-center justify-center rounded-3xl bg-surface p-4">
-      <Input class="w-full" placeholder="Your name" variant="secondary" />
-    </Surface>
-  );
-}
 ```
 
 ## Related Components

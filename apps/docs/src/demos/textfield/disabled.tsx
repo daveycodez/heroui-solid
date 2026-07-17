@@ -4,9 +4,9 @@ export function TextFieldDisabled() {
   return (
     <TextField
       isDisabled
+      class="w-full max-w-64"
       name="accountId"
       value="USR-12345"
-      style={{ width: "100%", "max-width": "16rem" }}
     >
       <Label>Account ID</Label>
       <Input placeholder="Auto-generated" />

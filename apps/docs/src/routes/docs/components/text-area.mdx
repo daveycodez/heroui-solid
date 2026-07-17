@@ -18,18 +18,8 @@ import { TextArea } from "heroui-solid";
 
 <ComponentPreview name="textarea-basic" />
 
-```tsx
-import { TextArea } from "heroui-solid";
+```tsx file=../../../demos/textarea/basic.tsx title=""
 
-export function Basic() {
-  return (
-    <TextArea
-      aria-label="Quick project update"
-      class="h-32 w-96"
-      placeholder="Share a quick project update..."
-    />
-  );
-}
 ```
 
 ### Controlled
@@ -39,72 +29,24 @@ uses React's `onChange`, which fires per keystroke — Solid's `onChange` fires 
 
 <ComponentPreview name="textarea-controlled" />
 
-```tsx
-import { Description, TextArea } from "heroui-solid";
-import { createSignal } from "solid-js";
+```tsx file=../../../demos/textarea/controlled.tsx title=""
 
-export function Controlled() {
-  const [value, setValue] = createSignal("");
-
-  return (
-    <div class="flex w-96 flex-col gap-2">
-      <TextArea
-        aria-describedby="textarea-controlled-description"
-        aria-label="Announcement"
-        placeholder="Compose an announcement..."
-        value={value()}
-        onInput={(event) => setValue(event.currentTarget.value)}
-      />
-      <Description id="textarea-controlled-description">
-        Characters: {value().length} / 280
-      </Description>
-    </div>
-  );
-}
 ```
 
 ### Rows and Resizing
 
 <ComponentPreview name="textarea-rows" />
 
-```tsx
-import { Label, TextArea } from "heroui-solid";
+```tsx file=../../../demos/textarea/rows.tsx title=""
 
-export function Rows() {
-  return (
-    <div class="flex w-96 flex-col gap-4">
-      <div class="flex flex-col gap-2">
-        <Label for="textarea-rows-3">Short feedback</Label>
-        <TextArea id="textarea-rows-3" placeholder="This week's highlights..." rows={3} />
-      </div>
-      <div class="flex flex-col gap-2">
-        <Label for="textarea-rows-6">Detailed notes</Label>
-        <TextArea
-          id="textarea-rows-6"
-          placeholder="Write out the full meeting notes..."
-          rows={6}
-          style={{ resize: "vertical" }}
-        />
-      </div>
-    </div>
-  );
-}
 ```
 
 ### Full Width
 
 <ComponentPreview name="textarea-full-width" />
 
-```tsx
-import { TextArea } from "heroui-solid";
+```tsx file=../../../demos/textarea/full-width.tsx title=""
 
-export function FullWidth() {
-  return (
-    <div class="w-[400px] space-y-3">
-      <TextArea fullWidth placeholder="Full width textarea" />
-    </div>
-  );
-}
 ```
 
 ### Variants
@@ -116,17 +58,8 @@ The TextArea component supports two visual variants:
 
 <ComponentPreview name="textarea-variants" />
 
-```tsx
-import { TextArea } from "heroui-solid";
+```tsx file=../../../demos/textarea/variants.tsx title=""
 
-export function Variants() {
-  return (
-    <div class="flex w-[280px] flex-col gap-2">
-      <TextArea fullWidth placeholder="Primary textarea" variant="primary" />
-      <TextArea fullWidth placeholder="Secondary textarea" variant="secondary" />
-    </div>
-  );
-}
 ```
 
 ### In Surface
@@ -135,16 +68,8 @@ When used inside a [Surface](/docs/components/surface) component, use `variant="
 
 <ComponentPreview name="textarea-in-surface" />
 
-```tsx
-import { Surface, TextArea } from "heroui-solid";
+```tsx file=../../../demos/textarea/in-surface.tsx title=""
 
-export function OnSurface() {
-  return (
-    <Surface class="w-full rounded-3xl p-6">
-      <TextArea class="w-full min-w-[280px]" placeholder="Describe your product" variant="secondary" />
-    </Surface>
-  );
-}
 ```
 
 ## Related Components

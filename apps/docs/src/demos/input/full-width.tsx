@@ -2,7 +2,7 @@ import { Input } from "heroui-solid"
 
 export function InputFullWidth() {
   return (
-    <div style={{ width: "400px", "max-width": "100%" }}>
+    <div class="w-[400px] space-y-3">
       <Input fullWidth placeholder="Full width input" />
     </div>
   )

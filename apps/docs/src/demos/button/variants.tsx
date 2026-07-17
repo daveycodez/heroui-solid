@@ -2,7 +2,7 @@ import { Button } from "heroui-solid"
 
 export function Variants() {
   return (
-    <>
+    <div class="flex flex-wrap gap-3">
       <Button>Primary</Button>
       <Button variant="secondary">Secondary</Button>
       <Button variant="tertiary">Tertiary</Button>
@@ -10,6 +10,6 @@ export function Variants() {
       <Button variant="ghost">Ghost</Button>
       <Button variant="danger">Danger</Button>
       <Button variant="danger-soft">Danger Soft</Button>
-    </>
+    </div>
   )
 }

@@ -2,7 +2,7 @@ import { Input, Label, TextField } from "heroui-solid"
 
 export function TextFieldBasic() {
   return (
-    <TextField name="email" style={{ width: "100%", "max-width": "16rem" }}>
+    <TextField class="w-full max-w-64" name="email">
       <Label>Email</Label>
       <Input placeholder="Enter your email" type="email" />
     </TextField>

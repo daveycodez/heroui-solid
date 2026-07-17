@@ -9,18 +9,7 @@ import {
 
 export function TextFieldInSurface() {
   return (
-    <Surface
-      style={{
-        display: "flex",
-        width: "100%",
-        "min-width": "340px",
-        "max-width": "28rem",
-        "flex-direction": "column",
-        gap: "1rem",
-        "border-radius": "1.5rem",
-        padding: "1.5rem"
-      }}
-    >
+    <Surface class="flex w-full min-w-[340px] flex-col gap-4 rounded-3xl p-6">
       <TextField name="name" variant="secondary">
         <Label>Your name</Label>
         <Input fullWidth placeholder="John" />

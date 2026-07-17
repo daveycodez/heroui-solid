@@ -2,18 +2,8 @@ import { Label, TextArea } from "heroui-solid"
 
 export function TextAreaRows() {
   return (
-    <div
-      style={{
-        display: "flex",
-        width: "24rem",
-        "max-width": "100%",
-        "flex-direction": "column",
-        gap: "1rem"
-      }}
-    >
-      <div
-        style={{ display: "flex", "flex-direction": "column", gap: "0.5rem" }}
-      >
+    <div class="flex w-96 flex-col gap-4">
+      <div class="flex flex-col gap-2">
         <Label for="textarea-rows-3">Short feedback</Label>
         <TextArea
           id="textarea-rows-3"
@@ -21,9 +11,7 @@ export function TextAreaRows() {
           rows={3}
         />
       </div>
-      <div
-        style={{ display: "flex", "flex-direction": "column", gap: "0.5rem" }}
-      >
+      <div class="flex flex-col gap-2">
         <Label for="textarea-rows-6">Detailed notes</Label>
         <TextArea
           id="textarea-rows-6"

@@ -7,7 +7,7 @@ export function CardWithForm() {
   }
 
   return (
-    <Card style={{ width: "100%", "max-width": "28rem" }}>
+    <Card class="w-full max-w-md">
       <Card.Header>
         <Card.Title>Login</Card.Title>
         <Card.Description>
@@ -16,13 +16,7 @@ export function CardWithForm() {
       </Card.Header>
       <form onSubmit={onSubmit}>
         <Card.Content>
-          <div
-            style={{
-              display: "flex",
-              "flex-direction": "column",
-              gap: "1rem"
-            }}
-          >
+          <div class="flex flex-col gap-4">
             <TextField name="email">
               <Label>Email</Label>
               <Input
@@ -41,25 +35,11 @@ export function CardWithForm() {
             </TextField>
           </div>
         </Card.Content>
-        <Card.Footer
-          style={{
-            "margin-top": "1rem",
-            display: "flex",
-            "flex-direction": "column",
-            gap: "0.5rem"
-          }}
-        >
+        <Card.Footer class="mt-4 flex flex-col gap-2">
           <Button fullWidth type="submit">
             Sign In
           </Button>
-          <a
-            href="#forgot"
-            style={{
-              "text-align": "center",
-              "font-size": "0.875rem",
-              color: "var(--muted)"
-            }}
-          >
+          <a class="text-center text-sm" href="#forgot">
             Forgot password?
           </a>
         </Card.Footer>

@@ -2,18 +2,10 @@ import { Surface, TextArea } from "heroui-solid"
 
 export function TextAreaInSurface() {
   return (
-    <Surface
-      style={{
-        width: "100%",
-        "max-width": "24rem",
-        "border-radius": "1.5rem",
-        padding: "1.5rem"
-      }}
-    >
+    <Surface class="w-full rounded-3xl p-6">
       <TextArea
-        fullWidth
+        class="w-full min-w-[280px]"
         placeholder="Describe your product"
-        style={{ "min-width": "280px" }}
         variant="secondary"
       />
     </Surface>

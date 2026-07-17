@@ -2,11 +2,7 @@ import { FieldError, Input, Label, TextField } from "heroui-solid"
 
 export function TextFieldErrorMessage() {
   return (
-    <TextField
-      isInvalid
-      name="email"
-      style={{ width: "100%", "max-width": "16rem" }}
-    >
+    <TextField isInvalid class="w-full max-w-64" name="email">
       <Label>Email</Label>
       <Input placeholder="user@example.com" type="email" />
       <FieldError>Please enter a valid email address</FieldError>

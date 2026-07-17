@@ -3,15 +3,11 @@ import CircleDollar from "~icons/gravity-ui/circle-dollar"
 
 export function CardUsage() {
   return (
-    <Card style={{ width: "400px", "max-width": "100%" }}>
+    <Card class="w-[400px]">
       <CircleDollar
         aria-label="Dollar sign icon"
+        class="text-primary size-6"
         role="img"
-        style={{
-          color: "var(--primary)",
-          width: "1.5rem",
-          height: "1.5rem"
-        }}
       />
       <Card.Header>
         <Card.Title>Become an Acme Creator!</Card.Title>
@@ -26,13 +22,6 @@ export function CardUsage() {
           href="https://heroui.com"
           rel="noopener noreferrer"
           target="_blank"
-          style={{
-            "font-size": "0.875rem",
-            "font-weight": "500",
-            color: "var(--foreground)",
-            "text-decoration": "underline",
-            "text-underline-offset": "4px"
-          }}
         >
           Creator Hub ↗
         </a>
