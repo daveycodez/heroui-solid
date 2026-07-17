@@ -5,7 +5,7 @@ import TrashBin from "~icons/gravity-ui/trash-bin"
 
 export function IconOnly() {
   return (
-    <>
+    <div class="flex gap-3">
       <Button isIconOnly variant="tertiary">
         <Ellipsis />
       </Button>
@@ -15,6 +15,6 @@ export function IconOnly() {
       <Button isIconOnly variant="danger">
         <TrashBin />
       </Button>
-    </>
+    </div>
   )
 }
