@@ -145,6 +145,67 @@ To customize the Button component classes, you can use the `@layer components` d
 
 HeroUI follows the [BEM](https://getbem.com/) methodology to ensure component variants and states are reusable and easy to customize.
 
+### Adding custom variants
+
+You can extend HeroUI components by wrapping them and adding your own custom variants.
+
+```tsx
+import type { ButtonProps } from "heroui-solid";
+import type { VariantProps } from "tailwind-variants";
+
+import { Button, buttonVariants } from "heroui-solid";
+import { splitProps } from "solid-js";
+import { tv } from "tailwind-variants";
+
+const myButtonVariants = tv({
+  base: "text-md font-semibold shadow-md text-shadow-lg data-[pending=true]:opacity-40",
+  defaultVariants: {
+    radius: "full",
+    variant: "primary",
+  },
+  extend: buttonVariants,
+  variants: {
+    radius: {
+      full: "rounded-full",
+      lg: "rounded-lg",
+      md: "rounded-md",
+      sm: "rounded-sm",
+    },
+    size: {
+      lg: "h-12 px-8",
+      md: "h-11 px-6",
+      sm: "h-10 px-4",
+      xl: "h-13 px-10",
+    },
+    variant: {
+      primary: "text-white dark:bg-white/10 dark:text-white dark:hover:bg-white/15",
+    },
+  },
+});
+
+type MyButtonVariants = VariantProps<typeof myButtonVariants>;
+export type MyButtonProps = Omit<ButtonProps, "class"> &
+  MyButtonVariants & { class?: string };
+
+function CustomButton(props: MyButtonProps) {
+  const [local, rest] = splitProps(props, ["class", "radius", "variant"]);
+  return (
+    <Button
+      class={myButtonVariants({
+        class: local.class,
+        radius: local.radius,
+        variant: local.variant,
+      })}
+      {...rest}
+    />
+  );
+}
+
+export function CustomVariants() {
+  return <CustomButton>Custom Button</CustomButton>;
+}
+```
+
 ### CSS Classes
 
 The Button component uses these CSS classes ([View source styles](https://github.com/heroui-inc/heroui/blob/v3/packages/styles/components/button.css)):
@@ -197,21 +258,6 @@ The button supports CSS pseudo-classes and data attributes:
 | `onClick`    | `JSX.EventHandlerUnion<HTMLElement, MouseEvent>`                                               | -           | Handler called when the button is clicked                     |
 | `children`   | `JSX.Element \| (state: { isPending: boolean }) => JSX.Element`                                     | -           | Button content or render prop                                 |
 | `as`         | `ValidComponent`                                                                               | `"button"`  | Overrides the default DOM element (Kobalte polymorphic `as`)  |
-
-### ButtonRenderProps
-
-When using the render prop pattern, these values are provided:
-
-| Prop        | Type      | Description                              |
-| ----------- | --------- | ---------------------------------------- |
-| `isPending` | `boolean` | Whether the button is in a loading state |
-
-### Spinner Props
-
-| Prop    | Type                                                          | Default    |
-| ------- | ------------------------------------------------------------- | ---------- |
-| `color` | `"accent" \| "current" \| "danger" \| "success" \| "warning"` | `"accent"` |
-| `size`  | `"sm" \| "md" \| "lg" \| "xl"`                                 | `"md"`     |
 
 ## Differences from HeroUI React
 
