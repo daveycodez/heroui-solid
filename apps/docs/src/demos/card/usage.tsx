@@ -1,4 +1,4 @@
-import { Card } from "heroui-solid"
+import { Card, Link } from "heroui-solid"
 import CircleDollar from "~icons/gravity-ui/circle-dollar"
 
 export function CardUsage() {
@@ -17,14 +17,15 @@ export function CardUsage() {
         </Card.Description>
       </Card.Header>
       <Card.Footer>
-        <a
+        <Link
           aria-label="Go to Acme Creator Hub (opens in new tab)"
           href="https://heroui.com"
           rel="noopener noreferrer"
           target="_blank"
         >
-          Creator Hub ↗
-        </a>
+          Creator Hub
+          <Link.Icon aria-hidden="true" />
+        </Link>
       </Card.Footer>
     </Card>
   )

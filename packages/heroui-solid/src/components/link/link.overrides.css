@@ -1,0 +1,9 @@
+/* Kobalte stamps no data-focus-visible (React Aria does upstream), and the
+   stock :focus-visible:not(:focus) fallback never matches. */
+.link:focus-visible {
+  @apply status-focused;
+
+  .link__icon {
+    @apply opacity-100;
+  }
+}

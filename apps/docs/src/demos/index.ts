@@ -28,6 +28,10 @@ import { InputInSurface } from "./input/in-surface"
 import { InputTypes } from "./input/types"
 import { InputVariants } from "./input/variants"
 import { LabelBasic } from "./label/basic"
+import { LinkCustomIcon } from "./link/custom-icon"
+import { LinkIconPlacement } from "./link/icon-placement"
+import { LinkUnderlineAndOffset } from "./link/underline-and-offset"
+import { LinkUsage } from "./link/usage"
 import { SelectControlled } from "./select/controlled"
 import { SelectCustomIndicator } from "./select/custom-indicator"
 import { SelectDisabled } from "./select/disabled"
@@ -92,6 +96,10 @@ export const demos: Record<string, Component> = {
   "input-variants": InputVariants,
   "input-in-surface": InputInSurface,
   "label-basic": LabelBasic,
+  "link-usage": LinkUsage,
+  "link-custom-icon": LinkCustomIcon,
+  "link-icon-placement": LinkIconPlacement,
+  "link-underline-and-offset": LinkUnderlineAndOffset,
   "select-usage": SelectUsage,
   "select-multiple": SelectMultiple,
   "select-disabled-options": SelectDisabledOptions,
