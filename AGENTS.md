@@ -246,8 +246,13 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   search bar, so `src/theme/header.tsx` is a copy of solidbase's Header
   (reusing its module CSS from the package) registered via the same
   components provider as ThemeSelector; the search cluster layout lives in
-  docs-theme.css, the trigger mirrors fumadocs' LargeSearchToggle markup with
-  heroui tokens. The ⌘K dialog is Kobalte Dialog with `preventScroll={false}`
+  docs-theme.css, and the trigger replicates heroui.com's own unlayered
+  `#nd-subnav [data-search-full]` override of the fumadocs base classes —
+  borderless field-token pill, text-only hover — not the bordered fumadocs
+  defaults the markup's class list suggests (docs-theme.css
+  `.search-toggle`; the field tokens ship in our @heroui/styles runtime with
+  identical values). The ⌘K dialog is Kobalte Dialog with
+  `preventScroll={false}`
   + `PreventScroll` (exported from heroui-solid for this) and is closed during
   SSR, so it's hydration-inert.
 

@@ -54,18 +54,14 @@ export function SearchButton() {
   return (
     <button
       type="button"
-      class="my-auto inline-flex w-full max-w-sm items-center gap-2 rounded-xl border border-border bg-default-soft/50 p-1.5 ps-2.5 text-sm text-muted transition-colors hover:bg-default-soft hover:text-foreground"
+      class="search-toggle my-auto inline-flex w-full items-center gap-2 p-1.5 ps-2.5 text-sm transition-colors"
       onClick={() => setOpen(true)}
     >
       <Magnifier class="size-4" />
       Search
       <div class="ms-auto inline-flex gap-0.5">
-        <kbd class="rounded-md border border-border bg-background px-1.5">
-          ⌘
-        </kbd>
-        <kbd class="rounded-md border border-border bg-background px-1.5">
-          K
-        </kbd>
+        <kbd class="rounded-md">⌘</kbd>
+        <kbd class="rounded-md">K</kbd>
       </div>
     </button>
   )
@@ -76,7 +72,7 @@ export function SearchIconButton() {
     <button
       type="button"
       aria-label="Open search"
-      class="inline-flex items-center justify-center rounded-md p-2 text-muted transition-colors hover:bg-default-soft hover:text-foreground md:hidden"
+      class="search-toggle-icon inline-flex items-center justify-center rounded-md p-2 transition-colors md:hidden"
       onClick={() => setOpen(true)}
     >
       <Magnifier class="size-5" />

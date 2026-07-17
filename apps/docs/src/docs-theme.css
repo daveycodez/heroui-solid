@@ -66,6 +66,12 @@ body header {
   background: var(--background);
   border-bottom: 1px solid var(--separator);
 
+  /* Home page (frontmatter `layout: home`, stamped as data-home by
+   * theme/header.tsx): borderless header, like the official landing. */
+  &[data-home] {
+    border-bottom: none;
+  }
+
   & a {
     color: var(--muted);
 
@@ -86,6 +92,7 @@ body header a[class*="logo-link"] {
   gap: 0.5rem;
   font-weight: 700;
   color: var(--foreground);
+  white-space: nowrap;
 
   &:hover {
     color: var(--foreground);
@@ -108,21 +115,32 @@ body header a[class*="logo-link"] {
 
 /* Search cluster (theme/header.tsx + theme/search.tsx): the official docs
  * header centers the search bar between the logo cluster and the right-side
- * nav by giving both sides equal flex weight; the bar itself carries the
- * fumadocs LargeSearchToggle metrics (w-full max-w-sm) via utilities. */
-body header .header-start,
+ * cluster by giving both sides equal flex weight — desktop only; a zero
+ * flex-basis on mobile squeezes the logo into wrapping. The bar itself
+ * carries the fumadocs LargeSearchToggle metrics (w-full max-w-sm) via
+ * utilities. The header-end wrapper exists so the mobile search icon can sit
+ * beside solidbase's hamburger without being a .top-nav child (its module
+ * CSS hides every top-nav child but the hamburger below 500px). */
 body header .header-end {
-  flex: 1 1 0;
-  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.25rem;
 }
 
-body header .header-end {
-  justify-content: flex-end;
+@media (min-width: 768px) {
+  body header .header-start,
+  body header .header-end {
+    flex: 1 1 0;
+    min-width: 0;
+  }
 }
 
 body header .header-search {
   display: flex;
-  flex: 0 1 24rem;
+  /* Basis = the button's official 400px max plus the inline padding, so the
+   * bar actually reaches full width before the cluster starts shrinking. */
+  flex: 0 1 calc(400px + 2rem);
   justify-content: center;
   padding-inline: 1rem;
 }
@@ -131,6 +149,111 @@ body header .header-search {
   body header .header-search {
     display: none;
   }
+}
+
+/* Search trigger: heroui.com's own docs override of the fumadocs search bar
+ * (`#nd-subnav [data-search-full]` in their compiled CSS, unlayered so it
+ * beats the fumadocs base classes): a borderless field-styled pill —
+ * field-background at 80% in oklab, field shadow, field radius, dark-mode
+ * backdrop blur — all tokens our @heroui/styles runtime ships with identical
+ * values. Because those overrides out-cascade the layered hover utilities,
+ * only the text color changes on hover (fd-accent-foreground: #171717 light,
+ * #fff dark); the fill and kbds don't react. Kbds are likewise borderless,
+ * solid default (light) / surface (dark). */
+.search-toggle {
+  border: none;
+  cursor: pointer;
+  border-radius: var(--field-radius, calc(var(--radius) * 1.5));
+  /* Width and kbd padding live here, not as utilities — the utilities layer
+   * would beat the docs layer and block the [data-home] overrides below. */
+  max-width: 400px;
+  background: color-mix(
+    in oklab,
+    var(--field-background, var(--default)) 80%,
+    transparent
+  );
+  box-shadow: var(--field-shadow);
+  color: #737373;
+
+  &:hover {
+    color: #171717;
+  }
+
+  & kbd {
+    background: var(--default);
+    padding-inline: 0.375rem;
+  }
+}
+
+[data-theme*="dark"] .search-toggle {
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+
+  &:hover {
+    color: #fff;
+  }
+
+  & kbd {
+    background: var(--surface);
+  }
+}
+
+/* Home header variant, mirroring heroui.com's `#nd-nav [data-search-full]`
+ * override (vs the docs #nd-subnav one): right-aligned next to the GitHub
+ * button, 240px, `--default` fill with no field shadow or blur, and
+ * surface-filled text-xs kbds in both modes. */
+body header[data-home] .search-toggle {
+  max-width: 240px;
+  background: color-mix(in oklab, var(--default) 80%, transparent);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+
+  & kbd {
+    background: var(--surface);
+    padding-inline: 0.25rem;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 500;
+    color: var(--muted);
+  }
+}
+
+body header .header-home-search {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  body header .header-home-search {
+    display: flex;
+    flex: 0 1 240px;
+  }
+
+  /* Right-cluster spacing: gap-2, like the official headers (home cluster
+   * and docs subnav both use md:gap-2); solidbase's top-nav default is 1rem.
+   * Applied to both the wrapper (search ↔ GitHub on home) and top-nav
+   * (GitHub ↔ theme toggle) so the whole cluster spaces evenly. */
+  body header .header-end,
+  body header .header-end [class*="top-nav"] {
+    gap: 0.5rem;
+  }
+}
+
+/* Mobile icon trigger: the official SearchToggle — no fill or border at
+ * rest, same muted foreground, fd-accent fill on hover. */
+.search-toggle-icon {
+  color: #737373;
+  cursor: pointer;
+
+  &:hover {
+    background: #f9f9f9;
+    color: #171717;
+  }
+}
+
+[data-theme*="dark"] .search-toggle-icon:hover {
+  background: #2c2c2c;
+  color: #fff;
 }
 
 /* Theme switcher (theme/theme-toggle.tsx): official pill toggle metrics —
@@ -229,8 +352,12 @@ aside nav > ul > li > :is(button, span, div) {
 
 /* Official "On this page" panel: icon + muted title, 13px links hanging off
  * a faint left rail, active link in bright foreground, and a 1px thumb that
- * glides along the rail (element injected by theme/Layout.tsx). */
-article > aside nav {
+ * glides along the rail (element injected by theme/Layout.tsx).
+ * `:not([hidden])` is a pure specificity bump: it lifts every nested rule
+ * above the earlier header-section selectors (biome noDescendingSpecificity)
+ * without relying on source order against the sidebar rules, which also
+ * match these links via `aside nav li a`. */
+article > aside nav:not([hidden]) {
   position: relative;
 
   & > span {
@@ -257,7 +384,9 @@ article > aside nav {
       color-mix(in oklab, var(--foreground) 10%, transparent);
   }
 
-  & li > a {
+  /* Same story as the nav's :not([hidden]) — biome rates the nested
+   * fragment on its own, so the bump has to sit on the link too. */
+  & li > a:not([hidden]) {
     padding: 0.375rem 0.5rem 0.375rem 0.75rem;
     font-size: 13px;
     line-height: 1.5;
@@ -283,12 +412,13 @@ article > aside nav {
     }
   }
 
-  /* Depth indentation, official ps-3 / ps-6 / ps-9. */
-  & ol ol a {
+  /* Depth indentation, official ps-3 / ps-6 / ps-9. The :not([hidden])
+   * bump keeps these above the padded link rule, as before. */
+  & ol ol a:not([hidden]) {
     padding-left: 1.5rem;
   }
 
-  & ol ol ol a {
+  & ol ol ol a:not([hidden]) {
     padding-left: 2.25rem;
   }
 }

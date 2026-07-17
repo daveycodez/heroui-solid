@@ -44,6 +44,11 @@
   height: 2rem;
   border-radius: 1.5rem;
   background: transparent;
+  /* biome-ignore lint/complexity/noImportantStyles: EC's injected styles hide
+     the button behind `@media (hover)` rules up to (0,5,1) specificity
+     (`.frame:hover .copy button:not(:hover)`); the official docs keep the
+     copy button always visible, and only !important beats the :not(:hover)
+     state flips without replicating every EC selector. */
   opacity: 1 !important;
 }
 

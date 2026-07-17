@@ -52,9 +52,10 @@ export default function Header() {
     frontmatter()?.sidebar !== false && (sidebar()?.items.length ?? 0) > 0
   const hasToc = () =>
     frontmatter()?.toc !== false && (tocContent()?.length ?? 0) > 0
+  const isHome = () => frontmatter()?.layout === "home"
 
   return (
-    <header class={styles.header}>
+    <header class={styles.header} data-home={isHome() ? "" : undefined}>
       <div>
         <div class={`${styles["logo-cluster"]} header-start`}>
           <a
@@ -74,81 +75,90 @@ export default function Header() {
             <VersionSelector />
           </div>
         </div>
-        <div class="header-search">
-          <SearchButton />
-        </div>
-        <div class={`${styles["top-nav"]} header-end`}>
-          <Dialog open={navOpen()} onOpenChange={setNavOpen} modal={false}>
-            <Dialog.Trigger
-              type="button"
-              class={styles["mobile-nav-menu"]}
-              aria-label="Open navigation"
-            >
-              <IconMenuFill class={styles["menu-icon"]} />
-              <IconCloseFill class={styles["close-icon"]} />
-            </Dialog.Trigger>
-
-            <Dialog.Portal mount={navRef()}>
-              <Dialog.Content class={styles["nav-popup"]}>
-                <Show when={config().themeConfig?.nav}>
-                  {(nav) => (
-                    <For each={nav()}>
-                      {(item) => {
-                        const match = useMatch(() =>
-                          locale.applyPathPrefix(
-                            `${item.activeMatch ?? item.link}/*rest`
-                          )
-                        )
-
-                        return (
-                          <a
-                            class={styles.navLink}
-                            href={locale.applyPathPrefix(item.link)}
-                            data-matched={
-                              match() !== undefined ? true : undefined
-                            }
-                            onClick={() => setNavOpen(false)}
-                          >
-                            {item.text}
-                          </a>
-                        )
-                      }}
-                    </For>
-                  )}
-                </Show>
-                <div class={styles["nav-popup-selectors"]}>
-                  <LocaleSelector />
-                  <ThemeSelector />
-                </div>
-              </Dialog.Content>
-            </Dialog.Portal>
-          </Dialog>
-          <Show when={config().themeConfig?.nav}>
-            {(nav) => (
-              <For each={nav()}>
-                {(item) => {
-                  const match = useMatch(() =>
-                    locale.applyPathPrefix(
-                      `${item.activeMatch ?? item.link}/*rest`
-                    )
-                  )
-
-                  return (
-                    <a
-                      class={styles.navLink}
-                      href={locale.applyPathPrefix(item.link)}
-                      data-matched={match() !== undefined ? true : undefined}
-                    >
-                      {item.text}
-                    </a>
-                  )
-                }}
-              </For>
-            )}
+        <Show when={!isHome()}>
+          <div class="header-search">
+            <SearchButton />
+          </div>
+        </Show>
+        <div class="header-end">
+          <Show when={isHome()}>
+            <div class="header-home-search">
+              <SearchButton />
+            </div>
           </Show>
           <SearchIconButton />
-          <LocaleSelector />
-          <ThemeSelector />
+          <div class={styles["top-nav"]}>
+            <Dialog open={navOpen()} onOpenChange={setNavOpen} modal={false}>
+              <Dialog.Trigger
+                type="button"
+                class={styles["mobile-nav-menu"]}
+                aria-label="Open navigation"
+              >
+                <IconMenuFill class={styles["menu-icon"]} />
+                <IconCloseFill class={styles["close-icon"]} />
+              </Dialog.Trigger>
+
+              <Dialog.Portal mount={navRef()}>
+                <Dialog.Content class={styles["nav-popup"]}>
+                  <Show when={config().themeConfig?.nav}>
+                    {(nav) => (
+                      <For each={nav()}>
+                        {(item) => {
+                          const match = useMatch(() =>
+                            locale.applyPathPrefix(
+                              `${item.activeMatch ?? item.link}/*rest`
+                            )
+                          )
+
+                          return (
+                            <a
+                              class={styles.navLink}
+                              href={locale.applyPathPrefix(item.link)}
+                              data-matched={
+                                match() !== undefined ? true : undefined
+                              }
+                              onClick={() => setNavOpen(false)}
+                            >
+                              {item.text}
+                            </a>
+                          )
+                        }}
+                      </For>
+                    )}
+                  </Show>
+                  <div class={styles["nav-popup-selectors"]}>
+                    <LocaleSelector />
+                    <ThemeSelector />
+                  </div>
+                </Dialog.Content>
+              </Dialog.Portal>
+            </Dialog>
+            <Show when={config().themeConfig?.nav}>
+              {(nav) => (
+                <For each={nav()}>
+                  {(item) => {
+                    const match = useMatch(() =>
+                      locale.applyPathPrefix(
+                        `${item.activeMatch ?? item.link}/*rest`
+                      )
+                    )
+
+                    return (
+                      <a
+                        class={styles.navLink}
+                        href={locale.applyPathPrefix(item.link)}
+                        data-matched={match() !== undefined ? true : undefined}
+                      >
+                        {item.text}
+                      </a>
+                    )
+                  }}
+                </For>
+              )}
+            </Show>
+            <LocaleSelector />
+            <ThemeSelector />
+          </div>
         </div>
       </div>
 
