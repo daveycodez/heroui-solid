@@ -123,6 +123,27 @@ export default defineConfig(({ command }) => ({
         }
       }
     },
+    {
+      // The filesystem sidebar in solidbase.config.ts is computed once at
+      // config evaluation, so a page added or removed under docs/components
+      // never appears without a restart. Restart automatically on add/unlink
+      // (edits still HMR normally; frontmatter title changes still need a
+      // manual restart).
+      name: "docs-sidebar-restart",
+      apply: "serve",
+      configureServer(server) {
+        const dir = fileURLToPath(
+          new URL("./src/routes/docs/components", import.meta.url)
+        )
+        const onFile = (file: string) => {
+          if (file.startsWith(dir) && file.endsWith(".mdx")) {
+            server.restart()
+          }
+        }
+        server.watcher.on("add", onFile)
+        server.watcher.on("unlink", onFile)
+      }
+    },
     solidbase.plugin(solidbaseConfig),
     solidStart(solidbase.startConfig()),
     nitro({
