@@ -1,6 +1,6 @@
 import { Input, Label } from "heroui-solid"
 
-export function InputTypes() {
+export function Types() {
   return (
     <div class="flex w-80 flex-col gap-4">
       <div class="flex flex-col gap-1">

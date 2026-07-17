@@ -8,7 +8,7 @@ const states = [
   { id: "texas", name: "Texas" }
 ]
 
-export function SelectInSurface() {
+export function OnSurface() {
   return (
     <Surface
       style={{

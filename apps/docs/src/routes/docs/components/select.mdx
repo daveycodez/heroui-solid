@@ -14,9 +14,9 @@ import { Select } from "heroui-solid";
 
 ### Usage
 
-<ComponentPreview name="select-usage" />
+<ComponentPreview name="select-default" />
 
-```tsx file=../../../demos/select/usage.tsx title=""
+```tsx file=../../../demos/select/default.tsx title=""
 
 ```
 
@@ -48,7 +48,7 @@ export default () => (
 
 ### Multiple Select
 
-<ComponentPreview name="select-multiple" />
+<ComponentPreview name="select-multiple-select" />
 
 ```tsx
 <Select placeholder="Select countries" selectionMode="multiple">
@@ -58,7 +58,7 @@ export default () => (
 
 ### With Disabled Options
 
-<ComponentPreview name="select-disabled-options" />
+<ComponentPreview name="select-with-disabled-options" />
 
 ```tsx
 <Select disabledKeys={["cat", "kangaroo"]} placeholder="Select an animal">
@@ -125,7 +125,7 @@ The Select component supports two visual variants:
 
 When used inside a [Surface](/docs/components/surface) component, use `variant="secondary"` to apply the lower emphasis variant suitable for surface backgrounds.
 
-<ComponentPreview name="select-in-surface" />
+<ComponentPreview name="select-on-surface" />
 
 ### Disabled
 

@@ -1,6 +1,6 @@
 import { Button, Card, Input, Label, TextField } from "heroui-solid"
 
-export function CardWithForm() {
+export function WithForm() {
   const onSubmit = (event: SubmitEvent) => {
     event.preventDefault()
     alert("Form submitted successfully!")

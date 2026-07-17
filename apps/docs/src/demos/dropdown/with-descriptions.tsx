@@ -20,7 +20,7 @@ const iconStyle = {
 
 const textStyle = { display: "flex", "flex-direction": "column" } as const
 
-export function DropdownWithDescriptions() {
+export function WithDescriptions() {
   return (
     <Dropdown>
       <Dropdown.Trigger

@@ -7,7 +7,7 @@ const animals = [
   { id: "bird", name: "Bird" }
 ]
 
-export function SelectFullWidth() {
+export function FullWidth() {
   return (
     <div style={{ width: "400px", "max-width": "100%" }}>
       <Select fullWidth placeholder="Select one">

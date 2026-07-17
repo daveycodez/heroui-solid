@@ -1,6 +1,6 @@
 import { Input, Label, TextField } from "heroui-solid"
 
-export function TextFieldInputTypes() {
+export function InputTypes() {
   return (
     <div class="flex w-full max-w-64 flex-col gap-4">
       <TextField name="password">

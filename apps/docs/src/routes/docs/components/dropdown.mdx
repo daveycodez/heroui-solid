@@ -18,9 +18,9 @@ HeroUI React accepts a `Button` directly as the trigger; this port uses an expli
 `Dropdown.Trigger` (Kobalte's trigger is itself a button) — style it with
 `buttonVariants` for the Button look.
 
-<ComponentPreview name="dropdown-usage" />
+<ComponentPreview name="dropdown-default" />
 
-```tsx file=../../../demos/dropdown/usage.tsx title=""
+```tsx file=../../../demos/dropdown/default.tsx title=""
 
 ```
 
@@ -76,7 +76,7 @@ import SquarePlus from "~icons/gravity-ui/square-plus";
 
 ### With Disabled Items
 
-<ComponentPreview name="dropdown-disabled-items" />
+<ComponentPreview name="dropdown-with-disabled-items" />
 
 ```tsx
 <Dropdown.Menu disabledKeys={["delete-file"]} onAction={(key) => console.log(key)}>

@@ -9,7 +9,7 @@ const states = [
   { id: "texas", name: "Texas" }
 ]
 
-export function SelectCustomIndicator() {
+export function CustomIndicator() {
   return (
     <Select placeholder="Select one" style={{ width: "256px" }}>
       <Label>State</Label>

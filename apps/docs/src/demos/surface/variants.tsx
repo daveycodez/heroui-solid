@@ -1,6 +1,6 @@
 import { Surface } from "heroui-solid"
 
-export function SurfaceVariants() {
+export function Variants() {
   return (
     <div class="flex flex-col gap-4">
       <div class="flex flex-col gap-2">

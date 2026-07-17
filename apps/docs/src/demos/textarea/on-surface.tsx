@@ -1,6 +1,6 @@
 import { Surface, TextArea } from "heroui-solid"
 
-export function TextAreaInSurface() {
+export function OnSurface() {
   return (
     <Surface class="w-full rounded-3xl p-6">
       <TextArea

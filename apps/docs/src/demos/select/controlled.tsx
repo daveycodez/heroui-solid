@@ -10,7 +10,7 @@ const states = [
   { id: "pennsylvania", name: "Pennsylvania" }
 ]
 
-export function SelectControlled() {
+export function Controlled() {
   const [state, setState] = createSignal<string | null>("california")
   const selectedState = () => states.find((s) => s.id === state())
 

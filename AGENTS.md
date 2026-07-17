@@ -169,7 +169,18 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   registered in `src/demos/index.ts`, rendered via
   `<ComponentPreview name="component-demo" />` (same structure as official
   HeroUI docs; docs page content mirrors the official pages verbatim, adapted
-  only for documented API differences).
+  only for documented API differences). Demo file names, exports, and
+  registry keys mirror upstream exactly — check
+  `apps/docs/src/demos/en/<component>/` on the heroui `v3` branch before
+  naming anything. The file name is upstream's (`default.tsx`,
+  `on-surface.tsx`, `with-error.tsx` — not `usage.tsx`/`in-surface.tsx`), the
+  export is upstream's exact function name (`Variants`, `Default`,
+  `OnSurface` — including upstream's occasional prefixes like `SpinnerBasic`,
+  `LinkBasic`), and the registry key is `<component>-<file-stem>`
+  (`card-default`), same as upstream's `<ComponentPreview name>`. Function
+  names repeat across components, so `index.ts` aliases on import
+  (`import { Variants as CardVariants } from "./card/variants"`). Demos with
+  no upstream counterpart follow the same conventions.
 - **Component usage examples import the demo source — never inline it.** The
   ```` ```tsx ```` block under each `<ComponentPreview />` must be
   ```` ```tsx file=../../../demos/<component>/<demo>.tsx title="" ```` with an

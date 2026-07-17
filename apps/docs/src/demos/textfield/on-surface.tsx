@@ -7,7 +7,7 @@ import {
   TextField
 } from "heroui-solid"
 
-export function TextFieldInSurface() {
+export function OnSurface() {
   return (
     <Surface class="flex w-full min-w-[340px] flex-col gap-4 rounded-3xl p-6">
       <TextField name="name" variant="secondary">

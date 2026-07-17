@@ -1,7 +1,7 @@
 import { FieldError, Input, Label, TextField } from "heroui-solid"
 import { createSignal } from "solid-js"
 
-export function FieldErrorBasic() {
+export function Basic() {
   const [value, setValue] = createSignal("jr")
   const isInvalid = () => value().length > 0 && value().length < 3
 

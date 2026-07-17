@@ -10,7 +10,7 @@ const states = [
   { id: "washington", name: "Washington" }
 ]
 
-export function SelectUsage() {
+export function Default() {
   return (
     <Select class="w-[256px]" placeholder="Select one">
       <Label>State</Label>

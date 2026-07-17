@@ -1,7 +1,7 @@
 import { Description, TextArea } from "heroui-solid"
 import { createSignal } from "solid-js"
 
-export function TextAreaControlled() {
+export function Controlled() {
   const [value, setValue] = createSignal("")
 
   return (

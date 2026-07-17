@@ -1,6 +1,6 @@
 import { buttonVariants, Dropdown, Label } from "heroui-solid"
 
-export function DropdownDisabledItems() {
+export function Default() {
   return (
     <Dropdown>
       <Dropdown.Trigger
@@ -10,12 +10,12 @@ export function DropdownDisabledItems() {
         Actions
       </Dropdown.Trigger>
       <Dropdown.Popover>
-        <Dropdown.Menu
-          disabledKeys={["delete-file"]}
-          onAction={(key) => console.log(`Selected: ${key}`)}
-        >
+        <Dropdown.Menu onAction={(key) => console.log(`Selected: ${key}`)}>
           <Dropdown.Item id="new-file" textValue="New file">
             <Label>New file</Label>
+          </Dropdown.Item>
+          <Dropdown.Item id="copy-link" textValue="Copy link">
+            <Label>Copy link</Label>
           </Dropdown.Item>
           <Dropdown.Item id="edit-file" textValue="Edit file">
             <Label>Edit file</Label>

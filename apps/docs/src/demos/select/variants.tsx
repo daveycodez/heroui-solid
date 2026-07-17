@@ -6,7 +6,7 @@ const options = [
   { id: "option2", name: "Option 2" }
 ]
 
-export function SelectVariants() {
+export function Variants() {
   return (
     <div style={{ display: "flex", "flex-direction": "column", gap: "1rem" }}>
       <Select

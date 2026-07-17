@@ -1,6 +1,6 @@
 import { Input, Label } from "heroui-solid"
 
-export function LabelBasic() {
+export function Basic() {
   return (
     <div class="flex flex-col gap-1">
       <Label for="name">Name</Label>

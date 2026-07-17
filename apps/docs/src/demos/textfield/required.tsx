@@ -1,6 +1,6 @@
 import { Description, Input, Label, TextField } from "heroui-solid"
 
-export function TextFieldRequired() {
+export function Required() {
   return (
     <TextField isRequired class="w-full max-w-64" name="fullName">
       <Label>Full Name</Label>

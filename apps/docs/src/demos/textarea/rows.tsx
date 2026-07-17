@@ -1,6 +1,6 @@
 import { Label, TextArea } from "heroui-solid"
 
-export function TextAreaRows() {
+export function Rows() {
   return (
     <div class="flex w-96 flex-col gap-4">
       <div class="flex flex-col gap-2">

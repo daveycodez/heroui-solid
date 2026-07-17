@@ -1,7 +1,7 @@
 import { Description, Input, Label, TextArea, TextField } from "heroui-solid"
 import { createSignal } from "solid-js"
 
-export function TextFieldControlled() {
+export function Controlled() {
   const [name, setName] = createSignal("")
   const [bio, setBio] = createSignal("")
 

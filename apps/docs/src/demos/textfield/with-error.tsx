@@ -1,6 +1,6 @@
 import { FieldError, Input, Label, TextField } from "heroui-solid"
 
-export function TextFieldErrorMessage() {
+export function WithError() {
   return (
     <TextField isInvalid class="w-full max-w-64" name="email">
       <Label>Email</Label>

@@ -8,7 +8,7 @@ import {
 } from "heroui-solid"
 import { createSignal, Show } from "solid-js"
 
-export function TextFieldValidation() {
+export function Validation() {
   const [username, setUsername] = createSignal("")
   const [bio, setBio] = createSignal("")
 

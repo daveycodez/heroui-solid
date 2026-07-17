@@ -11,7 +11,7 @@ const iconStyle = {
   color: "var(--muted)"
 } as const
 
-export function DropdownWithIcons() {
+export function WithIcons() {
   return (
     <Dropdown>
       <Dropdown.Trigger

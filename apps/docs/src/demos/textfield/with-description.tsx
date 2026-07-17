@@ -1,6 +1,6 @@
 import { Description, Input, Label, TextField } from "heroui-solid"
 
-export function TextFieldWithDescription() {
+export function WithDescription() {
   return (
     <TextField class="w-full max-w-64" name="username">
       <Label>Username</Label>

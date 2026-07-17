@@ -1,6 +1,6 @@
 import { TextArea } from "heroui-solid"
 
-export function TextAreaBasic() {
+export function Basic() {
   return (
     <TextArea
       aria-label="Quick project update"

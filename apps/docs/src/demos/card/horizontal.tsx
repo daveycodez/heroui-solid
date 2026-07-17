@@ -1,7 +1,7 @@
 import { Button, Card } from "heroui-solid"
 import Xmark from "~icons/gravity-ui/xmark"
 
-export function CardHorizontal() {
+export function Horizontal() {
   return (
     <Card class="w-full items-stretch md:flex-row">
       <div class="relative h-[120px] w-[120px] shrink-0 overflow-hidden rounded-2xl">

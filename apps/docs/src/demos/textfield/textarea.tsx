@@ -1,6 +1,6 @@
 import { Description, Label, TextArea, TextField } from "heroui-solid"
 
-export function TextFieldTextArea() {
+export function TextAreaExample() {
   return (
     <TextField class="w-full max-w-64" name="message">
       <Label>Message</Label>

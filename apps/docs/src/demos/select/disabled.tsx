@@ -8,7 +8,7 @@ const states = [
   { id: "texas", name: "Texas" }
 ]
 
-export function SelectDisabled() {
+export function Disabled() {
   return (
     <Select
       defaultValue="california"

@@ -13,7 +13,7 @@ const countries = [
   { id: "iceland", name: "Iceland" }
 ]
 
-export function SelectMultiple() {
+export function MultipleSelect() {
   return (
     <Select
       placeholder="Select countries"

@@ -1,7 +1,7 @@
 import { Card, Link } from "heroui-solid"
 import CircleDollar from "~icons/gravity-ui/circle-dollar"
 
-export function CardUsage() {
+export function Default() {
   return (
     <Card class="w-[400px]">
       <CircleDollar

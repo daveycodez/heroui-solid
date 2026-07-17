@@ -1,7 +1,7 @@
 import { Input } from "heroui-solid"
 import { createSignal } from "solid-js"
 
-export function InputControlled() {
+export function Controlled() {
   const [value, setValue] = createSignal("heroui.com")
 
   return (

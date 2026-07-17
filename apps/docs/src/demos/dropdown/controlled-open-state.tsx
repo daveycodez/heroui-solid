@@ -1,7 +1,7 @@
 import { buttonVariants, Dropdown, Label } from "heroui-solid"
 import { createSignal } from "solid-js"
 
-export function DropdownControlledOpenState() {
+export function ControlledOpenState() {
   const [open, setOpen] = createSignal(false)
 
   return (

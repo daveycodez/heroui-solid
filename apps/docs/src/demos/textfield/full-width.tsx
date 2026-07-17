@@ -1,6 +1,6 @@
 import { FieldError, Input, Label, TextField } from "heroui-solid"
 
-export function TextFieldFullWidth() {
+export function FullWidth() {
   return (
     <div class="w-[400px] space-y-4">
       <TextField fullWidth name="name">

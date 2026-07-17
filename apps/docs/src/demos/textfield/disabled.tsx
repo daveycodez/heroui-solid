@@ -1,6 +1,6 @@
 import { Description, Input, Label, TextField } from "heroui-solid"
 
-export function TextFieldDisabled() {
+export function Disabled() {
   return (
     <TextField
       isDisabled

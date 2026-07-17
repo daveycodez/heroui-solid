@@ -1,6 +1,6 @@
 import { Card } from "heroui-solid"
 
-export function CardVariants() {
+export function Variants() {
   return (
     <div class="flex flex-col gap-4">
       <Card class="w-[320px]" variant="transparent">

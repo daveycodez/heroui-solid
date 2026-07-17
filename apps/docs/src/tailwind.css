@@ -20,3 +20,7 @@
  * package (see AGENTS.md). */
 @import "@heroui/styles/themes/shared/theme.css" theme(reference);
 @import "tailwindcss/utilities" layer(utilities);
+
+/* dark: keys off the docs theme attribute (substring: solidbase stamps
+ * "sdark" when following the OS), not prefers-color-scheme. */
+@custom-variant dark (&:where([data-theme*="dark"], [data-theme*="dark"] *));

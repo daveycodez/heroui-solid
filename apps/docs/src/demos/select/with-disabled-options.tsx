@@ -10,7 +10,7 @@ const animals = [
   { id: "tiger", name: "Tiger" }
 ]
 
-export function SelectDisabledOptions() {
+export function WithDisabledOptions() {
   return (
     <Select
       disabledKeys={["cat", "kangaroo"]}

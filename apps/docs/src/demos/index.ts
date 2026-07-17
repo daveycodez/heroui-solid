@@ -1,6 +1,7 @@
 import type { Component } from "solid-js"
 import { Basic } from "./button/basic"
 import { CustomElement } from "./button/custom-element"
+import { CustomVariants } from "./button/custom-variants"
 import { Disabled } from "./button/disabled"
 import { FullWidth } from "./button/full-width"
 import { IconOnly } from "./button/icon-only"
@@ -10,59 +11,59 @@ import { Sizes } from "./button/sizes"
 import { Social } from "./button/social"
 import { Variants } from "./button/variants"
 import { WithIcons } from "./button/with-icons"
-import { CardHorizontal } from "./card/horizontal"
-import { CardUsage } from "./card/usage"
-import { CardVariants } from "./card/variants"
-import { CardWithForm } from "./card/with-form"
-import { DescriptionBasic } from "./description/basic"
-import { DropdownControlledOpenState } from "./dropdown/controlled-open-state"
-import { DropdownDisabledItems } from "./dropdown/disabled-items"
-import { DropdownUsage } from "./dropdown/usage"
-import { DropdownWithDescriptions } from "./dropdown/with-descriptions"
-import { DropdownWithIcons } from "./dropdown/with-icons"
-import { FieldErrorBasic } from "./field-error/basic"
-import { InputBasic } from "./input/basic"
-import { InputControlled } from "./input/controlled"
-import { InputFullWidth } from "./input/full-width"
-import { InputInSurface } from "./input/in-surface"
-import { InputTypes } from "./input/types"
-import { InputVariants } from "./input/variants"
-import { LabelBasic } from "./label/basic"
+import { Default as CardDefault } from "./card/default"
+import { Horizontal as CardHorizontal } from "./card/horizontal"
+import { Variants as CardVariants } from "./card/variants"
+import { WithForm as CardWithForm } from "./card/with-form"
+import { Basic as DescriptionBasic } from "./description/basic"
+import { ControlledOpenState as DropdownControlledOpenState } from "./dropdown/controlled-open-state"
+import { Default as DropdownDefault } from "./dropdown/default"
+import { WithDescriptions as DropdownWithDescriptions } from "./dropdown/with-descriptions"
+import { WithDisabledItems as DropdownWithDisabledItems } from "./dropdown/with-disabled-items"
+import { WithIcons as DropdownWithIcons } from "./dropdown/with-icons"
+import { Basic as FieldErrorBasic } from "./field-error/basic"
+import { Basic as InputBasic } from "./input/basic"
+import { Controlled as InputControlled } from "./input/controlled"
+import { FullWidth as InputFullWidth } from "./input/full-width"
+import { OnSurface as InputOnSurface } from "./input/on-surface"
+import { Types as InputTypes } from "./input/types"
+import { Variants as InputVariants } from "./input/variants"
+import { Basic as LabelBasic } from "./label/basic"
+import { LinkBasic } from "./link/basic"
 import { LinkCustomElement } from "./link/custom-element"
 import { LinkCustomIcon } from "./link/custom-icon"
 import { LinkIconPlacement } from "./link/icon-placement"
 import { LinkUnderlineAndOffset } from "./link/underline-and-offset"
-import { LinkUsage } from "./link/usage"
-import { SelectControlled } from "./select/controlled"
-import { SelectCustomIndicator } from "./select/custom-indicator"
-import { SelectDisabled } from "./select/disabled"
-import { SelectDisabledOptions } from "./select/disabled-options"
-import { SelectFullWidth } from "./select/full-width"
-import { SelectInSurface } from "./select/in-surface"
-import { SelectMultiple } from "./select/multiple"
-import { SelectUsage } from "./select/usage"
-import { SelectVariants } from "./select/variants"
+import { Controlled as SelectControlled } from "./select/controlled"
+import { CustomIndicator as SelectCustomIndicator } from "./select/custom-indicator"
+import { Default as SelectDefault } from "./select/default"
+import { Disabled as SelectDisabled } from "./select/disabled"
+import { FullWidth as SelectFullWidth } from "./select/full-width"
+import { MultipleSelect as SelectMultipleSelect } from "./select/multiple-select"
+import { OnSurface as SelectOnSurface } from "./select/on-surface"
+import { Variants as SelectVariants } from "./select/variants"
+import { WithDisabledOptions as SelectWithDisabledOptions } from "./select/with-disabled-options"
 import { SpinnerBasic } from "./spinner/basic"
 import { SpinnerColors } from "./spinner/colors"
 import { SpinnerSizes } from "./spinner/sizes"
-import { SurfaceVariants } from "./surface/variants"
-import { TextAreaBasic } from "./textarea/basic"
-import { TextAreaControlled } from "./textarea/controlled"
-import { TextAreaFullWidth } from "./textarea/full-width"
-import { TextAreaInSurface } from "./textarea/in-surface"
-import { TextAreaRows } from "./textarea/rows"
-import { TextAreaVariants } from "./textarea/variants"
-import { TextFieldBasic } from "./textfield/basic"
-import { TextFieldControlled } from "./textfield/controlled"
-import { TextFieldDisabled } from "./textfield/disabled"
-import { TextFieldErrorMessage } from "./textfield/error-message"
-import { TextFieldFullWidth } from "./textfield/full-width"
-import { TextFieldInSurface } from "./textfield/in-surface"
-import { TextFieldInputTypes } from "./textfield/input-types"
-import { TextFieldRequired } from "./textfield/required"
-import { TextFieldTextArea } from "./textfield/textarea"
-import { TextFieldValidation } from "./textfield/validation"
-import { TextFieldWithDescription } from "./textfield/with-description"
+import { Variants as SurfaceVariants } from "./surface/variants"
+import { Basic as TextAreaBasic } from "./textarea/basic"
+import { Controlled as TextAreaControlled } from "./textarea/controlled"
+import { FullWidth as TextAreaFullWidth } from "./textarea/full-width"
+import { OnSurface as TextAreaOnSurface } from "./textarea/on-surface"
+import { Rows as TextAreaRows } from "./textarea/rows"
+import { Variants as TextAreaVariants } from "./textarea/variants"
+import { Basic as TextFieldBasic } from "./textfield/basic"
+import { Controlled as TextFieldControlled } from "./textfield/controlled"
+import { Disabled as TextFieldDisabled } from "./textfield/disabled"
+import { FullWidth as TextFieldFullWidth } from "./textfield/full-width"
+import { InputTypes as TextFieldInputTypes } from "./textfield/input-types"
+import { OnSurface as TextFieldOnSurface } from "./textfield/on-surface"
+import { Required as TextFieldRequired } from "./textfield/required"
+import { TextAreaExample as TextFieldTextArea } from "./textfield/textarea"
+import { Validation as TextFieldValidation } from "./textfield/validation"
+import { WithDescription as TextFieldWithDescription } from "./textfield/with-description"
+import { WithError as TextFieldWithError } from "./textfield/with-error"
 
 // Registry for <ComponentPreview name="..." /> in MDX pages. Follows the
 // official HeroUI docs structure (apps/docs/src/demos/<component>/<demo>.tsx,
@@ -79,15 +80,16 @@ export const demos: Record<string, Component> = {
   "button-disabled": Disabled,
   "button-social": Social,
   "button-custom-element": CustomElement,
-  "card-usage": CardUsage,
+  "button-custom-variants": CustomVariants,
+  "card-default": CardDefault,
   "card-variants": CardVariants,
   "card-horizontal": CardHorizontal,
   "card-with-form": CardWithForm,
   "description-basic": DescriptionBasic,
-  "dropdown-usage": DropdownUsage,
+  "dropdown-default": DropdownDefault,
   "dropdown-with-icons": DropdownWithIcons,
   "dropdown-with-descriptions": DropdownWithDescriptions,
-  "dropdown-disabled-items": DropdownDisabledItems,
+  "dropdown-with-disabled-items": DropdownWithDisabledItems,
   "dropdown-controlled-open-state": DropdownControlledOpenState,
   "field-error-basic": FieldErrorBasic,
   "input-basic": InputBasic,
@@ -95,21 +97,21 @@ export const demos: Record<string, Component> = {
   "input-controlled": InputControlled,
   "input-full-width": InputFullWidth,
   "input-variants": InputVariants,
-  "input-in-surface": InputInSurface,
+  "input-on-surface": InputOnSurface,
   "label-basic": LabelBasic,
-  "link-usage": LinkUsage,
+  "link-basic": LinkBasic,
   "link-custom-icon": LinkCustomIcon,
   "link-icon-placement": LinkIconPlacement,
   "link-underline-and-offset": LinkUnderlineAndOffset,
   "link-custom-element": LinkCustomElement,
-  "select-usage": SelectUsage,
-  "select-multiple": SelectMultiple,
-  "select-disabled-options": SelectDisabledOptions,
+  "select-default": SelectDefault,
+  "select-multiple-select": SelectMultipleSelect,
+  "select-with-disabled-options": SelectWithDisabledOptions,
   "select-custom-indicator": SelectCustomIndicator,
   "select-controlled": SelectControlled,
   "select-variants": SelectVariants,
   "select-full-width": SelectFullWidth,
-  "select-in-surface": SelectInSurface,
+  "select-on-surface": SelectOnSurface,
   "select-disabled": SelectDisabled,
   "spinner-basic": SpinnerBasic,
   "spinner-colors": SpinnerColors,
@@ -120,16 +122,16 @@ export const demos: Record<string, Component> = {
   "textarea-rows": TextAreaRows,
   "textarea-full-width": TextAreaFullWidth,
   "textarea-variants": TextAreaVariants,
-  "textarea-in-surface": TextAreaInSurface,
+  "textarea-on-surface": TextAreaOnSurface,
   "textfield-basic": TextFieldBasic,
   "textfield-with-description": TextFieldWithDescription,
   "textfield-required": TextFieldRequired,
   "textfield-validation": TextFieldValidation,
   "textfield-controlled": TextFieldControlled,
-  "textfield-error-message": TextFieldErrorMessage,
+  "textfield-with-error": TextFieldWithError,
   "textfield-disabled": TextFieldDisabled,
   "textfield-textarea": TextFieldTextArea,
   "textfield-input-types": TextFieldInputTypes,
   "textfield-full-width": TextFieldFullWidth,
-  "textfield-in-surface": TextFieldInSurface
+  "textfield-on-surface": TextFieldOnSurface
 }
