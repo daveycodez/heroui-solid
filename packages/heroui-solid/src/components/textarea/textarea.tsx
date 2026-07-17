@@ -26,7 +26,7 @@ const TextAreaRoot = (props: TextAreaRootProps) => {
   const [variantProps, local, rest] = splitProps(
     props,
     textAreaVariants.variantKeys,
-    ["class"]
+    ["class", "autoResize", "submitOnEnter"]
   )
   const field = useContext(FieldContext)
   const textFieldContext = useContext(TextFieldContext)
@@ -42,6 +42,8 @@ const TextAreaRoot = (props: TextAreaRootProps) => {
     <TextAreaPrimitive
       class={cn(textAreaVariants(resolvedVariants), local.class)}
       data-slot="textarea"
+      autoResize={local.autoResize}
+      submitOnEnter={local.submitOnEnter}
       {...(rest as TextAreaPrimitiveProps)}
     />
   ) : (
