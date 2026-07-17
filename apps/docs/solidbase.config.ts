@@ -72,6 +72,9 @@ const config: SolidBaseConfig<DefaultThemeConfig> = {
     toc: { minDepth: 2 }
   },
   themeConfig: {
+    // The Docs nav link lives in the logo cluster (theme/header-docs-link.tsx
+    // via the VersionSelector slot), not in themeConfig.nav — nav items
+    // render on the right side of the header.
     sidebar: {
       "/": [
         {

@@ -1,8 +1,5 @@
+import { Envelope, Globe, Plus, TrashBin } from "gravity-icons-solid"
 import { Button } from "heroui-solid"
-import Envelope from "~icons/gravity-ui/envelope"
-import Globe from "~icons/gravity-ui/globe"
-import Plus from "~icons/gravity-ui/plus"
-import TrashBin from "~icons/gravity-ui/trash-bin"
 
 export function WithIcons() {
   return (

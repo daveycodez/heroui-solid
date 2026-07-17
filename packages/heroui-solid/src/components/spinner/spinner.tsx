@@ -12,8 +12,12 @@ const SpinnerPrimitive = (props: SpinnerPrimitiveProps) => {
   const id = createUniqueId()
 
   return (
-    <svg data-slot="spinner-icon" viewBox="0 0 24 24" {...props}>
-      <title>Loading</title>
+    <svg
+      data-slot="spinner-icon"
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      {...props}
+    >
       <defs>
         <linearGradient
           id={`spinner-icon-def-1-${id}`}
@@ -73,14 +77,12 @@ const SpinnerRoot = (props: SpinnerRootProps) => {
   return (
     <span
       data-slot="spinner"
+      aria-label="Loading"
+      role="status"
       {...rest}
       class={cn(spinnerVariants(variantProps), local.class)}
     >
-      <SpinnerPrimitive
-        aria-hidden="true"
-        aria-label="Loading"
-        role="presentation"
-      />
+      <SpinnerPrimitive />
     </span>
   )
 }

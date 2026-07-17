@@ -1,6 +1,6 @@
+import { Paperclip } from "gravity-icons-solid"
 import { Button, Spinner } from "heroui-solid"
 import { createSignal } from "solid-js"
-import Paperclip from "~icons/gravity-ui/paperclip"
 
 export function LoadingState() {
   const [isLoading, setLoading] = createSignal(false)

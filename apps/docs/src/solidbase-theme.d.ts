@@ -7,3 +7,17 @@ declare module "@kobalte/solidbase/default-theme/Layout" {
   const Layout: (props: ParentProps) => JSX.Element
   export default Layout
 }
+
+// Mirrors dist/default-theme/context.d.ts (DefaultThemeComponentsProvider
+// only — the piece Layout.tsx uses to swap header component slots).
+declare module "@kobalte/solidbase/default-theme/context" {
+  import type { Component, JSX } from "solid-js"
+
+  const DefaultThemeComponentsProvider: (props: {
+    components?: Partial<Record<string, Component>>
+    force?: boolean
+    children?: JSX.Element
+  }) => JSX.Element
+
+  export { DefaultThemeComponentsProvider }
+}

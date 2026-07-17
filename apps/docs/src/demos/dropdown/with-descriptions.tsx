@@ -1,7 +1,5 @@
+import { FloppyDisk, FolderOpen, SquarePlus } from "gravity-icons-solid"
 import { buttonVariants, Description, Dropdown, Label } from "heroui-solid"
-import FloppyDisk from "~icons/gravity-ui/floppy-disk"
-import FolderOpen from "~icons/gravity-ui/folder-open"
-import SquarePlus from "~icons/gravity-ui/square-plus"
 
 const iconWrapStyle = {
   display: "flex",

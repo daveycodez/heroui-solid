@@ -1,6 +1,6 @@
+import { ChevronsExpandVertical } from "gravity-icons-solid"
 import { Label, ListBox, Select } from "heroui-solid"
 import { For } from "solid-js"
-import ChevronsExpandVertical from "~icons/gravity-ui/chevrons-expand-vertical"
 
 const states = [
   { id: "florida", name: "Florida" },

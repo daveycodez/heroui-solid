@@ -1,5 +1,5 @@
+import { CircleDollar } from "gravity-icons-solid"
 import { Card, Link } from "heroui-solid"
-import CircleDollar from "~icons/gravity-ui/circle-dollar"
 
 export function Default() {
   return (

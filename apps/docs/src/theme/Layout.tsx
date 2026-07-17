@@ -1,6 +1,10 @@
 import { useCurrentPageData } from "@kobalte/solidbase/client"
+import { DefaultThemeComponentsProvider } from "@kobalte/solidbase/default-theme/context"
 import DefaultLayout from "@kobalte/solidbase/default-theme/Layout"
 import { createEffect, onCleanup } from "solid-js"
+import HeaderDocsLink from "./header-docs-link"
+import HeaderGithubButton from "./header-github-button"
+import ThemeToggle from "./theme-toggle"
 
 // Wraps the default solidbase layout to give the "On This Page" panel the
 // official HeroUI docs behavior: a 1px foreground thumb that glides along
@@ -95,5 +99,21 @@ export default function Layout(
     requestAnimationFrame(() => requestAnimationFrame(attachTocSpy))
   })
   onCleanup(() => detach?.())
-  return <DefaultLayout {...props} />
+  // `force` makes this outer provider win over the defaults DefaultLayout
+  // registers. ThemeSelector becomes the official-style pill toggle;
+  // VersionSelector and LocaleSelector are empty slots in our setup (no
+  // version axis, single locale), reused as the only mount points solidbase
+  // offers next to the logo (Docs link) and on the right (GitHub button).
+  return (
+    <DefaultThemeComponentsProvider
+      components={{
+        ThemeSelector: ThemeToggle,
+        VersionSelector: HeaderDocsLink,
+        LocaleSelector: HeaderGithubButton
+      }}
+      force
+    >
+      <DefaultLayout {...props} />
+    </DefaultThemeComponentsProvider>
+  )
 }

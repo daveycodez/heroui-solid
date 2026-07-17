@@ -1,7 +1,5 @@
+import { Ellipsis, Gear, TrashBin } from "gravity-icons-solid"
 import { Button } from "heroui-solid"
-import Ellipsis from "~icons/gravity-ui/ellipsis"
-import Gear from "~icons/gravity-ui/gear"
-import TrashBin from "~icons/gravity-ui/trash-bin"
 
 export function IconOnly() {
   return (

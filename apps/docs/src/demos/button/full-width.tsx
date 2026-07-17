@@ -1,5 +1,5 @@
+import { Plus } from "gravity-icons-solid"
 import { Button } from "heroui-solid"
-import Plus from "~icons/gravity-ui/plus"
 
 export function FullWidth() {
   return (

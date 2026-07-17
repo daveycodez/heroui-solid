@@ -1,5 +1,5 @@
+import { Xmark } from "gravity-icons-solid"
 import { Button, Card } from "heroui-solid"
-import Xmark from "~icons/gravity-ui/xmark"
 
 export function Horizontal() {
   return (

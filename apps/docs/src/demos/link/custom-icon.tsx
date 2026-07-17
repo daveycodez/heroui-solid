@@ -1,6 +1,5 @@
+import { ArrowUpRightFromSquare, Link as LinkIcon } from "gravity-icons-solid"
 import { Link } from "heroui-solid"
-import ArrowUpRightFromSquare from "~icons/gravity-ui/arrow-up-right-from-square"
-import LinkIcon from "~icons/gravity-ui/link"
 
 export function LinkCustomIcon() {
   return (

@@ -1,8 +1,10 @@
+import {
+  FloppyDisk,
+  FolderOpen,
+  SquarePlus,
+  TrashBin
+} from "gravity-icons-solid"
 import { buttonVariants, Dropdown, Label } from "heroui-solid"
-import FloppyDisk from "~icons/gravity-ui/floppy-disk"
-import FolderOpen from "~icons/gravity-ui/folder-open"
-import SquarePlus from "~icons/gravity-ui/square-plus"
-import TrashBin from "~icons/gravity-ui/trash-bin"
 
 const iconStyle = {
   width: "1rem",
