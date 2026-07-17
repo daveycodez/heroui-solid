@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render } from "@solidjs/testing-library"
-import { afterEach, describe, expect, it, vi } from "vitest"
+
+import { fireEvent, render } from "@solidjs/testing-library"
+import { describe, expect, it, vi } from "vitest"
+import { classSet } from "../../test/utils"
 import { LabelRoot } from "../label/label"
 import {
   DropdownItem,
@@ -9,9 +11,6 @@ import {
   DropdownRoot,
   DropdownTrigger
 } from "./dropdown"
-
-const classSet = (classes: string) =>
-  new Set(classes.split(/\s+/).filter(Boolean))
 
 const Anatomy = (
   props: Parameters<typeof DropdownRoot>[0] & {
@@ -42,10 +41,6 @@ const Anatomy = (
 )
 
 describe("Dropdown", () => {
-  // The popover renders into document.body via a portal, so dispose each
-  // render to keep document-level queries from hitting stale content.
-  afterEach(cleanup)
-
   it("renders a button trigger with BEM classes and stays closed", () => {
     const { container } = render(() => <Anatomy />)
     const trigger = container.querySelector(
@@ -131,6 +126,33 @@ describe("Dropdown", () => {
     ) as HTMLElement
     expect(danger.getAttribute("aria-disabled")).toBe("true")
     expect(danger.hasAttribute("data-disabled")).toBe(true)
+  })
+
+  it("stamps data-placement for the default bottom placement", () => {
+    render(() => <Anatomy defaultOpen />)
+    const popover = document.querySelector(
+      "[data-slot=dropdown-popover]"
+    ) as HTMLElement
+    expect(popover.getAttribute("data-placement")).toBe("bottom")
+  })
+
+  it("stamps the placement side requested on the popover", () => {
+    render(() => (
+      <DropdownRoot defaultOpen>
+        <DropdownTrigger aria-label="Menu">Actions</DropdownTrigger>
+        <DropdownPopover placement="top-start">
+          <DropdownMenu>
+            <DropdownItem id="new-file" textValue="New file">
+              <LabelRoot>New file</LabelRoot>
+            </DropdownItem>
+          </DropdownMenu>
+        </DropdownPopover>
+      </DropdownRoot>
+    ))
+    const popover = document.querySelector(
+      "[data-slot=dropdown-popover]"
+    ) as HTMLElement
+    expect(popover.getAttribute("data-placement")).toBe("top")
   })
 
   it("supports controlled open state", () => {

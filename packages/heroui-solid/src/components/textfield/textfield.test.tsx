@@ -1,15 +1,14 @@
 // @vitest-environment jsdom
+
 import { fireEvent, render } from "@solidjs/testing-library"
 import { describe, expect, it, vi } from "vitest"
+import { classSet } from "../../test/utils"
 import { DescriptionRoot } from "../description/description"
 import { FieldErrorRoot } from "../field-error/field-error"
 import { InputRoot } from "../input/input"
 import { LabelRoot } from "../label/label"
 import { TextAreaRoot } from "../textarea/textarea"
 import { TextFieldRoot } from "./textfield"
-
-const classSet = (classes: string) =>
-  new Set(classes.split(/\s+/).filter(Boolean))
 
 const Anatomy = (props: Parameters<typeof TextFieldRoot>[0]) => (
   <TextFieldRoot {...props}>

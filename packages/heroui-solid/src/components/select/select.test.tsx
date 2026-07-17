@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render } from "@solidjs/testing-library"
-import { afterEach, describe, expect, it, vi } from "vitest"
+
+import { fireEvent, render } from "@solidjs/testing-library"
+import { describe, expect, it, vi } from "vitest"
+import { classSet } from "../../test/utils"
 import { LabelRoot } from "../label/label"
 import {
   ListBoxItem,
@@ -14,9 +16,6 @@ import {
   SelectTrigger,
   SelectValue
 } from "./select"
-
-const classSet = (classes: string) =>
-  new Set(classes.split(/\s+/).filter(Boolean))
 
 const Anatomy = (props: Parameters<typeof SelectRoot>[0]) => (
   <SelectRoot placeholder="Select one" {...props}>
@@ -50,10 +49,6 @@ const openWithKeyboard = (trigger: HTMLElement) => {
 }
 
 describe("Select", () => {
-  // The popover renders into document.body via a portal, so dispose each
-  // render to keep document-level queries from hitting stale content.
-  afterEach(cleanup)
-
   it("renders the closed anatomy with BEM classes and data-slots", () => {
     const { container } = render(() => <Anatomy />)
     const root = container.querySelector("[data-slot=select]") as HTMLElement
@@ -119,6 +114,36 @@ describe("Select", () => {
     expect(indicator.getAttribute("data-open")).toBe("true")
   })
 
+  it("stamps data-placement for the default bottom placement", () => {
+    render(() => <Anatomy defaultOpen />)
+    const popover = document.querySelector(
+      "[data-slot=select-popover]"
+    ) as HTMLElement
+    expect(popover.getAttribute("data-placement")).toBe("bottom")
+  })
+
+  it("stamps the placement side requested on the popover", () => {
+    render(() => (
+      <SelectRoot defaultOpen placeholder="Select one">
+        <SelectTrigger>
+          <SelectValue />
+          <SelectIndicator />
+        </SelectTrigger>
+        <SelectPopover placement="top-start">
+          <ListBoxRoot>
+            <ListBoxItem id="florida" textValue="Florida">
+              Florida
+            </ListBoxItem>
+          </ListBoxRoot>
+        </SelectPopover>
+      </SelectRoot>
+    ))
+    const popover = document.querySelector(
+      "[data-slot=select-popover]"
+    ) as HTMLElement
+    expect(popover.getAttribute("data-placement")).toBe("top")
+  })
+
   it("selects an item and reports the key through onChange", () => {
     const onChange = vi.fn()
     const { container } = render(() => <Anatomy onChange={onChange} />)
@@ -134,8 +159,7 @@ describe("Select", () => {
     fireEvent.keyDown(document.activeElement as HTMLElement, { key: "Enter" })
 
     expect(onChange).toHaveBeenCalledTimes(1)
-    const selectedKey = onChange.mock.calls[0][0]
-    expect(typeof selectedKey).toBe("string")
+    expect(onChange.mock.calls[0][0]).toBe("texas")
 
     const value = container.querySelector(
       "[data-slot=select-value]"
@@ -179,7 +203,7 @@ describe("Select", () => {
     fireEvent.keyDown(document.activeElement as HTMLElement, { key: "Enter" })
 
     expect(onChange).toHaveBeenCalledTimes(1)
-    expect(Array.isArray(onChange.mock.calls[0][0])).toBe(true)
+    expect(onChange.mock.calls[0][0]).toEqual(["texas"])
   })
 
   it("marks disabled keys on the rendered items", () => {

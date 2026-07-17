@@ -31,6 +31,13 @@ jobs:
       - run: bun nx build docs
         env:
           DOCS_BASE_PATH: /${{ github.event.repository.name }}/
+      # Prerender failures fail the build (nitro failOnError), but a route
+      # that silently never prerendered wouldn't — smoke-check the outputs
+      # that have no crawlable link pointing at them.
+      - name: Smoke-check build output
+        run: |
+          test -f apps/docs/.output/public/index.html
+          test -f apps/docs/.output/public/api/search
       - uses: actions/upload-pages-artifact@v3
         with:
           path: apps/docs/.output/public

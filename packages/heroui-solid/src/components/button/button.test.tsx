@@ -1,11 +1,10 @@
 // @vitest-environment jsdom
+
 import { render } from "@solidjs/testing-library"
 import { createSignal, type JSX } from "solid-js"
 import { describe, expect, it, vi } from "vitest"
+import { classSet } from "../../test/utils"
 import { ButtonRoot } from "./button"
-
-const classSet = (classes: string) =>
-  new Set(classes.split(/\s+/).filter(Boolean))
 
 describe("Button", () => {
   it("renders a native button with BEM classes, data-slot and caller class last", () => {

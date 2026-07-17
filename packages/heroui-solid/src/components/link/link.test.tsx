@@ -1,10 +1,9 @@
 // @vitest-environment jsdom
+
 import { render } from "@solidjs/testing-library"
 import { describe, expect, it } from "vitest"
+import { classSet } from "../../test/utils"
 import { LinkIcon, LinkRoot } from "./link"
-
-const classSet = (classes: string) =>
-  new Set(classes.split(/\s+/).filter(Boolean))
 
 describe("Link", () => {
   it("renders an anchor with slot classes and href", () => {

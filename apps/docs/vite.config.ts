@@ -156,26 +156,70 @@ export default defineConfig(({ command }) => ({
           return
         }
         const baseNoSlash = base.replace(/\/$/, "")
+        // The patches string-match dist internals, so a dependency bump can
+        // reshape the matched text while keeping the base-path bug — turning
+        // a load-bearing patch (the manifest one builds every asset URL) into
+        // a silent no-op with a green deploy. Fail the build instead.
+        const assertPatched = (pattern: string | RegExp) => {
+          const found =
+            typeof pattern === "string"
+              ? code.includes(pattern)
+              : pattern.test(code)
+          if (typeof pattern !== "string") {
+            pattern.lastIndex = 0
+          }
+          if (!found) {
+            this.error(
+              `deploy-base-patches: ${pattern} matched nothing in ${id} — re-check the patch against the installed version`
+            )
+          }
+        }
         if (id.includes("prod-ssr-manifest")) {
+          assertPatched('join("/"')
+          assertPatched('"/" + asset')
           return code
             .replaceAll('join("/"', `join("${base}"`)
             .replaceAll('"/" + asset', `"${base}" + asset`)
         }
         if (id.includes("start") && id.includes("server/handler")) {
+          assertPatched("path.slice(import.meta.env.BASE_URL.length)")
           return code.replace(
             "path.slice(import.meta.env.BASE_URL.length)",
             `path.slice(${JSON.stringify(baseNoSlash)}.length)`
           )
         }
         if (id.includes("solidbase") && id.includes("client/sidebar")) {
+          // Slash-tolerant on both sides: Pages 301s extensionless URLs to
+          // the trailing-slash form (nitro writes …/button/index.html), so
+          // hard loads land with a pathname exact equality never matches.
+          assertPatched("location.pathname === item.link")
           return code.replace(
             "location.pathname === item.link",
-            `location.pathname === "${baseNoSlash}" + item.link`
+            `location.pathname.replace(/\\/+$/, "") === ("${baseNoSlash}" + item.link).replace(/\\/+$/, "")`
           )
         }
-        if (id.includes("solidbase") && id.includes("components/Article")) {
+        // Mobile drawer logo: Layout.jsx falls back to href="/" when no
+        // siteUrl is configured (the header logo goes through withBase; this
+        // upstream one doesn't). Scoped to .jsx — Layout.module.css shares
+        // the prefix.
+        if (
+          id.includes("solidbase") &&
+          id.includes("default-theme/Layout.jsx")
+        ) {
+          assertPatched('config().siteUrl || "/"')
           return code.replace(
-            /href=\{(customLink\(frontmatter\(\)\?\.(?:prev|next)\) \?\?\s*prevNext\.(?:prev|next)Link\(\)\.link)\}/g,
+            'config().siteUrl || "/"',
+            `config().siteUrl || "${base}"`
+          )
+        }
+        // Scoped to the .jsx module: Article.module.css shares the prefix
+        // and must keep passing through untouched (and unasserted).
+        if (id.includes("solidbase") && id.includes("components/Article.jsx")) {
+          const prevNextHref =
+            /href=\{(customLink\(frontmatter\(\)\?\.(?:prev|next)\) \?\?\s*prevNext\.(?:prev|next)Link\(\)\.link)\}/g
+          assertPatched(prevNextHref)
+          return code.replace(
+            prevNextHref,
             (_, expr) => `href={"${baseNoSlash}" + (${expr})}`
           )
         }
@@ -235,7 +279,11 @@ export default defineConfig(({ command }) => ({
         // Explicit routes replace the crawler's default "/" start point, so
         // it must be listed alongside the search index (which is fetched,
         // never linked, and thus undiscoverable by crawling).
-        routes: ["/", "/api/search"]
+        routes: ["/", "/api/search"],
+        // Nitro defaults this off: a route that 404s/throws is logged, its
+        // file omitted, and the build still exits 0 — CI would deploy a
+        // partial site.
+        failOnError: true
       }
     })
   ]

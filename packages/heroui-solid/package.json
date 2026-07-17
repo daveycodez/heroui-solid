@@ -60,6 +60,8 @@
     "dev:css": "tailwindcss -i src/styles/styles.css -o dist/styles.css --watch",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
+    "prepack": "cp ../../README.md README.md",
+    "postpack": "rm -f README.md",
     "check:publish": "publint && attw --pack . --profile esm-only --ignore-rules internal-resolution-error --entrypoints ."
   },
   "peerDependencies": {

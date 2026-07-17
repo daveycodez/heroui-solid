@@ -8,6 +8,7 @@
   "scripts": {
     "build": "nx run-many -t build",
     "test": "nx run-many -t test",
+    "test:all": "biome check . && nx run-many -t test,typecheck,ssr-test",
     "typecheck": "nx run-many -t typecheck",
     "lint": "biome check .",
     "format": "biome format --write ."

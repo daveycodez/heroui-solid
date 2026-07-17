@@ -1,4 +1,7 @@
-import { a as DefaultA } from "@kobalte/solidbase/default-theme/mdx-components"
+// The .jsx extension is required: solidbase's `./default-theme/*` export maps
+// verbatim (no extension probing in tsc), so the extensionless specifier fails
+// module resolution even though vite resolves it.
+import { a as DefaultA } from "@kobalte/solidbase/default-theme/mdx-components.jsx"
 import { Button } from "heroui-solid"
 import {
   type ComponentProps,

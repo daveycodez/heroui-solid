@@ -19,6 +19,13 @@ https://github.com/kobaltedev/kobalte), used under the MIT License.
 Kobalte is itself inspired by and portions are derived from Radix UI,
 React Aria, and Zag.js — see Kobalte's own LICENSE.md for details.
 
+This product includes a SolidJS port of the usePreventScroll scroll lock
+from React Aria / React Spectrum
+(https://github.com/adobe/react-spectrum), Copyright Adobe, used under the
+Apache License 2.0 (the ported prevent-scroll source file retains Adobe's
+license notice).
+
 Component prop names, variant names, and documentation examples are modeled
-on HeroUI v3's public API for compatibility purposes; the SolidJS
+on HeroUI v3's public API for compatibility purposes; except where noted
+above (in particular the React Aria-derived scroll lock), the SolidJS
 implementation is original to this project.

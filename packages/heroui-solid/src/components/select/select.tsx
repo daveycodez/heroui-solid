@@ -1,14 +1,8 @@
-import {
-  cn,
-  listboxItemVariants,
-  type SelectVariants,
-  selectVariants
-} from "@heroui/styles"
+import { cn, type SelectVariants, selectVariants } from "@heroui/styles"
 import type { PolymorphicProps } from "@kobalte/core/polymorphic"
 import {
   HiddenSelect as HiddenSelectPrimitive,
   Content as SelectContentPrimitive,
-  Item as SelectItemPrimitive,
   Portal as SelectPortalPrimitive,
   Root as SelectPrimitive,
   type SelectRootItemComponentProps,
@@ -16,15 +10,18 @@ import {
   Value as SelectValuePrimitive,
   useSelectContext
 } from "@kobalte/core/select"
+import { mergeRefs } from "@kobalte/utils"
 import {
   type Accessor,
   type ComponentProps,
   children,
   createComputed,
   createContext,
+  createEffect,
   createMemo,
   createSignal,
   type JSX,
+  onCleanup,
   onMount,
   Show,
   splitProps,
@@ -34,6 +31,12 @@ import {
 
 import { FieldContext } from "../../utils/field-context"
 import { PreventScroll } from "../../utils/prevent-scroll"
+import {
+  isListBoxRenderMarker,
+  ListBoxCollectionContext,
+  type ListBoxItemDescriptor,
+  ListBoxItemView
+} from "../list-box/list-box"
 import { SurfaceContext } from "../surface/surface"
 
 type Key = string
@@ -41,41 +44,24 @@ type Key = string
 type SelectPrimitiveProps = ComponentProps<typeof SelectPrimitive>
 type SelectPopoverPlacement = SelectPrimitiveProps["placement"]
 
+// The popper writes its transform origin opposite the resolved side.
+const SIDE_FROM_ORIGIN: Record<string, string> = {
+  top: "bottom",
+  bottom: "top",
+  left: "right",
+  right: "left"
+}
+
 /* -------------------------------------------------------------------------------------------------
  * Select Context
  * -----------------------------------------------------------------------------------------------*/
-interface ListBoxItemDescriptor {
-  id: Key
-  textValue: string
-  disabled: boolean
-  variant?: "default" | "danger"
-  class?: string
-  render: () => JSX.Element
-}
-
 type SelectContextValue = {
   slots?: ReturnType<typeof selectVariants>
-  setItems?: (items: ListBoxItemDescriptor[]) => void
   setPlacement?: (placement: SelectPopoverPlacement) => void
   mounted?: Accessor<boolean>
 }
 
 const SelectContext = createContext<SelectContextValue>({})
-
-// The ListBox resolves to this marker instead of JSX: popover children are
-// resolved eagerly (items must register during render), and real JSX would
-// create the closed listbox DOM during SSR/hydration (see AGENTS.md).
-const LIST_BOX_RENDER = Symbol("heroui-solid.list-box-render")
-
-interface ListBoxRenderMarker {
-  [LIST_BOX_RENDER]: true
-  render: () => JSX.Element
-}
-
-const isListBoxRenderMarker = (value: unknown): value is ListBoxRenderMarker =>
-  typeof value === "object" &&
-  value !== null &&
-  LIST_BOX_RENDER in (value as Record<PropertyKey, unknown>)
 
 /* -------------------------------------------------------------------------------------------------
  * Select Root
@@ -153,22 +139,7 @@ const SelectRoot = <T extends ValidComponent = "div">(
 
   const itemComponent = (
     itemProps: SelectRootItemComponentProps<ListBoxItemDescriptor>
-  ) => {
-    const descriptor = () => itemProps.item.rawValue
-    const itemSlots = createMemo(() =>
-      listboxItemVariants({ variant: descriptor().variant ?? "default" })
-    )
-
-    return (
-      <SelectItemPrimitive
-        class={cn(itemSlots().item(), descriptor().class)}
-        data-slot="list-box-item"
-        item={itemProps.item}
-      >
-        {descriptor().render()}
-      </SelectItemPrimitive>
-    )
-  }
+  ) => <ListBoxItemView item={itemProps.item} />
 
   return (
     <SelectPrimitive<ListBoxItemDescriptor>
@@ -190,6 +161,10 @@ const SelectRoot = <T extends ValidComponent = "div">(
       }
       onChange={handleChange}
       placement={placement()}
+      // Kobalte defaults sameWidth: true (pins the popover to the trigger's
+      // exact width); upstream only enforces a min-width, so long labels
+      // widen the popover instead of wrapping (see select.overrides.css).
+      sameWidth={false}
       itemComponent={itemComponent}
       validationState={local.isInvalid ? "invalid" : undefined}
       disabled={local.isDisabled}
@@ -207,18 +182,19 @@ const SelectRoot = <T extends ValidComponent = "div">(
             get slots() {
               return slots()
             },
-            setItems,
             setPlacement,
             mounted
           }}
         >
-          {/* Client-only: it renders an <option> per item, but items register
-              after Kobalte snapshots them on the server (SSR memos never
-              re-run), so hydrating it desyncs hydration keys (see AGENTS.md). */}
-          <Show when={mounted()}>
-            <HiddenSelectPrimitive />
-          </Show>
-          {local.children}
+          <ListBoxCollectionContext.Provider value={setItems}>
+            {/* Client-only: it renders an <option> per item, but items register
+                after Kobalte snapshots them on the server (SSR memos never
+                re-run), so hydrating it desyncs hydration keys (see AGENTS.md). */}
+            <Show when={mounted()}>
+              <HiddenSelectPrimitive />
+            </Show>
+            {local.children}
+          </ListBoxCollectionContext.Provider>
         </SelectContext.Provider>
       </FieldContext.Provider>
     </SelectPrimitive>
@@ -281,7 +257,20 @@ const SelectValue = <T extends ValidComponent = "span">(
       {(state) => {
         const body = local.children
         if (typeof body === "function") {
-          return body(state)
+          // Same mounted mirror as the default text path below — custom
+          // children reading selection state mid-hydration hit the same
+          // dropped-DOM-write / mismatch failure (see AGENTS.md).
+          const mounted = context.mounted
+          if (!mounted) {
+            return body(state)
+          }
+          return body({
+            selectedOption: () =>
+              mounted() ? state.selectedOption() : undefined,
+            selectedOptions: () => (mounted() ? state.selectedOptions() : []),
+            remove: state.remove,
+            clear: state.clear
+          })
         }
         if (body != null) {
           return body
@@ -320,18 +309,13 @@ const IconChevronDown = (props: ComponentProps<"svg">) => (
   </svg>
 )
 
-interface SelectIndicatorProps {
+interface SelectIndicatorProps extends ComponentProps<"svg"> {
   class?: string
   children?: JSX.Element
 }
 
-const SelectIndicator = <T extends ValidComponent = "svg">(
-  props: PolymorphicProps<T, SelectIndicatorProps>
-) => {
-  const [local, rest] = splitProps(props as SelectIndicatorProps, [
-    "class",
-    "children"
-  ])
+const SelectIndicator = (props: SelectIndicatorProps) => {
+  const [local, rest] = splitProps(props, ["class", "children"])
   const context = useContext(SelectContext)
   const selectContext = useSelectContext()
   const resolved = children(() => local.children)
@@ -352,7 +336,7 @@ const SelectIndicator = <T extends ValidComponent = "svg">(
         class={cn(context.slots?.indicator(), local.class)}
         data-open={selectContext.isOpen() ? "true" : undefined}
         data-slot="select-indicator"
-        {...rest}
+        {...(rest as unknown as ComponentProps<"span">)}
       >
         {resolved()}
       </span>
@@ -372,17 +356,39 @@ interface SelectPopoverProps {
 const SelectPopover = <T extends ValidComponent = "div">(
   props: PolymorphicProps<T, SelectPopoverProps>
 ) => {
-  const [local, rest] = splitProps(props as SelectPopoverProps, [
-    "class",
-    "children",
-    "placement"
-  ])
+  const [local, rest] = splitProps(
+    props as SelectPopoverProps & {
+      ref?: HTMLElement | ((el: HTMLElement) => void)
+    },
+    ["class", "children", "placement", "ref"]
+  )
   const context = useContext(SelectContext)
+  const [contentEl, setContentEl] = createSignal<HTMLElement>()
+  const [resolvedSide, setResolvedSide] = createSignal<string>()
 
   createComputed(() => {
     if (local.placement) {
       context.setPlacement?.(local.placement)
     }
+  })
+
+  // Kobalte's Select omits onCurrentPlacementChange, so the popper-resolved
+  // side (which reflects viewport flips) is only observable through the
+  // transform-origin var written on the positioner — mirror it into the
+  // data-placement attribute upstream's directional animations key off.
+  createEffect(() => {
+    const positioner = contentEl()?.parentElement
+    if (!positioner) return
+    const update = () => {
+      const origin = positioner.style.getPropertyValue(
+        "--kb-popper-content-transform-origin"
+      )
+      setResolvedSide(SIDE_FROM_ORIGIN[origin.trim().split(" ")[0] ?? ""])
+    }
+    update()
+    const observer = new MutationObserver(update)
+    observer.observe(positioner, { attributeFilter: ["style"] })
+    onCleanup(() => observer.disconnect())
   })
 
   // Resolve children eagerly so the ListBox registers its items before the
@@ -395,8 +401,12 @@ const SelectPopover = <T extends ValidComponent = "div">(
     <SurfaceContext.Provider value={{ variant: "default" }}>
       <SelectPortalPrimitive>
         <SelectContentPrimitive
+          ref={mergeRefs(setContentEl, local.ref)}
           class={cn(context.slots?.popover(), local.class)}
           data-slot="select-popover"
+          data-placement={
+            resolvedSide() ?? (local.placement ?? "bottom").split("-")[0]
+          }
           {...rest}
         >
           <PreventScroll />
@@ -412,8 +422,6 @@ const SelectPopover = <T extends ValidComponent = "div">(
 }
 
 export type {
-  ListBoxItemDescriptor,
-  ListBoxRenderMarker,
   SelectContextValue,
   SelectIndicatorProps,
   SelectPopoverProps,
@@ -426,7 +434,6 @@ export type {
  * Exports
  * -----------------------------------------------------------------------------------------------*/
 export {
-  LIST_BOX_RENDER,
   SelectContext,
   SelectIndicator,
   SelectPopover,

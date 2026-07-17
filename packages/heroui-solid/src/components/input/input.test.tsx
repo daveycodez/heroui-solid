@@ -1,10 +1,9 @@
 // @vitest-environment jsdom
+
 import { render } from "@solidjs/testing-library"
 import { describe, expect, it } from "vitest"
+import { classSet } from "../../test/utils"
 import { InputRoot } from "./input"
-
-const classSet = (classes: string) =>
-  new Set(classes.split(/\s+/).filter(Boolean))
 
 describe("Input", () => {
   it("renders a plain input with BEM classes outside a field", () => {

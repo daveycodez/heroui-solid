@@ -19,13 +19,34 @@
 
 /* Kobalte signals presence with data-expanded/data-closed instead of React
    Aria's data-entering/data-exiting, and exposes the popper origin via a CSS
-   variable instead of --trigger-anchor-point. */
+   variable instead of --trigger-anchor-point. data-placement is stamped by
+   select.tsx from the popper-resolved side, mirroring React Aria. Upstream's
+   min-w-(--trigger-width) is a dead rule here (React Aria sets that var);
+   Kobalte stamps --kb-popper-anchor-width, bridged with sameWidth={false}
+   on the root so the popover is at least trigger-wide but can grow. */
 .select__popover {
   transform-origin: var(--kb-select-content-transform-origin);
+  min-width: var(--kb-popper-anchor-width);
 }
 
 .select__popover[data-expanded] {
-  @apply animate-in duration-150 ease-smooth fade-in-0 zoom-in-95 slide-in-from-top-1;
+  @apply animate-in duration-150 ease-smooth fade-in-0 zoom-in-95;
+
+  &[data-placement="top"] {
+    @apply slide-in-from-bottom-1;
+  }
+
+  &[data-placement="bottom"] {
+    @apply slide-in-from-top-1;
+  }
+
+  &[data-placement="left"] {
+    @apply slide-in-from-right-1;
+  }
+
+  &[data-placement="right"] {
+    @apply slide-in-from-left-1;
+  }
 }
 
 .select__popover[data-closed] {

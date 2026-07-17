@@ -23,20 +23,21 @@ const CardContext = createContext<CardContextValue>({})
 /* -------------------------------------------------------------------------------------------------
  * Card Root
  * -----------------------------------------------------------------------------------------------*/
-interface CardRootProps {
+interface CardRootProps extends CardVariants {
   children?: JSX.Element
   class?: string
-  variant?: CardVariants["variant"]
 }
 
 const CardRoot = <T extends ValidComponent = "div">(
   props: PolymorphicProps<T, CardRootProps>
 ) => {
-  const [local, rest] = splitProps(props as CardRootProps, ["class", "variant"])
-  const outerSurface = useContext(SurfaceContext)
-  const slots = createMemo(() =>
-    cardVariants({ variant: local.variant ?? "default" })
+  const [variantProps, local, rest] = splitProps(
+    props as CardRootProps,
+    cardVariants.variantKeys,
+    ["class"]
   )
+  const outerSurface = useContext(SurfaceContext)
+  const slots = createMemo(() => cardVariants(variantProps))
 
   return (
     <CardContext.Provider
@@ -51,9 +52,9 @@ const CardRoot = <T extends ValidComponent = "div">(
         value={{
           get variant() {
             // Transparent cards establish no surface (upstream skips the provider there).
-            return local.variant === "transparent"
+            return variantProps.variant === "transparent"
               ? outerSurface.variant
-              : (local.variant ?? "default")
+              : (variantProps.variant ?? "default")
           }
         }}
       >

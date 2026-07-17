@@ -298,13 +298,18 @@ body header .header-home-search {
 /* --- Sidebar ---------------------------------------------------------- */
 
 /* Official box model (measured on heroui.com): items sit flush inside the
- * column with uniform 8px padding — no nested indent, no overhang (the
- * section ul has overflow:hidden for its collapse animation, so anything
- * wider than the column gets its rounded corners clipped flat). Text
+ * column with uniform 8px padding — no nested indent, no overhang. Text
  * alignment comes from the heading carrying the same 8px inset. */
 aside nav ul ul {
   padding-left: 0;
   border-left: none;
+}
+
+/* Solidbase keeps overflow:hidden on the section ul for its height-collapse
+ * keyframes, but those are suppressed in app.css (sections snap), so all it
+ * does is crop the active card's ring/shadow at the flush column edges. */
+aside nav ul[id^="collapsible-"][id$="-content"] {
+  overflow: visible;
 }
 
 aside nav li a {

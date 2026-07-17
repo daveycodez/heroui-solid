@@ -1,0 +1,200 @@
+---
+title: ListBox
+---
+
+# ListBox
+
+A listbox displays a list of options and allows a user to select one or more of them.
+
+## Import
+
+```tsx
+import { ListBox } from "heroui-solid";
+```
+
+### Usage
+
+<ComponentPreview name="list-box-default" />
+
+```tsx file=../../../demos/list-box/default.tsx title=""
+
+```
+
+### Anatomy
+
+Import the ListBox component and access all parts using dot notation.
+
+```tsx
+import { ListBox, Label, Description } from "heroui-solid";
+
+export default () => (
+  <ListBox>
+    <ListBox.Item>
+      <Label />
+      <Description />
+      <ListBox.ItemIndicator />
+    </ListBox.Item>
+  </ListBox>
+);
+```
+
+### Multi Select
+
+<ComponentPreview name="list-box-multi-select" />
+
+```tsx
+<ListBox aria-label="Users" selectionMode="multiple">
+  ...
+</ListBox>
+```
+
+### With Disabled Items
+
+Disable individual items with `isDisabled`, or a set of items with `disabledKeys` on the root.
+
+```tsx
+<ListBox aria-label="Users" disabledKeys={["2"]}>
+  <ListBox.Item id="1" textValue="Bob">Bob</ListBox.Item>
+  <ListBox.Item id="2" textValue="Fred">Fred</ListBox.Item>
+  <ListBox.Item id="3" isDisabled textValue="Martha">Martha</ListBox.Item>
+</ListBox>
+```
+
+### Custom Check Icon
+
+The indicator only renders while its item is selected, so custom icons are passed as plain children.
+
+<ComponentPreview name="list-box-custom-check-icon" />
+
+```tsx
+import { Check } from "gravity-icons-solid";
+
+<ListBox.ItemIndicator>
+  <Check class="size-4" />
+</ListBox.ItemIndicator>
+```
+
+### Controlled
+
+<ComponentPreview name="list-box-controlled" />
+
+```tsx
+import { createSignal } from "solid-js";
+
+const [selected, setSelected] = createSignal<Set<string>>(new Set(["1"]));
+
+<ListBox
+  aria-label="Users"
+  selectedKeys={selected()}
+  selectionMode="multiple"
+  onSelectionChange={setSelected}
+>
+  ...
+</ListBox>
+```
+
+## Related Components
+
+- **Select**: Dropdown select control — `ListBox` and `ListBox.Item` also compose its options list
+- **Dropdown**: Menu of actions
+
+## Styling
+
+### Customizing the component classes
+
+To customize the ListBox component classes, you can use the `@layer components` directive.
+
+```css
+@layer components {
+  .list-box {
+    @apply rounded-lg border border-border bg-surface p-2;
+  }
+
+  .list-box-item {
+    @apply rounded px-2 py-1 cursor-pointer;
+  }
+
+  .list-box-item--danger {
+    @apply text-danger;
+  }
+
+  .list-box-item__indicator {
+    @apply text-accent;
+  }
+}
+```
+
+HeroUI follows the [BEM](https://getbem.com/) methodology to ensure component variants and states are reusable and easy to customize.
+
+### CSS Classes
+
+The ListBox component uses these CSS classes ([View source styles](https://github.com/heroui-inc/heroui/blob/v3/packages/styles/components/list-box.css)):
+
+#### Base Classes
+
+- `.list-box` - Base listbox container
+- `.list-box-item` - Individual listbox item
+- `.list-box-item__indicator` - Selection indicator icon
+
+#### Variant Classes
+
+- `.list-box-item--default` - Default item variant
+- `.list-box-item--danger` - Danger item variant
+
+### Interactive States
+
+- **Hover / keyboard highlight**: `:hover` or `[data-highlighted]` on item (Kobalte attribute)
+- **Focus**: `:focus-visible` on item (shows focus ring)
+- **Selected**: `[aria-selected="true"]` on item
+- **Disabled**: `[data-disabled]` on item (Kobalte attribute)
+
+## API Reference
+
+### ListBox Props
+
+| Prop                  | Type                               | Default    | Description                                             |
+| --------------------- | ---------------------------------- | ---------- | ------------------------------------------------------- |
+| `aria-label`          | `string`                           | -          | Accessibility label for the listbox                     |
+| `selectionMode`       | `"none" \| "single" \| "multiple"` | `"single"` | Selection behavior                                      |
+| `selectedKeys`        | `Iterable<string>`                 | -          | Controlled selected keys                                |
+| `defaultSelectedKeys` | `Iterable<string>`                 | -          | Initial selected keys                                   |
+| `onSelectionChange`   | `(keys: Set<string>) => void`      | -          | Handler called when selection changes                   |
+| `disabledKeys`        | `Iterable<string>`                 | -          | Keys of disabled items                                  |
+| `class`               | `string`                           | -          | Additional CSS classes                                  |
+| `children`            | `JSX.Element`                      | -          | ListBox items                                           |
+
+Inside a [Select](/docs/components/select), the selection props are ignored — the enclosing
+Select root owns the selection state.
+
+### ListBox.Item Props
+
+| Prop         | Type                    | Default     | Description                                             |
+| ------------ | ----------------------- | ----------- | ------------------------------------------------------- |
+| `id`         | `string`                | -           | Item key (required)                                     |
+| `textValue`  | `string`                | `id`        | Text used for typeahead                                 |
+| `isDisabled` | `boolean`               | `false`     | Whether the item is disabled                            |
+| `variant`    | `"default" \| "danger"` | `"default"` | Item visual variant                                     |
+| `class`      | `string`                | -           | Additional CSS classes                                  |
+| `children`   | `JSX.Element`           | -           | Item content                                            |
+
+### ListBox.ItemIndicator Props
+
+| Prop         | Type          | Default | Description                                          |
+| ------------ | ------------- | ------- | ---------------------------------------------------- |
+| `class`      | `string`      | -       | Additional CSS classes                               |
+| `children`   | `JSX.Element` | -       | Custom indicator content (defaults to the checkmark) |
+| `forceMount` | `boolean`     | -       | Render the indicator even while unselected           |
+
+## Differences from HeroUI React
+
+- Built on Kobalte's Listbox, which is data-driven: this port bridges the JSX item API
+  by collecting `ListBox.Item` descriptors and passing them as Kobalte options.
+- `ListBox.Section`, `Header`, and `Separator` are not ported yet — flat item lists only.
+- `onAction` is not ported (Kobalte's listbox has no action API), so
+  `selectionMode="none"` renders a non-interactive list.
+- `ListBox.ItemIndicator` takes plain children instead of a render function — it only
+  mounts while its item is selected (pass `forceMount` to keep it in the DOM).
+- Virtualization (`Virtualizer` / `ListLayout`) is not ported.
+- Selection is reported as Kobalte's `Set<string>` instead of React Aria's
+  `Selection` (`"all" | Set<Key>`), and the selection props are `selectedKeys` /
+  `defaultSelectedKeys` / `onSelectionChange` with string keys.

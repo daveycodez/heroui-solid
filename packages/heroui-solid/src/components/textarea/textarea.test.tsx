@@ -1,10 +1,9 @@
 // @vitest-environment jsdom
+
 import { render } from "@solidjs/testing-library"
 import { describe, expect, it } from "vitest"
+import { classSet } from "../../test/utils"
 import { TextAreaRoot } from "./textarea"
-
-const classSet = (classes: string) =>
-  new Set(classes.split(/\s+/).filter(Boolean))
 
 describe("TextArea", () => {
   it("renders a plain textarea with BEM classes outside a field", () => {

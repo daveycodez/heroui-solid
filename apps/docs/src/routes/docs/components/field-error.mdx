@@ -74,7 +74,7 @@ function EmailField() {
 | ------------ | ------------- | ------- | --------------------------------------------------------------- |
 | `class`      | `string`      | -       | Additional CSS classes                                          |
 | `children`   | `JSX.Element` | -       | Error message content                                           |
-| `forceMount` | `boolean`     | `false` | Render the error even while the field is valid (Kobalte extra)  |
+| `forceMount` | `boolean`     | `false` | Keep the element mounted while the field is valid; it stays hidden (no `data-visible`) until invalid, letting the reveal transition animate (Kobalte extra) |
 
 ## Differences from HeroUI React
 

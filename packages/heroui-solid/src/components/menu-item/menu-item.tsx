@@ -23,13 +23,11 @@ const MenuContext = createContext<MenuContextValue>({})
 /* -------------------------------------------------------------------------------------------------
  * Menu Item Root
  * -----------------------------------------------------------------------------------------------*/
-interface MenuItemRootProps {
+interface MenuItemRootProps extends MenuItemVariants {
   id: string
   textValue?: string
   isDisabled?: boolean
   onAction?: () => void
-  /** Visual variant. @default "default" */
-  variant?: MenuItemVariants["variant"]
   class?: string
   children?: JSX.Element
 }
@@ -37,18 +35,14 @@ interface MenuItemRootProps {
 const MenuItemRoot = <T extends ValidComponent = "div">(
   props: PolymorphicProps<T, MenuItemRootProps>
 ) => {
-  const [local, rest] = splitProps(props as MenuItemRootProps, [
-    "id",
-    "isDisabled",
-    "onAction",
-    "variant",
-    "class"
-  ])
+  const [variantProps, local, rest] = splitProps(
+    props as MenuItemRootProps,
+    menuItemVariants.variantKeys,
+    ["id", "isDisabled", "onAction", "class"]
+  )
   const menuContext = useContext(MenuContext)
 
-  const slots = createMemo(() =>
-    menuItemVariants({ variant: local.variant ?? "default" })
-  )
+  const slots = createMemo(() => menuItemVariants(variantProps))
   const disabledKeys = createMemo(() => new Set(menuContext.disabledKeys ?? []))
 
   const onSelect = () => {

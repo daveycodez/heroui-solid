@@ -43,9 +43,11 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   components, the same section banner comments where upstream has them,
   trailing `export {XRoot}` / `export type {XRootProps}`.
 - **Match upstream comment density** — which is near zero. No prop JSDoc
-  unless the upstream file has it; no explanatory prose. The only allowed
-  additions are one-liners guarding a necessary workaround (e.g. the
-  single-read children rule), with the full story in AGENTS.md, not the code.
+  unless the upstream file has it; no narrative prose. Necessary workaround
+  notes stay inline, kept tight, when they're specific to that component.
+  AGENTS.md carries the full story only for concerns that can affect other
+  components (e.g. the single-read children rule), with a one-liner in the
+  code pointing at it.
 - **index.ts uses the official compound layout**:
   `export const X = Object.assign(XRoot, { Root: XRoot })`, a merged
   `export type X = { Props: ComponentProps<typeof XRoot>; RootProps: ... }`
@@ -136,6 +138,18 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   keys ("Hydration Mismatch", then "template is not a function" cascades).
   Capture to a local first, or forward via a single-read `get children()` in
   `mergeProps` (see button.tsx).
+- **No component-level `children()` helper for conditionally rendered content.**
+  Server memos evaluate eagerly at creation while client memos stay lazy, so a
+  `children(() => props.children)` created during component setup resolves the
+  children during SSR even when the branch that would insert them never renders
+  (e.g. an unselected `ListBox.ItemIndicator` with a custom icon). The
+  server-side creation consumes hydration context ids the client never
+  consumes — every later element desyncs and hydration crashes with
+  `getNextElement()` / "template is not a function" (no "Hydration Mismatch"
+  line first). Fix: evaluate children only inside the conditionally rendered
+  position, with a single read (IIFE child in list-box.tsx
+  ListBoxItemIndicator). Helpers created and *always* read in render (Select's
+  indicator) are fine — both sides evaluate consistently.
 - **Never evaluate closed portal/popover content during SSR or hydration.**
   Content behind a closed Kobalte `Portal`/`Content` is not in the SSR
   payload, so any eager evaluation of it while hydrating creates DOM whose
@@ -150,7 +164,7 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   `allowDuplicateSelectionEvents: true`). The escape hatch: components inside
   the popover resolve to plain **marker objects**, not JSX — `ListBox.Item`
   yields an item descriptor, and `ListBox` itself yields a render marker
-  (`LIST_BOX_RENDER` in select.tsx) whose `render()` the popover only calls
+  (`LIST_BOX_RENDER` in list-box.tsx) whose `render()` the popover only calls
   inside the content, once it actually opens (client-side, post-hydration).
   Corollary: `Select.Popover` children must resolve to markers/descriptors —
   a bare `<div>` child would crash hydration again.
@@ -277,12 +291,40 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   transform (no-op when base is `/`): solid-start's prod SSR manifest and
   its `stripBaseUrl` off-by-one (API routes 404'd, so `/api/search`
   prerendered as an HTML shell), and solidbase's `usePrevNext`/Article
-  prev-next links. Re-check those patches when bumping `@solidjs/start`,
-  `@kobalte/solidbase`, or `nitro` — they string-match dist internals and
-  turn into silent no-ops if upstream refactors (a fixed upstream makes
-  them unnecessary rather than harmful).
+  prev-next links. The patches string-match dist internals, and each one
+  asserts its pattern actually matched — a based build fails loudly (naming
+  the pattern and file) when a bump of `@solidjs/start`,
+  `@kobalte/solidbase`, or `nitro` reshapes the matched text, whether the
+  upstream bug was fixed (delete the patch) or still present in new
+  wording (re-target the pattern).
 - The docs `build` nx target keys its cache on `DOCS_BASE_PATH` (nx.json
   `inputs`), so based and un-based builds don't cross-restore.
+
+## Docs Parity Tests (apps/docs/parity)
+
+- `bun nx test docs` guards the mirror-upstream conventions above with
+  deterministic pass/fail checks against upstream fixtures pinned in
+  `parity/upstream.lock.json` — there is no acceptance baseline or override.
+  Invariants (registry keys ↔ demo files ↔ `<ComponentPreview>` names, empty
+  `file=` include under each preview); demos must match upstream's
+  UI-framework imports, used components (compound members included), and
+  text content; pages must match upstream's title, description, section
+  headings, and previews. Structure/styling adaptations are invisible to
+  the comparison by construction. Full docs in `apps/docs/parity/README.md`.
+- A parity failure names the exact missing/extra imports, components, text,
+  sections, or previews — fix the demo/page to match upstream. If a
+  difference is a mechanical adaptation every port shares (a package mapping,
+  a styling-only attribute), teach `parity/analyze.ts`; never special-case
+  one component.
+- **Strict manifest**: a missing upstream demo is a porting TODO and stays
+  red until ported. The only excuse is a reasoned `skipDemos` entry in
+  `parity/components.ts`, reserved for React-impossible demos
+  (`custom-render-function`, virtualization…); stale skips fail too.
+- Catch up with upstream via `bun apps/docs/parity/sync.ts --update` (re-pins
+  to upstream HEAD); the scheduled `docs-parity.yml` workflow runs
+  `sync.ts --check` and files an issue when upstream's tracked files move.
+- New ported component: add it to `parity/components.ts`, sync, port until
+  green.
 
 ## Dev Loop
 
@@ -296,6 +338,23 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   workflow.
 - When checking Biome from scripts, surface the exit code — don't pipe output
   through `tail`/`grep` in a way that swallows failures.
+- **`bun run test:all` is the single CI entry point** (also run by
+  .github/workflows/ci.yml on every PR): Biome over the repo, every project's
+  unit tests, typecheck, and the SSR/hydration gate below.
+- **`bun nx run docs:ssr-test` is the SSR/hydration gate** — the package's
+  jsdom unit tests client-render only and cannot catch hydration bugs. The
+  gate boots a dev server on :3199 and, in headless Chrome, loads `/ssr-test`
+  (apps/docs/src/routes/ssr-test.tsx — renders every demo in the registry, so
+  new demos are covered automatically) plus every docs page, failing on
+  hydration-crash signatures: non-noise console/page errors, an empty `#app`
+  (Solid wipes the page when hydration throws), or a demo section losing its
+  SSR content (script: apps/docs/scripts/ssr-test.mjs; it filters solidbase's
+  known benign dev-only Layout mismatch warning). Run it after touching any
+  component render path and before/after dependency bumps (`@kobalte/core`,
+  `solid-js`, `@solidjs/start`, `@heroui/styles`). Requires Google Chrome
+  (`CHROME_PATH` to override). Verified to catch the eager-children-helper
+  class of bug: reintroducing it fails the gate with "template is not a
+  function" + per-demo diagnostics.
 
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->

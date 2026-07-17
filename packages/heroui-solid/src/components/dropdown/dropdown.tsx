@@ -6,13 +6,16 @@ import {
   Trigger as DropdownTriggerPrimitive
 } from "@kobalte/core/dropdown-menu"
 import { Polymorphic, type PolymorphicProps } from "@kobalte/core/polymorphic"
+import { mergeRefs } from "@kobalte/utils"
 import {
   type ComponentProps,
   createComputed,
   createContext,
+  createEffect,
   createMemo,
   createSignal,
   type JSX,
+  onCleanup,
   splitProps,
   useContext,
   type ValidComponent
@@ -27,6 +30,14 @@ import { SurfaceContext } from "../surface/surface"
 
 type DropdownPrimitiveProps = ComponentProps<typeof DropdownPrimitive>
 type DropdownPopoverPlacement = DropdownPrimitiveProps["placement"]
+
+// The popper writes its transform origin opposite the resolved side.
+const SIDE_FROM_ORIGIN: Record<string, string> = {
+  top: "bottom",
+  bottom: "top",
+  left: "right",
+  right: "left"
+}
 
 /* -------------------------------------------------------------------------------------------------
  * Dropdown Context
@@ -110,12 +121,15 @@ interface DropdownPopoverProps {
 const DropdownPopover = <T extends ValidComponent = "div">(
   props: PolymorphicProps<T, DropdownPopoverProps>
 ) => {
-  const [local, rest] = splitProps(props as DropdownPopoverProps, [
-    "class",
-    "children",
-    "placement"
-  ])
+  const [local, rest] = splitProps(
+    props as DropdownPopoverProps & {
+      ref?: HTMLElement | ((el: HTMLElement) => void)
+    },
+    ["class", "children", "placement", "ref"]
+  )
   const context = useContext(DropdownContext)
+  const [contentEl, setContentEl] = createSignal<HTMLElement>()
+  const [resolvedSide, setResolvedSide] = createSignal<string>()
 
   createComputed(() => {
     if (local.placement) {
@@ -123,12 +137,35 @@ const DropdownPopover = <T extends ValidComponent = "div">(
     }
   })
 
+  // Kobalte's Menu omits onCurrentPlacementChange, so the popper-resolved
+  // side (which reflects viewport flips) is only observable through the
+  // transform-origin var written on the positioner — mirror it into the
+  // data-placement attribute upstream's directional animations key off.
+  createEffect(() => {
+    const positioner = contentEl()?.parentElement
+    if (!positioner) return
+    const update = () => {
+      const origin = positioner.style.getPropertyValue(
+        "--kb-popper-content-transform-origin"
+      )
+      setResolvedSide(SIDE_FROM_ORIGIN[origin.trim().split(" ")[0] ?? ""])
+    }
+    update()
+    const observer = new MutationObserver(update)
+    observer.observe(positioner, { attributeFilter: ["style"] })
+    onCleanup(() => observer.disconnect())
+  })
+
   return (
     <SurfaceContext.Provider value={{ variant: "default" }}>
       <DropdownPortalPrimitive>
         <DropdownContentPrimitive
+          ref={mergeRefs(setContentEl, local.ref)}
           class={cn(context.slots?.popover(), local.class)}
           data-slot="dropdown-popover"
+          data-placement={
+            resolvedSide() ?? (local.placement ?? "bottom").split("-")[0]
+          }
           {...rest}
         >
           <PreventScroll />

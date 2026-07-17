@@ -1,10 +1,9 @@
 // @vitest-environment jsdom
+
 import { render } from "@solidjs/testing-library"
 import { describe, expect, it } from "vitest"
+import { classSet } from "../../test/utils"
 import { SurfaceRoot } from "./surface"
-
-const classSet = (classes: string) =>
-  new Set(classes.split(/\s+/).filter(Boolean))
 
 describe("Surface", () => {
   it("renders a div with BEM classes, data-slot and caller class last", () => {

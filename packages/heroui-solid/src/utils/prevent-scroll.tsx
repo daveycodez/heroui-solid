@@ -1,3 +1,16 @@
+/*
+ * Copyright 2020 Adobe. All rights reserved.
+ * This file is licensed to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License. You may obtain a copy
+ * of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under
+ * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+ * OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+
+import { isIOS } from "@kobalte/utils"
 import { onCleanup } from "solid-js"
 import { isServer } from "solid-js/web"
 
@@ -6,25 +19,6 @@ import { isServer } from "solid-js/web"
 // the root element (html), not body — Kobalte's own lock targets body, which
 // breaks position: sticky in the page — plus the Mobile Safari work-arounds
 // below (see AGENTS.md).
-
-const testPlatform = (re: RegExp) => {
-  if (typeof window === "undefined" || window.navigator == null) {
-    return false
-  }
-  const nav = window.navigator as Navigator & {
-    userAgentData?: { platform?: string }
-  }
-  return re.test(nav.userAgentData?.platform || nav.platform)
-}
-
-const isMac = () => testPlatform(/^Mac/i)
-
-const isIOS = () =>
-  testPlatform(/^iPhone/i) ||
-  testPlatform(/^iPad/i) ||
-  // iPadOS 13 lies and says it's a Mac, but we can distinguish by detecting
-  // touch support.
-  (isMac() && navigator.maxTouchPoints > 1)
 
 const isScrollable = (node: Element | null, checkForOverflow?: boolean) => {
   if (!node) {

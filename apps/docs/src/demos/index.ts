@@ -34,6 +34,10 @@ import { LinkCustomElement } from "./link/custom-element"
 import { LinkCustomIcon } from "./link/custom-icon"
 import { LinkIconPlacement } from "./link/icon-placement"
 import { LinkUnderlineAndOffset } from "./link/underline-and-offset"
+import { Controlled as ListBoxControlled } from "./list-box/controlled"
+import { CustomCheckIcon as ListBoxCustomCheckIcon } from "./list-box/custom-check-icon"
+import { Default as ListBoxDefault } from "./list-box/default"
+import { MultiSelect as ListBoxMultiSelect } from "./list-box/multi-select"
 import { Controlled as SelectControlled } from "./select/controlled"
 import { CustomIndicator as SelectCustomIndicator } from "./select/custom-indicator"
 import { Default as SelectDefault } from "./select/default"
@@ -104,6 +108,10 @@ export const demos: Record<string, Component> = {
   "link-icon-placement": LinkIconPlacement,
   "link-underline-and-offset": LinkUnderlineAndOffset,
   "link-custom-element": LinkCustomElement,
+  "list-box-default": ListBoxDefault,
+  "list-box-multi-select": ListBoxMultiSelect,
+  "list-box-custom-check-icon": ListBoxCustomCheckIcon,
+  "list-box-controlled": ListBoxControlled,
   "select-default": SelectDefault,
   "select-multiple-select": SelectMultipleSelect,
   "select-with-disabled-options": SelectWithDisabledOptions,

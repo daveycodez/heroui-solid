@@ -19,7 +19,11 @@ export type { MenuItemVariants } from "@heroui/styles"
  * Variants
  * -----------------------------------------------------------------------------------------------*/
 export { menuItemVariants } from "@heroui/styles"
-export type { MenuContextValue, MenuItemRootProps } from "./menu-item"
+export type {
+  MenuContextValue,
+  MenuItemRootProps,
+  MenuItemRootProps as MenuItemProps
+} from "./menu-item"
 /* -------------------------------------------------------------------------------------------------
  * Named Component
  * -----------------------------------------------------------------------------------------------*/

@@ -16,5 +16,12 @@
     "paths": {
       "~/*": ["./src/*"]
     }
-  }
+  },
+  "exclude": [
+    "node_modules",
+    ".output",
+    ".vinxi",
+    ".solidbase",
+    "parity/fixtures"
+  ]
 }

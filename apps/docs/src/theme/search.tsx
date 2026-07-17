@@ -1,6 +1,6 @@
 import { Dialog } from "@kobalte/core/dialog"
 import { type AnyOrama, create, insertMultiple, search } from "@orama/orama"
-import { useNavigate } from "@solidjs/router"
+import { A, useNavigate } from "@solidjs/router"
 import { FileText, Hashtag, Magnifier } from "gravity-icons-solid"
 import { PreventScroll, Spinner } from "heroui-solid"
 import {
@@ -35,6 +35,9 @@ let indexPromise: Promise<SearchIndex> | undefined
 const loadIndex = (): Promise<SearchIndex> =>
   (indexPromise ??= (async () => {
     const response = await fetch(`${import.meta.env.BASE_URL}api/search`)
+    if (!response.ok) {
+      throw new Error(`Search index request failed (${response.status})`)
+    }
     const records: SearchRecord[] = await response.json()
     const db = create({
       schema: { title: "string", page: "string", content: "string" }
@@ -48,7 +51,11 @@ const loadIndex = (): Promise<SearchIndex> =>
           Number(b.url.includes("/components/"))
       )
     return { db, pages }
-  })())
+  })().catch((error) => {
+    // Don't cache the failure — the next open (or retry) refetches.
+    indexPromise = undefined
+    throw error
+  }))
 
 export function SearchButton() {
   return (
@@ -87,12 +94,13 @@ export function SearchDialog() {
   const [query, setQuery] = createSignal("")
   const [selected, setSelected] = createSignal(0)
 
-  const [index] = createResource(open, (isOpen) =>
+  const [index, { refetch: refetchIndex }] = createResource(open, (isOpen) =>
     isOpen ? loadIndex() : null
   )
   const [hits] = createResource(
     () => {
-      const idx = index()
+      // Reading an errored resource throws; the error branch renders inline.
+      const idx = index.error ? undefined : index()
       return idx ? { idx, q: query() } : null
     },
     async ({ idx, q }) => {
@@ -184,52 +192,67 @@ export function SearchDialog() {
               class="max-h-[50vh] overflow-y-auto p-2"
             >
               <Show
-                when={items().length > 0}
+                when={!index.error}
                 fallback={
-                  <div class="flex justify-center py-12 text-sm text-muted">
-                    <Show when={!hits.loading} fallback={<Spinner />}>
-                      No results found for “{query().trim()}”
-                    </Show>
+                  <div class="flex flex-col items-center gap-3 py-12 text-sm text-muted">
+                    Search couldn’t load.
+                    <button
+                      type="button"
+                      class="rounded-lg border border-border px-3 py-1.5 text-foreground transition-colors hover:bg-default-soft"
+                      onClick={() => refetchIndex()}
+                    >
+                      Try again
+                    </button>
                   </div>
                 }
               >
-                <Show when={query().trim() === ""}>
-                  <div class="px-2.5 pb-1 pt-1.5 text-xs text-muted">
-                    Jump to
-                  </div>
-                </Show>
-                <For each={items()}>
-                  {(item, itemIndex) => (
-                    <a
-                      id={optionId(itemIndex())}
-                      role="option"
-                      aria-selected={selected() === itemIndex()}
-                      data-active={selected() === itemIndex() ? "" : undefined}
-                      class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm text-muted no-underline data-active:bg-default-soft data-active:text-foreground"
-                      href={item.url}
-                      onClick={(event) => {
-                        event.preventDefault()
-                        go(item)
-                      }}
-                      onMouseMove={() => setSelected(itemIndex())}
-                    >
-                      <Show
-                        when={item.kind === "heading"}
-                        fallback={<FileText class="size-4 shrink-0" />}
-                      >
-                        <Hashtag class="size-4 shrink-0" />
+                <Show
+                  when={items().length > 0}
+                  fallback={
+                    <div class="flex justify-center py-12 text-sm text-muted">
+                      <Show when={!hits.loading} fallback={<Spinner />}>
+                        No results found for “{query().trim()}”
                       </Show>
-                      <span class="min-w-0">
-                        <span class="block truncate">{item.title}</span>
-                        <Show when={item.kind === "heading"}>
-                          <span class="block truncate text-xs opacity-70">
-                            {item.page}
-                          </span>
+                    </div>
+                  }
+                >
+                  <Show when={query().trim() === ""}>
+                    <div class="px-2.5 pb-1 pt-1.5 text-xs text-muted">
+                      Jump to
+                    </div>
+                  </Show>
+                  <For each={items()}>
+                    {(item, itemIndex) => (
+                      <A
+                        id={optionId(itemIndex())}
+                        role="option"
+                        aria-selected={selected() === itemIndex()}
+                        data-active={
+                          selected() === itemIndex() ? "" : undefined
+                        }
+                        class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm text-muted no-underline data-active:bg-default-soft data-active:text-foreground"
+                        href={item.url}
+                        onClick={() => setOpen(false)}
+                        onMouseMove={() => setSelected(itemIndex())}
+                      >
+                        <Show
+                          when={item.kind === "heading"}
+                          fallback={<FileText class="size-4 shrink-0" />}
+                        >
+                          <Hashtag class="size-4 shrink-0" />
                         </Show>
-                      </span>
-                    </a>
-                  )}
-                </For>
+                        <span class="min-w-0">
+                          <span class="block truncate">{item.title}</span>
+                          <Show when={item.kind === "heading"}>
+                            <span class="block truncate text-xs opacity-70">
+                              {item.page}
+                            </span>
+                          </Show>
+                        </span>
+                      </A>
+                    )}
+                  </For>
+                </Show>
               </Show>
             </div>
           </Dialog.Content>

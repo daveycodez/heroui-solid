@@ -9,3 +9,10 @@
 .list-box-item[data-disabled] {
   @apply status-disabled;
 }
+
+/* Standalone listbox items take real DOM focus on keyboard navigation;
+   upstream's ring rides data-focus-visible and a dead
+   `:focus-visible:not(:focus)` fallback. */
+.list-box-item:focus-visible {
+  @apply status-focused;
+}

@@ -1,10 +1,9 @@
 // @vitest-environment jsdom
+
 import { render } from "@solidjs/testing-library"
 import { describe, expect, it } from "vitest"
+import { classSet } from "../../test/utils"
 import { SpinnerRoot } from "./spinner"
-
-const classSet = (classes: string) =>
-  new Set(classes.split(/\s+/).filter(Boolean))
 
 describe("Spinner", () => {
   it("renders HeroUI's anatomy: span[data-slot=spinner] > svg[data-slot=spinner-icon]", () => {
