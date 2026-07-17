@@ -1,4 +1,5 @@
 import { Label, ListBox, Select } from "heroui-solid"
+import { For } from "solid-js"
 
 const animals = [
   { id: "dog", name: "Dog" },
@@ -23,12 +24,14 @@ export function SelectDisabledOptions() {
       </Select.Trigger>
       <Select.Popover>
         <ListBox>
-          {animals.map((animal) => (
-            <ListBox.Item id={animal.id} textValue={animal.name}>
-              {animal.name}
-              <ListBox.ItemIndicator />
-            </ListBox.Item>
-          ))}
+          <For each={animals}>
+            {(animal) => (
+              <ListBox.Item id={animal.id} textValue={animal.name}>
+                {animal.name}
+                <ListBox.ItemIndicator />
+              </ListBox.Item>
+            )}
+          </For>
         </ListBox>
       </Select.Popover>
     </Select>

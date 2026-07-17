@@ -1,4 +1,5 @@
 import { Card } from "heroui-solid"
+import { For } from "solid-js"
 
 const variants = [
   {
@@ -26,19 +27,21 @@ const variants = [
 export function CardVariants() {
   return (
     <div style={{ display: "flex", "flex-direction": "column", gap: "1rem" }}>
-      {variants.map((entry) => (
-        <Card style={{ width: "320px" }} variant={entry.variant}>
-          <Card.Header>
-            <Card.Title style={{ "text-transform": "capitalize" }}>
-              {entry.variant}
-            </Card.Title>
-            <Card.Description>{entry.description}</Card.Description>
-          </Card.Header>
-          <Card.Content>
-            <p>{entry.content}</p>
-          </Card.Content>
-        </Card>
-      ))}
+      <For each={variants}>
+        {(entry) => (
+          <Card style={{ width: "320px" }} variant={entry.variant}>
+            <Card.Header>
+              <Card.Title style={{ "text-transform": "capitalize" }}>
+                {entry.variant}
+              </Card.Title>
+              <Card.Description>{entry.description}</Card.Description>
+            </Card.Header>
+            <Card.Content>
+              <p>{entry.content}</p>
+            </Card.Content>
+          </Card>
+        )}
+      </For>
     </div>
   )
 }

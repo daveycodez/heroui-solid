@@ -17,29 +17,15 @@ bun add heroui-solid solid-js
 
 ## Styles
 
-There are two ways to bring in the styles — pick one.
-
-### Standalone (no Tailwind required)
-
 Import the precompiled stylesheet once, e.g. in your app entry:
 
 ```ts
 import "heroui-solid/styles";
 ```
 
-This includes HeroUI's full theme (light + dark), base styles, all component styles, and
-the small Kobalte-bridge overrides layer. No Tailwind setup needed.
-
-### With Tailwind CSS v4
-
-If your app already runs Tailwind v4, install `@heroui/styles` yourself and layer our
-overrides on top — this avoids duplicating Tailwind's preflight and theme:
-
-```css
-/* app.css */
-@import "@heroui/styles";
-@import "heroui-solid/overrides.css";
-```
+This is self-contained — it bundles `@heroui/styles` with HeroUI's full theme
+(light + dark), base styles, all component styles, and the small Kobalte-bridge overrides
+layer. No Tailwind setup or extra packages needed.
 
 ## Usage
 

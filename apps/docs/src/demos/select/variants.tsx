@@ -1,4 +1,5 @@
 import { Label, ListBox, Select } from "heroui-solid"
+import { For } from "solid-js"
 
 const options = [
   { id: "option1", name: "Option 1" },
@@ -20,12 +21,14 @@ export function SelectVariants() {
         </Select.Trigger>
         <Select.Popover>
           <ListBox>
-            {options.map((option) => (
-              <ListBox.Item id={option.id} textValue={option.name}>
-                {option.name}
-                <ListBox.ItemIndicator />
-              </ListBox.Item>
-            ))}
+            <For each={options}>
+              {(option) => (
+                <ListBox.Item id={option.id} textValue={option.name}>
+                  {option.name}
+                  <ListBox.ItemIndicator />
+                </ListBox.Item>
+              )}
+            </For>
           </ListBox>
         </Select.Popover>
       </Select>
@@ -41,12 +44,14 @@ export function SelectVariants() {
         </Select.Trigger>
         <Select.Popover>
           <ListBox>
-            {options.map((option) => (
-              <ListBox.Item id={option.id} textValue={option.name}>
-                {option.name}
-                <ListBox.ItemIndicator />
-              </ListBox.Item>
-            ))}
+            <For each={options}>
+              {(option) => (
+                <ListBox.Item id={option.id} textValue={option.name}>
+                  {option.name}
+                  <ListBox.ItemIndicator />
+                </ListBox.Item>
+              )}
+            </For>
           </ListBox>
         </Select.Popover>
       </Select>

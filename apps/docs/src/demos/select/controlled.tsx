@@ -1,5 +1,5 @@
 import { Label, ListBox, Select } from "heroui-solid"
-import { createSignal } from "solid-js"
+import { createSignal, For } from "solid-js"
 
 const states = [
   { id: "california", name: "California" },
@@ -29,12 +29,14 @@ export function SelectControlled() {
         </Select.Trigger>
         <Select.Popover>
           <ListBox>
-            {states.map((s) => (
-              <ListBox.Item id={s.id} textValue={s.name}>
-                {s.name}
-                <ListBox.ItemIndicator />
-              </ListBox.Item>
-            ))}
+            <For each={states}>
+              {(s) => (
+                <ListBox.Item id={s.id} textValue={s.name}>
+                  {s.name}
+                  <ListBox.ItemIndicator />
+                </ListBox.Item>
+              )}
+            </For>
           </ListBox>
         </Select.Popover>
       </Select>

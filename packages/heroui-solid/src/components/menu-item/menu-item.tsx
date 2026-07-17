@@ -1,11 +1,13 @@
 import { cn, type MenuItemVariants, menuItemVariants } from "@heroui/styles"
 import { Item as MenuItemPrimitive } from "@kobalte/core/dropdown-menu"
+import type { PolymorphicProps } from "@kobalte/core/polymorphic"
 import {
   createContext,
   createMemo,
   type JSX,
   splitProps,
-  useContext
+  useContext,
+  type ValidComponent
 } from "solid-js"
 
 /* -------------------------------------------------------------------------------------------------
@@ -32,8 +34,10 @@ interface MenuItemRootProps {
   children?: JSX.Element
 }
 
-const MenuItemRoot = (props: MenuItemRootProps) => {
-  const [local, rest] = splitProps(props, [
+const MenuItemRoot = <T extends ValidComponent = "div">(
+  props: PolymorphicProps<T, MenuItemRootProps>
+) => {
+  const [local, rest] = splitProps(props as MenuItemRootProps, [
     "id",
     "isDisabled",
     "onAction",

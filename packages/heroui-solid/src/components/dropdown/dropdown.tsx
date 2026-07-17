@@ -5,6 +5,7 @@ import {
   Root as DropdownPrimitive,
   Trigger as DropdownTriggerPrimitive
 } from "@kobalte/core/dropdown-menu"
+import { Polymorphic, type PolymorphicProps } from "@kobalte/core/polymorphic"
 import {
   type ComponentProps,
   createComputed,
@@ -13,10 +14,15 @@ import {
   createSignal,
   type JSX,
   splitProps,
-  useContext
+  useContext,
+  type ValidComponent
 } from "solid-js"
 
-import { MenuContext, MenuItemRoot } from "../menu-item/menu-item"
+import {
+  MenuContext,
+  MenuItemRoot,
+  type MenuItemRootProps
+} from "../menu-item/menu-item"
 import { SurfaceContext } from "../surface/surface"
 
 type DropdownPrimitiveProps = ComponentProps<typeof DropdownPrimitive>
@@ -74,8 +80,10 @@ interface DropdownTriggerProps {
   children?: JSX.Element
 }
 
-const DropdownTrigger = (props: DropdownTriggerProps) => {
-  const [local, rest] = splitProps(props, ["class"])
+const DropdownTrigger = <T extends ValidComponent = "button">(
+  props: PolymorphicProps<T, DropdownTriggerProps>
+) => {
+  const [local, rest] = splitProps(props as DropdownTriggerProps, ["class"])
   const context = useContext(DropdownContext)
 
   return (
@@ -96,8 +104,13 @@ interface DropdownPopoverProps {
   placement?: DropdownPopoverPlacement
 }
 
-const DropdownPopover = (props: DropdownPopoverProps) => {
-  const [local, rest] = splitProps(props, ["class", "placement"])
+const DropdownPopover = <T extends ValidComponent = "div">(
+  props: PolymorphicProps<T, DropdownPopoverProps>
+) => {
+  const [local, rest] = splitProps(props as DropdownPopoverProps, [
+    "class",
+    "placement"
+  ])
   const context = useContext(DropdownContext)
 
   createComputed(() => {
@@ -129,8 +142,14 @@ interface DropdownMenuProps {
   children?: JSX.Element
 }
 
-const DropdownMenu = (props: DropdownMenuProps) => {
-  const [local, rest] = splitProps(props, ["onAction", "disabledKeys", "class"])
+const DropdownMenu = <T extends ValidComponent = "div">(
+  props: PolymorphicProps<T, DropdownMenuProps>
+) => {
+  const [local, rest] = splitProps(props as DropdownMenuProps, [
+    "onAction",
+    "disabledKeys",
+    "class"
+  ])
   const context = useContext(DropdownContext)
 
   return (
@@ -144,7 +163,8 @@ const DropdownMenu = (props: DropdownMenuProps) => {
         }
       }}
     >
-      <div
+      <Polymorphic
+        as="div"
         class={cn(context.slots?.menu(), local.class)}
         data-slot="dropdown-menu"
         role="presentation"
@@ -157,10 +177,12 @@ const DropdownMenu = (props: DropdownMenuProps) => {
 /* -------------------------------------------------------------------------------------------------
  * Dropdown Item (MenuItem wrapper)
  * -----------------------------------------------------------------------------------------------*/
-interface DropdownItemProps extends ComponentProps<typeof MenuItemRoot> {}
+interface DropdownItemProps extends MenuItemRootProps {}
 
-const DropdownItem = (props: DropdownItemProps) => {
-  return <MenuItemRoot {...props} />
+const DropdownItem = <T extends ValidComponent = "div">(
+  props: PolymorphicProps<T, DropdownItemProps>
+) => {
+  return <MenuItemRoot {...(props as DropdownItemProps)} />
 }
 
 export type {

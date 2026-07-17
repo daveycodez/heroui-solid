@@ -26,7 +26,8 @@ export default defineConfig(({ command }) => ({
           // reset.css `button { font: inherit }`) override heroui.
           postcssPlugin: "solidbase-into-layer",
           Once(root, { AtRule }) {
-            const file = root.source?.input.file
+            // Windows reports native backslash paths for inlined sources.
+            const file = root.source?.input.file?.replace(/\\/g, "/")
             if (!file) {
               return
             }
@@ -40,7 +41,9 @@ export default defineConfig(({ command }) => ({
             // "dark" from "sdark" to pick the trigger icon).
             root.walkRules((rule) => {
               if (
-                rule.source?.input.file?.includes("heroui-solid/dist") &&
+                rule.source?.input.file
+                  ?.replace(/\\/g, "/")
+                  .includes("heroui-solid/dist") &&
                 rule.selector.includes("[data-theme=")
               ) {
                 rule.selector = rule.selector.replace(
@@ -97,6 +100,20 @@ export default defineConfig(({ command }) => ({
       name: "fix-solidbase",
       enforce: "pre",
       resolveId(id, importer) {
+        // Redirect the default theme's globals.js to a local shim: upstream
+        // calls onMount at module scope (outside any root), which makes
+        // Solid's dev build warn "computations created outside a
+        // `createRoot` or `render` will never be disposed" on every full
+        // page load. The shim exports the same mobileLayout signal.
+        if (
+          id.endsWith("globals.js") &&
+          importer?.includes("@kobalte/solidbase") &&
+          importer.includes("default-theme")
+        ) {
+          return fileURLToPath(
+            new URL("./src/theme/globals.ts", import.meta.url)
+          )
+        }
         if (importer?.includes("@kobalte/solidbase") && id.endsWith(".js")) {
           return this.resolve(id.replace(/\.js$/, ""), importer, {
             skipSelf: true

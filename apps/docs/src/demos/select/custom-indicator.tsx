@@ -1,4 +1,5 @@
 import { Label, ListBox, Select } from "heroui-solid"
+import { For } from "solid-js"
 import ChevronsExpandVertical from "~icons/gravity-ui/chevrons-expand-vertical"
 
 const states = [
@@ -20,12 +21,14 @@ export function SelectCustomIndicator() {
       </Select.Trigger>
       <Select.Popover>
         <ListBox>
-          {states.map((state) => (
-            <ListBox.Item id={state.id} textValue={state.name}>
-              {state.name}
-              <ListBox.ItemIndicator />
-            </ListBox.Item>
-          ))}
+          <For each={states}>
+            {(state) => (
+              <ListBox.Item id={state.id} textValue={state.name}>
+                {state.name}
+                <ListBox.ItemIndicator />
+              </ListBox.Item>
+            )}
+          </For>
         </ListBox>
       </Select.Popover>
     </Select>

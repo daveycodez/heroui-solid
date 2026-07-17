@@ -11,6 +11,10 @@
       "dependsOn": ["^build"],
       "cache": true
     },
+    "typecheck": {
+      "dependsOn": ["^build"],
+      "cache": true
+    },
     "check:publish": {
       "dependsOn": ["build"],
       "cache": false

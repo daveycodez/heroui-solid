@@ -4,6 +4,7 @@ import {
   listboxItemVariants,
   listboxVariants
 } from "@heroui/styles"
+import type { PolymorphicProps } from "@kobalte/core/polymorphic"
 import {
   ItemIndicator as ItemIndicatorPrimitive,
   Listbox as ListboxPrimitive
@@ -15,7 +16,8 @@ import {
   type JSX,
   Show,
   splitProps,
-  useContext
+  useContext,
+  type ValidComponent
 } from "solid-js"
 
 import { type ListBoxItemDescriptor, SelectContext } from "../select/select"
@@ -36,9 +38,11 @@ interface ListBoxRootProps extends ListBoxVariants {
   selectionMode?: "single" | "multiple"
 }
 
-const ListBoxRoot = (props: ListBoxRootProps) => {
+const ListBoxRoot = <T extends ValidComponent = "ul">(
+  props: PolymorphicProps<T, ListBoxRootProps>
+) => {
   const [variantProps, local, rest] = splitProps(
-    props,
+    props as ListBoxRootProps,
     listboxVariants.variantKeys,
     // selectionMode is inherited from the enclosing Select root.
     ["class", "children", "selectionMode"]
@@ -126,8 +130,13 @@ interface ListBoxItemIndicatorProps {
   forceMount?: boolean
 }
 
-const ListBoxItemIndicator = (props: ListBoxItemIndicatorProps) => {
-  const [local, rest] = splitProps(props, ["class", "children"])
+const ListBoxItemIndicator = <T extends ValidComponent = "div">(
+  props: PolymorphicProps<T, ListBoxItemIndicatorProps>
+) => {
+  const [local, rest] = splitProps(props as ListBoxItemIndicatorProps, [
+    "class",
+    "children"
+  ])
   const resolved = children(() => local.children)
 
   return (

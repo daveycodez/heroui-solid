@@ -33,10 +33,6 @@ When generating commit messages, always use the Conventional Commits format:
 - Example: feat(auth): add password reset flow
 - Example: fix: resolve null pointer in user hook
 
-Act as a world-class senior frontend engineer with deep expertise in InstantDB
-and UI/UX design. Your primary goal is to generate complete and functional apps
-with excellent visual aesthetics using InstantDB as the backend.
-
 ## Component Porting Conventions (packages/heroui-solid)
 
 Mirror the official HeroUI React source as closely as possible, adapting only

@@ -26,16 +26,11 @@ bun add heroui-solid solid-js
 Then import the stylesheet once (no Tailwind required):
 
 ```ts
-import "heroui-solid/styles.css";
+import "heroui-solid/styles";
 ```
 
-Already running Tailwind CSS v4? Install `@heroui/styles` yourself and import only our
-override rules instead, to avoid a duplicate preflight/theme:
-
-```css
-@import "@heroui/styles";
-@import "heroui-solid/overrides.css";
-```
+The stylesheet is self-contained — it bundles [`@heroui/styles`](https://www.npmjs.com/package/@heroui/styles)
+(preflight, theme, and component CSS), so there is nothing else to install or import.
 
 ## Usage
 
@@ -49,7 +44,7 @@ Full documentation and live previews live in the docs app (`apps/docs`):
 
 ```bash
 bun install
-bunx nx run docs:dev
+bun nx dev docs
 ```
 
 ## Monorepo layout
@@ -63,8 +58,8 @@ Built with Nx + bun; lint/format via biome.
 
 ```bash
 bun install
-bunx nx run-many -t build   # build library (JS + CSS) and docs
-bunx nx run heroui-solid:test
+bun nx run-many -t build   # build library (JS + CSS) and docs
+bun nx test heroui-solid
 bun run lint
 ```
 

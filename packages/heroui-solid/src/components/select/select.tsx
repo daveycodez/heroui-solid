@@ -4,6 +4,7 @@ import {
   type SelectVariants,
   selectVariants
 } from "@heroui/styles"
+import type { PolymorphicProps } from "@kobalte/core/polymorphic"
 import {
   HiddenSelect as HiddenSelectPrimitive,
   Content as SelectContentPrimitive,
@@ -26,7 +27,8 @@ import {
   type JSX,
   Show,
   splitProps,
-  useContext
+  useContext,
+  type ValidComponent
 } from "solid-js"
 
 import { FieldContext } from "../../utils/field-context"
@@ -78,9 +80,11 @@ interface SelectRootProps extends SelectVariants {
   children?: JSX.Element
 }
 
-const SelectRoot = (props: SelectRootProps) => {
+const SelectRoot = <T extends ValidComponent = "div">(
+  props: PolymorphicProps<T, SelectRootProps>
+) => {
   const [variantProps, local, rest] = splitProps(
-    props,
+    props as SelectRootProps,
     selectVariants.variantKeys,
     [
       "selectionMode",
@@ -203,8 +207,10 @@ interface SelectTriggerProps {
   children?: JSX.Element
 }
 
-const SelectTrigger = (props: SelectTriggerProps) => {
-  const [local, rest] = splitProps(props, ["class"])
+const SelectTrigger = <T extends ValidComponent = "button">(
+  props: PolymorphicProps<T, SelectTriggerProps>
+) => {
+  const [local, rest] = splitProps(props as SelectTriggerProps, ["class"])
   const context = useContext(SelectContext)
 
   return (
@@ -231,8 +237,13 @@ interface SelectValueProps {
   children?: JSX.Element | ((state: SelectValueState) => JSX.Element)
 }
 
-const SelectValue = (props: SelectValueProps) => {
-  const [local, rest] = splitProps(props, ["class", "children"])
+const SelectValue = <T extends ValidComponent = "span">(
+  props: PolymorphicProps<T, SelectValueProps>
+) => {
+  const [local, rest] = splitProps(props as SelectValueProps, [
+    "class",
+    "children"
+  ])
   const context = useContext(SelectContext)
 
   return (
@@ -281,8 +292,13 @@ interface SelectIndicatorProps {
   children?: JSX.Element
 }
 
-const SelectIndicator = (props: SelectIndicatorProps) => {
-  const [local, rest] = splitProps(props, ["class", "children"])
+const SelectIndicator = <T extends ValidComponent = "svg">(
+  props: PolymorphicProps<T, SelectIndicatorProps>
+) => {
+  const [local, rest] = splitProps(props as SelectIndicatorProps, [
+    "class",
+    "children"
+  ])
   const context = useContext(SelectContext)
   const selectContext = useSelectContext()
   const resolved = children(() => local.children)
@@ -320,8 +336,14 @@ interface SelectPopoverProps {
   placement?: SelectPopoverPlacement
 }
 
-const SelectPopover = (props: SelectPopoverProps) => {
-  const [local, rest] = splitProps(props, ["class", "children", "placement"])
+const SelectPopover = <T extends ValidComponent = "div">(
+  props: PolymorphicProps<T, SelectPopoverProps>
+) => {
+  const [local, rest] = splitProps(props as SelectPopoverProps, [
+    "class",
+    "children",
+    "placement"
+  ])
   const context = useContext(SelectContext)
 
   createComputed(() => {
