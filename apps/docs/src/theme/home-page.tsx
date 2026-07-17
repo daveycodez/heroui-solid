@@ -2,6 +2,7 @@ import { buttonVariants } from "heroui-solid"
 import { type Component, For } from "solid-js"
 import GitHubIcon from "~icons/mdi/github"
 import { demos } from "../demos"
+import { withBase } from "./base"
 
 // Landing page, modeled on the official heroui.com hero: badge, bold
 // two-tone headline, muted tagline, primary/outline actions, GitHub link,
@@ -41,13 +42,13 @@ export function HomePage() {
         <div class="mt-6 flex gap-3">
           <a
             class={buttonVariants({ variant: "primary" })}
-            href="/docs/getting-started"
+            href={withBase("/docs/getting-started")}
           >
             Get Started
           </a>
           <a
             class={buttonVariants({ variant: "outline" })}
-            href="/docs/components/button"
+            href={withBase("/docs/components/button")}
           >
             Components
           </a>

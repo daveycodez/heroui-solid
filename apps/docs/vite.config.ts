@@ -15,7 +15,17 @@ const theme = defineTheme({
 
 const solidbase = createSolidBase(theme)
 
+// Optional subpath the site is served under (e.g. "/heroui-solid/" on GitHub
+// Pages). Threaded through vite (asset URLs, import.meta.env.BASE_URL), the
+// Router base in app.tsx, and nitro's baseURL (prerender fetches routes with
+// the base and writes files without it, so the output maps 1:1 onto the
+// subpath).
+const base = process.env.DOCS_BASE_PATH
+  ? `/${process.env.DOCS_BASE_PATH.replace(/^\/|\/$/g, "")}/`
+  : "/"
+
 export default defineConfig(({ command }) => ({
+  base,
   css: {
     postcss: {
       plugins: [
@@ -125,6 +135,53 @@ export default defineConfig(({ command }) => ({
       }
     },
     {
+      // Upstream base-path gaps, patched at build time (no-ops when base is
+      // "/", i.e. everywhere but subpath deploys like GitHub Pages):
+      // - solid-start's prod SSR manifest hardcodes "/" when building asset
+      //   URLs (prod-ssr-manifest.js: `join("/", …)` and `"/" + asset`),
+      //   ignoring vite `base` — every <link>/<script> it renders would 404.
+      // - solidbase's usePrevNext (client/sidebar.js) compares
+      //   `location.pathname === item.link` against un-based sidebar links,
+      //   so no page ever matches and prev/next degrade to the first entry.
+      // - solidbase's Article.jsx renders prev/next as plain <a href> from
+      //   those un-based links, bypassing the Router base.
+      // - solid-start's stripBaseUrl (server/handler.js) slices off BASE_URL
+      //   including its trailing slash, leaving "api/search" without the
+      //   leading "/" — API route lookup misses and requests fall through to
+      //   the page renderer (the search index prerendered as an HTML shell).
+      name: "deploy-base-patches",
+      enforce: "pre",
+      transform(code, id) {
+        if (base === "/") {
+          return
+        }
+        const baseNoSlash = base.replace(/\/$/, "")
+        if (id.includes("prod-ssr-manifest")) {
+          return code
+            .replaceAll('join("/"', `join("${base}"`)
+            .replaceAll('"/" + asset', `"${base}" + asset`)
+        }
+        if (id.includes("start") && id.includes("server/handler")) {
+          return code.replace(
+            "path.slice(import.meta.env.BASE_URL.length)",
+            `path.slice(${JSON.stringify(baseNoSlash)}.length)`
+          )
+        }
+        if (id.includes("solidbase") && id.includes("client/sidebar")) {
+          return code.replace(
+            "location.pathname === item.link",
+            `location.pathname === "${baseNoSlash}" + item.link`
+          )
+        }
+        if (id.includes("solidbase") && id.includes("components/Article")) {
+          return code.replace(
+            /href=\{(customLink\(frontmatter\(\)\?\.(?:prev|next)\) \?\?\s*prevNext\.(?:prev|next)Link\(\)\.link)\}/g,
+            (_, expr) => `href={"${baseNoSlash}" + (${expr})}`
+          )
+        }
+      }
+    },
+    {
       // Search index for src/routes/api/search.ts: the MDX pipeline owns
       // `.mdx` imports (even with `?raw`), so the index is built from disk
       // at config time instead (search-index.ts). Like the sidebar below,
@@ -172,6 +229,7 @@ export default defineConfig(({ command }) => ({
       // TODO: switch to `preset: "static"` once the nitro vite plugin supports
       // it (as of 3.0.260610-beta it still builds the server env and fails).
       // Until then, deploy .output/public — it's a complete static site.
+      baseURL: base,
       prerender: {
         crawlLinks: true,
         // Explicit routes replace the crawler's default "/" start point, so

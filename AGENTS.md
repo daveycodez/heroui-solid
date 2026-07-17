@@ -256,6 +256,34 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   + `PreventScroll` (exported from heroui-solid for this) and is closed during
   SSR, so it's hydration-inert.
 
+## Docs Deploy (GitHub Pages)
+
+- `.github/workflows/deploy-docs.yml` builds `apps/docs` on every push to
+  `main` and publishes `.output/public` to
+  https://daveycodez.github.io/heroui-solid/ (Pages is set to the
+  "GitHub Actions" source; the README links there).
+- Project Pages live under `/<repo>/`, so the build takes an optional
+  `DOCS_BASE_PATH` env var (unset locally/dev — everything stays at `/`).
+  It drives vite `base`, the Router `base` in app.tsx (trailing slash
+  stripped — solid-router would emit `//` doubles), and nitro `baseURL`
+  (prerender fetches with the base, writes files without it).
+- **Any root-absolute URL in docs source must go through `withBase`**
+  (`src/theme/base.ts`) or a Router-resolved `<A>`: plain `<a href="/docs/…">`
+  bypasses the Router base and 404s under the subpath. This includes MDX
+  content links — `mdx-components.tsx` overrides the theme's `a` to prefix
+  them — and `useMatch` patterns, which compare against the full pathname
+  (see header-docs-link.tsx).
+- Upstream base-path gaps are patched by the `deploy-base-patches` vite
+  transform (no-op when base is `/`): solid-start's prod SSR manifest and
+  its `stripBaseUrl` off-by-one (API routes 404'd, so `/api/search`
+  prerendered as an HTML shell), and solidbase's `usePrevNext`/Article
+  prev-next links. Re-check those patches when bumping `@solidjs/start`,
+  `@kobalte/solidbase`, or `nitro` — they string-match dist internals and
+  turn into silent no-ops if upstream refactors (a fixed upstream makes
+  them unnecessary rather than harmful).
+- The docs `build` nx target keys its cache on `DOCS_BASE_PATH` (nx.json
+  `inputs`), so based and un-based builds don't cross-restore.
+
 ## Dev Loop
 
 - `nx dev docs`: the docs vite config aliases `heroui-solid` to the package

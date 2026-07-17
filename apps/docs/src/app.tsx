@@ -7,7 +7,10 @@ import { SolidBaseRoot } from "@kobalte/solidbase/client"
 
 export default function App() {
   return (
-    <Router root={SolidBaseRoot}>
+    <Router
+      base={import.meta.env.BASE_URL.replace(/\/$/, "")}
+      root={SolidBaseRoot}
+    >
       <FileRoutes />
     </Router>
   )

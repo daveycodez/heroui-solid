@@ -12,7 +12,7 @@ export default createHandler(() => (
         <head>
           <meta charset="utf-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <link rel="icon" href="/favicon.ico" />
+          <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.ico`} />
           {/* Preload the theme fonts so text doesn't flash in a fallback font
               while the @fontsource stylesheets load. */}
           <For each={getFontPreloadLinkAttrs()}>

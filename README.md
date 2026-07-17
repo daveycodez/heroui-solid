@@ -2,6 +2,8 @@
 
 **Unofficial** [SolidJS](https://solidjs.com) port of [HeroUI v3](https://heroui.com).
 
+**Docs & live previews:** <https://daveycodez.github.io/heroui-solid/>
+
 ## What it is
 
 - **HeroUI's look, HeroUI's API.** Components mirror HeroUI v3's real public API
@@ -36,7 +38,10 @@ import { Button } from "heroui-solid";
 <Button variant="primary" size="md">Click me</Button>;
 ```
 
-Full documentation and live previews live in the docs app (`apps/docs`):
+Full documentation and live previews are at
+[daveycodez.github.io/heroui-solid](https://daveycodez.github.io/heroui-solid/)
+(deployed from `main` by the Deploy Docs workflow). To run the docs app
+(`apps/docs`) locally:
 
 ```bash
 bun install

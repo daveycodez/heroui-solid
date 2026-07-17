@@ -17,6 +17,7 @@ import IconArrowDownLine from "~icons/ri/arrow-down-s-line"
 import IconCloseFill from "~icons/ri/close-large-fill"
 import IconMenuLeftLine from "~icons/ri/menu-2-line"
 import IconMenuFill from "~icons/ri/menu-fill"
+import { withBase } from "./base"
 import { SearchButton, SearchDialog, SearchIconButton } from "./search"
 
 // Copy of solidbase's default Header (default-theme/components/Header.tsx,
@@ -59,7 +60,7 @@ export default function Header() {
       <div>
         <div class={`${styles["logo-cluster"]} header-start`}>
           <a
-            href={getLocaleLink(locale.currentLocale())}
+            href={withBase(getLocaleLink(locale.currentLocale()))}
             class={styles["logo-link"]}
           >
             <Show when={config().logo} fallback={<span>{config().title}</span>}>
@@ -105,15 +106,17 @@ export default function Header() {
                       <For each={nav()}>
                         {(item) => {
                           const match = useMatch(() =>
-                            locale.applyPathPrefix(
-                              `${item.activeMatch ?? item.link}/*rest`
+                            withBase(
+                              locale.applyPathPrefix(
+                                `${item.activeMatch ?? item.link}/*rest`
+                              )
                             )
                           )
 
                           return (
                             <a
                               class={styles.navLink}
-                              href={locale.applyPathPrefix(item.link)}
+                              href={withBase(locale.applyPathPrefix(item.link))}
                               data-matched={
                                 match() !== undefined ? true : undefined
                               }
@@ -138,15 +141,17 @@ export default function Header() {
                 <For each={nav()}>
                   {(item) => {
                     const match = useMatch(() =>
-                      locale.applyPathPrefix(
-                        `${item.activeMatch ?? item.link}/*rest`
+                      withBase(
+                        locale.applyPathPrefix(
+                          `${item.activeMatch ?? item.link}/*rest`
+                        )
                       )
                     )
 
                     return (
                       <a
                         class={styles.navLink}
-                        href={locale.applyPathPrefix(item.link)}
+                        href={withBase(locale.applyPathPrefix(item.link))}
                         data-matched={match() !== undefined ? true : undefined}
                       >
                         {item.text}

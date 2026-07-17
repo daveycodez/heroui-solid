@@ -5,6 +5,7 @@
     "build": {
       "dependsOn": ["^build"],
       "cache": true,
+      "inputs": ["default", "^default", { "env": "DOCS_BASE_PATH" }],
       "outputs": ["{projectRoot}/dist", "{projectRoot}/.output"]
     },
     "test": {

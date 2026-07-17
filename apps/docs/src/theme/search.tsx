@@ -34,7 +34,7 @@ let indexPromise: Promise<SearchIndex> | undefined
 
 const loadIndex = (): Promise<SearchIndex> =>
   (indexPromise ??= (async () => {
-    const response = await fetch("/api/search")
+    const response = await fetch(`${import.meta.env.BASE_URL}api/search`)
     const records: SearchRecord[] = await response.json()
     const db = create({
       schema: { title: "string", page: "string", content: "string" }

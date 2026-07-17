@@ -1,11 +1,14 @@
+import { a as DefaultA } from "@kobalte/solidbase/default-theme/mdx-components"
 import { Button } from "heroui-solid"
 import {
+  type ComponentProps,
   createSignal,
   type JSX,
   children as resolveChildren,
   Show
 } from "solid-js"
 import { demos } from "../demos"
+import { withBase } from "./base"
 import { HomePage } from "./home-page"
 
 // Components exported here are registered globally for all MDX pages via
@@ -22,6 +25,17 @@ import { HomePage } from "./home-page"
 //   same structure as the official HeroUI docs.
 
 export { HomePage }
+
+// The default theme renders MDX links as plain <a>, so root-absolute hrefs
+// in page content bypass the Router base — prefix them for subpath deploys.
+export function a(props: ComponentProps<"a"> & { "data-auto-heading"?: "" }) {
+  return (
+    <DefaultA
+      {...props}
+      href={props.href?.startsWith("/") ? withBase(props.href) : props.href}
+    />
+  )
+}
 
 // Live demo showcase, visually identical to the official HeroUI docs
 // ComponentPreviewContainer: one card, demo centered in the top section,
