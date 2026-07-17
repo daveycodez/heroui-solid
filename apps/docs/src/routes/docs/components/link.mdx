@@ -99,17 +99,13 @@ For more details, see the Tailwind CSS documentation:
 ### Custom Element
 
 HeroUI React overrides the rendered element with a `render` prop. This port uses
-Kobalte's polymorphic `as` prop instead:
+Kobalte's polymorphic `as` prop instead — for example, a button element that
+looks like a link:
 
-```tsx
-import { Link } from "heroui-solid";
+<ComponentPreview name="link-custom-element" />
 
-export default () => (
-  <Link as="span" data-custom="foo">
-    Call to action
-    <Link.Icon />
-  </Link>
-);
+```tsx file=../../../demos/link/custom-element.tsx title=""
+
 ```
 
 ## Related Components

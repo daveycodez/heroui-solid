@@ -28,6 +28,7 @@ import { InputInSurface } from "./input/in-surface"
 import { InputTypes } from "./input/types"
 import { InputVariants } from "./input/variants"
 import { LabelBasic } from "./label/basic"
+import { LinkCustomElement } from "./link/custom-element"
 import { LinkCustomIcon } from "./link/custom-icon"
 import { LinkIconPlacement } from "./link/icon-placement"
 import { LinkUnderlineAndOffset } from "./link/underline-and-offset"
@@ -100,6 +101,7 @@ export const demos: Record<string, Component> = {
   "link-custom-icon": LinkCustomIcon,
   "link-icon-placement": LinkIconPlacement,
   "link-underline-and-offset": LinkUnderlineAndOffset,
+  "link-custom-element": LinkCustomElement,
   "select-usage": SelectUsage,
   "select-multiple": SelectMultiple,
   "select-disabled-options": SelectDisabledOptions,
