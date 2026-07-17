@@ -51,6 +51,8 @@ export default () => (
 
 ```
 
+> **Accessibility:** The default external-link icon is decorative (`aria-hidden`), so screen readers don't announce it. When a link opens in a new tab, convey that in the link text or an `aria-label`, e.g. `aria-label="Creator Hub (opens in new tab)"`.
+
 ### Text Decoration with Tailwind CSS
 
 Link is underlined on hover by default. Use Tailwind CSS text-decoration utilities to make the underline always visible, remove it entirely, or customize its color, style, thickness, and offset.

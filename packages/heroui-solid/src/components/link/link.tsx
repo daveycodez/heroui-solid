@@ -68,7 +68,6 @@ const LinkRoot = <T extends ValidComponent = "a">(
 const ExternalLinkIcon = (props: ComponentProps<"svg">) => (
   <svg
     aria-hidden="true"
-    aria-label="External link icon"
     fill="none"
     height={9}
     role="presentation"

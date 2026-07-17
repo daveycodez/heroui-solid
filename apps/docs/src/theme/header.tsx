@@ -1,0 +1,197 @@
+import { Dialog } from "@kobalte/core/dialog"
+import {
+  getLocaleLink,
+  useCurrentPageData,
+  useLocale,
+  useSidebar
+} from "@kobalte/solidbase/client"
+import styles from "@kobalte/solidbase/default-theme/components/Header.module.css"
+import {
+  useDefaultThemeComponents,
+  useDefaultThemeState
+} from "@kobalte/solidbase/default-theme/context"
+import { useRouteConfig } from "@kobalte/solidbase/default-theme/utils"
+import { useMatch } from "@solidjs/router"
+import { createSignal, For, Show } from "solid-js"
+import IconArrowDownLine from "~icons/ri/arrow-down-s-line"
+import IconCloseFill from "~icons/ri/close-large-fill"
+import IconMenuLeftLine from "~icons/ri/menu-2-line"
+import IconMenuFill from "~icons/ri/menu-fill"
+import { SearchButton, SearchDialog, SearchIconButton } from "./search"
+
+// Copy of solidbase's default Header (default-theme/components/Header.tsx,
+// reusing its module CSS) registered through the components provider in
+// Layout.tsx. The one addition is the search cluster the default header has
+// no slot for: a centered search bar between the logo cluster and the
+// right-side nav (official HeroUI docs layout), the icon-only trigger on
+// mobile, and the ⌘K dialog. The header-start/header-search/header-end
+// layout lives in docs-theme.css.
+
+export default function Header() {
+  const [tocRef, setTocRef] = createSignal<HTMLElement>()
+  const [navRef, setNavRef] = createSignal<HTMLElement>()
+
+  const { ThemeSelector, LocaleSelector, VersionSelector, TableOfContents } =
+    useDefaultThemeComponents()
+
+  const {
+    tocOpen,
+    setTocOpen,
+    setSidebarOpen,
+    frontmatter,
+    navOpen,
+    setNavOpen
+  } = useDefaultThemeState()
+
+  const config = useRouteConfig()
+  const locale = useLocale()
+  const sidebar = useSidebar()
+  const tocContent = () => useCurrentPageData()()?.toc
+
+  const hasSidebar = () =>
+    frontmatter()?.sidebar !== false && (sidebar()?.items.length ?? 0) > 0
+  const hasToc = () =>
+    frontmatter()?.toc !== false && (tocContent()?.length ?? 0) > 0
+
+  return (
+    <header class={styles.header}>
+      <div>
+        <div class={`${styles["logo-cluster"]} header-start`}>
+          <a
+            href={getLocaleLink(locale.currentLocale())}
+            class={styles["logo-link"]}
+          >
+            <Show when={config().logo} fallback={<span>{config().title}</span>}>
+              <img
+                src={config().logo}
+                alt={config().title}
+                height={16}
+                width={100}
+              />
+            </Show>
+          </a>
+          <div class={styles["version-selector"]}>
+            <VersionSelector />
+          </div>
+        </div>
+        <div class="header-search">
+          <SearchButton />
+        </div>
+        <div class={`${styles["top-nav"]} header-end`}>
+          <Dialog open={navOpen()} onOpenChange={setNavOpen} modal={false}>
+            <Dialog.Trigger
+              type="button"
+              class={styles["mobile-nav-menu"]}
+              aria-label="Open navigation"
+            >
+              <IconMenuFill class={styles["menu-icon"]} />
+              <IconCloseFill class={styles["close-icon"]} />
+            </Dialog.Trigger>
+
+            <Dialog.Portal mount={navRef()}>
+              <Dialog.Content class={styles["nav-popup"]}>
+                <Show when={config().themeConfig?.nav}>
+                  {(nav) => (
+                    <For each={nav()}>
+                      {(item) => {
+                        const match = useMatch(() =>
+                          locale.applyPathPrefix(
+                            `${item.activeMatch ?? item.link}/*rest`
+                          )
+                        )
+
+                        return (
+                          <a
+                            class={styles.navLink}
+                            href={locale.applyPathPrefix(item.link)}
+                            data-matched={
+                              match() !== undefined ? true : undefined
+                            }
+                            onClick={() => setNavOpen(false)}
+                          >
+                            {item.text}
+                          </a>
+                        )
+                      }}
+                    </For>
+                  )}
+                </Show>
+                <div class={styles["nav-popup-selectors"]}>
+                  <LocaleSelector />
+                  <ThemeSelector />
+                </div>
+              </Dialog.Content>
+            </Dialog.Portal>
+          </Dialog>
+          <Show when={config().themeConfig?.nav}>
+            {(nav) => (
+              <For each={nav()}>
+                {(item) => {
+                  const match = useMatch(() =>
+                    locale.applyPathPrefix(
+                      `${item.activeMatch ?? item.link}/*rest`
+                    )
+                  )
+
+                  return (
+                    <a
+                      class={styles.navLink}
+                      href={locale.applyPathPrefix(item.link)}
+                      data-matched={match() !== undefined ? true : undefined}
+                    >
+                      {item.text}
+                    </a>
+                  )
+                }}
+              </For>
+            )}
+          </Show>
+          <SearchIconButton />
+          <LocaleSelector />
+          <ThemeSelector />
+        </div>
+      </div>
+
+      <div ref={setNavRef} class={styles["nav-container"]} />
+
+      <Show when={hasSidebar() || hasToc()}>
+        <div class={styles["mobile-bar"]}>
+          <Show when={hasSidebar()} fallback={<div />}>
+            <button
+              type="button"
+              class={styles["mobile-menu"]}
+              onClick={() => setSidebarOpen((p) => !p)}
+              aria-label="Open navigation"
+            >
+              <IconMenuLeftLine /> Menu
+            </button>
+          </Show>
+
+          <Dialog open={tocOpen()} onOpenChange={setTocOpen} modal={false}>
+            <Show when={hasToc()}>
+              <Dialog.Trigger
+                type="button"
+                class={styles["mobile-menu"]}
+                aria-label="Open table of contents"
+              >
+                On this page <IconArrowDownLine />
+              </Dialog.Trigger>
+            </Show>
+
+            <Dialog.Portal mount={tocRef()}>
+              <Dialog.Content
+                class={styles["toc-popup"]}
+                onClick={() => setTocOpen(false)}
+              >
+                <TableOfContents />
+              </Dialog.Content>
+            </Dialog.Portal>
+          </Dialog>
+        </div>
+      </Show>
+
+      <div ref={setTocRef} class={styles["toc-container"]} />
+      <SearchDialog />
+    </header>
+  )
+}

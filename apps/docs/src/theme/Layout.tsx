@@ -2,6 +2,7 @@ import { useCurrentPageData } from "@kobalte/solidbase/client"
 import { DefaultThemeComponentsProvider } from "@kobalte/solidbase/default-theme/context"
 import DefaultLayout from "@kobalte/solidbase/default-theme/Layout"
 import { createEffect, onCleanup } from "solid-js"
+import Header from "./header"
 import HeaderDocsLink from "./header-docs-link"
 import HeaderGithubButton from "./header-github-button"
 import ThemeToggle from "./theme-toggle"
@@ -100,13 +101,15 @@ export default function Layout(
   })
   onCleanup(() => detach?.())
   // `force` makes this outer provider win over the defaults DefaultLayout
-  // registers. ThemeSelector becomes the official-style pill toggle;
-  // VersionSelector and LocaleSelector are empty slots in our setup (no
-  // version axis, single locale), reused as the only mount points solidbase
-  // offers next to the logo (Docs link) and on the right (GitHub button).
+  // registers. Header is our copy with the centered search bar (header.tsx);
+  // ThemeSelector becomes the official-style pill toggle; VersionSelector
+  // and LocaleSelector are empty slots in our setup (no version axis, single
+  // locale), reused as the only mount points solidbase offers next to the
+  // logo (Docs link) and on the right (GitHub button).
   return (
     <DefaultThemeComponentsProvider
       components={{
+        Header,
         ThemeSelector: ThemeToggle,
         VersionSelector: HeaderDocsLink,
         LocaleSelector: HeaderGithubButton

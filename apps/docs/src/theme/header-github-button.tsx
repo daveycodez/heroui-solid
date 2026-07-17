@@ -9,7 +9,7 @@ export default function HeaderGithubButton() {
     <Button
       as="a"
       href="https://github.com/daveycodez/heroui-solid"
-      rel="noreferrer"
+      rel="noopener noreferrer"
       target="_blank"
       variant="tertiary"
     >

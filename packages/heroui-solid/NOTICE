@@ -1,8 +1,7 @@
 heroui-solid
 Copyright 2026 heroui-solid contributors
 
-This is an UNOFFICIAL community port of HeroUI v3 to SolidJS. It is not
-affiliated with, endorsed by, or sponsored by HeroUI Inc.
+This is an UNOFFICIAL port of HeroUI v3 to SolidJS.
 
 This product depends on and redistributes compiled CSS from HeroUI
 (https://heroui.com, https://github.com/heroui-inc/heroui), © HeroUI Inc.,

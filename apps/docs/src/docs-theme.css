@@ -106,6 +106,33 @@ body header a[class*="logo-link"] {
   }
 }
 
+/* Search cluster (theme/header.tsx + theme/search.tsx): the official docs
+ * header centers the search bar between the logo cluster and the right-side
+ * nav by giving both sides equal flex weight; the bar itself carries the
+ * fumadocs LargeSearchToggle metrics (w-full max-w-sm) via utilities. */
+body header .header-start,
+body header .header-end {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+body header .header-end {
+  justify-content: flex-end;
+}
+
+body header .header-search {
+  display: flex;
+  flex: 0 1 24rem;
+  justify-content: center;
+  padding-inline: 1rem;
+}
+
+@media (max-width: 767px) {
+  body header .header-search {
+    display: none;
+  }
+}
+
 /* Theme switcher (theme/theme-toggle.tsx): official pill toggle metrics —
  * fumadocs' `size-6.5 rounded-full p-1.5` items on the heroui docs' own
  * container restyle (global.css `[data-theme-toggle]`: borderless, solid

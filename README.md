@@ -2,10 +2,6 @@
 
 **Unofficial** [SolidJS](https://solidjs.com) port of [HeroUI v3](https://heroui.com).
 
-> This is a community project. It is **not affiliated with, endorsed by, or sponsored by
-> HeroUI Inc.** HeroUI's design system and CSS are used under the Apache-2.0 license — see
-> [NOTICE](./NOTICE).
-
 ## What it is
 
 - **HeroUI's look, HeroUI's API.** Components mirror HeroUI v3's real public API

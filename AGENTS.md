@@ -69,6 +69,12 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   `splitProps` instead of destructuring (destructuring kills reactivity).
 - **Skip what isn't ported yet** (e.g. `BUTTON_GROUP_CHILD` until ButtonGroup
   exists) and React-only machinery (`dom.span`, `composeTwRenderProps`).
+- **Don't mirror upstream a11y bugs.** Upstream's icons (icons.tsx on the
+  `v3` branch) stamp `aria-label` on `aria-hidden="true"` svgs — a name on an
+  element erased from the accessibility tree. Ported icons drop the
+  `aria-label` and keep `aria-hidden` + `role="presentation"` (see
+  ExternalLinkIcon in link.tsx). Same rule for future upstream a11y defects:
+  fix here, note the deviation, consider reporting upstream.
 - **Form controls provide `FieldContext`** (`src/utils/field-context.tsx`,
   value `true`): the field satellites (Label, Description, FieldError, Input,
   TextArea) render the Kobalte form-control primitive when the marker is
@@ -224,6 +230,26 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   the import is inlined into app.css): solidbase's own CSS must keep exact
   matches — its ThemeSelector tells "dark" from "sdark" to pick the trigger
   icon (a global rewrite rendered two moons).
+
+## Docs Search (apps/docs)
+
+- Static search, fumadocs-style: `search-index.ts` parses the MDX routes from
+  disk at vite-config time (a `?raw` glob doesn't work — the MDX pipeline owns
+  `.mdx` imports even with the query) into `virtual:docs-search-index`;
+  `src/routes/api/search.ts` serves it and nitro prerenders it to
+  `.output/public/api/search` (nitro's `prerender.routes` **replaces** the
+  crawler's `/` start point, so `/` must stay listed alongside it). The client
+  (`src/theme/search.tsx`) fetches the JSON once on first open and queries
+  `@orama/orama` in-browser. Like the sidebar, the index is computed once per
+  dev-server start — content edits reach search after a restart.
+- The header is the only default-theme component with no slot for a centered
+  search bar, so `src/theme/header.tsx` is a copy of solidbase's Header
+  (reusing its module CSS from the package) registered via the same
+  components provider as ThemeSelector; the search cluster layout lives in
+  docs-theme.css, the trigger mirrors fumadocs' LargeSearchToggle markup with
+  heroui tokens. The ⌘K dialog is Kobalte Dialog with `preventScroll={false}`
+  + `PreventScroll` (exported from heroui-solid for this) and is closed during
+  SSR, so it's hydration-inert.
 
 ## Dev Loop
 

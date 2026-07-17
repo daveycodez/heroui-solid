@@ -55,7 +55,7 @@ export function HomePage() {
         <a
           class="text-muted hover:text-foreground mt-6 flex items-center gap-2 text-xs transition-colors"
           href="https://github.com/daveycodez/heroui-solid"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           target="_blank"
         >
           <GitHubIcon aria-hidden="true" class="size-4" />
@@ -88,13 +88,12 @@ export function HomePage() {
           <a
             class="text-foreground hover:underline"
             href="https://heroui.com"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             target="_blank"
           >
             HeroUI
           </a>
-          . HeroUI Solid is an unofficial community port, not affiliated with or
-          endorsed by the HeroUI team.
+          .
         </p>
       </footer>
     </section>

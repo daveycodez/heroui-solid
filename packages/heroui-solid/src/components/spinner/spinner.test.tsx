@@ -18,4 +18,17 @@ describe("Spinner", () => {
     )
     expect(root?.querySelector('svg[data-slot="spinner-icon"]')).toBeTruthy()
   })
+
+  it("announces as a status region labeled Loading by default", () => {
+    const { container } = render(() => <SpinnerRoot />)
+    const root = container.querySelector('[data-slot="spinner"]')
+    expect(root?.getAttribute("role")).toBe("status")
+    expect(root?.getAttribute("aria-label")).toBe("Loading")
+  })
+
+  it("lets consumers localize the label via aria-label", () => {
+    const { container } = render(() => <SpinnerRoot aria-label="Chargement" />)
+    const root = container.querySelector('[data-slot="spinner"]')
+    expect(root?.getAttribute("aria-label")).toBe("Chargement")
+  })
 })

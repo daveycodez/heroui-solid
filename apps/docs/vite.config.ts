@@ -5,6 +5,7 @@ import { solidStart } from "@solidjs/start/config"
 import tailwindcss from "@tailwindcss/vite"
 import { nitro } from "nitro/vite"
 import { defineConfig } from "vite"
+import { buildSearchIndex } from "./search-index"
 import solidbaseConfig from "./solidbase.config"
 
 const theme = defineTheme({
@@ -124,6 +125,27 @@ export default defineConfig(({ command }) => ({
       }
     },
     {
+      // Search index for src/routes/api/search.ts: the MDX pipeline owns
+      // `.mdx` imports (even with `?raw`), so the index is built from disk
+      // at config time instead (search-index.ts). Like the sidebar below,
+      // it's computed once — content edits reach search after a restart.
+      name: "docs-search-index",
+      resolveId(id) {
+        if (id === "virtual:docs-search-index") {
+          return "\0docs-search-index"
+        }
+      },
+      load(id) {
+        if (id === "\0docs-search-index") {
+          return `export default ${JSON.stringify(
+            buildSearchIndex(
+              fileURLToPath(new URL("./src/routes", import.meta.url))
+            )
+          )}`
+        }
+      }
+    },
+    {
       // The filesystem sidebar in solidbase.config.ts is computed once at
       // config evaluation, so a page added or removed under docs/components
       // never appears without a restart. Restart automatically on add/unlink
@@ -151,7 +173,11 @@ export default defineConfig(({ command }) => ({
       // it (as of 3.0.260610-beta it still builds the server env and fails).
       // Until then, deploy .output/public — it's a complete static site.
       prerender: {
-        crawlLinks: true
+        crawlLinks: true,
+        // Explicit routes replace the crawler's default "/" start point, so
+        // it must be listed alongside the search index (which is fetched,
+        // never linked, and thus undiscoverable by crawling).
+        routes: ["/", "/api/search"]
       }
     })
   ]
