@@ -18,6 +18,8 @@ HeroUI React accepts a `Button` directly as the trigger; this port uses an expli
 `Dropdown.Trigger` (Kobalte's trigger is itself a button) — style it with
 `buttonVariants` for the Button look.
 
+<ComponentPreview name="dropdown-usage" />
+
 ```tsx
 import { buttonVariants, Dropdown, Label } from "heroui-solid";
 
@@ -48,8 +50,6 @@ export function Usage() {
 }
 ```
 
-<ComponentPreview name="dropdown-usage" />
-
 ### Anatomy
 
 Import the Dropdown component and access all parts using dot notation.
@@ -74,6 +74,8 @@ export default () => (
 
 ### With Icons
 
+<ComponentPreview name="dropdown-with-icons" />
+
 ```tsx
 import { buttonVariants, Dropdown, Label } from "heroui-solid";
 import SquarePlus from "~icons/gravity-ui/square-plus";
@@ -84,9 +86,9 @@ import SquarePlus from "~icons/gravity-ui/square-plus";
 </Dropdown.Item>
 ```
 
-<ComponentPreview name="dropdown-with-icons" />
-
 ### With Descriptions
+
+<ComponentPreview name="dropdown-with-descriptions" />
 
 ```tsx
 <Dropdown.Item id="new-file" textValue="New file">
@@ -98,9 +100,9 @@ import SquarePlus from "~icons/gravity-ui/square-plus";
 </Dropdown.Item>
 ```
 
-<ComponentPreview name="dropdown-with-descriptions" />
-
 ### With Disabled Items
+
+<ComponentPreview name="dropdown-disabled-items" />
 
 ```tsx
 <Dropdown.Menu disabledKeys={["delete-file"]} onAction={(key) => console.log(key)}>
@@ -108,9 +110,9 @@ import SquarePlus from "~icons/gravity-ui/square-plus";
 </Dropdown.Menu>
 ```
 
-<ComponentPreview name="dropdown-disabled-items" />
-
 ### Controlled Open State
+
+<ComponentPreview name="dropdown-controlled-open-state" />
 
 ```tsx
 import { buttonVariants, Dropdown, Label } from "heroui-solid";
@@ -126,8 +128,6 @@ export function ControlledOpenState() {
   );
 }
 ```
-
-<ComponentPreview name="dropdown-controlled-open-state" />
 
 ## Related Components
 

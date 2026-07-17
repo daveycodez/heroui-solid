@@ -16,6 +16,8 @@ import { Input } from "heroui-solid";
 
 ### Usage
 
+<ComponentPreview name="input-basic" />
+
 ```tsx
 import { Input } from "heroui-solid";
 
@@ -24,9 +26,9 @@ export function Basic() {
 }
 ```
 
-<ComponentPreview name="input-basic" />
-
 ### Input Types
+
+<ComponentPreview name="input-types" />
 
 ```tsx
 import { Input, Label } from "heroui-solid";
@@ -51,12 +53,12 @@ export function Types() {
 }
 ```
 
-<ComponentPreview name="input-types" />
-
 ### Controlled
 
 Standalone inputs are controlled with Solid's native `onInput` event (HeroUI React
 uses React's `onChange`, which fires per keystroke — Solid's `onChange` fires on blur).
+
+<ComponentPreview name="input-controlled" />
 
 ```tsx
 import { Input } from "heroui-solid";
@@ -79,9 +81,9 @@ export function Controlled() {
 }
 ```
 
-<ComponentPreview name="input-controlled" />
-
 ### Full Width
+
+<ComponentPreview name="input-full-width" />
 
 ```tsx
 import { Input } from "heroui-solid";
@@ -95,14 +97,14 @@ export function FullWidth() {
 }
 ```
 
-<ComponentPreview name="input-full-width" />
-
 ### Variants
 
 The Input component supports two visual variants:
 
 - **`primary`** (default) - Standard styling with shadow, suitable for most use cases
 - **`secondary`** - Lower emphasis variant without shadow, suitable for use in Surface components
+
+<ComponentPreview name="input-variants" />
 
 ```tsx
 import { Input } from "heroui-solid";
@@ -117,11 +119,11 @@ export function Variants() {
 }
 ```
 
-<ComponentPreview name="input-variants" />
-
 ### In Surface
 
 When used inside a [Surface](/docs/components/surface) component, use `variant="secondary"` to apply the lower emphasis variant suitable for surface backgrounds.
+
+<ComponentPreview name="input-in-surface" />
 
 ```tsx
 import { Input, Surface } from "heroui-solid";
@@ -134,8 +136,6 @@ export function OnSurface() {
   );
 }
 ```
-
-<ComponentPreview name="input-in-surface" />
 
 ## Related Components
 

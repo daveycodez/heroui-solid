@@ -1,0 +1,16 @@
+/* Docs-local Tailwind pass: generates utilities for classes used in this
+ * app's source (demos, MDX, theme components). Kept separate from app.css on
+ * purpose — the @tailwindcss/vite plugin inlines every @import in a sheet it
+ * compiles, which would erase the per-rule source info the postcss plugin in
+ * vite.config.ts needs to scope the heroui-solid/dist dark-mode selector
+ * rewrite.
+ *
+ * theme(reference) compiles utilities against the default theme without
+ * re-emitting its variables: at runtime they resolve to the identically named
+ * variables heroui-solid/styles already ships (--spacing, --color-*, ...),
+ * so heroui's theme values stay authoritative. No preflight import — heroui's
+ * stylesheet already includes one. The utilities layer slots into the order
+ * declared at the top of app.css.
+ */
+@import "tailwindcss/theme" theme(reference);
+@import "tailwindcss/utilities" layer(utilities);

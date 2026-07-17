@@ -14,6 +14,8 @@ import { Card } from "heroui-solid";
 
 ### Usage
 
+<ComponentPreview name="card-usage" />
+
 ```tsx
 import { Card } from "heroui-solid";
 import CircleDollar from "~icons/gravity-ui/circle-dollar";
@@ -44,8 +46,6 @@ export function Usage() {
 }
 ```
 
-<ComponentPreview name="card-usage" />
-
 ### Anatomy
 
 Import the Card component and access all parts using dot notation.
@@ -68,6 +68,8 @@ export default () => (
 ### Variants
 
 Cards come in semantic variants that describe their prominence level rather than specific visual styles. This allows themes to interpret them differently:
+
+<ComponentPreview name="card-variants" />
 
 ```tsx
 import { Card } from "heroui-solid";
@@ -119,8 +121,6 @@ export function Variants() {
 }
 ```
 
-<ComponentPreview name="card-variants" />
-
 - **`transparent`** - Minimal prominence, transparent background (great for nested cards)
 - **`default`** - Standard card for most use cases
 - **`secondary`** - Medium prominence to draw moderate attention
@@ -130,6 +130,8 @@ export function Variants() {
 
 The official demo uses `CloseButton`, which isn't ported yet — an icon-only ghost
 Button stands in for it here.
+
+<ComponentPreview name="card-horizontal" />
 
 ```tsx
 import { Button, Card } from "heroui-solid";
@@ -176,11 +178,11 @@ export function Horizontal() {
 }
 ```
 
-<ComponentPreview name="card-horizontal" />
-
 ### With Form
 
 The `Form` component isn't ported yet, so a plain `<form>` element is used instead.
+
+<ComponentPreview name="card-with-form" />
 
 ```tsx
 import { Button, Card, Input, Label, TextField } from "heroui-solid";
@@ -223,8 +225,6 @@ export function WithForm() {
   );
 }
 ```
-
-<ComponentPreview name="card-with-form" />
 
 ## Accessibility
 

@@ -32,7 +32,9 @@
     "@iconify-json/gravity-ui": "^1.2.13",
     "@iconify-json/ion": "^1.2.7",
     "@iconify-json/mdi": "^1.2.3",
+    "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^26.1.1",
+    "tailwindcss": "^4.3.3",
     "typescript": "~6.0.3",
     "unplugin-icons": "^23.0.1"
   }

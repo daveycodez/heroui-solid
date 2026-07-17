@@ -14,6 +14,8 @@ import { Select } from "heroui-solid";
 
 ### Usage
 
+<ComponentPreview name="select-usage" />
+
 ```tsx
 import { Label, ListBox, Select } from "heroui-solid";
 
@@ -49,8 +51,6 @@ export function Usage() {
 }
 ```
 
-<ComponentPreview name="select-usage" />
-
 ### Anatomy
 
 Import the Select component and access all parts using dot notation.
@@ -79,15 +79,17 @@ export default () => (
 
 ### Multiple Select
 
+<ComponentPreview name="select-multiple" />
+
 ```tsx
 <Select placeholder="Select countries" selectionMode="multiple">
   ...
 </Select>
 ```
 
-<ComponentPreview name="select-multiple" />
-
 ### With Disabled Options
+
+<ComponentPreview name="select-disabled-options" />
 
 ```tsx
 <Select disabledKeys={["cat", "kangaroo"]} placeholder="Select an animal">
@@ -95,9 +97,9 @@ export default () => (
 </Select>
 ```
 
-<ComponentPreview name="select-disabled-options" />
-
 ### Custom Indicator
+
+<ComponentPreview name="select-custom-indicator" />
 
 ```tsx
 import ChevronsExpandVertical from "~icons/gravity-ui/chevrons-expand-vertical";
@@ -107,9 +109,9 @@ import ChevronsExpandVertical from "~icons/gravity-ui/chevrons-expand-vertical";
 </Select.Indicator>
 ```
 
-<ComponentPreview name="select-custom-indicator" />
-
 ### Controlled
+
+<ComponentPreview name="select-controlled" />
 
 ```tsx
 import { Label, ListBox, Select } from "heroui-solid";
@@ -131,8 +133,6 @@ export function Controlled() {
 }
 ```
 
-<ComponentPreview name="select-controlled" />
-
 ### Variants
 
 The Select component supports two visual variants:
@@ -144,13 +144,13 @@ The Select component supports two visual variants:
 
 ### Full Width
 
+<ComponentPreview name="select-full-width" />
+
 ```tsx
 <Select fullWidth placeholder="Select one">
   ...
 </Select>
 ```
-
-<ComponentPreview name="select-full-width" />
 
 ### In Surface
 
@@ -160,13 +160,13 @@ When used inside a [Surface](/docs/components/surface) component, use `variant="
 
 ### Disabled
 
+<ComponentPreview name="select-disabled" />
+
 ```tsx
 <Select isDisabled defaultValue="california" placeholder="Select one">
   ...
 </Select>
 ```
-
-<ComponentPreview name="select-disabled" />
 
 ## Related Components
 

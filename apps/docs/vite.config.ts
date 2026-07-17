@@ -2,6 +2,7 @@ import { fileURLToPath } from "node:url"
 import { createSolidBase, defineTheme } from "@kobalte/solidbase/config"
 import defaultTheme from "@kobalte/solidbase/default-theme"
 import { solidStart } from "@solidjs/start/config"
+import tailwindcss from "@tailwindcss/vite"
 import { nitro } from "nitro/vite"
 import { defineConfig } from "vite"
 import solidbaseConfig from "./solidbase.config"
@@ -93,6 +94,7 @@ export default defineConfig(({ command }) => ({
         : []
   },
   plugins: [
+    tailwindcss(),
     {
       // Workaround from the official solid-start-v2/with-solidbase template:
       // @kobalte/solidbase's internal imports use ".js" specifiers that need

@@ -16,6 +16,8 @@ import { TextArea } from "heroui-solid";
 
 ### Usage
 
+<ComponentPreview name="textarea-basic" />
+
 ```tsx
 import { TextArea } from "heroui-solid";
 
@@ -30,12 +32,12 @@ export function Basic() {
 }
 ```
 
-<ComponentPreview name="textarea-basic" />
-
 ### Controlled
 
 Standalone textareas are controlled with Solid's native `onInput` event (HeroUI React
 uses React's `onChange`, which fires per keystroke — Solid's `onChange` fires on blur).
+
+<ComponentPreview name="textarea-controlled" />
 
 ```tsx
 import { Description, TextArea } from "heroui-solid";
@@ -61,9 +63,9 @@ export function Controlled() {
 }
 ```
 
-<ComponentPreview name="textarea-controlled" />
-
 ### Rows and Resizing
+
+<ComponentPreview name="textarea-rows" />
 
 ```tsx
 import { Label, TextArea } from "heroui-solid";
@@ -89,9 +91,9 @@ export function Rows() {
 }
 ```
 
-<ComponentPreview name="textarea-rows" />
-
 ### Full Width
+
+<ComponentPreview name="textarea-full-width" />
 
 ```tsx
 import { TextArea } from "heroui-solid";
@@ -105,14 +107,14 @@ export function FullWidth() {
 }
 ```
 
-<ComponentPreview name="textarea-full-width" />
-
 ### Variants
 
 The TextArea component supports two visual variants:
 
 - **`primary`** (default) - Standard styling with shadow, suitable for most use cases
 - **`secondary`** - Lower emphasis variant without shadow, suitable for use in Surface components
+
+<ComponentPreview name="textarea-variants" />
 
 ```tsx
 import { TextArea } from "heroui-solid";
@@ -127,11 +129,11 @@ export function Variants() {
 }
 ```
 
-<ComponentPreview name="textarea-variants" />
-
 ### In Surface
 
 When used inside a [Surface](/docs/components/surface) component, use `variant="secondary"` to apply the lower emphasis variant suitable for surface backgrounds.
+
+<ComponentPreview name="textarea-in-surface" />
 
 ```tsx
 import { Surface, TextArea } from "heroui-solid";
@@ -144,8 +146,6 @@ export function OnSurface() {
   );
 }
 ```
-
-<ComponentPreview name="textarea-in-surface" />
 
 ## Related Components
 

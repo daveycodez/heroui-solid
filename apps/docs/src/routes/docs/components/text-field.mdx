@@ -14,6 +14,8 @@ import { TextField } from "heroui-solid";
 
 ### Usage
 
+<ComponentPreview name="textfield-basic" />
+
 ```tsx
 import { Input, Label, TextField } from "heroui-solid";
 
@@ -26,8 +28,6 @@ export function Basic() {
   );
 }
 ```
-
-<ComponentPreview name="textfield-basic" />
 
 ### Anatomy
 
@@ -49,6 +49,8 @@ export default () => (
 
 ### With Description
 
+<ComponentPreview name="textfield-with-description" />
+
 ```tsx
 import { Description, Input, Label, TextField } from "heroui-solid";
 
@@ -63,9 +65,9 @@ export function WithDescription() {
 }
 ```
 
-<ComponentPreview name="textfield-with-description" />
-
 ### Required Field
+
+<ComponentPreview name="textfield-required" />
 
 ```tsx
 import { Description, Input, Label, TextField } from "heroui-solid";
@@ -81,11 +83,11 @@ export function Required() {
 }
 ```
 
-<ComponentPreview name="textfield-required" />
-
 ### Validation
 
 Use `isInvalid` together with `FieldError` to surface validation messages.
+
+<ComponentPreview name="textfield-validation" />
 
 ```tsx
 import { Description, FieldError, Input, Label, TextArea, TextField } from "heroui-solid";
@@ -138,11 +140,11 @@ export function Validation() {
 }
 ```
 
-<ComponentPreview name="textfield-validation" />
-
 ### Controlled
 
 Control the value to synchronize counters, previews, or formatting.
+
+<ComponentPreview name="textfield-controlled" />
 
 ```tsx
 import { Description, Input, Label, TextArea, TextField } from "heroui-solid";
@@ -169,9 +171,9 @@ export function Controlled() {
 }
 ```
 
-<ComponentPreview name="textfield-controlled" />
-
 ### Error Message
+
+<ComponentPreview name="textfield-error-message" />
 
 ```tsx
 import { FieldError, Input, Label, TextField } from "heroui-solid";
@@ -187,9 +189,9 @@ export function WithError() {
 }
 ```
 
-<ComponentPreview name="textfield-error-message" />
-
 ### Disabled State
+
+<ComponentPreview name="textfield-disabled" />
 
 ```tsx
 import { Description, Input, Label, TextField } from "heroui-solid";
@@ -205,11 +207,11 @@ export function Disabled() {
 }
 ```
 
-<ComponentPreview name="textfield-disabled" />
-
 ### TextArea
 
 Use [TextArea](/docs/components/text-area) instead of [Input](/docs/components/input) for multiline content.
+
+<ComponentPreview name="textfield-textarea" />
 
 ```tsx
 import { Description, Label, TextArea, TextField } from "heroui-solid";
@@ -225,12 +227,12 @@ export function TextAreaExample() {
 }
 ```
 
-<ComponentPreview name="textfield-textarea" />
-
 ### Input Types
 
 HeroUI React sets `type` on the TextField root; in this port `type` goes on the
 `Input` element instead (Kobalte keeps input attributes on the input).
+
+<ComponentPreview name="textfield-input-types" />
 
 ```tsx
 import { Input, Label, TextField } from "heroui-solid";
@@ -267,9 +269,9 @@ export function InputTypes() {
 }
 ```
 
-<ComponentPreview name="textfield-input-types" />
-
 ### Full Width
+
+<ComponentPreview name="textfield-full-width" />
 
 ```tsx
 import { FieldError, Input, Label, TextField } from "heroui-solid";
@@ -291,11 +293,11 @@ export function FullWidth() {
 }
 ```
 
-<ComponentPreview name="textfield-full-width" />
-
 ### In Surface
 
 When used inside a [Surface](/docs/components/surface) component, use `variant="secondary"` on the TextField to apply the lower emphasis variant suitable for surface backgrounds.
+
+<ComponentPreview name="textfield-in-surface" />
 
 ```tsx
 import { Description, Input, Label, Surface, TextArea, TextField } from "heroui-solid";
@@ -321,8 +323,6 @@ export function OnSurface() {
   );
 }
 ```
-
-<ComponentPreview name="textfield-in-surface" />
 
 ## Related Components
 
