@@ -1,7 +1,7 @@
-import { createSignal } from "solid-js"
+import { type Accessor, createSignal } from "solid-js"
 
 interface UseOverlayStateProps {
-  isOpen?: boolean
+  isOpen?: Accessor<boolean>
   defaultOpen?: boolean
   onOpenChange?: (isOpen: boolean) => void
 }
@@ -21,7 +21,7 @@ function useOverlayState(props: UseOverlayStateProps = {}): OverlayState {
     props.defaultOpen ?? false
   )
   const isControlled = () => props.isOpen !== undefined
-  const isOpen = () => (isControlled() ? !!props.isOpen : internalOpen())
+  const isOpen = () => (isControlled() ? !!props.isOpen?.() : internalOpen())
   const setOpen = (open: boolean) => {
     if (!isControlled()) setInternalOpen(open)
     props.onOpenChange?.(open)

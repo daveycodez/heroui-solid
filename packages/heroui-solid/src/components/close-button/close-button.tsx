@@ -47,7 +47,7 @@ const CloseIcon = (props: ComponentProps<"svg">) => (
 interface CloseButtonRootProps extends CloseButtonVariants {
   class?: string
   children?: JSX.Element
-  onClick?: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent>
+  onClick?: JSX.EventHandlerUnion<HTMLElement, MouseEvent>
 }
 
 const CloseButtonRoot = <T extends ValidComponent = "button">(
@@ -61,9 +61,7 @@ const CloseButtonRoot = <T extends ValidComponent = "button">(
   // Inside an AlertDialog a close button dismisses it (no-op elsewhere).
   const overlay = useContext(OverlayTriggerContext)
 
-  const handleClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (
-    event
-  ) => {
+  const handleClick: JSX.EventHandler<HTMLElement, MouseEvent> = (event) => {
     callHandler(event, local.onClick)
     if (event.defaultPrevented) {
       return

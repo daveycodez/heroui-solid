@@ -28,7 +28,7 @@ export function CustomPortal() {
         ref={containerRef}
         class="relative flex h-[380px] items-center justify-center overflow-hidden rounded bg-muted/20"
         // new stacking context
-        style={{ transform: "translate(0)" }}
+        style={{ transform: "translateZ(0)" }}
       >
         <Show when={portalContainer()}>
           <AlertDialog>
