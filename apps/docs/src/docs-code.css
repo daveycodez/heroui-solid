@@ -27,11 +27,11 @@
   color: #24292e;
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
-  /* Off-screen blocks skip rendering work (cheap insurance — the Highlight
-   * API markup is ~2 spans/line, so there is no EC-scale DOM to begin
-   * with). Registered ranges survive the rendering skip. */
-  content-visibility: auto;
-  contain-intrinsic-size: auto 300px;
+  /* NO content-visibility: Safari does not repaint CSS Custom Highlights when
+   * a content-visibility:auto subtree goes from skipped to rendered, so
+   * off-screen blocks scrolled into view showed uncolored (white) code. The
+   * single-text-node markup (~5 nodes/block) is light enough not to need the
+   * skip anyway. */
 }
 
 [data-theme="dark"] .code-block pre {
@@ -39,27 +39,25 @@
   scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
 }
 
-/* Line-number gutter (demo blocks only — showLineNumbers is injected by
- * remark-component-preview-code.ts). CSS counters, not text nodes: never
- * part of a drag-selection copy, no per-line DOM text. */
 .code-block code {
-  counter-reset: line;
+  display: block;
+  white-space: pre;
 }
 
-.code-block .line {
-  counter-increment: line;
+/* Line-number gutter (demo blocks only — showLineNumbers is injected by
+ * remark-component-preview-code.ts): a single sibling text node ("1\n2\n…"),
+ * aligned to the code by shared line-height, scrolling with it. Not inside
+ * <code>, so it never lands in a drag-selection copy. */
+.code-block pre:has(.ln-gutter) {
+  display: flex;
 }
 
-.code-block .line-number {
-  display: inline-block;
-  min-width: 2ch;
+.code-block .ln-gutter {
+  flex: none;
   margin-right: 1rem;
   text-align: right;
+  white-space: pre;
   user-select: none;
-}
-
-.code-block .line-number::before {
-  content: counter(line);
   color: rgba(115, 138, 148, 0.4);
 }
 

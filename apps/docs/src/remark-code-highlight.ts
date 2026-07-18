@@ -4,9 +4,13 @@
  * Expressive Code. EC wrapped every token in a `<span>` — ~7.4k of them on the
  * heaviest component pages, 90%+ of the page DOM — and overlay opens force
  * synchronous style/layout recalcs that scale with that DOM (200ms+ freezes in
- * Safari). Here the SSR HTML is plain text (~2 spans per line); token colors
- * are painted client-side through `CSS.highlights` ranges + per-block
- * `::highlight()` rules, so the DOM weight is gone entirely.
+ * Safari). Here each block's code is a SINGLE text node (no per-line/per-token
+ * spans at all — ~5 DOM nodes per block); token colors are painted through
+ * `CSS.highlights` ranges at absolute offsets into that text node + the page's
+ * `::highlight()` rules. The SSR HTML is plain text (SEO), and the DOM the
+ * overlay recalc has to walk is negligible — so NO `content-visibility` is
+ * needed (which is critical: Safari doesn't repaint highlights when a
+ * content-visibility subtree is revealed — see docs-code.css).
  *
  * Tokenizes once with both github themes (`codeToTokensWithThemes` splits on
  * the union of both themes' token boundaries), so a single range set serves
@@ -16,6 +20,14 @@
  * sharing a name just contribute ranges to it). `::highlight()` supports only
  * color/background — font styles are dropped (the github themes barely use
  * them).
+ *
+ * The `::highlight()` rules for the whole page are deduped and emitted ONCE
+ * (on the first block), never per-block: they are the dominant recalc cost
+ * (each rule is re-evaluated on every synchronous style recalc, e.g. an
+ * overlay open), so 24 blocks each re-emitting the same ~10 rules turned a
+ * ~17ms dropdown-open into ~150ms in Chrome. Deduped to the page's handful of
+ * unique color pairs it drops back to ~40ms. Names stay per-block (the
+ * registration reads them), only the CSS is shared.
  *
  * Runs after solidbase's import-code-file (`file=` fences already hold the
  * demo source, meta gains a leading `title="<file>"` — the fence's own
@@ -36,20 +48,26 @@ import {
 
 export interface CodeBlockPayload {
   /**
-   * Pre-escaped `<code>` content, one `.line > .line-content` span per line
-   * (plus an empty `.line-number` span when the fence has line numbers —
-   * rendered via CSS counters). Injected with `innerHTML` so hydration never
-   * walks the block and `.line-content`'s firstChild is always a plain text
-   * node (a dynamic Solid insert would add hydration marker comments).
+   * Escaped code, injected as the `<code>` element's `innerHTML` so it becomes
+   * a SINGLE text node (offsets in `ranges` index into it) and hydration never
+   * walks it — a dynamic Solid text insert would add marker comments and split
+   * the node.
    */
-  html: string
+  codeHtml: string
+  /** Line count, for the CSS-free line-number gutter (a sibling text node). */
+  lineCount: number
+  showLineNumbers: boolean
   lang: string
   title: string
   /** Highlight names by styleId (colors live only in `css`). */
   names: string[]
-  /** Per line: `[start, end, styleId]` token spans, line-relative offsets. */
-  lines: [number, number, number][][]
-  /** Dual-theme `::highlight()` rules for this block's names. */
+  /** `[start, end, styleId]` token ranges, ABSOLUTE offsets into the code. */
+  ranges: [number, number, number][]
+  /**
+   * Deduped dual-theme `::highlight()` rules for EVERY block on the page —
+   * carried only by the first block, empty on the rest (see the module
+   * comment: emitting these per-block is the recalc-cost regression).
+   */
   css: string
 }
 
@@ -90,7 +108,15 @@ const ident = (color: string) => color.replace(/[^a-zA-Z0-9]/g, "")
 const escapeHtml = (text: string) =>
   text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
 
-function buildPayload(highlighter: Highlighter, node: Node): CodeBlockPayload {
+// name -> its two `::highlight()` rules, shared across every block on the page
+// so identical rules are emitted once (see the module comment).
+type RuleMap = Map<string, string>
+
+function buildPayload(
+  highlighter: Highlighter,
+  node: Node,
+  rules: RuleMap
+): CodeBlockPayload {
   const code = (node.value ?? "").replace(/\r\n/g, "\n")
   const lang: BundledLanguage | SpecialLanguage = LANGS.includes(
     node.lang as BundledLanguage
@@ -106,13 +132,16 @@ function buildPayload(highlighter: Highlighter, node: Node): CodeBlockPayload {
 
   const names: string[] = []
   const styleIds = new Map<string, number>()
-  let css = ""
-  const lines = themedLines.map((tokens) => {
-    const spans: [number, number, number][] = []
+  const ranges: [number, number, number][] = []
+  // Absolute offset of the current line's start in the joined code text node;
+  // advances by each line's length + 1 (the "\n" that rejoins them).
+  let lineStart = 0
+  for (const tokens of themedLines) {
     let col = 0
     for (const token of tokens) {
-      const start = col
+      const start = lineStart + col
       col += token.content.length
+      const end = lineStart + col
       const light = token.variants.light?.color?.toLowerCase() ?? lightFg
       const dark = token.variants.dark?.color?.toLowerCase() ?? darkFg
       const lightBg = token.variants.light?.bgColor?.toLowerCase()
@@ -136,24 +165,31 @@ function buildPayload(highlighter: Highlighter, node: Node): CodeBlockPayload {
             : ""
         }`
         names.push(name)
-        css += `html[data-theme='light'] ::highlight(${name}){color:${light}${lightBg ? `;background-color:${lightBg}` : ""}}`
-        css += `html[data-theme='dark'] ::highlight(${name}){color:${dark}${darkBg ? `;background-color:${darkBg}` : ""}}`
+        if (!rules.has(name)) {
+          rules.set(
+            name,
+            `html[data-theme='light'] ::highlight(${name}){color:${light}${lightBg ? `;background-color:${lightBg}` : ""}}` +
+              `html[data-theme='dark'] ::highlight(${name}){color:${dark}${darkBg ? `;background-color:${darkBg}` : ""}}`
+          )
+        }
       }
-      spans.push([start, col, id])
+      ranges.push([start, end, id])
     }
-    return spans
-  })
+    lineStart += col + 1
+  }
 
   const { title, showLineNumbers } = parseMeta(node.meta ?? "")
-  const gutter = showLineNumbers ? '<span class="line-number"></span>' : ""
-  const html = code
-    .split("\n")
-    .map(
-      (text) =>
-        `<span class="line">${gutter}<span class="line-content">${escapeHtml(text)}</span></span>`
-    )
-    .join("\n")
-  return { html, lang, title, names, lines, css }
+  // css is filled in once, on the first block (see the transformer).
+  return {
+    codeHtml: escapeHtml(code),
+    lineCount: code.split("\n").length,
+    showLineNumbers,
+    lang,
+    title,
+    names,
+    ranges,
+    css: ""
+  }
 }
 
 function collect(node: Node, found: { siblings: Node[]; index: number }[]) {
@@ -177,8 +213,16 @@ export function remarkCodeHighlight() {
       return
     }
     const highlighter = await getHighlighter()
-    for (const { siblings, index } of found) {
-      const payload = buildPayload(highlighter, siblings[index])
+    const rules: RuleMap = new Map()
+    const payloads = found.map(({ siblings, index }) =>
+      buildPayload(highlighter, siblings[index], rules)
+    )
+    // Every block's `::highlight()` rules, deduped, ride on the first block —
+    // one <style> for the page instead of one per block (the recalc-cost fix).
+    if (payloads.length > 0) {
+      payloads[0].css = [...rules.values()].join("")
+    }
+    found.forEach(({ siblings, index }, i) => {
       siblings[index] = {
         type: "mdxJsxFlowElement",
         name: "CodeBlock",
@@ -186,11 +230,11 @@ export function remarkCodeHighlight() {
           {
             type: "mdxJsxAttribute",
             name: "data",
-            value: JSON.stringify(payload)
+            value: JSON.stringify(payloads[i])
           }
         ],
         children: []
       }
-    }
+    })
   }
 }
