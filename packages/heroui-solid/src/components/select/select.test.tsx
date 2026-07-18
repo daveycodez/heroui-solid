@@ -3,12 +3,15 @@
 import { fireEvent, render } from "@solidjs/testing-library"
 import { describe, expect, it, vi } from "vitest"
 import { classSet } from "../../test/utils"
+import { HeaderRoot } from "../header/header"
 import { LabelRoot } from "../label/label"
 import {
   ListBoxItem,
   ListBoxItemIndicator,
   ListBoxRoot
 } from "../list-box/list-box"
+import { ListBoxSectionRoot } from "../list-box-section/list-box-section"
+import { SeparatorRoot } from "../separator/separator"
 import {
   SelectIndicator,
   SelectPopover,
@@ -112,6 +115,64 @@ describe("Select", () => {
       "[data-slot=select-default-indicator]"
     ) as HTMLElement
     expect(indicator.getAttribute("data-open")).toBe("true")
+  })
+
+  it("renders grouped options with section headers and separators", () => {
+    const Sectioned = () => (
+      <SelectRoot placeholder="Select a country">
+        <LabelRoot>Country</LabelRoot>
+        <SelectTrigger>
+          <SelectValue />
+          <SelectIndicator />
+        </SelectTrigger>
+        <SelectPopover>
+          <ListBoxRoot>
+            <ListBoxSectionRoot>
+              <HeaderRoot>North America</HeaderRoot>
+              <ListBoxItem id="usa" textValue="United States">
+                United States
+                <ListBoxItemIndicator />
+              </ListBoxItem>
+              <ListBoxItem id="canada" textValue="Canada">
+                Canada
+                <ListBoxItemIndicator />
+              </ListBoxItem>
+            </ListBoxSectionRoot>
+            <SeparatorRoot />
+            <ListBoxSectionRoot>
+              <HeaderRoot>Europe</HeaderRoot>
+              <ListBoxItem id="france" textValue="France">
+                France
+                <ListBoxItemIndicator />
+              </ListBoxItem>
+            </ListBoxSectionRoot>
+          </ListBoxRoot>
+        </SelectPopover>
+      </SelectRoot>
+    )
+
+    const { container } = render(() => <Sectioned />)
+    openWithKeyboard(
+      container.querySelector("[data-slot=select-trigger]") as HTMLElement
+    )
+
+    // All three items across both sections register and render.
+    const items = document.querySelectorAll("[data-slot=list-box-item]")
+    expect([...items].map((el) => el.textContent)).toEqual([
+      "United States",
+      "Canada",
+      "France"
+    ])
+
+    // Both section headers render inside section label rows.
+    const sections = document.querySelectorAll("[data-slot=list-box-section]")
+    expect([...sections].map((el) => el.textContent)).toEqual([
+      "North America",
+      "Europe"
+    ])
+
+    // The Separator between the two sections renders (deferred until open).
+    expect(document.querySelectorAll("[data-slot=separator]").length).toBe(1)
   })
 
   it("stamps data-placement for the default bottom placement", () => {

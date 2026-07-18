@@ -222,7 +222,16 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   (`LIST_BOX_RENDER` in list-box.tsx) whose `render()` the popover only calls
   inside the content, once it actually opens (client-side, post-hydration).
   Corollary: `Select.Popover` children must resolve to markers/descriptors —
-  a bare `<div>` child would crash hydration again.
+  a bare `<div>` child would crash hydration again. Grouped options
+  (`Select` + `ListBox.Section`) extend this: the section resolves to a
+  descriptor whose `items` register as a Kobalte group (`optionGroupChildren`),
+  but its `<Header>` and any `<Separator>` between sections would create DOM
+  during that eager registration — so both return **deferral markers** when
+  inside a Select collection (`utils/collection-defer.tsx`,
+  `CollectionDeferContext` provided by Select.Root; the marker's `render()`
+  runs only in the Select's `sectionComponent`, on open). Any new node that
+  can sit inside a Select's ListBox and would otherwise emit DOM must defer the
+  same way; `renderDeferred` unwraps them at the render site.
 - **Mid-hydration reactive updates don't reach the DOM — element creations
   crash, text writes are silently dropped.** Select item registration happens
   while the page is still hydrating, and anything reacting to it must cope:

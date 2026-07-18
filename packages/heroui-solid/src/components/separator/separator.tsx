@@ -1,7 +1,9 @@
 import { cn, type SeparatorVariants, separatorVariants } from "@heroui/styles"
 import type { PolymorphicProps } from "@kobalte/core/polymorphic"
 import { Root as SeparatorPrimitive } from "@kobalte/core/separator"
-import { splitProps, type ValidComponent } from "solid-js"
+import { type JSX, splitProps, type ValidComponent } from "solid-js"
+
+import { useCollectionDefer } from "../../utils/collection-defer"
 
 /* -------------------------------------------------------------------------------------------------
  * Separator Root
@@ -21,7 +23,7 @@ const SeparatorRoot = <T extends ValidComponent = "hr">(
 
   // Upstream also inherits orientation from React Aria's slotted
   // SeparatorContext (Toolbar); no Kobalte equivalent until Toolbar is ported.
-  return (
+  const render = () => (
     <SeparatorPrimitive
       class={cn(separatorVariants(variantProps), local.class)}
       data-slot="separator"
@@ -29,6 +31,9 @@ const SeparatorRoot = <T extends ValidComponent = "hr">(
       {...rest}
     />
   )
+
+  // Between Select sections, defer DOM to the open popover (AGENTS.md).
+  return (useCollectionDefer(render) ?? render()) as unknown as JSX.Element
 }
 
 export type { SeparatorRootProps }

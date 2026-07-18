@@ -116,21 +116,9 @@ export const components: PortedComponent[] = [
         stem: "asynchronous-loading",
         reason:
           "built on React Aria's useAsyncList + react-aria-components Collection/ListBoxLoadMoreItem — no Solid/Kobalte equivalent"
-      },
-      {
-        stem: "with-sections",
-        reason:
-          "Select does not yet register grouped options: ListBox.Section + Separator inside the closed Select popover force eager child resolution and crash hydration (AGENTS.md). Needs Select↔ListBox section support — tracked as a follow-up, not a React-only limitation"
       }
     ],
-    skipSections: [
-      RENDER_PROPS_SECTION("RenderProps"),
-      {
-        heading: "With Sections",
-        reason:
-          "section for the skipped select with-sections demo (Select grouped-options support pending)"
-      }
-    ]
+    skipSections: [RENDER_PROPS_SECTION("RenderProps")]
   },
   { slug: "separator", demosDir: "separator", skipDemos: [RENDER_PROP] },
   { slug: "spinner", demosDir: "spinner" },

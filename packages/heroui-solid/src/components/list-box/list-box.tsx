@@ -27,6 +27,11 @@ import {
   useContext,
   type ValidComponent
 } from "solid-js"
+import {
+  type DeferredNode,
+  isDeferredNode,
+  renderDeferred
+} from "../../utils/collection-defer"
 import { setupInteractionModality } from "../../utils/interaction-modality"
 
 /* -------------------------------------------------------------------------------------------------
@@ -50,10 +55,14 @@ const isItemDescriptor = (value: unknown): value is ListBoxItemDescriptor =>
 
 // ListBox.Section resolves to this descriptor (see list-box-section): its
 // items feed Kobalte's grouped options, its header renders in renderSection.
+// `header`/`leading` hold plain DOM standalone and deferral markers inside a
+// Select (resolved via renderDeferred); `leading` is the Separator(s) the
+// enclosing ListBox places before this section in Select mode.
 interface ListBoxSectionDescriptor {
   class?: string
   items: ListBoxItemDescriptor[]
-  header: JSX.Element[]
+  header: unknown[]
+  leading?: DeferredNode[]
 }
 
 const LIST_BOX_SECTION = Symbol("heroui-solid.list-box-section")
@@ -82,10 +91,11 @@ const isListBoxRenderMarker = (value: unknown): value is ListBoxRenderMarker =>
   value !== null &&
   LIST_BOX_RENDER in (value as Record<PropertyKey, unknown>)
 
-// Provided by Select.Root: registers the ListBox's item descriptors as the
-// enclosing Kobalte Select's options. Absent when the ListBox is standalone.
+// Provided by Select.Root: registers the ListBox's options (item and section
+// descriptors) as the enclosing Kobalte Select's collection. Absent when the
+// ListBox is standalone.
 const ListBoxCollectionContext = createContext<
-  ((items: ListBoxItemDescriptor[]) => void) | undefined
+  ((options: ListBoxOption[]) => void) | undefined
 >()
 
 // Kobalte's Select.Item and Listbox.Item are the same underlying component,
@@ -154,7 +164,7 @@ const ListBoxSectionView = (props: {
         class={cn(listboxSectionVariants(), descriptor().class)}
         data-slot="list-box-section"
       >
-        {descriptor().header}
+        {renderDeferred(descriptor().header)}
       </ListboxSectionPrimitive>
       {props.trailing}
     </>
@@ -194,17 +204,34 @@ const ListBoxRoot = <T extends ValidComponent = "ul">(
       "disabledKeys"
     ]
   )
-  const setItems = useContext(ListBoxCollectionContext)
+  const setOptions = useContext(ListBoxCollectionContext)
   onMount(setupInteractionModality)
 
   const resolved = children(() => local.children)
 
-  if (setItems) {
+  if (setOptions) {
     createComputed(() => {
-      // Sections are ignored inside a Select: resolving their children would
-      // create the Header DOM during the closed popover's eager child
-      // resolution — the hydration-crash class AGENTS.md documents.
-      setItems((resolved.toArray() as unknown[]).filter(isItemDescriptor))
+      // Register options in document order: item and section descriptors
+      // become the Select's Kobalte collection (sections group their items via
+      // `optionGroupChildren`). Deferred Separators between sections attach as
+      // `leading` on the following section — the Select's sectionComponent
+      // renders them. All children resolve to descriptors/markers, never DOM,
+      // so the closed popover's eager registration stays hydration-safe.
+      const options: ListBoxOption[] = []
+      let pendingLeading: DeferredNode[] = []
+      for (const child of resolved.toArray() as unknown[]) {
+        if (isItemDescriptor(child)) {
+          options.push(child)
+          pendingLeading = []
+        } else if (isSectionDescriptor(child)) {
+          child.leading = pendingLeading.length > 0 ? pendingLeading : undefined
+          options.push(child)
+          pendingLeading = []
+        } else if (isDeferredNode(child)) {
+          pendingLeading.push(child)
+        }
+      }
+      setOptions(options)
     })
 
     // Resolves to a render marker instead of JSX so the popover's eager child
@@ -390,6 +417,7 @@ export type {
   ListBoxItemDescriptor,
   ListBoxItemIndicatorProps,
   ListBoxItemProps,
+  ListBoxOption,
   ListBoxRenderMarker,
   ListBoxRootProps,
   ListBoxSectionDescriptor
@@ -400,6 +428,7 @@ export type {
 export {
   isItemDescriptor,
   isListBoxRenderMarker,
+  isSectionDescriptor,
   LIST_BOX_SECTION,
   ListBoxCollectionContext,
   ListBoxItem,

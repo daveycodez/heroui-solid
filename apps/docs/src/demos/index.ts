@@ -103,6 +103,7 @@ import { Required as SelectRequired } from "./select/required"
 import { Variants as SelectVariants } from "./select/variants"
 import { WithDescription as SelectWithDescription } from "./select/with-description"
 import { WithDisabledOptions as SelectWithDisabledOptions } from "./select/with-disabled-options"
+import { WithSections as SelectWithSections } from "./select/with-sections"
 import { Basic as SeparatorBasic } from "./separator/basic"
 import { ManualVariantOverride as SeparatorManualVariantOverride } from "./separator/manual-variant-override"
 import { Variants as SeparatorVariants } from "./separator/variants"
@@ -239,6 +240,7 @@ export const demos: Record<string, Component> = {
   "select-custom-value-multiple": SelectCustomValueMultiple,
   "select-required": SelectRequired,
   "select-with-description": SelectWithDescription,
+  "select-with-sections": SelectWithSections,
   "separator-basic": SeparatorBasic,
   "separator-vertical": SeparatorVertical,
   "separator-with-content": SeparatorWithContent,

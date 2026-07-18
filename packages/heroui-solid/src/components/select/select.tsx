@@ -1,4 +1,9 @@
-import { cn, type SelectVariants, selectVariants } from "@heroui/styles"
+import {
+  cn,
+  listboxSectionVariants,
+  type SelectVariants,
+  selectVariants
+} from "@heroui/styles"
 import type { PolymorphicProps } from "@kobalte/core/polymorphic"
 import {
   HiddenSelect as HiddenSelectPrimitive,
@@ -6,6 +11,8 @@ import {
   Portal as SelectPortalPrimitive,
   Root as SelectPrimitive,
   type SelectRootItemComponentProps,
+  type SelectRootSectionComponentProps,
+  Section as SelectSectionPrimitive,
   Trigger as SelectTriggerPrimitive,
   Value as SelectValuePrimitive,
   useSelectContext
@@ -29,7 +36,10 @@ import {
   useContext,
   type ValidComponent
 } from "solid-js"
-
+import {
+  CollectionDeferContext,
+  renderDeferred
+} from "../../utils/collection-defer"
 import { FieldContext } from "../../utils/field-context"
 import { setupInteractionModality } from "../../utils/interaction-modality"
 import { PreventScroll } from "../../utils/prevent-scroll"
@@ -37,7 +47,9 @@ import {
   isListBoxRenderMarker,
   ListBoxCollectionContext,
   type ListBoxItemDescriptor,
-  ListBoxItemView
+  ListBoxItemView,
+  type ListBoxOption,
+  type ListBoxSectionDescriptor
 } from "../list-box/list-box"
 import { SurfaceContext } from "../surface/surface"
 
@@ -108,7 +120,9 @@ const SelectRoot = <T extends ValidComponent = "div">(
   )
 
   const slots = createMemo(() => selectVariants(variantProps))
-  const [items, setItems] = createSignal<ListBoxItemDescriptor[]>([])
+  // Options are item and section descriptors registered by the enclosing
+  // ListBox; sections group their items via Kobalte's `optionGroupChildren`.
+  const [options, setOptions] = createSignal<ListBoxOption[]>([])
   const [placement, setPlacement] =
     createSignal<SelectPopoverPlacement>("bottom")
   const [mounted, setMounted] = createSignal(false)
@@ -146,19 +160,40 @@ const SelectRoot = <T extends ValidComponent = "div">(
     itemProps: SelectRootItemComponentProps<ListBoxItemDescriptor>
   ) => <ListBoxItemView item={itemProps.item} />
 
+  // Renders a section's label row: any Separator(s) the ListBox placed before
+  // it, then the header. Both are deferral markers here (their DOM was held
+  // back during registration), realized now that the popover is open.
+  const sectionComponent = (
+    sectionProps: SelectRootSectionComponentProps<ListBoxSectionDescriptor>
+  ) => {
+    const descriptor = () => sectionProps.section.rawValue
+    return (
+      <>
+        {renderDeferred(descriptor().leading)}
+        <SelectSectionPrimitive
+          class={cn(listboxSectionVariants(), descriptor().class)}
+          data-slot="list-box-section"
+        >
+          {renderDeferred(descriptor().header)}
+        </SelectSectionPrimitive>
+      </>
+    )
+  }
+
   return (
-    <SelectPrimitive<ListBoxItemDescriptor>
+    <SelectPrimitive<ListBoxItemDescriptor, ListBoxSectionDescriptor>
       class={cn(slots().base(), local.class)}
       data-slot="select"
       // Kobalte types `multiple` as a literal, but the runtime takes either;
       // the casts here and on value/defaultValue pin the multiple-mode overload.
       multiple={isMultiple() as true}
-      options={items()}
+      options={options()}
       optionValue="id"
       optionTextValue="textValue"
       optionDisabled={(option: ListBoxItemDescriptor) =>
         option.disabled || disabledKeys().has(option.id)
       }
+      optionGroupChildren="items"
       open={local.isOpen}
       value={toOptions(local.value) as ListBoxItemDescriptor[] | undefined}
       defaultValue={
@@ -171,6 +206,7 @@ const SelectRoot = <T extends ValidComponent = "div">(
       // widen the popover instead of wrapping (see select.overrides.css).
       sameWidth={false}
       itemComponent={itemComponent}
+      sectionComponent={sectionComponent}
       validationState={local.isInvalid ? "invalid" : undefined}
       disabled={local.isDisabled}
       required={local.isRequired}
@@ -191,14 +227,19 @@ const SelectRoot = <T extends ValidComponent = "div">(
             mounted
           }}
         >
-          <ListBoxCollectionContext.Provider value={setItems}>
-            {/* Client-only: it renders an <option> per item, but items register
-                after Kobalte snapshots them on the server (SSR memos never
-                re-run), so hydrating it desyncs hydration keys (see AGENTS.md). */}
-            <Show when={mounted()}>
-              <HiddenSelectPrimitive />
-            </Show>
-            {local.children}
+          <ListBoxCollectionContext.Provider value={setOptions}>
+            {/* Header/Separator inside the popover's ListBox resolve to
+                deferral markers (not DOM) so the closed popover's eager option
+                registration stays hydration-safe (see AGENTS.md). */}
+            <CollectionDeferContext.Provider value={true}>
+              {/* Client-only: it renders an <option> per item, but items
+                  register after Kobalte snapshots them on the server (SSR memos
+                  never re-run), so hydrating it desyncs keys (see AGENTS.md). */}
+              <Show when={mounted()}>
+                <HiddenSelectPrimitive />
+              </Show>
+              {local.children}
+            </CollectionDeferContext.Provider>
           </ListBoxCollectionContext.Provider>
         </SelectContext.Provider>
       </FieldContext.Provider>
