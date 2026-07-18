@@ -10,9 +10,9 @@ import {
   children as resolveChildren,
   Show
 } from "solid-js"
+import { CodeBlock } from "../code-highlight/code-block"
 import { demos } from "../demos"
 import { withBase } from "./base"
-import { CodeBlock } from "./code-block"
 import { HomePage } from "./home-page"
 
 // Components exported here are registered globally for all MDX pages via

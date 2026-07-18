@@ -1,6 +1,6 @@
 /**
  * Replaces every code fence with a `<CodeBlock>` element (see
- * theme/code-block.tsx) rendered via the CSS Custom Highlight API instead of
+ * code-block.tsx) rendered via the CSS Custom Highlight API instead of
  * Expressive Code. EC wrapped every token in a `<span>` — ~7.4k of them on the
  * heaviest component pages, 90%+ of the page DOM — and overlay opens force
  * synchronous style/layout recalcs that scale with that DOM (200ms+ freezes in

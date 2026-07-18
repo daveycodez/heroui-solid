@@ -5,7 +5,7 @@ import {
   createDefaultThemeFilesystemSidebar,
   type DefaultThemeConfig
 } from "@kobalte/solidbase/default-theme"
-import { remarkCodeHighlight } from "./src/remark-code-highlight"
+import { remarkCodeHighlight } from "./src/code-highlight/remark-code-highlight"
 import { remarkComponentPreviewCode } from "./src/remark-component-preview-code"
 
 // Sidebar mirrors the official HeroUI docs (heroui-inc/heroui#v3): a curated
@@ -26,8 +26,8 @@ const config: SolidBaseConfig<DefaultThemeConfig> = {
   // disabled — its per-token spans (~7.4k on heavy pages) made every overlay
   // open pay a page-sized style/layout recalc (200ms+ freezes in Safari).
   // remarkCodeHighlight renders blocks as plain text via the CSS Custom
-  // Highlight API instead (src/remark-code-highlight.ts +
-  // src/theme/code-block.tsx); the panel chrome lives in src/docs-code.css.
+  // Highlight API instead — the whole plugin lives in src/code-highlight/
+  // (see its README); ComponentPreview integration is in src/docs-code.css.
   markdown: {
     expressiveCode: false,
     remarkPlugins: [remarkComponentPreviewCode, remarkCodeHighlight],

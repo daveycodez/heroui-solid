@@ -1,6 +1,6 @@
 import { createSignal, onCleanup, onMount } from "solid-js"
-import type { CodeBlockPayload } from "../remark-code-highlight"
 import type { HighlightAdditions } from "./highlight-init"
+import type { CodeBlockPayload } from "./remark-code-highlight"
 
 // Code block rendered via the CSS Custom Highlight API. The code is a SINGLE
 // text node (built at compile time by remark-code-highlight.ts and injected
@@ -14,7 +14,7 @@ import type { HighlightAdditions } from "./highlight-init"
 //
 // Colors paint at HTML-parse time, not hydration: the trailing inline
 // `<script>` calls the `__shReg` registrar defined in <head> (see
-// theme/highlight-init.ts — the THEME_INIT_SCRIPT trick) as soon as this
+// highlight-init.ts — the THEME_INIT_SCRIPT trick) as soon as this
 // block's text node exists. onMount then merely adopts that registration for
 // cleanup; it registers itself only when the script never ran (client-side
 // navigation) or its ranges went stale.

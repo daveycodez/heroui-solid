@@ -6,9 +6,9 @@
  * winning). Dark selectors use the exact [data-theme="dark"] attribute our
  * theme manager stamps (heroui native — see src/theme/theme.ts).
  *
- * Code-block panel/gutter/copy-button styling lives in docs-code.css
- * (same `docs` layer), targeting our own CodeBlock markup
- * (src/theme/code-block.tsx).
+ * Code-block panel/gutter/copy-button styling lives in
+ * code-highlight/code-block.css (same `docs` layer), targeting our own
+ * CodeBlock markup (src/code-highlight/code-block.tsx).
  */
 
 /* --- Typography ------------------------------------------------------- */
