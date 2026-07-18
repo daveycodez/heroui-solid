@@ -12,7 +12,11 @@ import {
   type ValidComponent
 } from "solid-js"
 
-import { MenuTriggerContext } from "../../utils/menu-trigger-context"
+import {
+  createLongPressHandlers,
+  MenuTriggerBehaviorContext,
+  MenuTriggerContext
+} from "../../utils/menu-trigger-context"
 
 interface ButtonRootProps extends ButtonVariants {
   isDisabled?: boolean
@@ -32,11 +36,22 @@ const ButtonRoot = <T extends ValidComponent = "button">(
     ["isDisabled", "isPending", "class", "children", "onClick"]
   )
 
+  // As the Dropdown trigger slot with trigger="longPress", the button hosts
+  // the long-press interactions (see utils/menu-trigger-context.tsx).
+  const isMenuTrigger = useContext(MenuTriggerContext)
+  const longPress = createLongPressHandlers(
+    isMenuTrigger ? useContext(MenuTriggerBehaviorContext) : undefined
+  )
+
   // At-target `on:click` registers ahead of consumer listeners, so
   // stopImmediatePropagation silences them all while pending/disabled
   // (covers polymorphic elements with no native `disabled`); keyboard
   // activation synthesizes a click and hits the same guard.
   const handleClick: JSX.EventHandler<HTMLElement, MouseEvent> = (event) => {
+    longPress.onClick(event)
+    if (event.defaultPrevented) {
+      return
+    }
     if (local.isPending || local.isDisabled) {
       event.preventDefault()
       event.stopImmediatePropagation()
@@ -69,9 +84,7 @@ const ButtonRoot = <T extends ValidComponent = "button">(
   // Inside a Dropdown's trigger slot the same button renders Kobalte's menu
   // trigger (see utils/menu-trigger-context.tsx) — upstream parity for
   // <Dropdown><Button>…</Button>….
-  const Primitive = useContext(MenuTriggerContext)
-    ? MenuTriggerPrimitive
-    : ButtonPrimitive
+  const Primitive = isMenuTrigger ? MenuTriggerPrimitive : ButtonPrimitive
 
   return (
     <Primitive
@@ -81,6 +94,12 @@ const ButtonRoot = <T extends ValidComponent = "button">(
       // pending pattern); only stamped when the consumer opts in.
       aria-live={"isPending" in local ? "polite" : undefined}
       on:click={handleClick}
+      on:pointerdown={longPress.onPointerDown}
+      on:pointerup={longPress.onPointerUp}
+      on:pointerleave={longPress.onPointerLeave}
+      on:pointercancel={longPress.onPointerCancel}
+      on:keydown={longPress.onKeyDown}
+      on:contextmenu={longPress.onContextMenu}
       {...forwarded}
       // After the spread so consumers can't desync state-derived attributes;
       // mergeProps skips undefined, so consumer values apply while off.

@@ -1,17 +1,25 @@
 import type { ComponentProps } from "solid-js"
 
-import { MenuItemRoot } from "./menu-item"
+import {
+  MenuItemIndicator,
+  MenuItemRoot,
+  MenuItemSubmenuIndicator
+} from "./menu-item"
 
 /* -------------------------------------------------------------------------------------------------
  * Compound Component
  * -----------------------------------------------------------------------------------------------*/
 export const MenuItem = Object.assign(MenuItemRoot, {
-  Root: MenuItemRoot
+  Root: MenuItemRoot,
+  Indicator: MenuItemIndicator,
+  SubmenuIndicator: MenuItemSubmenuIndicator
 })
 
 export type MenuItem = {
   Props: ComponentProps<typeof MenuItemRoot>
   RootProps: ComponentProps<typeof MenuItemRoot>
+  IndicatorProps: ComponentProps<typeof MenuItemIndicator>
+  SubmenuIndicatorProps: ComponentProps<typeof MenuItemSubmenuIndicator>
 }
 
 export type { MenuItemVariants } from "@heroui/styles"
@@ -21,10 +29,27 @@ export type { MenuItemVariants } from "@heroui/styles"
 export { menuItemVariants } from "@heroui/styles"
 export type {
   MenuContextValue,
+  MenuItemContextValue,
+  MenuItemIndicatorProps,
+  MenuItemIndicatorState,
   MenuItemRootProps,
-  MenuItemRootProps as MenuItemProps
+  MenuItemRootProps as MenuItemProps,
+  MenuItemSubmenuIndicatorProps,
+  Selection,
+  SelectionContextValue,
+  SelectionMode,
+  SelectionProps
 } from "./menu-item"
 /* -------------------------------------------------------------------------------------------------
  * Named Component
  * -----------------------------------------------------------------------------------------------*/
-export { MenuContext, MenuItemRoot } from "./menu-item"
+export {
+  createSelectionContextValue,
+  MenuContext,
+  MenuItemContext,
+  MenuItemIndicator,
+  MenuItemRoot,
+  MenuItemSubmenuIndicator,
+  SelectionContext,
+  SubmenuTriggerContext
+} from "./menu-item"

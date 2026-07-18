@@ -2,10 +2,13 @@ import type { ComponentProps } from "solid-js"
 
 import {
   DropdownItem,
+  DropdownItemIndicator,
   DropdownMenu,
   DropdownPopover,
   DropdownRoot,
   DropdownSection,
+  DropdownSubmenuIndicator,
+  DropdownSubmenuTrigger,
   DropdownTrigger
 } from "./dropdown"
 
@@ -18,7 +21,10 @@ export const Dropdown = Object.assign(DropdownRoot, {
   Popover: DropdownPopover,
   Menu: DropdownMenu,
   Item: DropdownItem,
-  Section: DropdownSection
+  ItemIndicator: DropdownItemIndicator,
+  Section: DropdownSection,
+  SubmenuTrigger: DropdownSubmenuTrigger,
+  SubmenuIndicator: DropdownSubmenuIndicator
 })
 
 export type Dropdown = {
@@ -28,7 +34,10 @@ export type Dropdown = {
   PopoverProps: ComponentProps<typeof DropdownPopover>
   MenuProps: ComponentProps<typeof DropdownMenu>
   ItemProps: ComponentProps<typeof DropdownItem>
+  ItemIndicatorProps: ComponentProps<typeof DropdownItemIndicator>
   SectionProps: ComponentProps<typeof DropdownSection>
+  SubmenuTriggerProps: ComponentProps<typeof DropdownSubmenuTrigger>
+  SubmenuIndicatorProps: ComponentProps<typeof DropdownSubmenuIndicator>
 }
 
 export type { DropdownVariants } from "@heroui/styles"
@@ -38,11 +47,15 @@ export type { DropdownVariants } from "@heroui/styles"
 export { dropdownVariants } from "@heroui/styles"
 export type {
   DropdownContextValue,
+  DropdownItemIndicatorProps,
   DropdownItemProps,
   DropdownMenuProps,
   DropdownPopoverProps,
   DropdownRootProps,
   DropdownRootProps as DropdownProps,
+  DropdownSectionProps,
+  DropdownSubmenuIndicatorProps,
+  DropdownSubmenuTriggerProps,
   DropdownTriggerProps
 } from "./dropdown"
 /* -------------------------------------------------------------------------------------------------
@@ -51,9 +64,12 @@ export type {
 export {
   DropdownContext,
   DropdownItem,
+  DropdownItemIndicator,
   DropdownMenu,
   DropdownPopover,
   DropdownRoot,
   DropdownSection,
+  DropdownSubmenuIndicator,
+  DropdownSubmenuTrigger,
   DropdownTrigger
 } from "./dropdown"

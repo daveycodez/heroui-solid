@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync } from "node:fs"
 import path from "node:path"
+import GithubSlugger from "github-slugger"
 
 // Build-time search index over the MDX routes, exposed to the app as
 // `virtual:docs-search-index` (plugin in vite.config.ts) and served by
@@ -15,14 +16,6 @@ export type SearchRecord = {
   content: string
   url: string
 }
-
-// Matches rehype-slug's github-slugger output for our simple headings.
-const slugify = (text: string) =>
-  text
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-")
 
 const cleanInline = (text: string) =>
   text
@@ -46,17 +39,27 @@ function pageRecords(url: string, raw: string): SearchRecord[] {
   body = body.replace(/```[\s\S]*?```/g, "").replace(/<[^>]+>/g, "")
 
   // Sections keyed by heading; h1 text and any pre-heading prose fold into
-  // the page-level section ("" key).
+  // the page-level section ("" key). Anchors come from a stateful
+  // GithubSlugger fed every heading in document order, mirroring rehype-slug
+  // (duplicate headings get -1 suffixes; h4-h6 advance the counter but stay
+  // in section content).
   const sections = new Map<string, string[]>([["", []]])
+  const slugs = new Map<string, string>()
+  const slugger = new GithubSlugger()
   let current = ""
   for (const line of body.split("\n")) {
-    const match = /^(#{1,3})\s+(.*)$/.exec(line)
+    const match = /^(#{1,6})\s+(.*)$/.exec(line)
     if (match) {
-      current = match[1].length === 1 ? "" : cleanInline(match[2])
-      if (!sections.has(current)) {
-        sections.set(current, [])
+      const text = cleanInline(match[2])
+      const slug = slugger.slug(text)
+      if (match[1].length <= 3) {
+        current = match[1].length === 1 ? "" : text
+        if (!sections.has(current)) {
+          sections.set(current, [])
+          slugs.set(current, slug)
+        }
+        continue
       }
-      continue
     }
     if (line.trim()) {
       sections.get(current)?.push(line)
@@ -78,12 +81,12 @@ function pageRecords(url: string, raw: string): SearchRecord[] {
       continue
     }
     records.push({
-      id: `${url}#${slugify(heading)}`,
+      id: `${url}#${slugs.get(heading)}`,
       kind: "heading",
       title: heading,
       page: title,
       content: cleanInline(text.join(" ")),
-      url: `${url}#${slugify(heading)}`
+      url: `${url}#${slugs.get(heading)}`
     })
   }
   return records

@@ -297,6 +297,22 @@ body header .header-home-search {
 
 /* --- Sidebar ---------------------------------------------------------- */
 
+/* SSR always paints the desktop layout — solidbase's `mobileLayout()` signal
+ * is false on the server and stays false until the client's window-load flip
+ * (theme/globals.ts) — so on narrow viewports both the side nav and the TOC
+ * arrive in the HTML and are then yanked out by JS; the side nav even plays
+ * solidbase's contentHide animation on the way out. Hide both by media query
+ * so a mobile refresh never paints them. Scoped to the SSR'd desktop
+ * elements only: the mobile drawer is a Kobalte Dialog <div> portaled to
+ * <body>, outside the layout grid, and unaffected. Breakpoint matches
+ * solidbase's mobileLayout query. */
+@media (max-width: 1100px) {
+  [class*="_layout_"] > aside[class*="_sidenav_"],
+  article > aside[class*="_aside_"] {
+    display: none;
+  }
+}
+
 /* Official box model (measured on heroui.com): items sit flush inside the
  * column with uniform 8px padding — no nested indent, no overhang. Text
  * alignment comes from the heading carrying the same 8px inset. */

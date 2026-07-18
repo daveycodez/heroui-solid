@@ -214,7 +214,10 @@ export function SearchDialog() {
                   when={items().length > 0}
                   fallback={
                     <div class="flex justify-center py-12 text-sm text-muted">
-                      <Show when={!hits.loading} fallback={<Spinner />}>
+                      <Show
+                        when={!index.loading && !hits.loading}
+                        fallback={<Spinner />}
+                      >
                         No results found for “{query().trim()}”
                       </Show>
                     </div>

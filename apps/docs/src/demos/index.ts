@@ -23,14 +23,22 @@ import { Horizontal as CardHorizontal } from "./card/horizontal"
 import { Variants as CardVariants } from "./card/variants"
 import { WithForm as CardWithForm } from "./card/with-form"
 import { Basic as DescriptionBasic } from "./description/basic"
+import { Controlled as DropdownControlled } from "./dropdown/controlled"
 import { ControlledOpenState as DropdownControlledOpenState } from "./dropdown/controlled-open-state"
 import { CustomTrigger as DropdownCustomTrigger } from "./dropdown/custom-trigger"
 import { Default as DropdownDefault } from "./dropdown/default"
+import { LongPressTrigger as DropdownLongPressTrigger } from "./dropdown/long-press-trigger"
+import { SingleWithCustomIndicator as DropdownSingleWithCustomIndicator } from "./dropdown/single-with-custom-indicator"
+import { WithCustomSubmenuIndicator as DropdownWithCustomSubmenuIndicator } from "./dropdown/with-custom-submenu-indicator"
 import { WithDescriptions as DropdownWithDescriptions } from "./dropdown/with-descriptions"
 import { WithDisabledItems as DropdownWithDisabledItems } from "./dropdown/with-disabled-items"
 import { WithIcons as DropdownWithIcons } from "./dropdown/with-icons"
 import { WithKeyboardShortcuts as DropdownWithKeyboardShortcuts } from "./dropdown/with-keyboard-shortcuts"
+import { WithMultipleSelection as DropdownWithMultipleSelection } from "./dropdown/with-multiple-selection"
+import { WithSectionLevelSelection as DropdownWithSectionLevelSelection } from "./dropdown/with-section-level-selection"
 import { WithSections as DropdownWithSections } from "./dropdown/with-sections"
+import { WithSingleSelection as DropdownWithSingleSelection } from "./dropdown/with-single-selection"
+import { WithSubmenus as DropdownWithSubmenus } from "./dropdown/with-submenus"
 import { Basic as FieldErrorBasic } from "./field-error/basic"
 import { Basic as InputBasic } from "./input/basic"
 import { Controlled as InputControlled } from "./input/controlled"
@@ -123,12 +131,20 @@ export const demos: Record<string, Component> = {
   "card-with-form": CardWithForm,
   "description-basic": DescriptionBasic,
   "dropdown-default": DropdownDefault,
-  "dropdown-with-icons": DropdownWithIcons,
-  "dropdown-with-descriptions": DropdownWithDescriptions,
-  "dropdown-with-disabled-items": DropdownWithDisabledItems,
-  "dropdown-controlled-open-state": DropdownControlledOpenState,
+  "dropdown-with-single-selection": DropdownWithSingleSelection,
+  "dropdown-single-with-custom-indicator": DropdownSingleWithCustomIndicator,
+  "dropdown-with-multiple-selection": DropdownWithMultipleSelection,
+  "dropdown-with-section-level-selection": DropdownWithSectionLevelSelection,
   "dropdown-with-keyboard-shortcuts": DropdownWithKeyboardShortcuts,
+  "dropdown-with-icons": DropdownWithIcons,
+  "dropdown-long-press-trigger": DropdownLongPressTrigger,
+  "dropdown-with-descriptions": DropdownWithDescriptions,
   "dropdown-with-sections": DropdownWithSections,
+  "dropdown-with-disabled-items": DropdownWithDisabledItems,
+  "dropdown-with-submenus": DropdownWithSubmenus,
+  "dropdown-with-custom-submenu-indicator": DropdownWithCustomSubmenuIndicator,
+  "dropdown-controlled": DropdownControlled,
+  "dropdown-controlled-open-state": DropdownControlledOpenState,
   "dropdown-custom-trigger": DropdownCustomTrigger,
   "field-error-basic": FieldErrorBasic,
   "input-basic": InputBasic,

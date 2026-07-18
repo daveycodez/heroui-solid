@@ -1,5 +1,6 @@
 import {
   cn,
+  type ListBoxItemVariants,
   type ListBoxVariants,
   listboxItemVariants,
   listboxSectionVariants,
@@ -33,7 +34,7 @@ interface ListBoxItemDescriptor {
   id: string
   textValue: string
   disabled: boolean
-  variant?: "default" | "danger"
+  variant?: ListBoxItemVariants["variant"]
   class?: string
   render: () => JSX.Element
 }
@@ -295,7 +296,7 @@ interface ListBoxItemProps {
   id: string
   textValue?: string
   isDisabled?: boolean
-  variant?: "default" | "danger"
+  variant?: ListBoxItemVariants["variant"]
   class?: string
   children?: JSX.Element
 }
