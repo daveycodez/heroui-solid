@@ -4,6 +4,7 @@ import {
   cn,
   listboxSectionVariants
 } from "@heroui/styles"
+import { Root as ListboxRootPrimitive } from "@kobalte/core/listbox"
 import type { PolymorphicProps } from "@kobalte/core/polymorphic"
 import {
   HiddenSelect as HiddenSelectPrimitive,
@@ -38,7 +39,9 @@ import {
 } from "solid-js"
 import {
   CollectionDeferContext,
-  renderDeferred
+  isDeferredNode,
+  renderDeferred,
+  useCollectionDefer
 } from "../../utils/collection-defer"
 import { FieldContext } from "../../utils/field-context"
 import { setupInteractionModality } from "../../utils/interaction-modality"
@@ -47,6 +50,7 @@ import {
   isListBoxRenderMarker,
   isSectionDescriptor,
   ListBoxCollectionContext,
+  ListBoxCollectionListboxContext,
   ListBoxEmptyContext,
   type ListBoxItemDescriptor,
   ListBoxItemView,
@@ -54,7 +58,10 @@ import {
   type ListBoxSectionDescriptor,
   ListBoxVirtualizeContext
 } from "../list-box/list-box"
-import { SearchFieldControlContext } from "../search-field/search-field"
+import {
+  SearchFieldControlContext,
+  type SearchFieldControlContextValue
+} from "../search-field/search-field"
 import { SurfaceContext } from "../surface/surface"
 
 type Key = string
@@ -73,12 +80,10 @@ const SIDE_FROM_ORIGIN: Record<string, string> = {
 
 // A hidden, always-disabled option kept in Kobalte's collection whenever the
 // effective (filtered) collection is empty. Kobalte refuses to open a select
-// with zero options (see AGENTS.md / select.tsx), and Autocomplete registers
-// its real options only when the popover opens (the SearchField in the popover
-// can't be evaluated during SSR/hydration) — so this sentinel lets the first
-// open succeed, after which the ListBox registers the real options. It never
-// renders: the ListBox shows `renderEmptyState` (or nothing) in place of the
-// listbox whenever the collection is empty.
+// with zero options (see AGENTS.md / select.tsx), so the sentinel keeps the
+// filtered-to-nothing case openable. It never renders: the ListBox shows
+// `renderEmptyState` (or nothing) in place of the listbox whenever the
+// collection is empty.
 const EMPTY_SENTINEL_ID = "__heroui_autocomplete_empty_sentinel__"
 const emptySentinel = {
   id: EMPTY_SENTINEL_ID,
@@ -86,6 +91,223 @@ const emptySentinel = {
   disabled: true,
   render: () => null
 } as unknown as ListBoxItemDescriptor
+
+// Realizes a popover child resolved during the closed popover's eager pass: the
+// ListBox is a render marker and the Filter/SearchField are deferral markers
+// (both DOM-free until the popover opens), everything else passes through.
+const renderPopoverChild = (child: unknown): JSX.Element =>
+  isListBoxRenderMarker(child)
+    ? child.render()
+    : isDeferredNode(child)
+      ? child.render()
+      : (child as JSX.Element)
+
+/* -------------------------------------------------------------------------------------------------
+ * Autocomplete Listbox (virtual focus)
+ * -----------------------------------------------------------------------------------------------*/
+// The collection listbox rendered in the popover. Kobalte's own `Select.Listbox`
+// hardcodes DOM focus (it omits `shouldUseVirtualFocus`), which would pull focus
+// off the SearchField on hover/navigation. Autocomplete mirrors React Aria's
+// virtual focus instead: the SearchField keeps DOM focus and points
+// `aria-activedescendant` at the highlighted option (see AutocompleteSearchBridge),
+// so this listbox is Kobalte's generic Listbox sharing the Select's list state
+// with `shouldUseVirtualFocus`. Provided to the ListBox via
+// ListBoxCollectionListboxContext. Otherwise a copy of Kobalte's SelectListbox.
+interface AutocompleteListboxProps {
+  ref?: HTMLElement | ((el: HTMLElement) => void)
+  id?: string
+  class?: string
+  onKeyDown?: JSX.EventHandlerUnion<HTMLElement, KeyboardEvent>
+  scrollToItem?: (key: string) => void
+  children?: unknown
+}
+
+const AutocompleteListbox = (props: AutocompleteListboxProps) => {
+  const context = useSelectContext()
+  const [local, others] = splitProps(props, ["ref", "id", "onKeyDown"])
+  const listboxId = local.id ?? context.generateId("listbox")
+  createEffect(() => onCleanup(context.registerListboxId(listboxId)))
+
+  const onKeyDown: JSX.EventHandler<HTMLElement, KeyboardEvent> = (event) => {
+    callHandler(
+      event,
+      local.onKeyDown as JSX.EventHandlerUnion<HTMLElement, KeyboardEvent>
+    )
+    // Prevent createSelectableCollection from clearing the selection on Escape.
+    if (event.key === "Escape") {
+      event.preventDefault()
+    }
+  }
+
+  return (
+    <ListboxRootPrimitive
+      ref={mergeRefs(context.setListboxRef, local.ref)}
+      id={listboxId}
+      state={context.listState()}
+      virtualized={context.isVirtualized()}
+      // No initial DOM/virtual focus grab: the SearchField owns focus and no
+      // option is highlighted until the user navigates.
+      autoFocus={false}
+      shouldUseVirtualFocus
+      shouldSelectOnPressUp
+      shouldFocusOnHover
+      shouldFocusWrap={context.shouldFocusWrap()}
+      disallowTypeAhead={context.disallowTypeAhead()}
+      aria-labelledby={context.listboxAriaLabelledBy()}
+      renderItem={context.renderItem}
+      renderSection={context.renderSection}
+      onKeyDown={onKeyDown}
+      {...(others as Record<string, unknown>)}
+    />
+  )
+}
+
+/* -------------------------------------------------------------------------------------------------
+ * Autocomplete Search Bridge (virtual focus controller)
+ * -----------------------------------------------------------------------------------------------*/
+// Rendered inside the Kobalte Select (so it can read the shared list state) and
+// provides the SearchFieldControlContext the in-popover SearchField binds to.
+// Beyond value/onChange it wires React-Aria-style virtual focus: ArrowUp/Down/
+// Home/End move a highlight through the (filtered) options via the selection
+// manager's focused key, `aria-activedescendant` on the input points at the
+// active option, and Enter selects/toggles it — all while the input keeps DOM
+// focus so typing keeps filtering.
+interface AutocompleteSearchBridgeProps {
+  searchControl: { value: () => string; onChange: (value: string) => void }
+  children: JSX.Element
+}
+
+const AutocompleteSearchBridge = (props: AutocompleteSearchBridgeProps) => {
+  const context = useSelectContext()
+  let inputEl: HTMLInputElement | undefined
+  const manager = () => context.listState().selectionManager()
+
+  // Enabled, selectable option keys in document order (skips sections, disabled
+  // items, and the empty sentinel).
+  const enabledKeys = () => {
+    const keys: string[] = []
+    for (const node of context.listState().collection()) {
+      if (
+        node.type === "item" &&
+        !node.disabled &&
+        node.key !== EMPTY_SENTINEL_ID
+      ) {
+        keys.push(node.key)
+      }
+    }
+    return keys
+  }
+
+  // Match by data-key iteration rather than an attribute selector so arbitrary
+  // option keys need no CSS escaping (and jsdom, which lacks CSS.escape, works).
+  const optionEl = (key: string): HTMLElement | undefined => {
+    const content = inputEl?.closest("[data-slot=autocomplete-popover]")
+    if (!content) {
+      return undefined
+    }
+    for (const el of content.querySelectorAll<HTMLElement>(
+      "[data-slot=list-box-item]"
+    )) {
+      if (el.getAttribute("data-key") === key) {
+        return el
+      }
+    }
+    return undefined
+  }
+
+  const focusKey = (key: string | undefined) => {
+    manager().setFocused(true)
+    manager().setFocusedKey(key)
+    if (key) {
+      // Optional call: jsdom doesn't implement scrollIntoView.
+      optionEl(key)?.scrollIntoView?.({ block: "nearest" })
+    }
+  }
+
+  const activeDescendant = () => {
+    const key = manager().focusedKey()
+    return key != null ? optionEl(key)?.id : undefined
+  }
+
+  const onInputKeyDown = (event: KeyboardEvent) => {
+    if (!context.isOpen()) {
+      return
+    }
+    const keys = enabledKeys()
+    const current = manager().focusedKey()
+    const index = current != null ? keys.indexOf(current) : -1
+    switch (event.key) {
+      case "ArrowDown":
+        event.preventDefault()
+        focusKey(
+          index < 0 ? keys[0] : keys[Math.min(index + 1, keys.length - 1)]
+        )
+        break
+      case "ArrowUp":
+        event.preventDefault()
+        focusKey(
+          index < 0 ? keys[keys.length - 1] : keys[Math.max(index - 1, 0)]
+        )
+        break
+      case "Home":
+        event.preventDefault()
+        focusKey(keys[0])
+        break
+      case "End":
+        event.preventDefault()
+        focusKey(keys[keys.length - 1])
+        break
+      case "Enter": {
+        const key = manager().focusedKey()
+        if (key != null && keys.includes(key)) {
+          event.preventDefault()
+          if (context.isMultiple()) {
+            manager().toggleSelection(key)
+          } else {
+            manager().select(key)
+            context.close()
+          }
+        }
+        break
+      }
+      case "Escape":
+        event.preventDefault()
+        context.close()
+        break
+    }
+  }
+
+  // Clear the virtual highlight whenever the popover (re)opens or the query
+  // changes — filtered options may have shifted, so navigation restarts.
+  createEffect(() => {
+    context.isOpen()
+    props.searchControl.value()
+    manager().setFocusedKey(undefined)
+  })
+
+  const control: SearchFieldControlContextValue = {
+    value: () => props.searchControl.value(),
+    onChange: (next) => props.searchControl.onChange(next),
+    registerInput: (el) => {
+      inputEl = el
+    },
+    onInputKeyDown,
+    inputAria: () => ({
+      role: "combobox",
+      "aria-autocomplete": "list",
+      "aria-haspopup": "listbox",
+      "aria-expanded": context.isOpen(),
+      "aria-controls": context.isOpen() ? context.listboxId() : undefined,
+      "aria-activedescendant": activeDescendant()
+    })
+  }
+
+  return (
+    <SearchFieldControlContext.Provider value={control}>
+      {props.children}
+    </SearchFieldControlContext.Provider>
+  )
+}
 
 /* -------------------------------------------------------------------------------------------------
  * Autocomplete Context
@@ -154,7 +376,8 @@ const AutocompleteRoot = <T extends ValidComponent = "div">(
 
   const slots = createMemo(() => autocompleteVariants(variantProps))
   // Real options registered by the enclosing ListBox (item and section
-  // descriptors) once the popover opens; filtered below.
+  // descriptors) during the popover's eager pass — even while closed, so the
+  // trigger can resolve a preselected value's label; filtered below.
   const [rawOptions, setRawOptions] = createSignal<ListBoxOption[]>([])
   const [query, setQuery] = createSignal("")
   const [filterState, setFilterState] = createSignal<{ fn?: FilterPredicate }>(
@@ -341,20 +564,30 @@ const AutocompleteRoot = <T extends ValidComponent = "div">(
           <ListBoxCollectionContext.Provider value={setRawOptions}>
             <ListBoxEmptyContext.Provider value={isCollectionEmpty}>
               <ListBoxVirtualizeContext.Provider value={setVirtualized}>
-                {/* Header/Separator inside the popover's ListBox resolve to
-                  deferral markers (not DOM) so registration stays hydration-safe
-                  (see AGENTS.md). */}
-                <CollectionDeferContext.Provider value={true}>
-                  {/* Client-only: renders an <option> per item, but items
-                    register only once the popover opens, so hydrating it desyncs
-                    keys (see AGENTS.md). */}
-                  <Show when={mounted()}>
-                    <HiddenSelectPrimitive />
-                  </Show>
-                  <SearchFieldControlContext.Provider value={searchControl}>
-                    {local.children}
-                  </SearchFieldControlContext.Provider>
-                </CollectionDeferContext.Provider>
+                {/* The popover's ListBox renders through a virtual-focus listbox
+                  so the SearchField keeps DOM focus during keyboard nav. */}
+                <ListBoxCollectionListboxContext.Provider
+                  value={AutocompleteListbox}
+                >
+                  {/* Header/Separator inside the popover's ListBox resolve to
+                    deferral markers (not DOM) so the closed popover's eager
+                    option registration stays hydration-safe (see AGENTS.md). */}
+                  <CollectionDeferContext.Provider value={true}>
+                    {/* Client-only: renders an <option> per item, but items
+                      register after the server snapshots the collection, so
+                      hydrating it desyncs keys (see AGENTS.md). */}
+                    <Show when={mounted()}>
+                      <HiddenSelectPrimitive />
+                    </Show>
+                    {/* Bridges the in-popover SearchField to the Select's list
+                      state (value + virtual-focus keyboard nav). Rendered here,
+                      inside the Kobalte Select, so it can read the shared state;
+                      provides SearchFieldControlContext to the popover. */}
+                    <AutocompleteSearchBridge searchControl={searchControl}>
+                      {local.children}
+                    </AutocompleteSearchBridge>
+                  </CollectionDeferContext.Provider>
+                </ListBoxCollectionListboxContext.Provider>
               </ListBoxVirtualizeContext.Provider>
             </ListBoxEmptyContext.Provider>
           </ListBoxCollectionContext.Provider>
@@ -428,9 +661,11 @@ const AutocompleteValue = <T extends ValidComponent = "span">(
     >
       {(state) => {
         const body = local.children
-        // Until mounted, mirror SSR's empty selection (options register only on
-        // open): a mid-hydration selection settles Kobalte's value memo while
-        // the DOM write is dropped, leaving the trigger blank (see AGENTS.md).
+        // Until mounted, mirror SSR's empty selection: the server freezes the
+        // collection empty (memos never re-run), so a mid-hydration selection
+        // settles Kobalte's value memo while the DOM write is dropped, leaving
+        // the trigger blank (see AGENTS.md). After mount the eagerly-registered
+        // options resolve the selected label even while closed.
         const mounted = context.mounted
         const selectedOptions = () =>
           mounted && !mounted() ? [] : state.selectedOptions()
@@ -603,6 +838,14 @@ const AutocompletePopover = <T extends ValidComponent = "div">(
   const selectContext = useSelectContext()
   const [contentEl, setContentEl] = createSignal<HTMLElement>()
 
+  // Resolve children eagerly so the ListBox registers its option descriptors
+  // while the popover is still closed (Kobalte refuses to open a zero-option
+  // select, and the trigger must resolve a preselected value's label before the
+  // popover ever opens). The Filter/SearchField/ListBox all resolve to markers,
+  // not DOM, so the closed popover creates nothing during SSR/hydration; their
+  // render() runs below, inside the content, once the popover actually opens.
+  const resolved = children(() => local.children)
+
   // Duplicate selection events are disabled on the root, so Kobalte's
   // closeOnSelection never sees a reselect — close on option activation here
   // (clicks and Enter with a highlighted item), same as select.tsx.
@@ -675,14 +918,17 @@ const AutocompletePopover = <T extends ValidComponent = "div">(
         >
           {/* Behind Kobalte's `contentPresent` gate: nothing here renders while
               the popover is closed, so the SearchField/ListBox never create DOM
-              during SSR/hydration (see AGENTS.md). */}
+              during SSR/hydration (see AGENTS.md). The eagerly-resolved markers'
+              render() runs only here, once the popover is open. */}
           <PreventScroll />
           <div
             class={cn(context.slots?.popoverDialog())}
             data-slot="autocomplete-popover-dialog"
             tabindex={-1}
           >
-            {local.children}
+            <For each={resolved.toArray()}>
+              {(child) => renderPopoverChild(child)}
+            </For>
           </div>
         </SelectContentPrimitive>
       </SelectPortalPrimitive>
@@ -713,9 +959,9 @@ const AutocompleteFilter = (props: AutocompleteFilterProps) => {
 
   const isControlled = () => local.inputValue !== undefined
 
-  // Feed the filter predicate + controlled-input state up to the root. Runs
-  // only while the popover is open (this component renders behind Kobalte's
-  // content gate), which is exactly when filtering matters.
+  // Feed the filter predicate + controlled-input state up to the root. These run
+  // during the popover's eager pass (below) as well as when it is open; both are
+  // harmless while closed (the query is empty).
   createComputed(() => context.setFilter?.(local.filter))
   createComputed(() => {
     context.setControlledInput?.(
@@ -726,22 +972,29 @@ const AutocompleteFilter = (props: AutocompleteFilterProps) => {
     onCleanup(() => context.setControlledInput?.(undefined))
   })
 
-  // The ListBox inside resolves to a render marker (root provides the collection
-  // context); realize it here now the popover is open. The SearchField is driven
-  // by the root-level SearchFieldControlContext (see AutocompleteRoot).
+  // Resolve children eagerly (while the popover is still closed) so the enclosed
+  // ListBox registers its option descriptors: the ListBox resolves to a render
+  // marker and the SearchField to a deferral marker (both DOM-free). The Filter
+  // itself resolves to a deferral marker so its own wrapper DOM is not created
+  // until the popover opens — its render() runs inside the open content (see
+  // AGENTS.md). The SearchField is driven by SearchFieldControlContext (see
+  // AutocompleteSearchBridge).
   const resolved = children(() => local.children)
 
-  return (
+  const rendered = () => (
     <div
       class={cn(context.slots?.filter(), local.class)}
       data-slot="autocomplete-filter"
       {...rest}
     >
       <For each={resolved.toArray()}>
-        {(child) => (isListBoxRenderMarker(child) ? child.render() : child)}
+        {(child) => renderPopoverChild(child)}
       </For>
     </div>
   )
+
+  const deferred = useCollectionDefer(rendered)
+  return (deferred ?? rendered()) as unknown as JSX.Element
 }
 
 export type {

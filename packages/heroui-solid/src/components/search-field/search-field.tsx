@@ -19,6 +19,7 @@ import {
   useContext
 } from "solid-js"
 
+import { useCollectionDefer } from "../../utils/collection-defer"
 import { FieldContext } from "../../utils/field-context"
 import { CloseButtonRoot } from "../close-button/close-button"
 
@@ -72,10 +73,17 @@ const useSearchField = (): SearchFieldContextValue => {
 // Optional external control: a parent (e.g. Autocomplete.Filter) drives the
 // field's value/onChange without the consumer wiring `value` explicitly. When
 // present and the field has no `value` prop, the field binds here; absent, the
-// field behaves standalone (uncontrolled/controlled as before).
+// field behaves standalone (uncontrolled/controlled as before). The optional
+// members let the parent turn the input into an aria-activedescendant combobox
+// over an adjacent listbox (Autocomplete's virtual-focus keyboard nav): it
+// registers the input element, intercepts navigation keys, and supplies the
+// combobox ARIA attributes.
 type SearchFieldControlContextValue = {
   value: () => string
   onChange: (value: string) => void
+  registerInput?: (el: HTMLInputElement) => void
+  onInputKeyDown?: (event: KeyboardEvent) => void
+  inputAria?: () => Record<string, string | boolean | undefined>
 }
 
 const SearchFieldControlContext =
@@ -101,6 +109,19 @@ interface SearchFieldRootProps extends SearchFieldVariants {
 }
 
 const SearchFieldRoot = (props: SearchFieldRootProps) => {
+  // Inside a collection-deferring picker (the Autocomplete popover) hold the
+  // field as a deferred render so its <input> DOM isn't created while the
+  // closed popover eagerly registers its collection (SSR/hydration-safe — see
+  // AGENTS.md). The marker's render() mounts a fresh field, so onMount/autofocus
+  // still fire when the popover opens. Standalone (no provider) it renders now.
+  const deferred = useCollectionDefer(() => <SearchFieldRootInner {...props} />)
+  if (deferred) {
+    return deferred as unknown as JSX.Element
+  }
+  return <SearchFieldRootInner {...props} />
+}
+
+const SearchFieldRootInner = (props: SearchFieldRootProps) => {
   const [variantProps, local, rest] = splitProps(
     props,
     searchFieldVariants.variantKeys,
@@ -222,11 +243,20 @@ interface SearchFieldInputProps extends TextFieldInputProps {}
 const SearchFieldInput = (props: SearchFieldInputProps) => {
   const [local, rest] = splitProps(props, ["class", "ref", "onKeyDown"])
   const ctx = useSearchField()
+  // Present only when a parent (Autocomplete) drives virtual-focus keyboard nav.
+  const control = useContext(SearchFieldControlContext)
 
   const handleKeyDown: JSX.EventHandler<HTMLInputElement, KeyboardEvent> = (
     event
   ) => {
     callHandler(event, local.onKeyDown)
+    // Virtual-focus nav (ArrowUp/Down/Home/End/Enter/Escape) runs first and
+    // preventDefaults the keys it owns, so the field's own Escape/Enter
+    // behavior only fires for keys the parent left alone.
+    control?.onInputKeyDown?.(event)
+    if (event.defaultPrevented) {
+      return
+    }
     if (event.key === "Escape") {
       event.preventDefault()
       ctx.clear()
@@ -240,9 +270,10 @@ const SearchFieldInput = (props: SearchFieldInputProps) => {
       type="search"
       class={cn(ctx.slots().input(), local.class)}
       data-slot="search-field-input"
-      ref={mergeRefs(ctx.registerInput, local.ref)}
+      ref={mergeRefs(ctx.registerInput, control?.registerInput, local.ref)}
       onKeyDown={handleKeyDown}
       {...(rest as TextFieldInputProps)}
+      {...(control?.inputAria?.() ?? {})}
     />
   )
 }

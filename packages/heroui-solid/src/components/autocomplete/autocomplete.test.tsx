@@ -153,13 +153,16 @@ describe("Autocomplete", () => {
     expect(itemTexts()).toEqual(["Florida", "Texas", "California"])
   })
 
-  it("shows the selected item's textValue for a default value once options register", () => {
-    // Options register when the popover opens, so the trigger resolves the
-    // selected key's textValue after opening (mirrors the on-open registration
-    // the SSR/hydration design requires).
-    const { container } = render(() => (
-      <Anatomy defaultOpen defaultValue="texas" />
-    ))
+  it("shows the selected item's textValue for a default value while closed", () => {
+    // Options register during the popover's eager pass (even while closed), so
+    // the trigger resolves the selected key's textValue without ever opening.
+    const { container } = render(() => <Anatomy defaultValue="texas" />)
+
+    // Popover stays closed.
+    expect(
+      document.querySelector("[data-slot=autocomplete-popover]")
+    ).toBeNull()
+
     const value = container.querySelector(
       "[data-slot=autocomplete-value]"
     ) as HTMLElement
@@ -169,6 +172,50 @@ describe("Autocomplete", () => {
       "[data-slot=autocomplete-clear-button]"
     ) as HTMLElement
     expect(clearButton.getAttribute("data-empty")).toBeNull()
+  })
+
+  it("navigates options with the keyboard via virtual focus", () => {
+    render(() => <Anatomy defaultOpen />)
+    const input = searchInput()
+
+    // ArrowDown highlights the first option and points aria-activedescendant at
+    // it while the input keeps DOM focus.
+    fireEvent.keyDown(input, { key: "ArrowDown" })
+    const first = document.querySelector(
+      "[data-slot=list-box-item][data-highlighted]"
+    ) as HTMLElement
+    expect(first).not.toBeNull()
+    expect(first.textContent).toContain("Florida")
+    expect(input.getAttribute("aria-activedescendant")).toBe(first.id)
+
+    // ArrowDown again moves the highlight to the next option.
+    fireEvent.keyDown(input, { key: "ArrowDown" })
+    const second = document.querySelector(
+      "[data-slot=list-box-item][data-highlighted]"
+    ) as HTMLElement
+    expect(second.textContent).toContain("Texas")
+    expect(input.getAttribute("aria-activedescendant")).toBe(second.id)
+  })
+
+  it("selects the active option and closes on Enter (single-select)", () => {
+    const onChange = vi.fn()
+    const { container } = render(() => (
+      <Anatomy defaultOpen onChange={onChange} />
+    ))
+    const input = searchInput()
+
+    fireEvent.keyDown(input, { key: "ArrowDown" })
+    fireEvent.keyDown(input, { key: "ArrowDown" }) // Texas
+    fireEvent.keyDown(input, { key: "Enter" })
+
+    expect(onChange).toHaveBeenCalledWith("texas")
+    expect(
+      document.querySelector("[data-slot=autocomplete-popover]")
+    ).toBeNull()
+    const value = container.querySelector(
+      "[data-slot=autocomplete-value]"
+    ) as HTMLElement
+    expect(value.textContent).toBe("Texas")
   })
 
   it("supports a render-function value in multiple mode", () => {

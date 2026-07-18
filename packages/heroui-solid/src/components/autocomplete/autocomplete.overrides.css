@@ -23,6 +23,17 @@ html:not([data-heroui-modality="pointer"])
   @apply text-field-placeholder;
 }
 
+/* Virtual focus: options never take DOM focus (the SearchField keeps it), so
+   the keyboard highlight rides Kobalte's data-highlighted (the focused key)
+   instead of :focus-visible. Bridge it to the same ring upstream paints on
+   data-focus-visible, gated on keyboard modality (utils/interaction-modality.ts):
+   under pointer modality data-highlighted rides hover, where the native
+   :hover → bg-default already matches upstream, so the ring must not paint. */
+html:not([data-heroui-modality="pointer"]) [data-slot="autocomplete-popover"]
+  .list-box-item[data-highlighted] {
+  @apply status-focused;
+}
+
 /* Upstream pins the popover to the trigger width via --trigger-width and its
    transform origin via --trigger-anchor-point (both React Aria vars). Kobalte
    exposes the anchor width as --kb-popper-anchor-width and the origin via
