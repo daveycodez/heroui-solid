@@ -15,6 +15,7 @@ import { IconOnly } from "./button/icon-only"
 import { Loading } from "./button/loading"
 import { LoadingState } from "./button/loading-state"
 import { OutlineVariant } from "./button/outline-variant"
+import { Ripple as ButtonRipple } from "./button/ripple"
 import { Sizes } from "./button/sizes"
 import { Social } from "./button/social"
 import { Variants } from "./button/variants"
@@ -150,6 +151,7 @@ export const demos: Record<string, Component> = {
   "button-loading": Loading,
   "button-loading-state": LoadingState,
   "button-outline-variant": OutlineVariant,
+  "button-ripple": ButtonRipple,
   "button-sizes": Sizes,
   "button-full-width": FullWidth,
   "button-disabled": Disabled,

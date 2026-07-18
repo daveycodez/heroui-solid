@@ -61,17 +61,17 @@ export const components: PortedComponent[] = [
       AS_ELEMENT,
       {
         stem: "ripple-effect",
-        reason: "composition example built on m3-ripple, a React-only package"
+        reason:
+          "upstream composes a React-only <Ripple /> (m3-ripple); the Solid port ships ripple as a CSS flag instead (--button-ripple / .ripple) — see the button-ripple demo under the same Adding Ripple Effect section"
+      },
+      {
+        stem: "ripple",
+        local: true,
+        reason:
+          "Solid-only replacement for upstream's ripple-effect composition demo — shows the CSS-flag ripple (the .ripple class) the port provides in place of a React <Ripple /> child"
       }
     ],
-    skipSections: [
-      RENDER_PROPS_SECTION("ButtonRenderProps"),
-      {
-        heading: "Adding Ripple Effect",
-        reason:
-          "section for the skipped ripple-effect demo (m3-ripple is React-only)"
-      }
-    ]
+    skipSections: [RENDER_PROPS_SECTION("ButtonRenderProps")]
   },
   { slug: "button-group", demosDir: "button-group" },
   { slug: "card", demosDir: "card" },
