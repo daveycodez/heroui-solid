@@ -79,10 +79,18 @@ export function CodeBlock(props: { data: string }) {
 
   onCleanup(() => clearTimeout(timer))
 
-  const copy = () => {
+  const copy = async () => {
     // The gutter is a sibling of <code>, so codeRef.textContent is exactly the
     // source (no line numbers).
-    navigator.clipboard.writeText(codeRef.textContent ?? "")
+    try {
+      await navigator.clipboard.writeText(codeRef.textContent ?? "")
+    } catch (error) {
+      // Insecure context / denied permission — leave the button unchanged
+      // rather than falsely reporting success. TODO: surface a toast once the
+      // docs have one.
+      console.warn("Copy to clipboard failed:", error)
+      return
+    }
     setCopied(true)
     clearTimeout(timer)
     timer = setTimeout(() => setCopied(false), 1500)
