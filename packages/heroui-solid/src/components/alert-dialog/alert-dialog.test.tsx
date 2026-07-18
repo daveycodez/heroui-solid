@@ -69,6 +69,21 @@ describe("AlertDialog", () => {
     }
   })
 
+  it("wires aria-labelledby to the heading and aria-describedby to the body", () => {
+    render(() => <Example defaultOpen />)
+    const content = dialog() as HTMLElement
+    const heading = document.body.querySelector(
+      "[data-slot=alert-dialog-heading]"
+    ) as HTMLElement
+    const body = document.body.querySelector(
+      "[data-slot=alert-dialog-body]"
+    ) as HTMLElement
+    expect(content.getAttribute("aria-labelledby")).toBe(heading.id)
+    expect(content.getAttribute("aria-describedby")).toBe(body.id)
+    expect(heading.id).toBeTruthy()
+    expect(body.id).toBeTruthy()
+  })
+
   it("defaults the icon status to danger with a default icon", () => {
     render(() => <Example defaultOpen />)
     const icon = document.body.querySelector(

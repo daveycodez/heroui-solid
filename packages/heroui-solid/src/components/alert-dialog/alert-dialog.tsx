@@ -5,6 +5,7 @@ import {
 } from "@heroui/styles"
 import {
   Content as AlertDialogContentPrimitive,
+  Description as AlertDialogDescriptionPrimitive,
   Overlay as AlertDialogOverlayPrimitive,
   Portal as AlertDialogPortalPrimitive,
   Root as AlertDialogPrimitive,
@@ -17,8 +18,10 @@ import {
   createMemo,
   createSignal,
   type JSX,
+  Match,
   onCleanup,
   onMount,
+  Switch,
   splitProps,
   useContext,
   type ValidComponent
@@ -139,6 +142,10 @@ const AlertDialogTrigger = <T extends ValidComponent = "div">(
   ) => {
     callHandler(event, local.onKeyDown)
     if (event.defaultPrevented) return
+    // A native button already synthesizes a click on Enter/Space (handled by
+    // on:click); only non-button elements (the default role="button" div) need
+    // manual activation.
+    if (event.currentTarget instanceof HTMLButtonElement) return
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault()
       overlay.open?.()
@@ -420,8 +427,11 @@ const AlertDialogBody = <T extends ValidComponent = "div">(
   const [local, rest] = splitProps(props as AlertDialogBodyProps, ["class"])
   const slots = createMemo(() => alertDialogVariants())
 
+  // Kobalte's Description registers the dialog's aria-describedby (paired with
+  // Heading → Title's aria-labelledby), completing the WAI-ARIA alertdialog
+  // wiring — rendered as a div to match upstream's body markup.
   return (
-    <Polymorphic
+    <AlertDialogDescriptionPrimitive
       as="div"
       class={cn(slots().body(), local.class)}
       data-slot="alert-dialog-body"
@@ -464,18 +474,21 @@ interface AlertDialogIconProps {
   children?: JSX.Element
 }
 
-const DefaultIcon = (props: { status: AlertDialogStatus }) => {
-  switch (props.status) {
-    case "success":
-      return <SuccessIcon data-slot="alert-dialog-default-icon" />
-    case "warning":
-      return <WarningIcon data-slot="alert-dialog-default-icon" />
-    case "danger":
-      return <DangerIcon data-slot="alert-dialog-default-icon" />
-    default:
-      return <InfoIcon data-slot="alert-dialog-default-icon" />
-  }
-}
+// Switch/Match keeps the choice reactive to status changes (a bare switch in
+// the component body reads status only once).
+const DefaultIcon = (props: { status: AlertDialogStatus }) => (
+  <Switch fallback={<InfoIcon data-slot="alert-dialog-default-icon" />}>
+    <Match when={props.status === "success"}>
+      <SuccessIcon data-slot="alert-dialog-default-icon" />
+    </Match>
+    <Match when={props.status === "warning"}>
+      <WarningIcon data-slot="alert-dialog-default-icon" />
+    </Match>
+    <Match when={props.status === "danger"}>
+      <DangerIcon data-slot="alert-dialog-default-icon" />
+    </Match>
+  </Switch>
+)
 
 const AlertDialogIcon = <T extends ValidComponent = "div">(
   props: PolymorphicProps<T, AlertDialogIconProps>

@@ -4,6 +4,8 @@ import {
   createContext,
   createMemo,
   type JSX,
+  Match,
+  Switch,
   splitProps,
   useContext,
   type ValidComponent
@@ -72,18 +74,21 @@ interface AlertIndicatorProps {
 }
 
 // Status → default icon (default and accent share the info icon, as upstream).
-const DefaultIcon = (props: { status?: AlertVariants["status"] }) => {
-  switch (props.status) {
-    case "success":
-      return <SuccessIcon data-slot="alert-default-icon" />
-    case "warning":
-      return <WarningIcon data-slot="alert-default-icon" />
-    case "danger":
-      return <DangerIcon data-slot="alert-default-icon" />
-    default:
-      return <InfoIcon data-slot="alert-default-icon" />
-  }
-}
+// Switch/Match keeps the choice reactive to status changes (a bare switch in
+// the component body reads status only once).
+const DefaultIcon = (props: { status?: AlertVariants["status"] }) => (
+  <Switch fallback={<InfoIcon data-slot="alert-default-icon" />}>
+    <Match when={props.status === "success"}>
+      <SuccessIcon data-slot="alert-default-icon" />
+    </Match>
+    <Match when={props.status === "warning"}>
+      <WarningIcon data-slot="alert-default-icon" />
+    </Match>
+    <Match when={props.status === "danger"}>
+      <DangerIcon data-slot="alert-default-icon" />
+    </Match>
+  </Switch>
+)
 
 const AlertIndicator = <T extends ValidComponent = "div">(
   props: PolymorphicProps<T, AlertIndicatorProps>

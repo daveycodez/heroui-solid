@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { render } from "@solidjs/testing-library"
+import { createSignal } from "solid-js"
 import { describe, expect, it } from "vitest"
 import { classSet } from "../../test/utils"
 import {
@@ -66,6 +67,25 @@ describe("Alert", () => {
       "[data-slot=alert-content]"
     ) as HTMLElement
     expect(classSet(content.className)).toEqual(new Set(["alert__content"]))
+  })
+
+  it("swaps the default icon reactively when status changes", () => {
+    const [status, setStatus] = createSignal<"default" | "danger">("default")
+    const { container } = render(() => (
+      <AlertRoot status={status()}>
+        <AlertIndicator />
+      </AlertRoot>
+    ))
+    const iconPath = () =>
+      container
+        .querySelector('[data-slot="alert-default-icon"] path')
+        ?.getAttribute("d")
+    const info = iconPath()
+    setStatus("danger")
+    const danger = iconPath()
+    expect(info).toBeTruthy()
+    expect(danger).toBeTruthy()
+    expect(danger).not.toBe(info)
   })
 
   it("lets a custom indicator override the default icon", () => {
