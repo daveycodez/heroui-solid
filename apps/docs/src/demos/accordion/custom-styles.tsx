@@ -16,7 +16,7 @@ const items = [
       "Enhance your browsing experience by installing our official browser extension",
     iconUrl:
       "https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/docs/3dicons/compass-small.png",
-    subtitle: "Connect you browser to your account",
+    subtitle: "Connect your browser to your account",
     title: "Set up Browser Extension"
   },
   {
