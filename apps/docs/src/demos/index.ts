@@ -115,6 +115,12 @@ import { ScrollbarModes as ListBoxScrollbarModes } from "./list-box/scrollbar-mo
 import { Virtualization as ListBoxVirtualization } from "./list-box/virtualization"
 import { WithDisabledItems as ListBoxWithDisabledItems } from "./list-box/with-disabled-items"
 import { WithSections as ListBoxWithSections } from "./list-box/with-sections"
+import { CustomSize as ScrollShadowCustomSize } from "./scroll-shadow/custom-size"
+import { Default as ScrollShadowDefault } from "./scroll-shadow/default"
+import { HideScrollBar as ScrollShadowHideScrollBar } from "./scroll-shadow/hide-scroll-bar"
+import { Orientation as ScrollShadowOrientation } from "./scroll-shadow/orientation"
+import { VisibilityChange as ScrollShadowVisibilityChange } from "./scroll-shadow/visibility-change"
+import { WithCard as ScrollShadowWithCard } from "./scroll-shadow/with-card"
 import { Basic as SearchFieldBasic } from "./search-field/basic"
 import { Controlled as SearchFieldControlled } from "./search-field/controlled"
 import { CustomIcons as SearchFieldCustomIcons } from "./search-field/custom-icons"
@@ -154,6 +160,15 @@ import { SpinnerBasic } from "./spinner/basic"
 import { SpinnerColors } from "./spinner/colors"
 import { SpinnerSizes } from "./spinner/sizes"
 import { Variants as SurfaceVariants } from "./surface/variants"
+import { Basic as TabsBasic } from "./tabs/basic"
+import { CustomElement as TabsCustomElement } from "./tabs/custom-element"
+import { CustomStyles as TabsCustomStyles } from "./tabs/custom-styles"
+import { Disabled as TabsDisabled } from "./tabs/disabled"
+import { Overflow as TabsOverflow } from "./tabs/overflow"
+import { Secondary as TabsSecondary } from "./tabs/secondary"
+import { SecondaryVertical as TabsSecondaryVertical } from "./tabs/secondary-vertical"
+import { Vertical as TabsVertical } from "./tabs/vertical"
+import { WithSeparator as TabsWithSeparator } from "./tabs/with-separator"
 import { TagGroupBasic } from "./tag-group/basic"
 import { TagGroupControlled } from "./tag-group/controlled"
 import { TagGroupDisabled } from "./tag-group/disabled"
@@ -317,6 +332,12 @@ export const demos: Record<string, Component> = {
   "select-required": SelectRequired,
   "select-with-description": SelectWithDescription,
   "select-with-sections": SelectWithSections,
+  "scroll-shadow-default": ScrollShadowDefault,
+  "scroll-shadow-orientation": ScrollShadowOrientation,
+  "scroll-shadow-hide-scroll-bar": ScrollShadowHideScrollBar,
+  "scroll-shadow-custom-size": ScrollShadowCustomSize,
+  "scroll-shadow-visibility-change": ScrollShadowVisibilityChange,
+  "scroll-shadow-with-card": ScrollShadowWithCard,
   "search-field-basic": SearchFieldBasic,
   "search-field-with-description": SearchFieldWithDescription,
   "search-field-required": SearchFieldRequired,
@@ -357,6 +378,15 @@ export const demos: Record<string, Component> = {
   "textfield-input-types": TextFieldInputTypes,
   "textfield-full-width": TextFieldFullWidth,
   "textfield-on-surface": TextFieldOnSurface,
+  "tabs-basic": TabsBasic,
+  "tabs-vertical": TabsVertical,
+  "tabs-overflow": TabsOverflow,
+  "tabs-disabled": TabsDisabled,
+  "tabs-custom-styles": TabsCustomStyles,
+  "tabs-with-separator": TabsWithSeparator,
+  "tabs-secondary": TabsSecondary,
+  "tabs-secondary-vertical": TabsSecondaryVertical,
+  "tabs-custom-element": TabsCustomElement,
   "tag-group-basic": TagGroupBasic,
   "tag-group-sizes": TagGroupSizes,
   "tag-group-variants": TagGroupVariants,

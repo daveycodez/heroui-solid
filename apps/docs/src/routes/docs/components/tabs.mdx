@@ -1,0 +1,240 @@
+---
+title: Tabs
+---
+
+# Tabs
+
+Tabs organize content into multiple sections and allow users to navigate between them
+
+## Import
+
+```tsx
+import { Tabs } from "heroui-solid";
+```
+
+### Usage
+
+<ComponentPreview name="tabs-basic" />
+
+```tsx file=../../../demos/tabs/basic.tsx title=""
+
+```
+
+### Anatomy
+
+Import the Tabs component and access all parts using dot notation.
+
+```tsx
+import { Tabs } from "heroui-solid";
+
+export default () => (
+  <Tabs>
+    <Tabs.ListContainer>
+      <Tabs.List aria-label="Options">
+        <Tabs.Tab>
+          <Tabs.Separator /> {/* Optional */}
+          <Tabs.Indicator />
+        </Tabs.Tab>
+      </Tabs.List>
+    </Tabs.ListContainer>
+    <Tabs.Panel />
+  </Tabs>
+);
+```
+
+### Vertical
+
+<ComponentPreview name="tabs-vertical" />
+
+```tsx file=../../../demos/tabs/vertical.tsx title=""
+
+```
+
+### Overflow
+
+When the tab list exceeds the available space, `Tabs.ListContainer` automatically renders scroll chevrons and fading edges so users can navigate the hidden tabs. This works the same way for both horizontal and vertical orientations. When the list is known to overflow, pass `initialShadow` to `Tabs.ListContainer` so the chevron and fade are already in the server-rendered HTML instead of appearing after hydration.
+
+<ComponentPreview name="tabs-overflow" />
+
+```tsx file=../../../demos/tabs/overflow.tsx title=""
+
+```
+
+### Disabled Tab
+
+<ComponentPreview name="tabs-disabled" />
+
+```tsx file=../../../demos/tabs/disabled.tsx title=""
+
+```
+
+### With Separator
+
+Add `<Tabs.Separator />` inside each `<Tabs.Tab>` (except the first) to display separator lines between tabs.
+
+<ComponentPreview name="tabs-with-separator" />
+
+```tsx file=../../../demos/tabs/with-separator.tsx title=""
+
+```
+
+### Custom Styles
+
+<ComponentPreview name="tabs-custom-styles" />
+
+```tsx file=../../../demos/tabs/custom-styles.tsx title=""
+
+```
+
+### Secondary Variant
+
+<ComponentPreview name="tabs-secondary" />
+
+```tsx file=../../../demos/tabs/secondary.tsx title=""
+
+```
+
+### Secondary Variant Vertical
+
+<ComponentPreview name="tabs-secondary-vertical" />
+
+```tsx file=../../../demos/tabs/secondary-vertical.tsx title=""
+
+```
+
+### Custom Element
+
+HeroUI React overrides the rendered elements with a `render` prop. This port
+uses Kobalte's polymorphic `as` prop instead — for example, rendering each tab
+as an anchor:
+
+<ComponentPreview name="tabs-custom-element" />
+
+```tsx file=../../../demos/tabs/custom-element.tsx title=""
+
+```
+
+## Styling
+
+### Passing Tailwind CSS classes
+
+```tsx
+import { Tabs } from "heroui-solid";
+
+function CustomTabs() {
+  return (
+    <Tabs class="w-full max-w-lg text-center">
+      <Tabs.ListContainer>
+        <Tabs.List
+          aria-label="Options"
+          class="*:data-[selected=true]:text-accent-foreground w-fit *:h-6 *:w-fit *:px-3 *:text-sm *:font-normal"
+        >
+          <Tabs.Tab id="daily">Daily<Tabs.Indicator /></Tabs.Tab>
+          <Tabs.Tab id="weekly">Weekly<Tabs.Indicator /></Tabs.Tab>
+        </Tabs.List>
+      </Tabs.ListContainer>
+    </Tabs>
+  );
+}
+```
+
+### CSS Classes
+
+The Tabs component uses these CSS classes:
+
+#### Base Classes
+
+- `.tabs` - Base tabs container
+- `.tabs__list-container` - Tab list container wrapper
+- `.tabs__list-container__scroller` - Scrollable wrapper around the tab list (handles overflow and fading edges)
+- `.tabs__list-container__scroll-prev` - Scroll chevron button for the previous (left / up) direction
+- `.tabs__list-container__scroll-next` - Scroll chevron button for the next (right / down) direction
+- `.tabs__list` - Tab list container
+- `.tabs__tab` - Individual tab button
+- `.tabs__separator` - Separator between tabs
+- `.tabs__panel` - Tab panel content
+- `.tabs__indicator` - Tab indicator
+
+#### Orientation Attributes
+
+- `.tabs[data-orientation="horizontal"]` - Horizontal tab layout (default)
+- `.tabs[data-orientation="vertical"]` - Vertical tab layout
+
+#### Variant Classes
+
+- `.tabs--secondary` - Secondary variant with underline indicator
+
+### Interactive States
+
+The component supports both CSS pseudo-classes and data attributes:
+
+- **Selected**: `[aria-selected="true"]` or `[data-selected="true"]`
+- **Hover**: `:hover` or `[data-hovered="true"]`
+- **Focus**: `:focus-visible`
+- **Disabled**: `[aria-disabled="true"]` or `[data-disabled="true"]`
+
+## API Reference
+
+### Tabs Props
+
+| Prop                 | Type                           | Default        | Description                                                                                   |
+| -------------------- | ------------------------------ | -------------- | -------------------------------------------------------------------------------------------- |
+| `variant`            | `"primary" \| "secondary"`     | `"primary"`    | Visual style variant. Primary uses a filled indicator, secondary uses an underline indicator |
+| `orientation`        | `"horizontal" \| "vertical"`   | `"horizontal"` | Tab layout orientation                                                                        |
+| `selectedKey`        | `string`                       | -              | Controlled selected tab key                                                                   |
+| `defaultSelectedKey` | `string`                       | -              | Default selected tab key                                                                      |
+| `onSelectionChange`  | `(key: string) => void`        | -              | Selection change handler                                                                      |
+| `class`              | `string`                       | -              | Additional CSS classes                                                                        |
+| `as`                 | `ValidComponent`               | `"div"`        | Overrides the default DOM element (Kobalte polymorphic `as`)                                  |
+
+### Tabs.ListContainer Props
+
+| Prop            | Type      | Default | Description                                                                                                                                     |
+| --------------- | --------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `initialShadow` | `boolean` | `false` | Render the end-edge fade and scroll chevron before scroll measurement (SSR / first frame). Set when the list is known to overflow, so they don't blink in after hydration. |
+| `hideScrollButtons` | `boolean` | `false` | Hide the scroll chevron buttons when the list overflows (the fading edges remain). |
+| `class`         | `string`  | -       | Additional CSS classes                                                                                                                           |
+
+### Tabs.List Props
+
+| Prop         | Type     | Default | Description                      |
+| ------------ | -------- | ------- | -------------------------------- |
+| `aria-label` | `string` | -       | Accessibility label for tab list |
+| `class`      | `string` | -       | Additional CSS classes           |
+
+### Tabs.Tab Props
+
+| Prop         | Type             | Default    | Description                                                  |
+| ------------ | ---------------- | ---------- | ------------------------------------------------------------ |
+| `id`         | `string`         | -          | Unique tab identifier                                        |
+| `isDisabled` | `boolean`        | `false`    | Whether tab is disabled                                      |
+| `class`      | `string`         | -          | Additional CSS classes                                       |
+| `as`         | `ValidComponent` | `"button"` | Overrides the default DOM element (Kobalte polymorphic `as`) |
+
+### Tabs.Separator Props
+
+| Prop    | Type     | Default | Description            |
+| ------- | -------- | ------- | ---------------------- |
+| `class` | `string` | -       | Additional CSS classes |
+
+### Tabs.Panel Props
+
+| Prop    | Type             | Default | Description                                                  |
+| ------- | ---------------- | ------- | ------------------------------------------------------------ |
+| `id`    | `string`         | -       | Panel identifier matching tab id                             |
+| `class` | `string`         | -       | Additional CSS classes                                       |
+| `as`    | `ValidComponent` | `"div"` | Overrides the default DOM element (Kobalte polymorphic `as`) |
+
+## Differences from HeroUI React
+
+- Use `onClick` (Solid's native event) instead of React Aria's `onPress`.
+- Polymorphism uses Kobalte's `as` prop instead of React's `render` prop override.
+- `onSelectionChange` reports the key as a string.
+- Upstream renders a `SelectionIndicator` inside each `Tabs.Tab`; this port keeps
+  that authoring shape (Kobalte has no selection-indicator primitive) and ports
+  React Aria's shared-element transition so the indicator animates between tabs.
+- `Tabs.ListContainer` accepts `initialShadow` to server-render the overflow
+  chevron and fade for lists known to overflow, and `hideScrollButtons` to
+  omit the chevron buttons entirely.
+- The selected tab is kept in view: scrolled to instantly on mount, with an
+  animated scroll on selection change.
