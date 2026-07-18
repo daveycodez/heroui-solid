@@ -49,7 +49,7 @@ const TabsContext = createContext<TabsContextValue>()
 const useTabs = () => {
   const context = useContext(TabsContext)
   if (!context) {
-    throw new Error("Tabs components must be used within <Tabs.Root>")
+    throw new Error("Tabs parts must be used within <Tabs>")
   }
   return context
 }
