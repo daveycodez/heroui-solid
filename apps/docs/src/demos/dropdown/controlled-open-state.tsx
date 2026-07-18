@@ -1,29 +1,18 @@
-import { buttonVariants, Dropdown, Label } from "heroui-solid"
+import { Button, Dropdown, Label } from "heroui-solid"
 import { createSignal } from "solid-js"
 
 export function ControlledOpenState() {
   const [open, setOpen] = createSignal(false)
 
   return (
-    <div
-      style={{
-        display: "flex",
-        "flex-direction": "column",
-        "align-items": "center",
-        "justify-content": "center",
-        gap: "1rem"
-      }}
-    >
-      <p style={{ "font-size": "0.875rem", color: "var(--muted)" }}>
+    <div class="flex min-w-sm flex-col items-center justify-center gap-4">
+      <p class="text-sm text-muted">
         Dropdown is: <strong>{open() ? "open" : "closed"}</strong>
       </p>
       <Dropdown isOpen={open()} onOpenChange={setOpen}>
-        <Dropdown.Trigger
-          aria-label="Menu"
-          class={buttonVariants({ variant: "secondary" })}
-        >
+        <Button aria-label="Menu" variant="secondary">
           Actions
-        </Dropdown.Trigger>
+        </Button>
         <Dropdown.Popover>
           <Dropdown.Menu>
             <Dropdown.Item id="new-file" textValue="New file">

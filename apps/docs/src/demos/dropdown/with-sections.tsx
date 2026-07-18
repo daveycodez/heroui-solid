@@ -1,4 +1,9 @@
-import { Bars, Pencil, SquarePlus, TrashBin } from "gravity-icons-solid"
+import {
+  EllipsisVertical,
+  Pencil,
+  SquarePlus,
+  TrashBin
+} from "gravity-icons-solid"
 import {
   Button,
   Description,
@@ -9,17 +14,14 @@ import {
   Separator
 } from "heroui-solid"
 
-export function WithDisabledItems() {
+export function WithSections() {
   return (
     <Dropdown>
       <Button isIconOnly aria-label="Menu" variant="secondary">
-        <Bars class="outline-none" />
+        <EllipsisVertical class="outline-none" />
       </Button>
-      <Dropdown.Popover class="min-w-[220px]">
-        <Dropdown.Menu
-          disabledKeys={["delete-file"]}
-          onAction={(key) => console.log(`Selected: ${key}`)}
-        >
+      <Dropdown.Popover>
+        <Dropdown.Menu onAction={(key) => console.log(`Selected: ${key}`)}>
           <Dropdown.Section>
             <Header>Actions</Header>
             <Dropdown.Item id="new-file" textValue="New file">

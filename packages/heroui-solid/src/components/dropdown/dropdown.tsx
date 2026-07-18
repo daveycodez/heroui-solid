@@ -1,6 +1,12 @@
-import { cn, type DropdownVariants, dropdownVariants } from "@heroui/styles"
+import {
+  cn,
+  type DropdownVariants,
+  dropdownVariants,
+  menuSectionVariants
+} from "@heroui/styles"
 import {
   Content as DropdownContentPrimitive,
+  Group as DropdownGroupPrimitive,
   Portal as DropdownPortalPrimitive,
   Root as DropdownPrimitive,
   Trigger as DropdownTriggerPrimitive
@@ -20,6 +26,7 @@ import {
   useContext,
   type ValidComponent
 } from "solid-js"
+import { MenuTriggerContext } from "../../utils/menu-trigger-context"
 import { PreventScroll } from "../../utils/prevent-scroll"
 import {
   MenuContext,
@@ -60,7 +67,7 @@ interface DropdownRootProps extends DropdownVariants {
 }
 
 const DropdownRoot = (props: DropdownRootProps) => {
-  const [local, rest] = splitProps(props, ["isOpen"])
+  const [local, rest] = splitProps(props, ["isOpen", "children"])
   const slots = createMemo(() => dropdownVariants())
   const [placement, setPlacement] =
     createSignal<DropdownPopoverPlacement>("bottom")
@@ -81,7 +88,11 @@ const DropdownRoot = (props: DropdownRootProps) => {
         // popover applies an html-targeted PreventScroll instead.
         preventScroll={false}
         {...rest}
-      />
+      >
+        <MenuTriggerContext.Provider value={true}>
+          {local.children}
+        </MenuTriggerContext.Provider>
+      </DropdownPrimitive>
     </DropdownContext.Provider>
   )
 }
@@ -158,21 +169,46 @@ const DropdownPopover = <T extends ValidComponent = "div">(
 
   return (
     <SurfaceContext.Provider value={{ variant: "default" }}>
-      <DropdownPortalPrimitive>
-        <DropdownContentPrimitive
-          ref={mergeRefs(setContentEl, local.ref)}
-          class={cn(context.slots?.popover(), local.class)}
-          data-slot="dropdown-popover"
-          data-placement={
-            resolvedSide() ?? (local.placement ?? "bottom").split("-")[0]
-          }
-          {...rest}
-        >
-          <PreventScroll />
-          {local.children}
-        </DropdownContentPrimitive>
-      </DropdownPortalPrimitive>
+      {/* Buttons inside the popover are plain buttons, not triggers. */}
+      <MenuTriggerContext.Provider value={false}>
+        <DropdownPortalPrimitive>
+          <DropdownContentPrimitive
+            ref={mergeRefs(setContentEl, local.ref)}
+            class={cn(context.slots?.popover(), local.class)}
+            data-slot="dropdown-popover"
+            data-placement={
+              resolvedSide() ?? (local.placement ?? "bottom").split("-")[0]
+            }
+            {...rest}
+          >
+            <PreventScroll />
+            {local.children}
+          </DropdownContentPrimitive>
+        </DropdownPortalPrimitive>
+      </MenuTriggerContext.Provider>
     </SurfaceContext.Provider>
+  )
+}
+
+/* -------------------------------------------------------------------------------------------------
+ * Dropdown Section
+ * -----------------------------------------------------------------------------------------------*/
+interface DropdownSectionProps {
+  class?: string
+  children?: JSX.Element
+}
+
+const DropdownSection = <T extends ValidComponent = "div">(
+  props: PolymorphicProps<T, DropdownSectionProps>
+) => {
+  const [local, rest] = splitProps(props as DropdownSectionProps, ["class"])
+
+  return (
+    <DropdownGroupPrimitive
+      class={cn(menuSectionVariants(), local.class)}
+      data-slot="dropdown-section"
+      {...rest}
+    />
   )
 }
 
@@ -246,5 +282,6 @@ export {
   DropdownMenu,
   DropdownPopover,
   DropdownRoot,
+  DropdownSection,
   DropdownTrigger
 }

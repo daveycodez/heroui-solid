@@ -24,10 +24,13 @@ import { Variants as CardVariants } from "./card/variants"
 import { WithForm as CardWithForm } from "./card/with-form"
 import { Basic as DescriptionBasic } from "./description/basic"
 import { ControlledOpenState as DropdownControlledOpenState } from "./dropdown/controlled-open-state"
+import { CustomTrigger as DropdownCustomTrigger } from "./dropdown/custom-trigger"
 import { Default as DropdownDefault } from "./dropdown/default"
 import { WithDescriptions as DropdownWithDescriptions } from "./dropdown/with-descriptions"
 import { WithDisabledItems as DropdownWithDisabledItems } from "./dropdown/with-disabled-items"
 import { WithIcons as DropdownWithIcons } from "./dropdown/with-icons"
+import { WithKeyboardShortcuts as DropdownWithKeyboardShortcuts } from "./dropdown/with-keyboard-shortcuts"
+import { WithSections as DropdownWithSections } from "./dropdown/with-sections"
 import { Basic as FieldErrorBasic } from "./field-error/basic"
 import { Basic as InputBasic } from "./input/basic"
 import { Controlled as InputControlled } from "./input/controlled"
@@ -124,6 +127,9 @@ export const demos: Record<string, Component> = {
   "dropdown-with-descriptions": DropdownWithDescriptions,
   "dropdown-with-disabled-items": DropdownWithDisabledItems,
   "dropdown-controlled-open-state": DropdownControlledOpenState,
+  "dropdown-with-keyboard-shortcuts": DropdownWithKeyboardShortcuts,
+  "dropdown-with-sections": DropdownWithSections,
+  "dropdown-custom-trigger": DropdownCustomTrigger,
   "field-error-basic": FieldErrorBasic,
   "input-basic": InputBasic,
   "input-types": InputTypes,

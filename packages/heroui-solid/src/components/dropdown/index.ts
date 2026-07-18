@@ -5,6 +5,7 @@ import {
   DropdownMenu,
   DropdownPopover,
   DropdownRoot,
+  DropdownSection,
   DropdownTrigger
 } from "./dropdown"
 
@@ -16,7 +17,8 @@ export const Dropdown = Object.assign(DropdownRoot, {
   Trigger: DropdownTrigger,
   Popover: DropdownPopover,
   Menu: DropdownMenu,
-  Item: DropdownItem
+  Item: DropdownItem,
+  Section: DropdownSection
 })
 
 export type Dropdown = {
@@ -26,6 +28,7 @@ export type Dropdown = {
   PopoverProps: ComponentProps<typeof DropdownPopover>
   MenuProps: ComponentProps<typeof DropdownMenu>
   ItemProps: ComponentProps<typeof DropdownItem>
+  SectionProps: ComponentProps<typeof DropdownSection>
 }
 
 export type { DropdownVariants } from "@heroui/styles"
@@ -51,5 +54,6 @@ export {
   DropdownMenu,
   DropdownPopover,
   DropdownRoot,
+  DropdownSection,
   DropdownTrigger
 } from "./dropdown"

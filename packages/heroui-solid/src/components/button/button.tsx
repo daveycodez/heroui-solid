@@ -1,5 +1,6 @@
 import { type ButtonVariants, buttonVariants, cn } from "@heroui/styles"
 import { Root as ButtonPrimitive } from "@kobalte/core/button"
+import { Trigger as MenuTriggerPrimitive } from "@kobalte/core/dropdown-menu"
 import type { PolymorphicProps } from "@kobalte/core/polymorphic"
 import { callHandler } from "@kobalte/utils"
 import {
@@ -7,8 +8,11 @@ import {
   type JSX,
   mergeProps,
   splitProps,
+  useContext,
   type ValidComponent
 } from "solid-js"
+
+import { MenuTriggerContext } from "../../utils/menu-trigger-context"
 
 interface ButtonRootProps extends ButtonVariants {
   isDisabled?: boolean
@@ -62,8 +66,15 @@ const ButtonRoot = <T extends ValidComponent = "button">(
     }
   })
 
+  // Inside a Dropdown's trigger slot the same button renders Kobalte's menu
+  // trigger (see utils/menu-trigger-context.tsx) — upstream parity for
+  // <Dropdown><Button>…</Button>….
+  const Primitive = useContext(MenuTriggerContext)
+    ? MenuTriggerPrimitive
+    : ButtonPrimitive
+
   return (
-    <ButtonPrimitive
+    <Primitive
       class={cn(buttonVariants(variantProps), local.class)}
       data-slot="button"
       // Announces render-prop label changes while pending (React Aria's

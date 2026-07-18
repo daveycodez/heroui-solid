@@ -1,14 +1,11 @@
-import { buttonVariants, Dropdown, Label } from "heroui-solid"
+import { Button, Dropdown, Label } from "heroui-solid"
 
 export function Default() {
   return (
     <Dropdown>
-      <Dropdown.Trigger
-        aria-label="Menu"
-        class={buttonVariants({ variant: "secondary" })}
-      >
+      <Button aria-label="Menu" variant="secondary">
         Actions
-      </Dropdown.Trigger>
+      </Button>
       <Dropdown.Popover>
         <Dropdown.Menu onAction={(key) => console.log(`Selected: ${key}`)}>
           <Dropdown.Item id="new-file" textValue="New file">

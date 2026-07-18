@@ -84,23 +84,36 @@ import { SquarePlus } from "gravity-icons-solid";
 </Dropdown.Menu>
 ```
 
+### With Keyboard Shortcuts
+
+<ComponentPreview name="dropdown-with-keyboard-shortcuts" />
+
+```tsx file=../../../demos/dropdown/with-keyboard-shortcuts.tsx title=""
+
+```
+
+### With Sections
+
+<ComponentPreview name="dropdown-with-sections" />
+
+```tsx file=../../../demos/dropdown/with-sections.tsx title=""
+
+```
+
 ### Controlled Open State
 
 <ComponentPreview name="dropdown-controlled-open-state" />
 
-```tsx
-import { buttonVariants, Dropdown, Label } from "heroui-solid";
-import { createSignal } from "solid-js";
+```tsx file=../../../demos/dropdown/controlled-open-state.tsx title=""
 
-export function ControlledOpenState() {
-  const [open, setOpen] = createSignal(false);
+```
 
-  return (
-    <Dropdown isOpen={open()} onOpenChange={setOpen}>
-      ...
-    </Dropdown>
-  );
-}
+### Custom Trigger
+
+<ComponentPreview name="dropdown-custom-trigger" />
+
+```tsx file=../../../demos/dropdown/custom-trigger.tsx title=""
+
 ```
 
 ## Related Components
