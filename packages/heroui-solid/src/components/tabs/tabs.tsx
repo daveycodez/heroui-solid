@@ -120,7 +120,8 @@ const TabsRoot = <T extends ValidComponent = "div">(
   const registerEnabledTab = (id: string) => {
     if (firstEnabledTabId === undefined) firstEnabledTabId = id
   }
-  const resolvedSelected = () => selectedValue() ?? firstEnabledTabId
+  const resolvedSelected = () =>
+    local.selectedKey ?? selectedValue() ?? firstEnabledTabId
 
   onMount(setupInteractionModality)
 
