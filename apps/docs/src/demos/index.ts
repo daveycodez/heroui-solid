@@ -9,6 +9,21 @@ import { FAQ as AccordionFAQ } from "./accordion/faq"
 import { Multiple as AccordionMultiple } from "./accordion/multiple"
 import { Surface as AccordionSurface } from "./accordion/surface"
 import { WithoutSeparator as AccordionWithoutSeparator } from "./accordion/without-separator"
+import { Basic as AlertBasic } from "./alert/basic"
+import { BackdropVariants as AlertDialogBackdropVariants } from "./alert-dialog/backdrop-variants"
+import { CloseMethods as AlertDialogCloseMethods } from "./alert-dialog/close-methods"
+import { Controlled as AlertDialogControlled } from "./alert-dialog/controlled"
+import { CustomAnimations as AlertDialogCustomAnimations } from "./alert-dialog/custom-animations"
+import { CustomBackdrop as AlertDialogCustomBackdrop } from "./alert-dialog/custom-backdrop"
+import { CustomIcon as AlertDialogCustomIcon } from "./alert-dialog/custom-icon"
+import { CustomPortal as AlertDialogCustomPortal } from "./alert-dialog/custom-portal"
+import { CustomTrigger as AlertDialogCustomTrigger } from "./alert-dialog/custom-trigger"
+import { Default as AlertDialogDefault } from "./alert-dialog/default"
+import { DismissBehavior as AlertDialogDismissBehavior } from "./alert-dialog/dismiss-behavior"
+import { Placements as AlertDialogPlacements } from "./alert-dialog/placements"
+import { Sizes as AlertDialogSizes } from "./alert-dialog/sizes"
+import { Statuses as AlertDialogStatuses } from "./alert-dialog/statuses"
+import { WithCloseButton as AlertDialogWithCloseButton } from "./alert-dialog/with-close-button"
 import { Basic as AvatarBasic } from "./avatar/basic"
 import { Colors as AvatarColors } from "./avatar/colors"
 import { CustomStyles as AvatarCustomStyles } from "./avatar/custom-styles"
@@ -195,6 +210,21 @@ export const demos: Record<string, Component> = {
   "accordion-multiple": AccordionMultiple,
   "accordion-surface": AccordionSurface,
   "accordion-without-separator": AccordionWithoutSeparator,
+  "alert-basic": AlertBasic,
+  "alert-dialog-default": AlertDialogDefault,
+  "alert-dialog-statuses": AlertDialogStatuses,
+  "alert-dialog-placements": AlertDialogPlacements,
+  "alert-dialog-backdrop-variants": AlertDialogBackdropVariants,
+  "alert-dialog-sizes": AlertDialogSizes,
+  "alert-dialog-custom-icon": AlertDialogCustomIcon,
+  "alert-dialog-custom-backdrop": AlertDialogCustomBackdrop,
+  "alert-dialog-dismiss-behavior": AlertDialogDismissBehavior,
+  "alert-dialog-close-methods": AlertDialogCloseMethods,
+  "alert-dialog-controlled": AlertDialogControlled,
+  "alert-dialog-custom-trigger": AlertDialogCustomTrigger,
+  "alert-dialog-custom-animations": AlertDialogCustomAnimations,
+  "alert-dialog-custom-portal": AlertDialogCustomPortal,
+  "alert-dialog-with-close-button": AlertDialogWithCloseButton,
   "avatar-basic": AvatarBasic,
   "avatar-sizes": AvatarSizes,
   "avatar-colors": AvatarColors,

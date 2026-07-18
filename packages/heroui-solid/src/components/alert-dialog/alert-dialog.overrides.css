@@ -1,0 +1,72 @@
+/* AlertDialog state bridges.
+
+   HeroUI's compiled animations key off React Aria's data-entering /
+   data-exiting render states, which Kobalte never stamps — it drives presence
+   with data-expanded (open) / data-closed (closing), and only on the elements
+   it owns: the Overlay (backdrop) and the Content (dialog). The plain Container
+   div carries no presence attribute, so the dialog box's entrance/exit
+   animation lives on the Content instead of the Container (visually identical —
+   the Content is the only painted element in the transparent Container). Kobalte
+   keeps each element mounted while an animation runs on its [data-closed]
+   state, so both the backdrop fade and the dialog animation must sit there. */
+
+/* React Aria sets --visual-viewport-height from window.visualViewport; a static
+   fallback keeps the backdrop/container full-height without JS. */
+.alert-dialog__backdrop,
+.alert-dialog__container {
+  --visual-viewport-height: 100dvh;
+}
+
+/* Backdrop fade — mirrors alert-dialog__backdrop[data-entering|exiting]. */
+.alert-dialog__backdrop[data-expanded] {
+  @apply animate-in fade-in-0 duration-150 ease-out;
+}
+
+.alert-dialog__backdrop[data-closed] {
+  @apply animate-out fade-out-0 duration-100 ease-out;
+}
+
+.alert-dialog__backdrop[data-expanded],
+.alert-dialog__backdrop[data-closed] {
+  @apply will-change-[opacity] motion-reduce:animate-none;
+}
+
+/* Dialog entrance/exit — mirrors alert-dialog__container[data-entering|exiting],
+   applied to the Content so Kobalte keeps it mounted through the exit. */
+.alert-dialog__dialog[data-expanded] {
+  @apply animate-in fade-in-0 zoom-in-105 duration-250 ease-out-quad;
+}
+
+.alert-dialog__dialog[data-expanded][data-placement="auto"] {
+  @apply slide-in-from-bottom-1 sm:slide-in-from-bottom-0;
+}
+
+.alert-dialog__dialog[data-expanded][data-placement="top"] {
+  @apply slide-in-from-top-1;
+}
+
+.alert-dialog__dialog[data-expanded][data-placement="center"] {
+  @apply slide-in-from-top-0;
+}
+
+.alert-dialog__dialog[data-expanded][data-placement="bottom"] {
+  @apply slide-in-from-bottom-1;
+}
+
+.alert-dialog__dialog[data-closed] {
+  @apply animate-out fade-out-0 zoom-out-95 duration-100 ease-out-quad;
+}
+
+.alert-dialog__dialog[data-expanded],
+.alert-dialog__dialog[data-closed] {
+  @apply will-change-[opacity,transform] motion-reduce:animate-none;
+}
+
+/* Custom trigger focus ring. HeroUI keys it off React Aria's
+   data-focus-visible; our Trigger is a focusable div, so bridge the working
+   :focus-visible — modality-gated (keyboard only) since focus returns to the
+   trigger programmatically on close (see AGENTS.md interaction-modality). */
+html:not([data-heroui-modality="pointer"])
+.alert-dialog__trigger:focus-visible {
+  @apply status-focused;
+}

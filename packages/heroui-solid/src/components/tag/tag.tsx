@@ -156,14 +156,9 @@ const TagRemoveButton = (props: TagRemoveButtonProps) => {
     "onClick"
   ])
 
-  const handleClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (
-    event
-  ) => {
+  const handleClick: JSX.EventHandler<HTMLElement, MouseEvent> = (event) => {
     event.stopPropagation()
-    callHandler(
-      event,
-      local.onClick as JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent>
-    )
+    callHandler(event, local.onClick)
     group.remove(new Set([tag.tagKey()]))
   }
 

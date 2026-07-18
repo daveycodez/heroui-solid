@@ -57,6 +57,8 @@ export const components: PortedComponent[] = [
     demosDir: "accordion",
     skipDemos: [RENDER_PROP, AS_ELEMENT]
   },
+  { slug: "alert", demosDir: "alert" },
+  { slug: "alert-dialog", demosDir: "alert-dialog" },
   { slug: "avatar", demosDir: "avatar" },
   {
     slug: "button",

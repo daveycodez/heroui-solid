@@ -1,6 +1,8 @@
 // heroui-solid — Unofficial SolidJS port of HeroUI v3.
 export { cn } from "@heroui/styles"
 export * from "./components/accordion"
+export * from "./components/alert"
+export * from "./components/alert-dialog"
 export * from "./components/avatar"
 export * from "./components/button"
 export * from "./components/button-group"
