@@ -24,10 +24,14 @@ no override.
     fail too, so the list can't rot.
   - **Demos** — for each ported demo, three sets must equal upstream's:
     the named imports from the UI framework (`heroui-solid` ↔
-    `@heroui/react`, `gravity-icons-solid` ↔ `@gravity-ui/icons`; type-only
-    imports ignored), the capitalized JSX components used (compound members
-    included, e.g. `ListBox.ItemIndicator`), and the text content (JSX text +
-    string literals, excluding `class`/`className`/`style` values). A missing
+    `@heroui/react`; type-only imports ignored), the capitalized JSX
+    components used (compound members included, e.g. `ListBox.ItemIndicator`),
+    and the text content (JSX text + string literals, excluding
+    `class`/`className`/`style` values). Icons are exempt: imports from icon
+    packages (`@iconify/react`, `@gravity-ui/icons`, `gravity-icons-solid`,
+    `~icons/*`) aren't compared, and JSX elements rendering those imports are
+    skipped whole — upstream's `<Icon icon="devicon:google" />` vs a local
+    `<GoogleIcon />` is a mechanical adaptation, not a difference. A missing
     `Avatar`, a dropped item, or invented copy each fail with the exact
     missing/extra entries named.
   - **Pages** — title and description must equal upstream's; every upstream

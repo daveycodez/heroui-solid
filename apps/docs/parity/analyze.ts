@@ -34,10 +34,16 @@ export function demoStems(dir: string): string[] {
 // upstream ones so the import sets compare 1:1.
 const UI_PACKAGES: Record<string, string> = {
   "@heroui/react": "@heroui/react",
-  "heroui-solid": "@heroui/react",
-  "@gravity-ui/icons": "@gravity-ui/icons",
-  "gravity-icons-solid": "@gravity-ui/icons"
+  "heroui-solid": "@heroui/react"
 }
+
+// Icons are an allowed adaptation surface: upstream renders `<Icon icon="…">`
+// from @iconify/react where ports use per-icon components (gravity-icons-solid
+// or unplugin-icons). Elements whose tag was imported from an icon package are
+// skipped whole — tag, attributes, and icon-name strings alike — and icon
+// imports never enter the comparison.
+const ICON_PACKAGE =
+  /^(@iconify\/react|@gravity-ui\/icons|gravity-icons-solid)$|^~icons\//
 
 export interface DemoShape {
   uiImports: Set<string>
@@ -67,6 +73,21 @@ export function analyzeDemo(source: string): DemoShape {
 
   // Hoisted style objects (`const iconStyle = {…}` used as `style={iconStyle}`)
   // are styling like the attribute itself — collect their names first.
+  const iconIdents = new Set<string>()
+  for (const stmt of sf.statements) {
+    if (!ts.isImportDeclaration(stmt)) continue
+    const spec = (stmt.moduleSpecifier as ts.StringLiteral).text
+    if (!ICON_PACKAGE.test(spec)) continue
+    const clause = stmt.importClause
+    if (!clause) continue
+    if (clause.name) iconIdents.add(clause.name.text)
+    if (clause.namedBindings && ts.isNamedImports(clause.namedBindings)) {
+      for (const el of clause.namedBindings.elements) {
+        iconIdents.add(el.name.text)
+      }
+    }
+  }
+
   const styleIdents = new Set<string>()
   const collectStyleIdents = (node: ts.Node): void => {
     if (
@@ -146,6 +167,13 @@ export function analyzeDemo(source: string): DemoShape {
               ts.isStringLiteral(init.expression)))
         if (isPlainString) return
       }
+    }
+    if (
+      (ts.isJsxElement(node) &&
+        iconIdents.has(node.openingElement.tagName.getText())) ||
+      (ts.isJsxSelfClosingElement(node) && iconIdents.has(node.tagName.getText()))
+    ) {
+      return
     }
     if (ts.isJsxOpeningElement(node) || ts.isJsxSelfClosingElement(node)) {
       const tag = node.tagName.getText()

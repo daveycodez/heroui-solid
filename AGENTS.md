@@ -46,9 +46,11 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   page can mirror upstream exactly. Never substitute or drop a dependency to
   make a demo "work".
 - **Icons: always use `gravity-icons-solid`** (the Solid port of
-  `@gravity-ui/icons`, same icon names) when the icon exists there — it's what
-  the parity import mapping expects. Fall back to `unplugin-icons` only for
-  icons gravity-icons-solid doesn't have.
+  `@gravity-ui/icons`, same icon names) when the icon exists there. Fall back
+  to `unplugin-icons` only for icons gravity-icons-solid doesn't have. Icons
+  are exempt from parity comparison (icon-package imports and their JSX
+  elements are skipped in `parity/analyze.ts`), so upstream's iconify usage
+  can map to whichever icon source fits.
 
 - **File structure mirrors upstream**: `XRoot` naming, internal `XPrimitive`
   components, the same section banner comments where upstream has them,
