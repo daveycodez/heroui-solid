@@ -7,6 +7,7 @@ import {
   createMemo,
   type JSX,
   mergeProps,
+  onCleanup,
   splitProps,
   useContext,
   type ValidComponent
@@ -18,6 +19,17 @@ import {
   MenuTriggerContext
 } from "../../utils/menu-trigger-context"
 import { ButtonGroupContext } from "../button-group"
+
+// Material 3 ripple timings, after m3-ripple: how long a touch must hold (or
+// how fast it must lift) before it counts as a press rather than a scroll;
+// press-point → grown-and-centered growth; fade-in on press and fade-out on
+// release, held for at least MIN_PRESS so fast clicks still read as a full
+// ripple.
+const RIPPLE_TOUCH_DELAY = 150
+const RIPPLE_GROW_MS = 150
+const RIPPLE_FADE_IN_MS = 75
+const RIPPLE_FADE_OUT_MS = 375
+const RIPPLE_MIN_PRESS_MS = 225
 
 interface ButtonRootProps extends ButtonVariants {
   isDisabled?: boolean
@@ -73,7 +85,167 @@ const ButtonRoot = <T extends ValidComponent = "button">(
       event.stopImmediatePropagation()
       return
     }
+    // Keyboard activation synthesizes a click with detail 0 — center ripple
+    // (begin + end back to back; MIN_PRESS keeps it visible).
+    if (event.detail === 0) {
+      beginRipple(event.currentTarget)
+      endRipple(event.currentTarget)
+    }
     callHandler(event, local.onClick)
+  }
+
+  // Ripple (opt-in via the inherited --button-ripple flag — see
+  // button.overrides.css). Material 3 press lifecycle, after m3-ripple:
+  // beginRipple grows the ripple from the press point toward the center
+  // (fill: forwards keeps it while held) and fades it in; endRipple fades it
+  // out on release, no sooner than MIN_PRESS after the grow started. Touch
+  // arms a short delay so a press that becomes a scroll (pointercancel)
+  // never ripples, while both a quick tap (release beats the delay) and a
+  // sustained hold do. Keyboard activation ripples from the center via the
+  // synthesized click (detail 0). Cosmetic, client-only, no-ops when off.
+  let rippleTouch: { x: number; y: number } | undefined
+  let rippleTimer: ReturnType<typeof setTimeout> | undefined
+  let rippleEndTimer: ReturnType<typeof setTimeout> | undefined
+  let rippleGrow: Animation | undefined
+  let rippleFade: Animation | undefined
+  let rippleStartedAt = 0
+  let rippleHeld = false
+  onCleanup(() => {
+    clearTimeout(rippleTimer)
+    clearTimeout(rippleEndTimer)
+  })
+
+  const beginRipple = (el: HTMLElement, x?: number, y?: number): void => {
+    const style = getComputedStyle(el)
+    if (!(Number.parseFloat(style.getPropertyValue("--button-ripple")) > 0))
+      return
+    if (
+      typeof el.animate !== "function" ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    )
+      return
+    const width = el.offsetWidth
+    const height = el.offsetHeight
+    const maxDim = Math.max(width, height)
+    const cx = x ?? width / 2
+    const cy = y ?? height / 2
+    // m3-ripple's geometry: start at 20% of the larger dimension, end fully
+    // covering from the center with padding plus the soft-edge band.
+    const startRadius = (0.2 * maxDim) / 2
+    const endRadius =
+      (Math.hypot(width, height) + 12 + Math.max(0.35 * maxDim, 75)) / 2
+    const opacity =
+      Number.parseFloat(style.getPropertyValue("--button-ripple-opacity")) ||
+      0.12
+    clearTimeout(rippleEndTimer)
+    rippleEndTimer = undefined
+    rippleGrow?.cancel()
+    rippleFade?.cancel()
+    rippleHeld = true
+    rippleStartedAt = performance.now()
+    rippleGrow = el.animate(
+      {
+        "--button-ripple-r": [`${startRadius}px`, `${endRadius}px`],
+        "--button-ripple-x": [`${cx}px`, `${width / 2}px`],
+        "--button-ripple-y": [`${cy}px`, `${height / 2}px`]
+      },
+      {
+        pseudoElement: "::after",
+        duration: RIPPLE_GROW_MS,
+        // m3-ripple grows linearly (no easing default); a fast-start curve
+        // covers the button before the 75ms fade-in makes it visible and
+        // the ripple reads as a uniform blink.
+        easing: "linear",
+        fill: "forwards"
+      }
+    )
+    rippleFade = el.animate(
+      { opacity: [0, opacity] },
+      {
+        pseudoElement: "::after",
+        duration: RIPPLE_FADE_IN_MS,
+        easing: "ease",
+        fill: "forwards"
+      }
+    )
+  }
+
+  const endRipple = (el: HTMLElement): void => {
+    if (!rippleHeld) return
+    rippleHeld = false
+    const fadeOut = (): void => {
+      rippleEndTimer = undefined
+      // Implicit from-keyframe picks up the held opacity; composite order
+      // puts this after the fill'd fade-in, so it wins.
+      rippleFade = el.animate(
+        { opacity: 0 },
+        {
+          pseudoElement: "::after",
+          duration: RIPPLE_FADE_OUT_MS,
+          easing: "ease",
+          fill: "forwards"
+        }
+      )
+    }
+    const remaining =
+      RIPPLE_MIN_PRESS_MS - (performance.now() - rippleStartedAt)
+    if (remaining > 0) rippleEndTimer = setTimeout(fadeOut, remaining)
+    else fadeOut()
+  }
+
+  const handlePointerDown = (event: PointerEvent): void => {
+    longPress.onPointerDown(event)
+    if (
+      !event.isPrimary ||
+      local.isPending ||
+      (local.isDisabled ?? group.isDisabled)
+    )
+      return
+    const el = event.currentTarget as HTMLElement
+    const rect = el.getBoundingClientRect()
+    const x = event.clientX - rect.left
+    const y = event.clientY - rect.top
+    clearTimeout(rippleTimer)
+    if (event.pointerType === "touch") {
+      rippleTouch = { x, y }
+      rippleTimer = setTimeout(() => {
+        rippleTimer = undefined
+        if (rippleTouch) beginRipple(el, rippleTouch.x, rippleTouch.y)
+      }, RIPPLE_TOUCH_DELAY)
+    } else {
+      beginRipple(el, x, y)
+    }
+  }
+
+  const handlePointerUp = (event: PointerEvent): void => {
+    longPress.onPointerUp()
+    if (!event.isPrimary) return
+    const el = event.currentTarget as HTMLElement
+    if (rippleTimer !== undefined && rippleTouch) {
+      // Quick tap: the release beat the touch delay — play the full ripple.
+      const touch = rippleTouch
+      clearTimeout(rippleTimer)
+      rippleTimer = undefined
+      beginRipple(el, touch.x, touch.y)
+    }
+    rippleTouch = undefined
+    endRipple(el)
+  }
+
+  const handlePointerLeave = (event: PointerEvent): void => {
+    longPress.onPointerLeave()
+    clearTimeout(rippleTimer)
+    rippleTimer = undefined
+    rippleTouch = undefined
+    endRipple(event.currentTarget as HTMLElement)
+  }
+
+  const handlePointerCancel = (event: PointerEvent): void => {
+    longPress.onPointerCancel()
+    clearTimeout(rippleTimer)
+    rippleTimer = undefined
+    rippleTouch = undefined
+    endRipple(event.currentTarget as HTMLElement)
   }
 
   // isPending stays live through the getter.
@@ -110,10 +282,10 @@ const ButtonRoot = <T extends ValidComponent = "button">(
       // pending pattern); only stamped when the consumer opts in.
       aria-live={"isPending" in local ? "polite" : undefined}
       on:click={handleClick}
-      on:pointerdown={longPress.onPointerDown}
-      on:pointerup={longPress.onPointerUp}
-      on:pointerleave={longPress.onPointerLeave}
-      on:pointercancel={longPress.onPointerCancel}
+      on:pointerdown={handlePointerDown}
+      on:pointerup={handlePointerUp}
+      on:pointerleave={handlePointerLeave}
+      on:pointercancel={handlePointerCancel}
       on:keydown={longPress.onKeyDown}
       on:contextmenu={longPress.onContextMenu}
       {...forwarded}
