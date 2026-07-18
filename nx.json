@@ -17,7 +17,7 @@
       "cache": true
     },
     "ssr-test": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["build"],
       "cache": true
     },
     "check:publish": {
