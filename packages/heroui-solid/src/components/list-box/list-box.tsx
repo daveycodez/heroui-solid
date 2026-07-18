@@ -15,7 +15,6 @@ import {
 } from "@kobalte/core/listbox"
 import type { PolymorphicProps } from "@kobalte/core/polymorphic"
 import { Listbox as SelectListboxPrimitive } from "@kobalte/core/select"
-import { createVirtualizer } from "@tanstack/solid-virtual"
 import {
   type Accessor,
   type ComponentProps,
@@ -23,10 +22,9 @@ import {
   createComputed,
   createContext,
   createMemo,
-  createSignal,
-  For,
   type JSX,
   onMount,
+  Show,
   splitProps,
   useContext,
   type ValidComponent
@@ -37,6 +35,7 @@ import {
   renderDeferred
 } from "../../utils/collection-defer"
 import { setupInteractionModality } from "../../utils/interaction-modality"
+import { createListVirtualizer } from "../../utils/list-virtualizer"
 import { VirtualizerContext } from "../virtualizer/virtualizer"
 
 // Minimal shape of the collection Kobalte passes to a virtualized listbox's
@@ -44,10 +43,6 @@ import { VirtualizerContext } from "../virtualizer/virtualizer"
 type ListBoxCollection = {
   getItem: (key: string) => CollectionNode<ListBoxItemDescriptor> | undefined
 }
-
-// Rows the virtualizer seeds into its first window (SSR + pre-mount hydration),
-// before the scroll element can be measured. See the initialRect note below.
-const SSR_ESTIMATED_ROWS = 12
 
 /* -------------------------------------------------------------------------------------------------
  * ListBox Context
@@ -114,6 +109,33 @@ const isListBoxRenderMarker = (value: unknown): value is ListBoxRenderMarker =>
 // ListBox is standalone.
 const ListBoxCollectionContext = createContext<
   ((options: ListBoxOption[]) => void) | undefined
+>()
+
+// Provided by Autocomplete.Root: reports whether the effective (filtered)
+// collection is empty so the marker path can render `renderEmptyState` in the
+// popover instead of the listbox. Absent in a plain Select (never empty-state).
+const ListBoxEmptyContext = createContext<(() => boolean) | undefined>()
+
+// The collection listbox primitive rendered inside a picker's popover. Each
+// picker's listbox reads its own Kobalte context (listState, renderItem…), so
+// the enclosing picker supplies the matching one: Select's is the default,
+// ComboBox overrides with the combobox listbox. Absent standalone.
+// The picker's own listbox primitive (Kobalte Select's or Combobox's). Both
+// share the same render-prop children shape at runtime but differ in their
+// static generics, so this loose component type accepts either; the markers
+// below only ever pass the shared props/children.
+// biome-ignore lint/suspicious/noExplicitAny: accepts either Kobalte listbox wrapper (Select's or Combobox's)
+type PickerListbox = (props: any) => JSX.Element
+const ListBoxCollectionListboxContext = createContext<
+  PickerListbox | undefined
+>()
+
+// Provided by Autocomplete.Root: lets a virtualized ListBox flip the enclosing
+// Kobalte Select into `virtualized` mode (the Select's Listbox then windows via
+// a render prop instead of the item/section components). Absent in a plain
+// Select, where the ListBox never virtualizes.
+const ListBoxVirtualizeContext = createContext<
+  ((virtualized: boolean) => void) | undefined
 >()
 
 // Kobalte's Select.Item and Listbox.Item are the same underlying component,
@@ -207,6 +229,10 @@ interface ListBoxRootProps<D = unknown> extends ListBoxVariants {
   onSelectionChange?: (keys: Set<string>) => void
   onAction?: (key: string) => void
   disabledKeys?: Iterable<string>
+  // Rendered in place of the listbox when the (filtered) collection is empty
+  // and an Autocomplete drives emptiness (see ListBoxEmptyContext). No effect
+  // in a standalone ListBox or a plain Select.
+  renderEmptyState?: () => JSX.Element
 }
 
 const ListBoxRoot = <T extends ValidComponent = "ul", D = unknown>(
@@ -226,11 +252,19 @@ const ListBoxRoot = <T extends ValidComponent = "ul", D = unknown>(
       "defaultSelectedKeys",
       "onSelectionChange",
       "onAction",
-      "disabledKeys"
+      "disabledKeys",
+      "renderEmptyState"
     ]
   )
   const setOptions = useContext(ListBoxCollectionContext)
+  const isCollectionEmpty = useContext(ListBoxEmptyContext)
+  const setVirtualize = useContext(ListBoxVirtualizeContext)
   const virtualization = useContext(VirtualizerContext)
+  // Which collection listbox primitive to render in the popover (Select's by
+  // default; ComboBox overrides). Captured here so the marker's render() —
+  // which runs later inside the popover — uses the picker's own listbox.
+  const CollectionListbox = (useContext(ListBoxCollectionListboxContext) ??
+    SelectListboxPrimitive) as PickerListbox
   onMount(setupInteractionModality)
 
   // Virtualized standalone path: a `Virtualizer` ancestor + `items` + a per-item
@@ -260,59 +294,17 @@ const ListBoxRoot = <T extends ValidComponent = "ul", D = unknown>(
     const virtualDisabledKeys = createMemo(
       () => new Set(local.disabledKeys ?? [])
     )
-    // The scroll element is a signal, not a plain ref: reading it inside
-    // getScrollElement lets the adapter's reactive setOptions/_willUpdate
-    // re-observe the element once it's handed over.
-    const [scrollEl, setScrollEl] = createSignal<HTMLElement>()
-    let scrollElRef: HTMLElement | undefined
-    // Hand the scroll element to the virtualizer only *after* mount, and only
-    // once it's connected. Two hazards drive this:
-    //  - The real measurement must not land mid-hydration. Until scrollEl is set
-    //    the window comes from `initialRect` (below), so SSR and the client's
-    //    pre-mount hydration render the same seeded rows; setting it during
-    //    hydration would reconcile the window to the measured size mid-flight,
-    //    and that DOM update is silently dropped (see AGENTS.md), stranding the
-    //    seeded overflow rows. onMount runs after hydration settles, so the
-    //    reconcile applies cleanly.
-    //  - On client-side navigation Kobalte forwards the ref while the <ul> is
-    //    still detached (`isConnected === false`). @tanstack/virtual measures
-    //    synchronously at attach (offsetHeight 0 on a detached node) and
-    //    registers its ResizeObserver against that detached element, which never
-    //    fires — leaving the list blank until reload. Waiting for `isConnected`
-    //    means the adapter measures the real height and observes a live element.
-    const attachScrollEl = (el: HTMLElement) => {
-      if (el.isConnected) {
-        setScrollEl(el)
-        return
-      }
-      requestAnimationFrame(() => attachScrollEl(el))
-    }
-    onMount(() => {
-      if (scrollElRef) attachScrollEl(scrollElRef)
-    })
-    const virtualizer = createVirtualizer({
-      get count() {
-        return options().length
-      },
-      getScrollElement: () => scrollEl() ?? null,
-      estimateSize: () => virtualization.rowHeight(),
-      getItemKey: (index) => options()[index]?.id ?? index,
-      overscan: 5,
-      // Seed a first-viewport estimate so SSR and pre-mount hydration render a
-      // non-empty window (no measurements yet). Deliberately generous — a taller
-      // estimate SSRs a few extra rows that trim on mount, which is invisible;
-      // too short would leave a visible gap below the fold until mount.
-      initialRect: {
-        width: 0,
-        height: virtualization.rowHeight() * SSR_ESTIMATED_ROWS
-      }
+    const virtualizer = createListVirtualizer<
+      CollectionNode<ListBoxItemDescriptor>
+    >({
+      rowHeight: () => virtualization.rowHeight(),
+      count: () => options().length,
+      getItemKey: (index) => options()[index]?.id ?? index
     })
 
     return (
       <ListboxRootPrimitive<ListBoxItemDescriptor>
-        ref={(el: HTMLElement) => {
-          scrollElRef = el
-        }}
+        ref={virtualizer.setScrollElement}
         class={cn(listboxVariants(variantProps), local.class)}
         data-slot="list-box"
         options={options()}
@@ -332,36 +324,82 @@ const ListBoxRoot = <T extends ValidComponent = "ul", D = unknown>(
         }}
         {...rest}
       >
-        {(collection: Accessor<ListBoxCollection>) => (
-          <div
-            style={{
-              height: `${virtualizer.getTotalSize()}px`,
-              width: "100%",
-              position: "relative"
-            }}
-          >
-            <For each={virtualizer.getVirtualItems()}>
-              {(row) => {
-                const node = collection().getItem(row.key as string)
-                return node ? (
-                  <ListBoxItemView
-                    item={node}
-                    onAction={local.onAction}
-                    style={{
-                      position: "absolute",
-                      top: "0",
-                      left: "0",
-                      width: "100%",
-                      transform: `translateY(${row.start}px)`
-                    }}
-                  />
-                ) : null
-              }}
-            </For>
-          </div>
-        )}
+        {(collection: Accessor<ListBoxCollection>) =>
+          virtualizer.renderWindow(collection, (node, style) => (
+            <ListBoxItemView
+              item={node}
+              onAction={local.onAction}
+              style={style}
+            />
+          ))
+        }
       </ListboxRootPrimitive>
     )
+  }
+
+  // Virtualized Select-backed path (Autocomplete): a `Virtualizer` ancestor +
+  // `items` + a per-item render function, inside a Select (setOptions present).
+  // Registers the items as the Select's options AND flips the Select into
+  // `virtualized` mode via ListBoxVirtualizeContext, so the Select's Listbox
+  // windows through the render prop below instead of Kobalte's item component.
+  // Resolves to a render marker (like the non-virtualized Select path) so the
+  // closed popover creates no DOM during SSR/hydration — the marker's render()
+  // runs only when the popover opens (see AGENTS.md).
+  if (setOptions && virtualization && local.items !== undefined) {
+    const renderItem = local.children as (item: D) => JSX.Element
+    const items = () => local.items ?? []
+    // Each `renderItem(item)` yields a ListBox.Item → its descriptor. Unwrap
+    // any dev-HMR memo layers to the descriptor (no-op in production), matching
+    // the standalone virtualized path.
+    const options = createMemo(() =>
+      items().map((item) => {
+        let node: unknown = renderItem(item)
+        while (typeof node === "function") node = (node as () => unknown)()
+        return node as ListBoxItemDescriptor
+      })
+    )
+    createComputed(() => setOptions(options()))
+    // Flip the Select into virtualized mode. Not reset on close: this instance
+    // is virtualized for its lifetime, and resetting would switch the Select's
+    // Listbox back to the item-component path — an unnecessary mode change.
+    setVirtualize?.(true)
+
+    const virtualizer = createListVirtualizer<
+      CollectionNode<ListBoxItemDescriptor>
+    >({
+      rowHeight: () => virtualization.rowHeight(),
+      count: () => options().length,
+      getItemKey: (index) => options()[index]?.id ?? index
+    })
+
+    const marker: ListBoxRenderMarker = {
+      [LIST_BOX_RENDER]: true,
+      render: () => (
+        <Show
+          when={!(local.renderEmptyState && isCollectionEmpty?.())}
+          fallback={local.renderEmptyState?.()}
+        >
+          <CollectionListbox
+            ref={virtualizer.setScrollElement}
+            class={cn(listboxVariants(variantProps), local.class)}
+            data-slot="list-box"
+            scrollToItem={(key: string) => {
+              const index = options().findIndex((option) => option.id === key)
+              if (index >= 0) virtualizer.scrollToIndex(index)
+            }}
+            {...rest}
+          >
+            {(collection: Accessor<ListBoxCollection>) =>
+              virtualizer.renderWindow(collection, (node, style) => (
+                <ListBoxItemView item={node} style={style} />
+              ))
+            }
+          </CollectionListbox>
+        </Show>
+      )
+    }
+
+    return marker as unknown as JSX.Element
   }
 
   const resolved = children(() => local.children as JSX.Element)
@@ -396,14 +434,21 @@ const ListBoxRoot = <T extends ValidComponent = "ul", D = unknown>(
     // Resolves to a render marker instead of JSX so the popover's eager child
     // resolution registers items without creating the closed listbox DOM
     // during SSR/hydration (see AGENTS.md); the popover calls render() on open.
+    // Inside an Autocomplete, an empty (filtered) collection renders
+    // `renderEmptyState` in place of the listbox (ListBoxEmptyContext).
     const marker: ListBoxRenderMarker = {
       [LIST_BOX_RENDER]: true,
       render: () => (
-        <SelectListboxPrimitive
-          class={cn(listboxVariants(variantProps), local.class)}
-          data-slot="list-box"
-          {...rest}
-        />
+        <Show
+          when={!(local.renderEmptyState && isCollectionEmpty?.())}
+          fallback={local.renderEmptyState?.()}
+        >
+          <CollectionListbox
+            class={cn(listboxVariants(variantProps), local.class)}
+            data-slot="list-box"
+            {...rest}
+          />
+        </Show>
       )
     }
 
@@ -592,8 +637,11 @@ export {
   isSectionDescriptor,
   LIST_BOX_SECTION,
   ListBoxCollectionContext,
+  ListBoxCollectionListboxContext,
+  ListBoxEmptyContext,
   ListBoxItem,
   ListBoxItemIndicator,
   ListBoxItemView,
-  ListBoxRoot
+  ListBoxRoot,
+  ListBoxVirtualizeContext
 }

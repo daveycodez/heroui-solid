@@ -69,6 +69,18 @@ const useSearchField = (): SearchFieldContextValue => {
   return ctx
 }
 
+// Optional external control: a parent (e.g. Autocomplete.Filter) drives the
+// field's value/onChange without the consumer wiring `value` explicitly. When
+// present and the field has no `value` prop, the field binds here; absent, the
+// field behaves standalone (uncontrolled/controlled as before).
+type SearchFieldControlContextValue = {
+  value: () => string
+  onChange: (value: string) => void
+}
+
+const SearchFieldControlContext =
+  createContext<SearchFieldControlContextValue>()
+
 /* -------------------------------------------------------------------------------------------------
  * SearchField Root
  * -----------------------------------------------------------------------------------------------*/
@@ -109,10 +121,20 @@ const SearchFieldRoot = (props: SearchFieldRootProps) => {
   )
   const slots = createMemo(() => searchFieldVariants(variantProps))
 
+  // Optional parent control (Autocomplete.Filter) — used only when the field
+  // has no explicit `value` prop, so standalone behavior is unchanged.
+  const control = useContext(SearchFieldControlContext)
   const [uncontrolled, setUncontrolled] = createSignal(local.defaultValue ?? "")
-  const value = () => local.value ?? uncontrolled()
+  const value = () => {
+    if (local.value !== undefined) return local.value
+    if (control) return control.value()
+    return uncontrolled()
+  }
   const setValue = (next: string) => {
-    if (local.value === undefined) setUncontrolled(next)
+    if (local.value === undefined) {
+      if (control) control.onChange(next)
+      else setUncontrolled(next)
+    }
     local.onChange?.(next)
   }
 
@@ -297,6 +319,7 @@ const SearchFieldClearButton = (props: SearchFieldClearButtonProps) => {
 export type {
   SearchFieldClearButtonProps,
   SearchFieldContextValue,
+  SearchFieldControlContextValue,
   SearchFieldGroupProps,
   SearchFieldInputProps,
   SearchFieldRootProps,
@@ -308,6 +331,7 @@ export type {
 export {
   SearchFieldClearButton,
   SearchFieldContext,
+  SearchFieldControlContext,
   SearchFieldGroup,
   SearchFieldInput,
   SearchFieldRoot,

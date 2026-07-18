@@ -2,7 +2,9 @@
  * Barrel for the Kobalte state-attribute bridges, colocated with each
  * component and imported by ./styles.css. Add new component bridges here.
  */
+@import "../components/autocomplete/autocomplete.overrides.css" layer(overrides);
 @import "../components/button/button.overrides.css" layer(overrides);
+@import "../components/combo-box/combo-box.overrides.css" layer(overrides);
 @import "../components/button-group/button-group.overrides.css" layer(overrides);
 @import "../components/close-button/close-button.overrides.css" layer(overrides);
 @import "../components/dropdown/dropdown.overrides.css" layer(overrides);

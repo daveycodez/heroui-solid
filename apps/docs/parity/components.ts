@@ -52,7 +52,21 @@ const RENDER_PROPS_SECTION = (heading: string): SectionSkip => ({
 })
 
 export const components: PortedComponent[] = [
+  { slug: "autocomplete", demosDir: "autocomplete" },
   { slug: "avatar", demosDir: "avatar" },
+  {
+    slug: "combo-box",
+    demosDir: "combo-box",
+    skipDemos: [
+      RENDER_PROP,
+      {
+        stem: "asynchronous-loading",
+        reason:
+          "built on React Aria's useAsyncList + react-aria-components Collection/ListBoxLoadMoreItem — no Solid/Kobalte equivalent"
+      }
+    ],
+    skipSections: [RENDER_PROPS_SECTION("RenderProps")]
+  },
   {
     slug: "button",
     demosDir: "button",
