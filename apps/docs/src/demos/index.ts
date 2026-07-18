@@ -1,4 +1,14 @@
 import type { Component } from "solid-js"
+import { Basic as AccordionBasic } from "./accordion/basic"
+import { Controlled as AccordionControlled } from "./accordion/controlled"
+import { CustomElement as AccordionCustomElement } from "./accordion/custom-element"
+import { CustomIndicator as AccordionCustomIndicator } from "./accordion/custom-indicator"
+import { CustomStyles as AccordionCustomStyles } from "./accordion/custom-styles"
+import { Disabled as AccordionDisabled } from "./accordion/disabled"
+import { FAQ as AccordionFAQ } from "./accordion/faq"
+import { Multiple as AccordionMultiple } from "./accordion/multiple"
+import { Surface as AccordionSurface } from "./accordion/surface"
+import { WithoutSeparator as AccordionWithoutSeparator } from "./accordion/without-separator"
 import { Basic as AvatarBasic } from "./avatar/basic"
 import { Colors as AvatarColors } from "./avatar/colors"
 import { CustomStyles as AvatarCustomStyles } from "./avatar/custom-styles"
@@ -160,6 +170,16 @@ import { WithError as TextFieldWithError } from "./textfield/with-error"
 // official HeroUI docs structure (apps/docs/src/demos/<component>/<demo>.tsx,
 // referenced by "<component>-<demo>" name).
 export const demos: Record<string, Component> = {
+  "accordion-basic": AccordionBasic,
+  "accordion-controlled": AccordionControlled,
+  "accordion-custom-element": AccordionCustomElement,
+  "accordion-custom-indicator": AccordionCustomIndicator,
+  "accordion-custom-styles": AccordionCustomStyles,
+  "accordion-disabled": AccordionDisabled,
+  "accordion-faq": AccordionFAQ,
+  "accordion-multiple": AccordionMultiple,
+  "accordion-surface": AccordionSurface,
+  "accordion-without-separator": AccordionWithoutSeparator,
   "avatar-basic": AvatarBasic,
   "avatar-sizes": AvatarSizes,
   "avatar-colors": AvatarColors,

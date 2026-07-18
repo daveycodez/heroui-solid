@@ -1,0 +1,265 @@
+---
+title: Accordion
+---
+
+# Accordion
+
+A collapsible content panel for organizing information in a compact space
+
+## Import
+
+```tsx
+import { Accordion } from "heroui-solid";
+```
+
+### Usage
+
+<ComponentPreview name="accordion-basic" />
+
+```tsx file=../../../demos/accordion/basic.tsx title=""
+
+```
+
+### Anatomy
+
+Import the Accordion component and access all parts using dot notation.
+
+```tsx
+import { Accordion } from "heroui-solid";
+
+export default () => (
+  <Accordion>
+    <Accordion.Item>
+      <Accordion.Heading>
+        <Accordion.Trigger>
+          <Accordion.Indicator />
+        </Accordion.Trigger>
+      </Accordion.Heading>
+      <Accordion.Panel>
+        <Accordion.Body />
+      </Accordion.Panel>
+    </Accordion.Item>
+  </Accordion>
+);
+```
+
+### Surface
+
+<ComponentPreview name="accordion-surface" />
+
+```tsx file=../../../demos/accordion/surface.tsx title=""
+
+```
+
+### Multiple Expanded
+
+<ComponentPreview name="accordion-multiple" />
+
+```tsx file=../../../demos/accordion/multiple.tsx title=""
+
+```
+
+### Controlled
+
+<ComponentPreview name="accordion-controlled" />
+
+```tsx file=../../../demos/accordion/controlled.tsx title=""
+
+```
+
+### Custom Indicator
+
+<ComponentPreview name="accordion-custom-indicator" />
+
+```tsx file=../../../demos/accordion/custom-indicator.tsx title=""
+
+```
+
+### Disabled State
+
+<ComponentPreview name="accordion-disabled" />
+
+```tsx file=../../../demos/accordion/disabled.tsx title=""
+
+```
+
+### FAQ Layout
+
+<ComponentPreview name="accordion-faq" />
+
+```tsx file=../../../demos/accordion/faq.tsx title=""
+
+```
+
+### Custom Styles
+
+<ComponentPreview name="accordion-custom-styles" />
+
+```tsx file=../../../demos/accordion/custom-styles.tsx title=""
+
+```
+
+### Without Separator
+
+<ComponentPreview name="accordion-without-separator" />
+
+```tsx file=../../../demos/accordion/without-separator.tsx title=""
+
+```
+
+### Custom Element
+
+HeroUI React overrides the rendered elements with a `render` prop. This port
+uses Kobalte's polymorphic `as` prop instead — for example, a section root with
+article items:
+
+<ComponentPreview name="accordion-custom-element" />
+
+```tsx file=../../../demos/accordion/custom-element.tsx title=""
+
+```
+
+## Related Components
+
+- **DisclosureGroup**: Group of collapsible panels (not ported yet)
+- **Disclosure**: Single collapsible content section (not ported yet)
+
+## Styling
+
+### Passing Tailwind CSS classes
+
+```tsx
+import { Accordion, cn } from "heroui-solid";
+
+function CustomAccordion() {
+  return (
+    <Accordion class="bg-surface-1/10 w-full max-w-md rounded-2xl" variant="surface">
+      <Accordion.Item class={cn("group/item", "first:[&_[data-slot=accordion-trigger]]:rounded-t-2xl")}>
+        ...
+      </Accordion.Item>
+    </Accordion>
+  );
+}
+```
+
+### Customizing the component classes
+
+To customize the Accordion component classes, you can use the `@layer components` directive.
+[Learn more](https://tailwindcss.com/docs/adding-custom-styles#adding-component-classes).
+
+```css
+@layer components {
+  .accordion {
+    @apply rounded-xl bg-gray-50;
+  }
+
+  .accordion__trigger {
+    @apply font-semibold text-lg;
+  }
+
+  .accordion--outline {
+    @apply shadow-lg border-2;
+  }
+}
+```
+
+HeroUI follows the [BEM](https://getbem.com/) methodology to ensure component variants and states are reusable and easy to customize.
+
+### CSS Classes
+
+The Accordion component uses these CSS classes ([View source styles](https://github.com/heroui-inc/heroui/blob/v3/packages/styles/components/accordion.css)):
+
+#### Base Classes
+
+- `.accordion` - Base accordion container
+- `.accordion__body` - Content body container
+- `.accordion__heading` - Heading wrapper
+- `.accordion__indicator` - Expand/collapse indicator icon
+- `.accordion__item` - Individual accordion item
+- `.accordion__panel` - Collapsible panel container
+- `.accordion__trigger` - Clickable trigger button
+
+#### Variant Classes
+
+- `.accordion--surface` - Surface variant with background and rounded corners
+
+#### State Classes
+
+- `.accordion__trigger[aria-expanded="true"]` - Expanded state
+- `.accordion__panel[data-expanded="true"]` - Panel visible state
+
+### Interactive States
+
+The component supports both CSS pseudo-classes and data attributes for flexibility:
+
+- **Hover**: `:hover` on trigger
+- **Focus**: `:focus-visible` on trigger
+- **Disabled**: `:disabled` or `[aria-disabled="true"]` on trigger
+- **Expanded**: `[aria-expanded="true"]` on trigger
+
+## API Reference
+
+### Accordion Props
+
+| Prop                     | Type                       | Default     | Description                                                 |
+| ------------------------ | -------------------------- | ----------- | ----------------------------------------------------------- |
+| `allowsMultipleExpanded` | `boolean`                  | `false`     | Whether multiple items can be expanded at once              |
+| `defaultExpandedKeys`    | `Iterable<Key>`            | -           | The initial expanded keys                                   |
+| `expandedKeys`           | `Iterable<Key>`            | -           | The controlled expanded keys                                |
+| `onExpandedChange`       | `(keys: Set<Key>) => void` | -           | Handler called when expanded keys change                    |
+| `isDisabled`             | `boolean`                  | `false`     | Whether the entire accordion is disabled                    |
+| `variant`                | `"default" \| "surface"`   | `"default"` | The visual variant of the accordion                         |
+| `hideSeparator`          | `boolean`                  | `false`     | Hide separator lines between accordion items                |
+| `class`                  | `string`                   | -           | Additional CSS classes                                      |
+| `children`               | `JSX.Element`              | -           | The accordion items                                         |
+| `as`                     | `ValidComponent`           | `"div"`     | Overrides the default DOM element (Kobalte polymorphic `as`) |
+
+### Accordion.Item Props
+
+| Prop         | Type             | Default | Description                                                  |
+| ------------ | ---------------- | ------- | ------------------------------------------------------------ |
+| `id`         | `Key`            | -       | Unique identifier for the item                               |
+| `isDisabled` | `boolean`        | `false` | Whether this item is disabled                                |
+| `class`      | `string`         | -       | Additional CSS classes                                       |
+| `children`   | `JSX.Element`    | -       | The item content                                             |
+| `as`         | `ValidComponent` | `"div"` | Overrides the default DOM element (Kobalte polymorphic `as`) |
+
+### Accordion.Trigger Props
+
+| Prop       | Type                                             | Default    | Description                                                  |
+| ---------- | ------------------------------------------------ | ---------- | ------------------------------------------------------------ |
+| `class`    | `string`                                         | -          | Additional CSS classes                                       |
+| `children` | `JSX.Element`                                    | -          | Trigger content                                              |
+| `onClick`  | `JSX.EventHandlerUnion<HTMLElement, MouseEvent>` | -          | Additional click handler                                     |
+| `as`       | `ValidComponent`                                 | `"button"` | Overrides the default DOM element (Kobalte polymorphic `as`) |
+
+### Accordion.Panel Props
+
+| Prop       | Type             | Default | Description                                                  |
+| ---------- | ---------------- | ------- | ------------------------------------------------------------ |
+| `class`    | `string`         | -       | Additional CSS classes                                       |
+| `children` | `JSX.Element`    | -       | Panel content                                                |
+| `as`       | `ValidComponent` | `"div"` | Overrides the default DOM element (Kobalte polymorphic `as`) |
+
+### Accordion.Indicator Props
+
+| Prop       | Type          | Default | Description            |
+| ---------- | ------------- | ------- | ---------------------- |
+| `class`    | `string`      | -       | Additional CSS classes |
+| `children` | `JSX.Element` | -       | Custom indicator icon  |
+
+### Accordion.Body Props
+
+| Prop       | Type          | Default | Description            |
+| ---------- | ------------- | ------- | ---------------------- |
+| `class`    | `string`      | -       | Additional CSS classes |
+| `children` | `JSX.Element` | -       | Body content           |
+
+## Differences from HeroUI React
+
+- Use `onClick` (Solid's native event) instead of React Aria's `onPress`.
+- Polymorphism uses Kobalte's `as` prop instead of React's `render` prop override.
+- `onExpandedChange` reports keys as strings (numeric item ids are coerced).
+- A custom `Accordion.Indicator` icon renders inside a `span` wrapper carrying
+  the indicator class (Solid has no `cloneElement`), so selectors like
+  `[&>svg]:size-4` target the icon as expected.
