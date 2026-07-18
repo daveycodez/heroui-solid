@@ -27,7 +27,6 @@ import {
   For,
   type JSX,
   onMount,
-  Show,
   splitProps,
   useContext,
   type ValidComponent
@@ -45,6 +44,10 @@ import { VirtualizerContext } from "../virtualizer/virtualizer"
 type ListBoxCollection = {
   getItem: (key: string) => CollectionNode<ListBoxItemDescriptor> | undefined
 }
+
+// Rows the virtualizer seeds into its first window (SSR + pre-mount hydration),
+// before the scroll element can be measured. See the initialRect note below.
+const SSR_ESTIMATED_ROWS = 12
 
 /* -------------------------------------------------------------------------------------------------
  * ListBox Context
@@ -233,8 +236,12 @@ const ListBoxRoot = <T extends ValidComponent = "ul", D = unknown>(
   // Virtualized standalone path: a `Virtualizer` ancestor + `items` + a per-item
   // render function. Kobalte builds the full collection from `options` (so
   // selection/keyboard span every row) while only the windowed rows render.
-  // Windowing is client-only (it needs the mounted scroll element's
-  // measurements), so SSR emits an empty listbox and rows appear post-hydration.
+  // Accurate windowing needs the mounted scroll element's measurements, but the
+  // container height lives in consumer CSS and can't be read during SSR — so the
+  // virtualizer is seeded with an estimated viewport (`initialRect`) that yields
+  // a first window from `estimateSize` alone. SSR and the client's pre-mount
+  // hydration render that same seeded window (identical DOM, so hydration is
+  // safe); the real measurement takes over on mount and reconciles the window.
   if (!setOptions && virtualization && local.items !== undefined) {
     const renderItem = local.children as (item: D) => JSX.Element
     const items = local.items
@@ -253,21 +260,26 @@ const ListBoxRoot = <T extends ValidComponent = "ul", D = unknown>(
     const virtualDisabledKeys = createMemo(
       () => new Set(local.disabledKeys ?? [])
     )
-    const [mounted, setMounted] = createSignal(false)
-    onMount(() => setMounted(true))
-    // The scroll element is a signal, not a plain ref: Kobalte forwards the ref
-    // after the virtualizer's onMount, so getScrollElement is undefined when
-    // _didMount first runs. Reading a signal makes the adapter's reactive
-    // setOptions/_willUpdate re-observe the element once the ref lands.
+    // The scroll element is a signal, not a plain ref: reading it inside
+    // getScrollElement lets the adapter's reactive setOptions/_willUpdate
+    // re-observe the element once it's handed over.
     const [scrollEl, setScrollEl] = createSignal<HTMLElement>()
-    // On client-side navigation Kobalte forwards the ref while the <ul> is still
-    // detached (`isConnected === false`) — unlike hydration, where the SSR'd
-    // element is already connected. @tanstack/virtual measures the scroll
-    // element synchronously at attach (offsetHeight 0 on a detached node) and
-    // registers its ResizeObserver against that detached element, which then
-    // never fires — so the list stays blank until a reload. Defer handing the
-    // element to the virtualizer until it's connected, so the adapter measures
-    // the real height and observes a live element.
+    let scrollElRef: HTMLElement | undefined
+    // Hand the scroll element to the virtualizer only *after* mount, and only
+    // once it's connected. Two hazards drive this:
+    //  - The real measurement must not land mid-hydration. Until scrollEl is set
+    //    the window comes from `initialRect` (below), so SSR and the client's
+    //    pre-mount hydration render the same seeded rows; setting it during
+    //    hydration would reconcile the window to the measured size mid-flight,
+    //    and that DOM update is silently dropped (see AGENTS.md), stranding the
+    //    seeded overflow rows. onMount runs after hydration settles, so the
+    //    reconcile applies cleanly.
+    //  - On client-side navigation Kobalte forwards the ref while the <ul> is
+    //    still detached (`isConnected === false`). @tanstack/virtual measures
+    //    synchronously at attach (offsetHeight 0 on a detached node) and
+    //    registers its ResizeObserver against that detached element, which never
+    //    fires — leaving the list blank until reload. Waiting for `isConnected`
+    //    means the adapter measures the real height and observes a live element.
     const attachScrollEl = (el: HTMLElement) => {
       if (el.isConnected) {
         setScrollEl(el)
@@ -275,6 +287,9 @@ const ListBoxRoot = <T extends ValidComponent = "ul", D = unknown>(
       }
       requestAnimationFrame(() => attachScrollEl(el))
     }
+    onMount(() => {
+      if (scrollElRef) attachScrollEl(scrollElRef)
+    })
     const virtualizer = createVirtualizer({
       get count() {
         return options().length
@@ -282,12 +297,22 @@ const ListBoxRoot = <T extends ValidComponent = "ul", D = unknown>(
       getScrollElement: () => scrollEl() ?? null,
       estimateSize: () => virtualization.rowHeight(),
       getItemKey: (index) => options()[index]?.id ?? index,
-      overscan: 5
+      overscan: 5,
+      // Seed a first-viewport estimate so SSR and pre-mount hydration render a
+      // non-empty window (no measurements yet). Deliberately generous — a taller
+      // estimate SSRs a few extra rows that trim on mount, which is invisible;
+      // too short would leave a visible gap below the fold until mount.
+      initialRect: {
+        width: 0,
+        height: virtualization.rowHeight() * SSR_ESTIMATED_ROWS
+      }
     })
 
     return (
       <ListboxRootPrimitive<ListBoxItemDescriptor>
-        ref={(el: HTMLElement) => attachScrollEl(el)}
+        ref={(el: HTMLElement) => {
+          scrollElRef = el
+        }}
         class={cn(listboxVariants(variantProps), local.class)}
         data-slot="list-box"
         options={options()}
@@ -308,34 +333,32 @@ const ListBoxRoot = <T extends ValidComponent = "ul", D = unknown>(
         {...rest}
       >
         {(collection: Accessor<ListBoxCollection>) => (
-          <Show when={mounted()}>
-            <div
-              style={{
-                height: `${virtualizer.getTotalSize()}px`,
-                width: "100%",
-                position: "relative"
+          <div
+            style={{
+              height: `${virtualizer.getTotalSize()}px`,
+              width: "100%",
+              position: "relative"
+            }}
+          >
+            <For each={virtualizer.getVirtualItems()}>
+              {(row) => {
+                const node = collection().getItem(row.key as string)
+                return node ? (
+                  <ListBoxItemView
+                    item={node}
+                    onAction={local.onAction}
+                    style={{
+                      position: "absolute",
+                      top: "0",
+                      left: "0",
+                      width: "100%",
+                      transform: `translateY(${row.start}px)`
+                    }}
+                  />
+                ) : null
               }}
-            >
-              <For each={virtualizer.getVirtualItems()}>
-                {(row) => {
-                  const node = collection().getItem(row.key as string)
-                  return node ? (
-                    <ListBoxItemView
-                      item={node}
-                      onAction={local.onAction}
-                      style={{
-                        position: "absolute",
-                        top: "0",
-                        left: "0",
-                        width: "100%",
-                        transform: `translateY(${row.start}px)`
-                      }}
-                    />
-                  ) : null
-                }}
-              </For>
-            </div>
-          </Show>
+            </For>
+          </div>
         )}
       </ListboxRootPrimitive>
     )
