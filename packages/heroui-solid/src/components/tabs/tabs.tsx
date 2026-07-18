@@ -13,6 +13,7 @@ import {
   createMemo,
   createSignal,
   type JSX,
+  onCleanup,
   onMount,
   Show,
   splitProps,
@@ -36,6 +37,9 @@ type TabsContextValue = {
   // resolves its own selection in a post-mount effect.
   resolvedSelected: () => string | undefined
   registerEnabledTab: (id: string) => void
+  // Shared-element transition for the indicator (see TabsRoot).
+  snapshotIndicator: (el: HTMLElement | undefined) => void
+  flipIndicator: (el: HTMLElement) => void
 }
 
 const TabsContext = createContext<TabsContextValue>()
@@ -123,6 +127,69 @@ const TabsRoot = <T extends ValidComponent = "div">(
   const resolvedSelected = () =>
     local.selectedKey ?? selectedValue() ?? firstEnabledTabId
 
+  // Shared-element transition for the indicator, ported from React Aria's
+  // SharedElement (react-aria-components SharedElementTransition.tsx, which
+  // upstream's SelectionIndicator wraps). Kobalte has no equivalent, so each
+  // selected tab mounts its own indicator; the unmounting one snapshots its
+  // rect plus the computed values of the CSS transition properties (onCleanup
+  // runs while it is still connected), and the next one restores them for one
+  // frame so the CSS transition plays forward. A `transition-property: none`
+  // computed style (motion-reduce) skips the snapshot, and a fresh Tabs
+  // instance — including SPA navigation — has none, so first mounts never
+  // animate.
+  let indicatorSnapshot:
+    | { rect: DOMRect; style: [string, string][] }
+    | undefined
+  let indicatorFrame: number | undefined
+
+  const snapshotIndicator = (el: HTMLElement | undefined) => {
+    if (indicatorFrame !== undefined) {
+      cancelAnimationFrame(indicatorFrame)
+      indicatorFrame = undefined
+    }
+    if (!el?.isConnected) return
+    const style = window.getComputedStyle(el)
+    if (style.transitionProperty === "none") return
+    indicatorSnapshot = {
+      rect: el.getBoundingClientRect(),
+      style: style.transitionProperty
+        .split(/\s*,\s*/)
+        .map((p) => [p, style.getPropertyValue(p)])
+    }
+  }
+
+  const flipIndicator = (el: HTMLElement) => {
+    const prev = indicatorSnapshot
+    indicatorSnapshot = undefined
+    if (!prev) return
+    const animations = el.getAnimations?.() ?? []
+
+    // Set properties to animate from.
+    const values = prev.style.map(([property, prevValue]) => {
+      const value = el.style.getPropertyValue(property)
+      if (property === "translate") {
+        const rect = el.getBoundingClientRect()
+        el.style.translate = `${prev.rect.left - rect.left}px ${prev.rect.top - rect.top}px`
+      } else {
+        el.style.setProperty(property, prevValue)
+      }
+      return [property, value] as const
+    })
+
+    // Cancel any new transitions triggered by these writes.
+    for (const a of el.getAnimations?.() ?? []) {
+      if (!animations.includes(a)) a.cancel()
+    }
+
+    // Remove overrides after one frame to animate to the current values.
+    indicatorFrame = requestAnimationFrame(() => {
+      indicatorFrame = undefined
+      for (const [property, value] of values) {
+        el.style.setProperty(property, value)
+      }
+    })
+  }
+
   onMount(setupInteractionModality)
 
   return (
@@ -133,7 +200,9 @@ const TabsRoot = <T extends ValidComponent = "div">(
         },
         orientation,
         resolvedSelected,
-        registerEnabledTab
+        registerEnabledTab,
+        snapshotIndicator,
+        flipIndicator
       }}
     >
       <TabsRootPrimitive
@@ -294,8 +363,12 @@ const Tab = <T extends ValidComponent = "button">(
  * Tab Indicator — upstream renders one SelectionIndicator inside each tab and
  * mounts it only for the selected tab. Kobalte has no per-item indicator, so
  * this renders the same shape: a CSS-positioned pill inside the selected tab
- * (fills it via `.tabs__indicator`, no layout measurement — SSR-correct, no
- * animate-in). Placed inside a `<Tabs.Tab>`.
+ * (fills it via `.tabs__indicator`, no layout measurement at render —
+ * SSR-correct, no animate-in). Movement between tabs animates via the
+ * shared-element snapshot in TabsRoot: onCleanup measures the outgoing pill,
+ * onMount flips the incoming one (Solid refs fire before DOM insertion, so
+ * measuring there reads a disconnected element). Placed inside a
+ * `<Tabs.Tab>`.
  * -----------------------------------------------------------------------------------------------*/
 interface TabIndicatorProps {
   class?: string
@@ -307,11 +380,19 @@ const TabIndicator = (props: TabIndicatorProps): JSX.Element => {
 
   return (
     <Show when={item?.isSelected()}>
-      <div
-        class={cn(context.slots?.tabIndicator(), props.class)}
-        data-slot="tabs-indicator"
-        role="presentation"
-      />
+      {(() => {
+        let el: HTMLDivElement | undefined
+        onMount(() => el && context.flipIndicator(el))
+        onCleanup(() => context.snapshotIndicator(el))
+        return (
+          <div
+            class={cn(context.slots?.tabIndicator(), props.class)}
+            data-slot="tabs-indicator"
+            ref={el}
+            role="presentation"
+          />
+        )
+      })()}
     </Show>
   )
 }
