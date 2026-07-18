@@ -260,6 +260,21 @@ const ListBoxRoot = <T extends ValidComponent = "ul", D = unknown>(
     // _didMount first runs. Reading a signal makes the adapter's reactive
     // setOptions/_willUpdate re-observe the element once the ref lands.
     const [scrollEl, setScrollEl] = createSignal<HTMLElement>()
+    // On client-side navigation Kobalte forwards the ref while the <ul> is still
+    // detached (`isConnected === false`) — unlike hydration, where the SSR'd
+    // element is already connected. @tanstack/virtual measures the scroll
+    // element synchronously at attach (offsetHeight 0 on a detached node) and
+    // registers its ResizeObserver against that detached element, which then
+    // never fires — so the list stays blank until a reload. Defer handing the
+    // element to the virtualizer until it's connected, so the adapter measures
+    // the real height and observes a live element.
+    const attachScrollEl = (el: HTMLElement) => {
+      if (el.isConnected) {
+        setScrollEl(el)
+        return
+      }
+      requestAnimationFrame(() => attachScrollEl(el))
+    }
     const virtualizer = createVirtualizer({
       get count() {
         return options().length
@@ -272,7 +287,7 @@ const ListBoxRoot = <T extends ValidComponent = "ul", D = unknown>(
 
     return (
       <ListboxRootPrimitive<ListBoxItemDescriptor>
-        ref={(el: HTMLElement) => setScrollEl(el)}
+        ref={(el: HTMLElement) => attachScrollEl(el)}
         class={cn(listboxVariants(variantProps), local.class)}
         data-slot="list-box"
         options={options()}
