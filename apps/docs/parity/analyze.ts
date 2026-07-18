@@ -71,8 +71,6 @@ export function analyzeDemo(source: string): DemoShape {
     if (t) text.add(t)
   }
 
-  // Hoisted style objects (`const iconStyle = {…}` used as `style={iconStyle}`)
-  // are styling like the attribute itself — collect their names first.
   const iconIdents = new Set<string>()
   for (const stmt of sf.statements) {
     if (!ts.isImportDeclaration(stmt)) continue
@@ -88,6 +86,8 @@ export function analyzeDemo(source: string): DemoShape {
     }
   }
 
+  // Hoisted style objects (`const iconStyle = {…}` used as `style={iconStyle}`)
+  // are styling like the attribute itself — collect their names first.
   const styleIdents = new Set<string>()
   const collectStyleIdents = (node: ts.Node): void => {
     if (
@@ -171,7 +171,8 @@ export function analyzeDemo(source: string): DemoShape {
     if (
       (ts.isJsxElement(node) &&
         iconIdents.has(node.openingElement.tagName.getText())) ||
-      (ts.isJsxSelfClosingElement(node) && iconIdents.has(node.tagName.getText()))
+      (ts.isJsxSelfClosingElement(node) &&
+        iconIdents.has(node.tagName.getText()))
     ) {
       return
     }
