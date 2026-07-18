@@ -24,22 +24,22 @@ html:not([data-heroui-modality="pointer"]) .tabs__tab:focus-visible {
 .tabs__list-container:not(
     :has(
       > :is(
-        [data-left-scroll="true"],
-        [data-left-right-scroll="true"],
-        [data-top-scroll="true"],
-        [data-top-bottom-scroll="true"]
-      )
+          [data-left-scroll="true"],
+          [data-left-right-scroll="true"],
+          [data-top-scroll="true"],
+          [data-top-bottom-scroll="true"]
+        )
     )
   )
   > .tabs__list-container__scroll-prev,
 .tabs__list-container:not(
     :has(
       > :is(
-        [data-right-scroll="true"],
-        [data-left-right-scroll="true"],
-        [data-bottom-scroll="true"],
-        [data-top-bottom-scroll="true"]
-      )
+          [data-right-scroll="true"],
+          [data-left-right-scroll="true"],
+          [data-bottom-scroll="true"],
+          [data-top-bottom-scroll="true"]
+        )
     )
   )
   > .tabs__list-container__scroll-next {
