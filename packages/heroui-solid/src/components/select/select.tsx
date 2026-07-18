@@ -156,9 +156,16 @@ const SelectRoot = <T extends ValidComponent = "div">(
     }
   }
 
+  // Any Separator(s) the ListBox placed before this item (deferral markers,
+  // realized now the popover is open), then the item — mirrors sectionComponent.
   const itemComponent = (
     itemProps: SelectRootItemComponentProps<ListBoxItemDescriptor>
-  ) => <ListBoxItemView item={itemProps.item} />
+  ) => (
+    <>
+      {renderDeferred(itemProps.item.rawValue.leading)}
+      <ListBoxItemView item={itemProps.item} />
+    </>
+  )
 
   // Renders a section's label row: any Separator(s) the ListBox placed before
   // it, then the header. Both are deferral markers here (their DOM was held

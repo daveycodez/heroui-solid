@@ -14,6 +14,7 @@ import {
   createMemo,
   createSignal,
   type JSX,
+  onMount,
   splitProps,
   useContext
 } from "solid-js"
@@ -101,6 +102,7 @@ const SearchFieldRoot = (props: SearchFieldRootProps) => {
       "isReadOnly",
       "isRequired",
       "isInvalid",
+      "autoFocus",
       "class",
       "children"
     ]
@@ -120,6 +122,11 @@ const SearchFieldRoot = (props: SearchFieldRootProps) => {
     local.onClear?.()
     inputEl?.focus()
   }
+
+  // Kobalte's TextField root is a <div>, so autoFocus must land on the input.
+  onMount(() => {
+    if (local.autoFocus) inputEl?.focus()
+  })
 
   const context: SearchFieldContextValue = {
     slots,
@@ -264,6 +271,7 @@ const SearchFieldClearButton = (props: SearchFieldClearButtonProps) => {
   const handleClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (
     event
   ) => {
+    if (ctx.isDisabled()) return
     callHandler(
       event,
       local.onClick as JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent>
@@ -277,6 +285,9 @@ const SearchFieldClearButton = (props: SearchFieldClearButtonProps) => {
       class={cn(ctx.slots().clearButton(), local.class)}
       data-slot="search-field-clear-button"
       slot="clear"
+      // React Aria disables the clear button with the field; mirror that so it
+      // can't wipe the value + refocus a disabled input.
+      disabled={ctx.isDisabled()}
       onClick={handleClick}
       {...rest}
     />

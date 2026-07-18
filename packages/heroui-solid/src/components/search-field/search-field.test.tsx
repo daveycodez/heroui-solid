@@ -160,4 +160,22 @@ describe("SearchField", () => {
     expect(icon.classList.contains("search-field__search-icon")).toBe(true)
     expect(icon.querySelector("[data-testid=custom-icon]")).not.toBeNull()
   })
+
+  it("focuses the input on mount when autoFocus is set", () => {
+    const { getByRole } = render(() => <Anatomy autoFocus />)
+    expect(document.activeElement).toBe(getByRole("searchbox"))
+  })
+
+  it("does not clear a disabled field from the clear button", () => {
+    const onChange = vi.fn()
+    const { container, getByRole } = render(() => (
+      <Anatomy isDisabled defaultValue="hero" onChange={onChange} />
+    ))
+    const clearButton = slot(container, "search-field-clear-button")
+    expect(clearButton.hasAttribute("disabled")).toBe(true)
+
+    fireEvent.click(clearButton)
+    expect(onChange).not.toHaveBeenCalled()
+    expect((getByRole("searchbox") as HTMLInputElement).value).toBe("hero")
+  })
 })

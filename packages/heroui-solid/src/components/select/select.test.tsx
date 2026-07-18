@@ -176,6 +176,42 @@ describe("Select", () => {
     expect(document.querySelectorAll("[data-slot=separator]").length).toBe(1)
   })
 
+  it("renders a Separator placed before a plain item in a Select", () => {
+    const WithLeadingSeparator = () => (
+      <SelectRoot placeholder="Select an option">
+        <LabelRoot>Option</LabelRoot>
+        <SelectTrigger>
+          <SelectValue />
+          <SelectIndicator />
+        </SelectTrigger>
+        <SelectPopover>
+          <ListBoxRoot>
+            <ListBoxItem id="first" textValue="First">
+              First
+              <ListBoxItemIndicator />
+            </ListBoxItem>
+            <SeparatorRoot />
+            <ListBoxItem id="second" textValue="Second">
+              Second
+              <ListBoxItemIndicator />
+            </ListBoxItem>
+          </ListBoxRoot>
+        </SelectPopover>
+      </SelectRoot>
+    )
+
+    const { container } = render(() => <WithLeadingSeparator />)
+    openWithKeyboard(
+      container.querySelector("[data-slot=select-trigger]") as HTMLElement
+    )
+
+    const items = document.querySelectorAll("[data-slot=list-box-item]")
+    expect([...items].map((el) => el.textContent)).toEqual(["First", "Second"])
+    // The Separator before the second (plain) item renders — previously dropped
+    // because the Select registration loop only attached leading to sections.
+    expect(document.querySelectorAll("[data-slot=separator]").length).toBe(1)
+  })
+
   it("tracks signal-driven items inside a section", () => {
     const [countries, setCountries] = createSignal(["Sweden", "Norway"])
     const { container } = render(() => (

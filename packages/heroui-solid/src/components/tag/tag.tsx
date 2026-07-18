@@ -65,6 +65,8 @@ const TagRoot = (props: TagRootProps) => {
   const key = () => props.id ?? props.textValue ?? uid
   const disabled = () => !!props.isDisabled || group.isDisabled(key())
   const selected = () => group.isSelected(key())
+  // size/variant are keyed by hand (not a variantKeys split): each must fall
+  // back to the parent TagGroup's value, which a bare split can't express.
   const slots = createMemo(() =>
     tagVariants({
       size: props.size ?? group.size(),

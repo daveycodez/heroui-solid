@@ -332,14 +332,16 @@ const ListBoxRoot = <T extends ValidComponent = "ul", D = unknown>(
     createComputed(() => {
       // Register options in document order: item and section descriptors
       // become the Select's Kobalte collection (sections group their items via
-      // `optionGroupChildren`). Deferred Separators between sections attach as
-      // `leading` on the following section — the Select's sectionComponent
-      // renders them. All children resolve to descriptors/markers, never DOM,
-      // so the closed popover's eager registration stays hydration-safe.
+      // `optionGroupChildren`). Deferred Separators attach as `leading` on the
+      // following option (item or section) — the Select's item/section
+      // component renders them, mirroring the standalone path. All children
+      // resolve to descriptors/markers, never DOM, so the closed popover's
+      // eager registration stays hydration-safe.
       const options: ListBoxOption[] = []
       let pendingLeading: DeferredNode[] = []
       for (const child of resolved.toArray() as unknown[]) {
         if (isItemDescriptor(child)) {
+          child.leading = pendingLeading.length > 0 ? pendingLeading : undefined
           options.push(child)
           pendingLeading = []
         } else if (isSectionDescriptor(child)) {
@@ -457,6 +459,8 @@ const ListBoxItem = (props: ListBoxItemProps): JSX.Element => {
   const descriptor: ListBoxItemDescriptor = {
     // @ts-expect-error marker key identifies descriptors during child resolution
     [LIST_BOX_ITEM]: true,
+    // Preceding Separator(s); set by the ListBox in Select mode (see loop).
+    leading: undefined,
     get id() {
       return props.id
     },

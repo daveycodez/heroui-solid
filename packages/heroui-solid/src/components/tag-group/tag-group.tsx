@@ -6,6 +6,7 @@ import {
   createSignal,
   For,
   type JSX,
+  Show,
   splitProps,
   useContext
 } from "solid-js"
@@ -110,8 +111,16 @@ const TagGroupRoot = (props: TagGroupRootProps) => {
   // tag is the default tab stop until arrow-key navigation moves focus.
   const [tags, setTags] = createSignal<TagRegistration[]>([])
   const [focusedKey, setFocusedKey] = createSignal<TagKey | undefined>()
-  const tabStopKey = () =>
-    focusedKey() ?? tags().find((tag) => !tag.disabled())?.key
+  const tabStopKey = () => {
+    const enabled = tags().filter((tag) => !tag.disabled())
+    const focused = focusedKey()
+    // Fall back to the first enabled tag when focus points at a tag that was
+    // removed or disabled — otherwise no tag gets tabindex=0 (dead tab stop).
+    if (focused !== undefined && enabled.some((tag) => tag.key === focused)) {
+      return focused
+    }
+    return enabled[0]?.key
+  }
   const focusKey = (key: TagKey) => {
     const registration = tags().find((tag) => tag.key === key)
     if (registration) {
@@ -211,16 +220,22 @@ const TagGroupList = <T,>(props: TagGroupListProps<T>) => {
       onKeyDown={ctx.onListKeyDown}
       {...rest}
     >
-      {(() => {
-        const items = local.items
-        if (items === undefined) return local.children as JSX.Element
-        const renderItem = local.children as (item: T) => JSX.Element
-        return items.length === 0 ? (
-          local.renderEmptyState?.()
-        ) : (
-          <For each={items as T[]}>{(item) => renderItem(item)}</For>
-        )
-      })()}
+      {/* Static children (no `items`) render as-is. With `items`, keep the
+          <For> at a fixed position so it diffs on data change instead of the
+          whole subtree being torn down (which would remount every Tag). */}
+      <Show
+        when={local.items !== undefined}
+        fallback={local.children as JSX.Element}
+      >
+        <Show
+          when={(local.items?.length ?? 0) > 0}
+          fallback={local.renderEmptyState?.()}
+        >
+          <For each={(local.items ?? []) as T[]}>
+            {(item) => (local.children as (item: T) => JSX.Element)(item)}
+          </For>
+        </Show>
+      </Show>
     </div>
   )
 }

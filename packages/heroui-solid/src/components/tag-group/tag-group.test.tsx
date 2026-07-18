@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { fireEvent, render } from "@solidjs/testing-library"
+import { createSignal } from "solid-js"
 import { describe, expect, it, vi } from "vitest"
 import { classSet } from "../../test/utils"
 import { LabelRoot } from "../label/label"
@@ -208,5 +209,52 @@ describe("TagGroup", () => {
     ))
     expect(empty.querySelector("[data-testid=empty]")).not.toBeNull()
     expect(slots(empty, "tag")).toHaveLength(0)
+  })
+
+  it("diffs items instead of remounting existing tags on change", () => {
+    const [items, setItems] = createSignal([
+      { id: "a", name: "Alpha" },
+      { id: "b", name: "Beta" }
+    ])
+    const { container } = render(() => (
+      <TagGroupRoot selectionMode="single">
+        <TagGroupList items={items()}>
+          {(item: { id: string; name: string }) => (
+            <TagRoot id={item.id}>{item.name}</TagRoot>
+          )}
+        </TagGroupList>
+      </TagGroupRoot>
+    ))
+    const firstAlpha = slots(container, "tag")[0]
+    setItems([...items(), { id: "c", name: "Gamma" }])
+    // The existing tag keeps its DOM identity — <For> diffed rather than the
+    // whole subtree being torn down and rebuilt.
+    expect(slots(container, "tag")[0]).toBe(firstAlpha)
+    expect(slots(container, "tag")).toHaveLength(3)
+  })
+
+  it("keeps a tab stop after the roving-focused tag is removed", () => {
+    const [items, setItems] = createSignal([
+      { id: "a", name: "Alpha" },
+      { id: "b", name: "Beta" },
+      { id: "c", name: "Gamma" }
+    ])
+    const { container } = render(() => (
+      <TagGroupRoot selectionMode="single">
+        <TagGroupList items={items()}>
+          {(item: { id: string; name: string }) => (
+            <TagRoot id={item.id}>{item.name}</TagRoot>
+          )}
+        </TagGroupList>
+      </TagGroupRoot>
+    ))
+    // Move roving focus onto the second tag, then remove it.
+    fireEvent.keyDown(slot(container, "tag-group-list"), { key: "ArrowRight" })
+    setItems(items().filter((item) => item.id !== "b"))
+
+    const tabStops = slots(container, "tag").filter(
+      (tag) => tag.getAttribute("tabindex") === "0"
+    )
+    expect(tabStops).toHaveLength(1)
   })
 })
