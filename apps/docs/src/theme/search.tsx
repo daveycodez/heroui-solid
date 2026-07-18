@@ -5,7 +5,6 @@ import { FileText, Hashtag, Magnifier } from "gravity-icons-solid"
 import { Kbd, PreventScroll, Spinner } from "heroui-solid"
 import {
   createEffect,
-  createResource,
   createSignal,
   For,
   on,
@@ -98,31 +97,58 @@ export function SearchDialog() {
   const [query, setQuery] = createSignal("")
   const [selected, setSelected] = createSignal(0)
 
-  const [index, { refetch: refetchIndex }] = createResource(open, (isOpen) =>
-    isOpen ? loadIndex() : null
-  )
-  const [hits] = createResource(
-    () => {
-      // Reading an errored resource throws; the error branch renders inline.
-      const idx = index.error ? undefined : index()
-      return idx ? { idx, q: query() } : null
-    },
-    async ({ idx, q }) => {
-      const term = q.trim()
-      if (!term) {
-        return idx.pages
-      }
-      const results = await search(idx.db, {
+  // Plain signals, not createResource: resource reads register with the
+  // nearest Suspense boundary — solidbase's root one, which has no fallback —
+  // so the first open (index fetch in flight) unmounted the entire page into
+  // a blank flash. Loading state stays local to the dialog instead.
+  const [index, setIndex] = createSignal<SearchIndex>()
+  const [indexError, setIndexError] = createSignal(false)
+  const fetchIndex = () => {
+    setIndexError(false)
+    loadIndex().then(setIndex, () => setIndexError(true))
+  }
+  createEffect(() => {
+    if (open() && !index()) {
+      fetchIndex()
+    }
+  })
+
+  const [hits, setHits] = createSignal<SearchRecord[]>()
+  const [searching, setSearching] = createSignal(false)
+  let searchSeq = 0
+  createEffect(() => {
+    const idx = index()
+    if (!idx) {
+      return
+    }
+    const term = query().trim()
+    const seq = ++searchSeq
+    if (!term) {
+      setHits(idx.pages)
+      setSearching(false)
+      return
+    }
+    setSearching(true)
+    // search() is sync unless async plugins are involved — normalize.
+    Promise.resolve(
+      search(idx.db, {
         term,
         properties: ["title", "page", "content"],
         boost: { title: 4, page: 2 },
         tolerance: 1,
         limit: 12
       })
-      return results.hits.map((hit) => hit.document as unknown as SearchRecord)
-    }
-  )
-  const items = () => hits.latest ?? []
+    ).then((results) => {
+      if (seq !== searchSeq) {
+        return
+      }
+      setHits(
+        results.hits.map((hit) => hit.document as unknown as SearchRecord)
+      )
+      setSearching(false)
+    })
+  })
+  const items = () => hits() ?? []
 
   createEffect(on(items, () => setSelected(0)))
   createEffect(() => {
@@ -131,8 +157,11 @@ export function SearchDialog() {
       ?.scrollIntoView({ block: "nearest" })
   })
 
+  // Navigating to a result is a completed search — reset the query so the
+  // next ⌘K starts fresh.
   const go = (item: SearchRecord) => {
     setOpen(false)
+    setQuery("")
     navigate(item.url)
   }
 
@@ -199,14 +228,14 @@ export function SearchDialog() {
               class="max-h-[50vh] overflow-y-auto p-2"
             >
               <Show
-                when={!index.error}
+                when={!indexError()}
                 fallback={
                   <div class="flex flex-col items-center gap-3 py-12 text-sm text-muted">
                     Search couldn’t load.
                     <button
                       type="button"
                       class="rounded-lg border border-border px-3 py-1.5 text-foreground transition-colors hover:bg-default-soft"
-                      onClick={() => refetchIndex()}
+                      onClick={fetchIndex}
                     >
                       Try again
                     </button>
@@ -218,7 +247,7 @@ export function SearchDialog() {
                   fallback={
                     <div class="flex justify-center py-12 text-sm text-muted">
                       <Show
-                        when={!index.loading && !hits.loading}
+                        when={index() !== undefined && !searching()}
                         fallback={<Spinner />}
                       >
                         No results found for “{query().trim()}”
@@ -242,7 +271,10 @@ export function SearchDialog() {
                         }
                         class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm text-muted no-underline data-active:bg-default-soft data-active:text-foreground"
                         href={item.url}
-                        onClick={() => setOpen(false)}
+                        onClick={() => {
+                          setOpen(false)
+                          setQuery("")
+                        }}
                         onMouseMove={() => setSelected(itemIndex())}
                       >
                         <Show

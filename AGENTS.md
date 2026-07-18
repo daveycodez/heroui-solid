@@ -45,6 +45,18 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   applying this same rule to *their* demos — before X, so X's demos and docs
   page can mirror upstream exactly. Never substitute or drop a dependency to
   make a demo "work".
+- **A dependency gets the FULL port, never a minimal stub.** Pulling in
+  component Y because X (or a demo) needs it means porting Y *completely*, to
+  the same bar as any first-class port — not just enough of Y to render the
+  one demo. Full means: the component + compound members, its
+  `parity/components.ts` entry, `sync.ts` to pin its upstream fixtures, its
+  docs page mirroring upstream, *all* of its upstream demos, and unit tests —
+  driven to green (`bun nx test docs`, `ssr-test`, Biome). A dependency you
+  only half-port silently drops Y's own demos, page, and parity guard, and
+  the gap is invisible until someone audits it. If finishing Y's full port is
+  genuinely out of scope for the current change, stop and ask — do not land a
+  stub. The one exception is a dependency that is itself React-impossible in
+  Solid, which follows the `skipDemos` reasoned-skip path.
 - **Icons: always use `gravity-icons-solid`** (the Solid port of
   `@gravity-ui/icons`, same icon names) when the icon exists there. Fall back
   to `unplugin-icons` only for icons gravity-icons-solid doesn't have. Icons

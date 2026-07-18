@@ -60,6 +60,32 @@ article:has([data-home]) [class*="_info_"] {
   max-width: 100%;
 }
 
+/* --- Layout width ----------------------------------------------------- */
+
+/* Match heroui.com's docs shell width (global.css `--fd-layout-width:
+ * 1400px`): the sidebar + content + TOC band is capped and centered, with
+ * equal gutters on wider viewports instead of stretching edge to edge.
+ * Solidbase's grid is `width: 100dvw` with no cap, so it here gets the max
+ * width and centering. The sticky header is a grid child; it's re-fitted to
+ * 100% below with its divider drawn full-bleed, so the rule still spans the
+ * viewport like upstream's `#nd-subnav::after`. */
+[class*="_layout_"] {
+  max-width: 1400px;
+  margin-inline: auto;
+}
+
+/* On the desktop layout the shell is capped with gutters, so overflow-x is
+ * released from solidbase's `clip` to let the full-bleed header divider reach
+ * the viewport edges past the capped edge. Below the mobile breakpoint the
+ * shell already fills the viewport, so `clip` stays (it hides an upstream
+ * ~48px mobile overflow that would otherwise report as horizontal scroll).
+ * Matches solidbase's own mobileLayout breakpoint (1100px). */
+@media (min-width: 1101px) {
+  [class*="_layout_"] {
+    overflow-x: visible;
+  }
+}
+
 /* --- Header ----------------------------------------------------------- */
 
 /* [data-site-header] is stamped by theme/header.tsx. Never select bare
@@ -67,13 +93,30 @@ article:has([data-home]) [class*="_info_"] {
  * dropdowns land directly under <body>), and an element selector repaints
  * them with the site-chrome background/border. */
 body header:where([data-site-header]) {
+  /* Fill the capped layout (solidbase's module CSS sets 100dvw, which would
+   * overflow the centered 1400px shell); the divider goes full-bleed below. */
+  width: 100%;
   background: var(--background);
-  border-bottom: 1px solid var(--separator);
+
+  /* Bottom divider spans the full viewport even though the header is capped,
+   * mirroring heroui.com's `#nd-subnav::after` (width: 100vw). position:
+   * sticky (from the module CSS) is the containing block for this absolute
+   * pseudo. */
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    width: 100vw;
+    height: 1px;
+    transform: translateX(-50%);
+    background: var(--separator);
+  }
 
   /* Home page (frontmatter `layout: home`, stamped as data-home by
    * theme/header.tsx): borderless header, like the official landing. */
-  &[data-home] {
-    border-bottom: none;
+  &[data-home]::after {
+    display: none;
   }
 
   & a {
@@ -302,6 +345,17 @@ body header:where([data-site-header]) .header-home-search {
   article > aside[class*="_aside_"] {
     display: none;
   }
+}
+
+/* HeroUI scrollbar (thin, 15%-foreground thumb on a transparent track — the
+ * theme's --scrollbar-* tokens) instead of solidbase's darker 50% color-mix,
+ * which these scroll containers otherwise inherit from html / set themselves
+ * (Article.module.css). Covers the desktop sidenav, the portaled mobile
+ * drawer (same module class), and the TOC aside. */
+[class*="_sidenav_"],
+article > aside[class*="_aside_"] {
+  scrollbar-width: var(--scrollbar-width);
+  scrollbar-color: var(--scrollbar-color);
 }
 
 /* Official box model (measured on heroui.com): items sit flush inside the

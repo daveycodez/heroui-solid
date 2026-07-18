@@ -1,10 +1,17 @@
 // Local consistency checks between the MDX pages, the demo registry
 // (src/demos/index.ts), and the demo files on disk. These encode the
-// conventions in AGENTS.md and need no upstream fixtures.
+// conventions in AGENTS.md; fixtures are consulted only to mirror upstream's
+// occasional demo file that its own page never previews.
 import { readdirSync, readFileSync } from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 import { describe, expect, it } from "vitest"
+import {
+  analyzePage,
+  demoStems,
+  fixtureDir,
+  resolvePreviewStem
+} from "./analyze"
 import { components } from "./components"
 
 const here = path.dirname(fileURLToPath(import.meta.url))
@@ -59,6 +66,28 @@ for (const page of pages) {
 }
 const allPreviews = new Set([...previewNames.values()].flat())
 
+// Upstream occasionally ships a demo file its own page never previews
+// (button/outline-variant). Mirroring that means keeping the demo registered
+// — so /ssr-test still renders it — without a page slot, so such demos are
+// exempt from the shown-on-some-page rule. Derived from fixtures per
+// component; demos with no upstream counterpart stay fully enforced.
+const unpagedUpstream = new Set<string>()
+for (const { slug, demosDir } of components) {
+  const fixtureDemos = path.join(fixtureDir(slug), "demos")
+  const page = analyzePage(
+    readFileSync(path.join(fixtureDir(slug), "page.mdx"), "utf8"),
+    "upstream"
+  )
+  const paged = new Set(
+    page.previews
+      .map((p) => resolvePreviewStem(p, demosDir, fixtureDemos))
+      .filter((s) => s !== undefined)
+  )
+  for (const stem of demoStems(fixtureDemos)) {
+    if (!paged.has(stem)) unpagedUpstream.add(`${demosDir}-${stem}`)
+  }
+}
+
 describe("demo registry", () => {
   it("keys follow <demos-dir>-<file-stem> and point at their demo file", () => {
     for (const entry of registry) {
@@ -104,6 +133,7 @@ describe("MDX pages", () => {
 
   it("every registry key is shown on some page", () => {
     for (const entry of registry) {
+      if (unpagedUpstream.has(entry.key)) continue
       expect(
         allPreviews,
         `registry key "${entry.key}" is never rendered by any MDX page`
