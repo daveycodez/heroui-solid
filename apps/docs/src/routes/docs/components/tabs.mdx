@@ -192,6 +192,7 @@ The component supports both CSS pseudo-classes and data attributes:
 | Prop            | Type      | Default | Description                                                                                                                                     |
 | --------------- | --------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | `initialShadow` | `boolean` | `false` | Render the end-edge fade and scroll chevron before scroll measurement (SSR / first frame). Set when the list is known to overflow, so they don't blink in after hydration. |
+| `hideScrollButtons` | `boolean` | `false` | Hide the scroll chevron buttons when the list overflows (the fading edges remain). |
 | `class`         | `string`  | -       | Additional CSS classes                                                                                                                           |
 
 ### Tabs.List Props
@@ -233,4 +234,7 @@ The component supports both CSS pseudo-classes and data attributes:
   that authoring shape (Kobalte has no selection-indicator primitive) and ports
   React Aria's shared-element transition so the indicator animates between tabs.
 - `Tabs.ListContainer` accepts `initialShadow` to server-render the overflow
-  chevron and fade for lists known to overflow.
+  chevron and fade for lists known to overflow, and `hideScrollButtons` to
+  omit the chevron buttons entirely.
+- The selected tab is kept in view: scrolled to instantly on mount, with an
+  animated scroll on selection change.

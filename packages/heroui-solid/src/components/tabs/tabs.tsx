@@ -10,9 +10,11 @@ import { mergeRefs } from "@kobalte/utils"
 import {
   type ComponentProps,
   createContext,
+  createEffect,
   createMemo,
   createSignal,
   type JSX,
+  on,
   onCleanup,
   onMount,
   Show,
@@ -230,13 +232,19 @@ const TabsRoot = <T extends ValidComponent = "div">(
 interface TabListContainerProps {
   children?: JSX.Element
   class?: string
+  hideScrollButtons?: boolean
   initialShadow?: boolean
 }
+
+// Fade gradient size for the tab list scroller; scroll-into-view pads by the
+// same amount so a scrolled-to tab lands clear of the fade.
+const SCROLLER_SHADOW_SIZE = 64
 
 const TabListContainer = (props: TabListContainerProps) => {
   const [local, rest] = splitProps(props, [
     "class",
     "children",
+    "hideScrollButtons",
     "initialShadow"
   ])
   const context = useTabs()
@@ -254,6 +262,42 @@ const TabListContainer = (props: TabListContainerProps) => {
     })
   }
 
+  // Keep the selected tab visible: instant on mount (the SSR payload can't
+  // carry a scroll offset), animated on selection change. Rect math against
+  // the scroller only — scrollIntoView would also scroll ancestors/page.
+  const scrollSelectedIntoView = (behavior: ScrollBehavior) => {
+    const el = scroller
+    if (!el || typeof el.scrollBy !== "function") return
+    const tab = el.querySelector<HTMLElement>(
+      '[data-slot="tabs-tab"][data-selected="true"]'
+    )
+    if (!tab) return
+    const scrollerRect = el.getBoundingClientRect()
+    const tabRect = tab.getBoundingClientRect()
+    const [before, after] = isVertical()
+      ? [tabRect.top - scrollerRect.top, tabRect.bottom - scrollerRect.bottom]
+      : [tabRect.left - scrollerRect.left, tabRect.right - scrollerRect.right]
+    const delta =
+      before < SCROLLER_SHADOW_SIZE
+        ? before - SCROLLER_SHADOW_SIZE
+        : after > -SCROLLER_SHADOW_SIZE
+          ? after + SCROLLER_SHADOW_SIZE
+          : 0
+    if (delta === 0) return
+    el.scrollBy({ behavior, [isVertical() ? "top" : "left"]: delta })
+  }
+
+  onMount(() => scrollSelectedIntoView("instant"))
+  createEffect(
+    on(
+      () => context.resolvedSelected(),
+      (_, prev) => {
+        if (prev !== undefined) scrollSelectedIntoView("smooth")
+      },
+      { defer: true }
+    )
+  )
+
   return (
     <div
       class={cn(context.slots?.tabListContainer(), local.class)}
@@ -270,28 +314,30 @@ const TabListContainer = (props: TabListContainerProps) => {
         ref={(el: HTMLDivElement) => {
           scroller = el
         }}
-        size={64}
+        size={SCROLLER_SHADOW_SIZE}
       >
         {local.children}
       </ScrollShadow>
-      <button
-        aria-label={isVertical() ? "Scroll tabs up" : "Scroll tabs left"}
-        class={context.slots?.scrollPrev()}
-        onClick={() => scrollBy(-1)}
-        tabIndex={-1}
-        type="button"
-      >
-        {isVertical() ? <IconChevronUp /> : <IconChevronLeft />}
-      </button>
-      <button
-        aria-label={isVertical() ? "Scroll tabs down" : "Scroll tabs right"}
-        class={context.slots?.scrollNext()}
-        onClick={() => scrollBy(1)}
-        tabIndex={-1}
-        type="button"
-      >
-        {isVertical() ? <IconChevronDown /> : <IconChevronRight />}
-      </button>
+      <Show when={!local.hideScrollButtons}>
+        <button
+          aria-label={isVertical() ? "Scroll tabs up" : "Scroll tabs left"}
+          class={context.slots?.scrollPrev()}
+          onClick={() => scrollBy(-1)}
+          tabIndex={-1}
+          type="button"
+        >
+          {isVertical() ? <IconChevronUp /> : <IconChevronLeft />}
+        </button>
+        <button
+          aria-label={isVertical() ? "Scroll tabs down" : "Scroll tabs right"}
+          class={context.slots?.scrollNext()}
+          onClick={() => scrollBy(1)}
+          tabIndex={-1}
+          type="button"
+        >
+          {isVertical() ? <IconChevronDown /> : <IconChevronRight />}
+        </button>
+      </Show>
     </div>
   )
 }
