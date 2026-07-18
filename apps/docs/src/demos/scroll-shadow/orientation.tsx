@@ -17,7 +17,11 @@ export function Orientation() {
       <div class="mb-8 w-full">
         <h4 class="mb-2 text-sm font-semibold">Vertical</h4>
         <Card class="w-full p-0">
-          <ScrollShadow class="max-h-[240px] p-4" orientation="vertical">
+          <ScrollShadow
+            initialShadow
+            class="max-h-[240px] p-4"
+            orientation="vertical"
+          >
             <div class="space-y-4">
               <For each={Array.from({ length: 10 })}>
                 {() => (
@@ -37,7 +41,7 @@ export function Orientation() {
       <div class="w-full">
         <h4 class="mb-2 text-sm font-semibold">Horizontal</h4>
         <Card class="w-full p-0">
-          <ScrollShadow class="p-4" orientation="horizontal">
+          <ScrollShadow initialShadow class="p-4" orientation="horizontal">
             <div class="flex flex-row gap-4">
               <For each={Array.from({ length: 10 })}>
                 {(_, idx) => (

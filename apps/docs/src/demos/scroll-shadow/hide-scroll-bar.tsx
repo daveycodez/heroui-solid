@@ -4,7 +4,7 @@ import { For } from "solid-js"
 export function HideScrollBar() {
   return (
     <div class="w-full p-0 sm:max-w-sm">
-      <ScrollShadow hideScrollBar class="max-h-[240px] p-4">
+      <ScrollShadow hideScrollBar initialShadow class="max-h-[240px] p-4">
         <div class="space-y-4">
           <For each={Array.from({ length: 10 })}>
             {() => (

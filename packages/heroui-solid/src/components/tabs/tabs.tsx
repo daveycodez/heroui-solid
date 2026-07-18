@@ -230,10 +230,15 @@ const TabsRoot = <T extends ValidComponent = "div">(
 interface TabListContainerProps {
   children?: JSX.Element
   class?: string
+  initialShadow?: boolean
 }
 
 const TabListContainer = (props: TabListContainerProps) => {
-  const [local, rest] = splitProps(props, ["class", "children"])
+  const [local, rest] = splitProps(props, [
+    "class",
+    "children",
+    "initialShadow"
+  ])
   const context = useTabs()
 
   let scroller: HTMLElement | undefined
@@ -258,9 +263,9 @@ const TabListContainer = (props: TabListContainerProps) => {
       <ScrollShadow
         class={context.slots?.scroller()}
         hideScrollBar
-        // Tab lists usually fit; assuming overflow in SSR would flash a scroll
-        // chevron that vanishes once the client measures no overflow.
-        initialShadow={false}
+        // Lists known to overflow pass initialShadow so the fade and chevron
+        // are in the SSR payload instead of blinking in after load.
+        initialShadow={local.initialShadow}
         orientation={context.orientation()}
         ref={(el: HTMLDivElement) => {
           scroller = el

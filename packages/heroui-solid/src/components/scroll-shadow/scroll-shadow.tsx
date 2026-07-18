@@ -25,10 +25,11 @@ export interface ScrollShadowRootProps
   visibility?: ScrollShadowVisibility
   isEnabled?: boolean
   /**
-   * Render the end-edge shadow before scroll measurement (SSR / first frame),
-   * assuming the content overflows. Set `false` where overflow is unlikely, so
-   * the shadow doesn't appear then vanish on mount.
-   * @default true
+   * Render the end-edge shadow before scroll measurement (SSR / first frame).
+   * Opt in where the content is known to overflow at render time, so the
+   * shadow doesn't blink in after hydration; left off, a non-overflowing
+   * container never flashes a shadow that vanishes on mount.
+   * @default false
    */
   initialShadow?: boolean
   onVisibilityChange?: (visibility: ScrollShadowVisibility) => void
@@ -60,7 +61,7 @@ export const ScrollShadowRoot = (props: ScrollShadowRootProps) => {
   const visibility = () => local.visibility ?? "auto"
 
   const shadowAttrs = createScrollShadow({
-    assumeOverflow: () => local.initialShadow ?? true,
+    assumeOverflow: () => local.initialShadow ?? false,
     containerRef: () => internalRef,
     isEnabled: () => local.isEnabled ?? true,
     offset: () => local.offset ?? 0,

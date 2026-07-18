@@ -52,7 +52,7 @@ export default () => (
 
 ### Overflow
 
-When the tab list exceeds the available space, `Tabs.ListContainer` automatically renders scroll chevrons and fading edges so users can navigate the hidden tabs. This works the same way for both horizontal and vertical orientations.
+When the tab list exceeds the available space, `Tabs.ListContainer` automatically renders scroll chevrons and fading edges so users can navigate the hidden tabs. This works the same way for both horizontal and vertical orientations. When the list is known to overflow, pass `initialShadow` to `Tabs.ListContainer` so the chevron and fade are already in the server-rendered HTML instead of appearing after hydration.
 
 <ComponentPreview name="tabs-overflow" />
 
@@ -187,6 +187,13 @@ The component supports both CSS pseudo-classes and data attributes:
 | `class`              | `string`                       | -              | Additional CSS classes                                                                        |
 | `as`                 | `ValidComponent`               | `"div"`        | Overrides the default DOM element (Kobalte polymorphic `as`)                                  |
 
+### Tabs.ListContainer Props
+
+| Prop            | Type      | Default | Description                                                                                                                                     |
+| --------------- | --------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `initialShadow` | `boolean` | `false` | Render the end-edge fade and scroll chevron before scroll measurement (SSR / first frame). Set when the list is known to overflow, so they don't blink in after hydration. |
+| `class`         | `string`  | -       | Additional CSS classes                                                                                                                           |
+
 ### Tabs.List Props
 
 | Prop         | Type     | Default | Description                      |
@@ -223,5 +230,7 @@ The component supports both CSS pseudo-classes and data attributes:
 - Polymorphism uses Kobalte's `as` prop instead of React's `render` prop override.
 - `onSelectionChange` reports the key as a string.
 - Upstream renders a `SelectionIndicator` inside each `Tabs.Tab`; this port keeps
-  that authoring shape but hoists a single moving indicator into `Tabs.List`
-  (Kobalte has no per-item selection-indicator primitive).
+  that authoring shape (Kobalte has no selection-indicator primitive) and ports
+  React Aria's shared-element transition so the indicator animates between tabs.
+- `Tabs.ListContainer` accepts `initialShadow` to server-render the overflow
+  chevron and fade for lists known to overflow.

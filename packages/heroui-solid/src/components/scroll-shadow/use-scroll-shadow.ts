@@ -9,8 +9,8 @@ export interface UseScrollShadowProps {
   visibility: Accessor<ScrollShadowVisibility>
   isEnabled: Accessor<boolean>
   // Whether to render the end-edge shadow before measurement (SSR / first
-  // frame). True when overflow is expected; false avoids a shadow that would
-  // vanish on mount when the content doesn't actually overflow.
+  // frame). Opt-in for content known to overflow at render time; off by
+  // default so a non-overflowing container never flashes a vanishing shadow.
   assumeOverflow: Accessor<boolean>
   onVisibilityChange?: (visibility: ScrollShadowVisibility) => void
 }

@@ -27,6 +27,7 @@ export function VisibilityChange() {
         </div>
         <div class="w-full">
           <ScrollShadow
+            initialShadow
             class="max-h-[240px] p-4"
             orientation="vertical"
             onVisibilityChange={(visibility) => setVerticalState(visibility)}
@@ -55,6 +56,7 @@ export function VisibilityChange() {
         </div>
         <div class="w-full">
           <ScrollShadow
+            initialShadow
             class="p-4"
             orientation="horizontal"
             onVisibilityChange={(visibility) => setHorizontalState(visibility)}

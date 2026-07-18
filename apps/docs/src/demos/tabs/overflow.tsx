@@ -17,7 +17,7 @@ export function Overflow() {
   return (
     <div class="w-[400px]">
       <Tabs>
-        <Tabs.ListContainer>
+        <Tabs.ListContainer initialShadow>
           <Tabs.List aria-label="Overflow options">
             <For each={items}>
               {(item) => (

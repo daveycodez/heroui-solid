@@ -9,7 +9,7 @@ export function WithCard() {
         <Card.Description>Please review before proceeding</Card.Description>
       </Card.Header>
       <Card.Content class="p-0">
-        <ScrollShadow class="h-[300px] px-4" size={80}>
+        <ScrollShadow initialShadow class="h-[300px] px-4" size={80}>
           <div class="space-y-4">
             <For each={Array.from({ length: 10 })}>
               {() => (

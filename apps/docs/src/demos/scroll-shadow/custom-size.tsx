@@ -4,7 +4,7 @@ import { For } from "solid-js"
 export function CustomSize() {
   return (
     <div class="w-full p-0 sm:max-w-sm">
-      <ScrollShadow class="max-h-[240px] p-4" size={80}>
+      <ScrollShadow initialShadow class="max-h-[240px] p-4" size={80}>
         <div class="space-y-4">
           <For each={Array.from({ length: 10 })}>
             {() => (
