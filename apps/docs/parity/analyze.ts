@@ -182,7 +182,10 @@ export function analyzeDemo(source: string): DemoShape {
     }
     if (ts.isJsxAttribute(node)) {
       const name = node.name.getText()
-      if (name === "style") return
+      // `key` is React's list-reconciliation prop; Solid keys via `<For>`, so
+      // every mapped demo drops it — its value (often a template literal) is
+      // mechanics, not content.
+      if (name === "style" || name === "key") return
       if (name === "class" || name === "className") {
         // Literal class strings are the Tailwind↔style adaptation surface;
         // expressions (`class={buttonVariants({ variant: "secondary" })}`)

@@ -1,0 +1,7 @@
+/* Kobalte stamps no data-focus-visible (React Aria does upstream) and the
+   upstream native fallback `:focus-visible:not(:focus)` never matches, so the
+   tab focus ring rides native :focus-visible instead — gated on keyboard
+   modality (utils/interaction-modality.ts; absent attribute → no-op). */
+html:not([data-heroui-modality="pointer"]) .tabs__tab:focus-visible {
+  @apply status-focused;
+}
