@@ -19,7 +19,8 @@
    HeroUI docs — headings, body and UI all Inter; mono is the system stack). */
 @import "@fontsource-variable/inter";
 @import "./docs-theme.css" layer(docs);
-@import "./docs-code.css";
+@import "./code-highlight/code-block.css" layer(docs);
+@import "./docs-code.css" layer(docs);
 
 /* @heroui/styles sizes its icons against Tailwind v4's preflight, which leaves
    `svg { max-width }` unset. SolidBase's reset additionally caps every svg at

@@ -1,4 +1,6 @@
 // heroui-solid — Unofficial SolidJS port of HeroUI v3.
+export { cn } from "@heroui/styles"
+export * from "./components/accordion"
 export * from "./components/alert"
 export * from "./components/alert-dialog"
 export * from "./components/avatar"
@@ -32,3 +34,9 @@ export * from "./components/textarea"
 export * from "./components/textfield"
 export * from "./components/virtualizer"
 export { PreventScroll } from "./utils/prevent-scroll"
+export type { Key } from "./utils/types"
+export type {
+  UseDisclosureGroupNavigationProps,
+  UseDisclosureGroupNavigationReturn
+} from "./utils/use-disclosure-group-navigation"
+export { useDisclosureGroupNavigation } from "./utils/use-disclosure-group-navigation"

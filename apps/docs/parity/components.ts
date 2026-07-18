@@ -52,6 +52,11 @@ const RENDER_PROPS_SECTION = (heading: string): SectionSkip => ({
 })
 
 export const components: PortedComponent[] = [
+  {
+    slug: "accordion",
+    demosDir: "accordion",
+    skipDemos: [RENDER_PROP, AS_ELEMENT]
+  },
   { slug: "alert", demosDir: "alert" },
   { slug: "alert-dialog", demosDir: "alert-dialog" },
   { slug: "avatar", demosDir: "avatar" },

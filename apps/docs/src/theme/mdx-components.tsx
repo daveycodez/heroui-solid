@@ -10,6 +10,7 @@ import {
   children as resolveChildren,
   Show
 } from "solid-js"
+import { CodeBlock } from "../code-highlight/code-block"
 import { demos } from "../demos"
 import { withBase } from "./base"
 import { HomePage } from "./home-page"
@@ -27,7 +28,7 @@ import { HomePage } from "./home-page"
 //   as regular TSX instead, referenced by <ComponentPreview name="..." /> —
 //   same structure as the official HeroUI docs.
 
-export { HomePage }
+export { CodeBlock, HomePage }
 
 // The default theme renders MDX links as plain <a>, so root-absolute hrefs
 // in page content bypass the Router base — prefix them for subpath deploys.
