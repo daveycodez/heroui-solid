@@ -62,7 +62,11 @@ article:has([data-home]) [class*="_info_"] {
 
 /* --- Header ----------------------------------------------------------- */
 
-body header {
+/* [data-site-header] is stamped by theme/header.tsx. Never select bare
+ * `header` here: demo content renders heroui `<Header>` elements (portal'd
+ * dropdowns land directly under <body>), and an element selector repaints
+ * them with the site-chrome background/border. */
+body header:where([data-site-header]) {
   background: var(--background);
   border-bottom: 1px solid var(--separator);
 
@@ -86,7 +90,7 @@ body header {
  * heroui-plain-logo.tsx, viewBox 114x158) rotated 90° clockwise so it reads
  * as an S — for Solid — and applied as a mask filled with currentColor so it
  * tracks the text color through both themes. */
-body header a[class*="logo-link"] {
+body header:where([data-site-header]) a[class*="logo-link"] {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -121,7 +125,7 @@ body header a[class*="logo-link"] {
  * utilities. The header-end wrapper exists so the mobile search icon can sit
  * beside solidbase's hamburger without being a .top-nav child (its module
  * CSS hides every top-nav child but the hamburger below 500px). */
-body header .header-end {
+body header:where([data-site-header]) .header-end {
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -129,14 +133,14 @@ body header .header-end {
 }
 
 @media (min-width: 768px) {
-  body header .header-start,
-  body header .header-end {
+  body header:where([data-site-header]) .header-start,
+  body header:where([data-site-header]) .header-end {
     flex: 1 1 0;
     min-width: 0;
   }
 }
 
-body header .header-search {
+body header:where([data-site-header]) .header-search {
   display: flex;
   /* Basis = the button's official 400px max plus the inline padding, so the
    * bar actually reaches full width before the cluster starts shrinking. */
@@ -146,7 +150,7 @@ body header .header-search {
 }
 
 @media (max-width: 767px) {
-  body header .header-search {
+  body header:where([data-site-header]) .header-search {
     display: none;
   }
 }
@@ -199,7 +203,7 @@ body header .header-search {
  * override (vs the docs #nd-subnav one): right-aligned next to the GitHub
  * button, 240px, `--default` fill with no field shadow or blur, and
  * surface-filled text-xs kbds in both modes. */
-body header[data-home] .search-toggle {
+body header:where([data-site-header])[data-home] .search-toggle {
   max-width: 240px;
   background: color-mix(in oklab, var(--default) 80%, transparent);
   box-shadow: none;
@@ -216,12 +220,12 @@ body header[data-home] .search-toggle {
   }
 }
 
-body header .header-home-search {
+body header:where([data-site-header]) .header-home-search {
   display: none;
 }
 
 @media (min-width: 768px) {
-  body header .header-home-search {
+  body header:where([data-site-header]) .header-home-search {
     display: flex;
     flex: 0 1 240px;
   }
@@ -230,8 +234,8 @@ body header .header-home-search {
    * and docs subnav both use md:gap-2); solidbase's top-nav default is 1rem.
    * Applied to both the wrapper (search ↔ GitHub on home) and top-nav
    * (GitHub ↔ theme toggle) so the whole cluster spaces evenly. */
-  body header .header-end,
-  body header .header-end [class*="top-nav"] {
+  body header:where([data-site-header]) .header-end,
+  body header:where([data-site-header]) .header-end [class*="top-nav"] {
     gap: 0.5rem;
   }
 }

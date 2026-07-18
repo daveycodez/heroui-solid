@@ -56,7 +56,11 @@ export default function Header() {
   const isHome = () => frontmatter()?.layout === "home"
 
   return (
-    <header class={styles.header} data-home={isHome() ? "" : undefined}>
+    <header
+      class={styles.header}
+      data-site-header
+      data-home={isHome() ? "" : undefined}
+    >
       <div>
         <div class={`${styles["logo-cluster"]} header-start`}>
           <a
