@@ -12,8 +12,8 @@ export function Basic() {
       value={value()}
       onChange={setValue}
     >
-      <Label>Username</Label>
-      <Input placeholder="Enter username" />
+      <Label for="username">Username</Label>
+      <Input id="username" placeholder="Enter username" />
       <FieldError>Username must be at least 3 characters</FieldError>
     </TextField>
   )

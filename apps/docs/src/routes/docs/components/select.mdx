@@ -78,28 +78,44 @@ import { ChevronsExpandVertical } from "gravity-icons-solid";
 </Select.Indicator>
 ```
 
+### With Description
+
+<ComponentPreview name="select-with-description" />
+
+```tsx file=../../../demos/select/with-description.tsx title=""
+
+```
+
+### Required
+
+<ComponentPreview name="select-required" />
+
+```tsx file=../../../demos/select/required.tsx title=""
+
+```
+
 ### Controlled
 
 <ComponentPreview name="select-controlled" />
 
-```tsx
-import { Label, ListBox, Select } from "heroui-solid";
-import { createSignal } from "solid-js";
+```tsx file=../../../demos/select/controlled.tsx title=""
 
-export function Controlled() {
-  const [state, setState] = createSignal<string | null>("california");
+```
 
-  return (
-    <Select
-      class="w-[256px]"
-      placeholder="Select a state"
-      value={state()}
-      onChange={(value) => setState(value as string | null)}
-    >
-      ...
-    </Select>
-  );
-}
+### Controlled Multiple
+
+<ComponentPreview name="select-controlled-multiple" />
+
+```tsx file=../../../demos/select/controlled-multiple.tsx title=""
+
+```
+
+### Controlled Open State
+
+<ComponentPreview name="select-controlled-open-state" />
+
+```tsx file=../../../demos/select/controlled-open-state.tsx title=""
+
 ```
 
 ### Variants
@@ -110,6 +126,10 @@ The Select component supports two visual variants:
 - **`secondary`** - Lower emphasis variant without shadow, suitable for use in Surface components
 
 <ComponentPreview name="select-variants" />
+
+```tsx file=../../../demos/select/variants.tsx title=""
+
+```
 
 ### Full Width
 
@@ -127,6 +147,18 @@ When used inside a [Surface](/docs/components/surface) component, use `variant="
 
 <ComponentPreview name="select-on-surface" />
 
+```tsx file=../../../demos/select/on-surface.tsx title=""
+
+```
+
+### Custom Value
+
+<ComponentPreview name="select-custom-value" />
+
+```tsx file=../../../demos/select/custom-value.tsx title=""
+
+```
+
 ### Disabled
 
 <ComponentPreview name="select-disabled" />
@@ -143,6 +175,31 @@ When used inside a [Surface](/docs/components/surface) component, use `variant="
 - **Label** / **Description** / **FieldError**: Field satellites, all work inside Select
 
 ## Styling
+
+### Passing Tailwind CSS classes
+
+```tsx
+import { Label, ListBox, Select } from "heroui-solid";
+
+function CustomSelect() {
+  return (
+    <Select class="w-full">
+      <Label>State</Label>
+      <Select.Trigger class="rounded-lg border bg-surface-secondary p-2">
+        <Select.Value />
+        <Select.Indicator />
+      </Select.Trigger>
+      <Select.Popover>
+        <ListBox>
+          <ListBox.Item id="1" textValue="Item 1" class="hover:bg-surface-secondary">
+            Item 1
+          </ListBox.Item>
+        </ListBox>
+      </Select.Popover>
+    </Select>
+  );
+}
+```
 
 ### Customizing the component classes
 
@@ -191,6 +248,12 @@ The Select component uses these CSS classes ([View source styles](https://github
 
 - `.select--primary` - Primary variant with shadow (default)
 - `.select--secondary` - Secondary variant without shadow, suitable for use in surfaces
+
+#### State Classes
+
+- `.select[data-invalid="true"]` - Invalid state
+- `.select__trigger[data-focus-visible="true"]` - Focused trigger state
+- `.select__trigger[data-disabled="true"]` - Disabled trigger state
 
 ### Interactive States
 
@@ -268,6 +331,17 @@ When using a render function, `state` exposes `selectedOption()`, `selectedOptio
 | `variant`    | `"default" \| "danger"`   | `"default"` | Item visual variant                                     |
 | `class`      | `string`                  | -           | Additional CSS classes                                  |
 | `children`   | `JSX.Element`             | -           | Item content                                            |
+
+## Accessibility
+
+The Select component implements the ARIA listbox pattern (via Kobalte) and provides:
+
+- Full keyboard navigation support
+- Screen reader announcements for selection changes
+- Proper focus management
+- Support for disabled states
+- Typeahead search functionality
+- HTML form integration
 
 ## Differences from HeroUI React
 

@@ -1,0 +1,136 @@
+---
+title: Form
+---
+
+# Form
+
+Wrapper component for form validation and submission handling
+
+## Import
+
+```tsx
+import { Form } from "heroui-solid";
+```
+
+### Usage
+
+<ComponentPreview name="form-basic" />
+
+```tsx file=../../../demos/form/basic.tsx title=""
+
+```
+
+### Anatomy
+
+Import all parts and piece them together.
+
+```tsx
+import { Form, Button } from "heroui-solid";
+
+export default () => (
+  <Form>
+    {/* Form fields go here */}
+    <Button type="submit" />
+    <Button type="reset" />
+  </Form>
+);
+```
+
+## Styling
+
+### Passing Tailwind CSS classes
+
+```tsx
+import { Form, TextField, Label, Input, FieldError, Button } from "heroui-solid";
+
+function CustomForm() {
+  return (
+    <Form class="w-full max-w-md space-y-4 rounded-lg border border-border bg-surface-secondary p-6">
+      <TextField>
+        <Label class="text-sm font-medium">Email</Label>
+        <Input class="rounded-full border-border/60" placeholder="Enter your email" />
+        <FieldError />
+      </TextField>
+      <Button type="submit" class="w-full">
+        Submit
+      </Button>
+    </Form>
+  );
+}
+```
+
+## API Reference
+
+### Form Props
+
+The Form component renders a native `<form>` element and forwards all of its
+attributes. It accepts every prop of an HTML `<form>`, including:
+
+| Prop       | Type                                          | Default | Description                                     |
+| ---------- | --------------------------------------------- | ------- | ----------------------------------------------- |
+| `action`   | `string`                                      | -       | The URL to submit the form data to              |
+| `method`   | `'get' \| 'post'`                             | -       | The HTTP method to use when submitting the form |
+| `encType`  | `string`                                      | -       | The encoding type for form data submission      |
+| `target`   | `'_self' \| '_blank' \| '_parent' \| '_top'`  | -       | Where to display the response after submitting  |
+| `onSubmit` | `(event: SubmitEvent) => void`                | -       | Handler called when the form is submitted       |
+| `onReset`  | `(event: Event) => void`                      | -       | Handler called when the form is reset           |
+| `class`    | `string`                                      | -       | Tailwind CSS classes applied to the form element |
+| `children` | `JSX.Element`                                 | -       | Form content (fields, buttons, etc.)            |
+
+### Form Validation
+
+Unlike HeroUI React (which wires React Aria's validation system into the form),
+the Solid port renders a plain `<form>`. Drive validation yourself:
+
+- Use native HTML5 validation attributes on `Input` (`required`, `minLength`, `pattern`, …)
+- Compute each field's `isInvalid` from your own signals
+- Display the message through a `FieldError` child (see the Usage example)
+
+#### Validation Behavior
+
+There is no `validationBehavior` prop. Native HTML validation still applies when
+you set attributes like `required` on the `Input`; realtime, ARIA-style messages
+are produced by driving `isInvalid` and `FieldError` from state as the user types.
+
+### Form Submission
+
+Forms can be submitted in several ways:
+
+- **Traditional submission**: set the `action` prop to submit to a URL
+- **JavaScript handling**: use the `onSubmit` handler to process form data
+- **FormData API**: access form data using the FormData API in your submit handler
+
+Example with FormData:
+
+```tsx
+function handleSubmit(e: SubmitEvent) {
+  e.preventDefault();
+  const formData = new FormData(e.currentTarget as HTMLFormElement);
+  const data = Object.fromEntries(formData);
+  console.log("Form data:", data);
+}
+```
+
+### Integration with Form Fields
+
+The Form component works with HeroUI's form field components:
+
+- **TextField**: for text inputs with labels and validation
+- **Input** / **TextArea**: the field controls themselves
+- **Label** / **Description** / **FieldError**: field satellites
+- **Button**: for form submission and reset actions
+
+Place them inside the `<Form>` and they submit as part of its `FormData`.
+
+### Accessibility
+
+- Native `<form>` element semantics
+- Form landmark creation with `aria-label` or `aria-labelledby`
+- Labels associate with their controls through `TextField`
+- Field errors are announced through `FieldError`
+
+### Advanced Usage
+
+For richer flows — server-side validation, form-context providers, or integration
+with a third-party form library — compose those around the plain `<form>`; the
+Form component intentionally stays a thin native wrapper.

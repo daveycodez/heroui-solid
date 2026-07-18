@@ -137,6 +137,24 @@ When used inside a [Surface](/docs/components/surface) component, use `variant="
 
 ## Styling
 
+### Passing Tailwind CSS classes
+
+```tsx
+import { TextField, Label, Input, Description } from "heroui-solid";
+
+function CustomTextField() {
+  return (
+    <TextField class="gap-2 rounded-xl border border-border/60 bg-surface-secondary p-4 shadow-sm">
+      <Label class="text-sm font-semibold text-foreground">Project name</Label>
+      <Input class="rounded-lg border border-border/60 bg-surface-secondary px-3 py-2" />
+      <Description class="text-xs text-muted">
+        Keep it short and memorable.
+      </Description>
+    </TextField>
+  );
+}
+```
+
 ### Customizing the component classes
 
 TextField has minimal default styling. Override the `.textfield` class to customize the container styling.
@@ -182,21 +200,52 @@ TextField automatically manages these data attributes based on its state:
 
 TextField is built on Kobalte's [TextField](https://kobalte.dev/docs/core/components/text-field) primitive.
 
-| Prop           | Type                        | Default     | Description                                                    |
-| -------------- | --------------------------- | ----------- | -------------------------------------------------------------- |
-| `variant`      | `"primary" \| "secondary"`  | `"primary"` | Variant applied to child Input/TextArea via context            |
-| `fullWidth`    | `boolean`                   | `false`     | Whether the text field should take full width of its container |
-| `value`        | `string`                    | -           | Current value (controlled)                                     |
-| `defaultValue` | `string`                    | -           | Default value (uncontrolled)                                   |
-| `onChange`     | `(value: string) => void`   | -           | Handler called when the value changes                          |
-| `name`         | `string`                    | -           | Name of the input element, for HTML form submission            |
-| `isRequired`   | `boolean`                   | `false`     | Whether user input is required before form submission          |
-| `isInvalid`    | `boolean`                   | -           | Whether the value is invalid                                   |
-| `isDisabled`   | `boolean`                   | -           | Whether the input is disabled                                  |
-| `isReadOnly`   | `boolean`                   | -           | Whether the input can be selected but not changed              |
-| `class`        | `string`                    | -           | Additional CSS classes                                         |
-| `children`     | `JSX.Element`               | -           | Child components (Label, Input, etc.)                          |
-| `as`           | `ValidComponent`            | `"div"`     | Overrides the default DOM element (Kobalte polymorphic)        |
+#### Base Props
+
+| Prop        | Type                       | Default     | Description                                                    |
+| ----------- | -------------------------- | ----------- | -------------------------------------------------------------- |
+| `variant`   | `"primary" \| "secondary"` | `"primary"` | Variant applied to child Input/TextArea via context            |
+| `fullWidth` | `boolean`                  | `false`     | Whether the text field should take full width of its container |
+| `id`        | `string`                   | -           | The element's unique identifier                                |
+| `class`     | `string`                   | -           | Additional CSS classes                                         |
+| `children`  | `JSX.Element`              | -           | Child components (Label, Input, etc.)                          |
+| `as`        | `ValidComponent`           | `"div"`     | Overrides the default DOM element (Kobalte polymorphic)        |
+
+#### Validation Props
+
+| Prop         | Type      | Default | Description                                            |
+| ------------ | --------- | ------- | ----------------------------------------------------- |
+| `isRequired` | `boolean` | `false` | Whether user input is required before form submission |
+| `isInvalid`  | `boolean` | -       | Whether the value is invalid                          |
+
+#### Value Props
+
+| Prop           | Type                      | Default | Description                            |
+| -------------- | ------------------------- | ------- | -------------------------------------- |
+| `value`        | `string`                  | -       | Current value (controlled)             |
+| `defaultValue` | `string`                  | -       | Default value (uncontrolled)           |
+| `onChange`     | `(value: string) => void` | -       | Handler called when the value changes  |
+
+#### State Props
+
+| Prop         | Type      | Default | Description                                       |
+| ------------ | --------- | ------- | ------------------------------------------------- |
+| `isDisabled` | `boolean` | -       | Whether the input is disabled                     |
+| `isReadOnly` | `boolean` | -       | Whether the input can be selected but not changed |
+
+#### Form Props
+
+| Prop   | Type     | Default | Description                                         |
+| ------ | -------- | ------- | -------------------------------------------------- |
+| `name` | `string` | -       | Name of the input element, for HTML form submission |
+
+#### Accessibility Props
+
+| Prop              | Type     | Default | Description                                       |
+| ----------------- | -------- | ------- | ------------------------------------------------- |
+| `aria-label`      | `string` | -       | Accessibility label when no visible label is present |
+| `aria-labelledby` | `string` | -       | ID of elements that label this field              |
+| `aria-describedby` | `string` | -      | ID of elements that describe this field           |
 
 ### Composition Components
 

@@ -46,6 +46,39 @@ The FieldError component uses the following CSS classes:
 
 ## Examples
 
+### Basic Validation
+
+```tsx
+import { FieldError, Input, Label, TextField } from "heroui-solid";
+import { createSignal } from "solid-js";
+
+function UsernameField() {
+  const [value, setValue] = createSignal("");
+  const isInvalid = () => value().length > 0 && value().length < 3;
+
+  return (
+    <TextField class="w-64" isInvalid={isInvalid()} value={value()} onChange={setValue}>
+      <Label for="username">Username</Label>
+      <Input id="username" placeholder="Enter username" />
+      <FieldError>Username must be at least 3 characters</FieldError>
+    </TextField>
+  );
+}
+```
+
+### With Dynamic Messages
+
+There is no React Aria `ValidationResult` render prop — drive the message from your
+own state instead.
+
+```tsx
+<TextField isInvalid={errors().length > 0}>
+  <Label>Password</Label>
+  <Input type="password" />
+  <FieldError>{errors().join(", ")}</FieldError>
+</TextField>
+```
+
 ### Custom Validation Logic
 
 ```tsx
@@ -66,7 +99,19 @@ function EmailField() {
 }
 ```
 
-## API Reference
+### Multiple Error Messages
+
+```tsx
+<TextField isInvalid={hasErrors()}>
+  <Label>Username</Label>
+  <Input />
+  <FieldError>
+    <For each={errors()}>{(error) => <div>{error}</div>}</For>
+  </FieldError>
+</TextField>
+```
+
+## API
 
 ### FieldError Props
 

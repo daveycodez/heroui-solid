@@ -1,4 +1,4 @@
-import { Button, Card, Input, Label, TextField } from "heroui-solid"
+import { Button, Card, Form, Input, Label, Link, TextField } from "heroui-solid"
 
 export function WithForm() {
   const onSubmit = (event: SubmitEvent) => {
@@ -14,7 +14,7 @@ export function WithForm() {
           Enter your credentials to access your account
         </Card.Description>
       </Card.Header>
-      <form onSubmit={onSubmit}>
+      <Form onSubmit={onSubmit}>
         <Card.Content>
           <div class="flex flex-col gap-4">
             <TextField name="email">
@@ -39,11 +39,11 @@ export function WithForm() {
           <Button fullWidth type="submit">
             Sign In
           </Button>
-          <a class="text-center text-sm" href="#forgot">
+          <Link class="text-center text-sm" href="#">
             Forgot password?
-          </a>
+          </Link>
         </Card.Footer>
-      </form>
+      </Form>
     </Card>
   )
 }

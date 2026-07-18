@@ -3,6 +3,8 @@
  * component and imported by ./styles.css. Add new component bridges here.
  */
 @import "../components/button/button.overrides.css" layer(overrides);
+@import "../components/button-group/button-group.overrides.css" layer(overrides);
+@import "../components/close-button/close-button.overrides.css" layer(overrides);
 @import "../components/dropdown/dropdown.overrides.css" layer(overrides);
 @import "../components/input/input.overrides.css" layer(overrides);
 @import "../components/link/link.overrides.css" layer(overrides);

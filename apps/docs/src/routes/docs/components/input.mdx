@@ -80,6 +80,25 @@ When used inside a [Surface](/docs/components/surface) component, use `variant="
 
 ## Styling
 
+### Passing Tailwind CSS classes
+
+```tsx
+import { Input, Label } from "heroui-solid";
+
+function CustomInput() {
+  return (
+    <div class="flex flex-col gap-2">
+      <Label htmlFor="custom-input">Project name</Label>
+      <Input
+        id="custom-input"
+        class="rounded-xl border border-border/70 bg-surface-secondary px-4 py-2 text-sm shadow-sm focus-visible:border-accent"
+        placeholder="New web app"
+      />
+    </div>
+  );
+}
+```
+
 ### Customizing the component classes
 
 The base class `.input` powers every instance. Override it once with `@layer components`.

@@ -45,6 +45,15 @@ const UI_PACKAGES: Record<string, string> = {
 const ICON_PACKAGE =
   /^(@iconify\/react|@gravity-ui\/icons|gravity-icons-solid)$|^~icons\//
 
+// React Aria writes two-axis placements space-separated ("bottom end") while
+// Kobalte (our overlay primitives) uses hyphens ("bottom-end"). Any component
+// with a `placement` prop shares this adaptation, so canonicalize the value on
+// both sides to hyphen form before comparing text.
+const PLACEMENT =
+  /^(top|bottom|left|right|start|end|center)[ -](top|bottom|left|right|start|end|center)$/
+const canonicalizePlacement = (t: string): string =>
+  PLACEMENT.test(t) ? t.replace(" ", "-") : t
+
 export interface DemoShape {
   uiImports: Set<string>
   components: Set<string>
@@ -64,10 +73,13 @@ export function analyzeDemo(source: string): DemoShape {
   const text = new Set<string>()
   // Control-flow helpers (<For>, <Show>, React.Fragment…) are framework
   // mechanics, not UI components — tracked by import origin and excluded.
+  // frameworkIdents are named imports; frameworkNamespaces are default imports
+  // used as JSX namespaces (`import React from "react"` → `<React.Fragment>`).
   const frameworkIdents = new Set<string>()
+  const frameworkNamespaces = new Set<string>()
 
   const addText = (raw: string): void => {
-    const t = raw.replace(/\s+/g, " ").trim()
+    const t = canonicalizePlacement(raw.replace(/\s+/g, " ").trim())
     if (t) text.add(t)
   }
 
@@ -110,6 +122,9 @@ export function analyzeDemo(source: string): DemoShape {
       const pkg = UI_PACKAGES[spec]
       const clause = node.importClause
       const isFramework = spec === "solid-js" || spec === "react"
+      if (isFramework && clause?.name && !clause.isTypeOnly) {
+        frameworkNamespaces.add(clause.name.text)
+      }
       if (
         (pkg || isFramework) &&
         clause &&
@@ -178,7 +193,12 @@ export function analyzeDemo(source: string): DemoShape {
     }
     if (ts.isJsxOpeningElement(node) || ts.isJsxSelfClosingElement(node)) {
       const tag = node.tagName.getText()
-      if (/^[A-Z]/.test(tag)) components.add(tag)
+      // `<React.Fragment>` and friends — a JSX tag namespaced by a framework
+      // default import is mechanics, not a UI component (the Solid port uses
+      // `<For>`/`<>` instead).
+      const ns = tag.includes(".") ? tag.slice(0, tag.indexOf(".")) : undefined
+      const isFrameworkNs = ns !== undefined && frameworkNamespaces.has(ns)
+      if (/^[A-Z]/.test(tag) && !isFrameworkNs) components.add(tag)
     }
     // `typeof x === "function"` — type-tag comparisons are code mechanics.
     const isTypeofOperand =

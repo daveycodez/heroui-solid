@@ -60,7 +60,21 @@ export const components: PortedComponent[] = [
       }
     ]
   },
+  { slug: "button-group", demosDir: "button-group" },
   { slug: "card", demosDir: "card" },
+  { slug: "chip", demosDir: "chip" },
+  {
+    slug: "close-button",
+    demosDir: "close-button",
+    skipSections: [
+      RENDER_PROPS_SECTION("RenderProps"),
+      {
+        heading: "React Aria Button Props",
+        reason:
+          "documents react-aria-components Button passthrough props — the Solid port is built on Kobalte's Button instead"
+      }
+    ]
+  },
   { slug: "description", demosDir: "description" },
   {
     slug: "dropdown",
@@ -68,6 +82,7 @@ export const components: PortedComponent[] = [
     skipSections: [RENDER_PROPS_SECTION("RenderProps")]
   },
   { slug: "field-error", demosDir: "field-error" },
+  { slug: "form", demosDir: "form", skipDemos: [RENDER_PROP] },
   { slug: "input", demosDir: "input" },
   { slug: "kbd", demosDir: "kbd" },
   { slug: "label", demosDir: "label" },
@@ -95,8 +110,27 @@ export const components: PortedComponent[] = [
   {
     slug: "select",
     demosDir: "select",
-    skipDemos: [RENDER_PROP],
-    skipSections: [RENDER_PROPS_SECTION("RenderProps")]
+    skipDemos: [
+      RENDER_PROP,
+      {
+        stem: "asynchronous-loading",
+        reason:
+          "built on React Aria's useAsyncList + react-aria-components Collection/ListBoxLoadMoreItem — no Solid/Kobalte equivalent"
+      },
+      {
+        stem: "with-sections",
+        reason:
+          "Select does not yet register grouped options: ListBox.Section + Separator inside the closed Select popover force eager child resolution and crash hydration (AGENTS.md). Needs Select↔ListBox section support — tracked as a follow-up, not a React-only limitation"
+      }
+    ],
+    skipSections: [
+      RENDER_PROPS_SECTION("RenderProps"),
+      {
+        heading: "With Sections",
+        reason:
+          "section for the skipped select with-sections demo (Select grouped-options support pending)"
+      }
+    ]
   },
   { slug: "separator", demosDir: "separator", skipDemos: [RENDER_PROP] },
   { slug: "spinner", demosDir: "spinner" },

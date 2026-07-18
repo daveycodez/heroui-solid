@@ -17,6 +17,7 @@ import {
   MenuTriggerBehaviorContext,
   MenuTriggerContext
 } from "../../utils/menu-trigger-context"
+import { ButtonGroupContext } from "../button-group"
 
 interface ButtonRootProps extends ButtonVariants {
   isDisabled?: boolean
@@ -42,6 +43,21 @@ const ButtonRoot = <T extends ValidComponent = "button">(
   const longPress = createLongPressHandlers(
     isMenuTrigger ? useContext(MenuTriggerBehaviorContext) : undefined
   )
+
+  // Direct props win over the enclosing ButtonGroup's shared values; outside a
+  // group the context default is empty, so these fall back to the local props.
+  const group = useContext(ButtonGroupContext)
+  const groupVariants = mergeProps(variantProps, {
+    get variant() {
+      return variantProps.variant ?? group.variant
+    },
+    get size() {
+      return variantProps.size ?? group.size
+    },
+    get fullWidth() {
+      return variantProps.fullWidth ?? group.fullWidth
+    }
+  })
 
   // At-target `on:click` registers ahead of consumer listeners, so
   // stopImmediatePropagation silences them all while pending/disabled
@@ -88,7 +104,7 @@ const ButtonRoot = <T extends ValidComponent = "button">(
 
   return (
     <Primitive
-      class={cn(buttonVariants(variantProps), local.class)}
+      class={cn(buttonVariants(groupVariants), local.class)}
       data-slot="button"
       // Announces render-prop label changes while pending (React Aria's
       // pending pattern); only stamped when the consumer opts in.
@@ -103,7 +119,7 @@ const ButtonRoot = <T extends ValidComponent = "button">(
       {...forwarded}
       // After the spread so consumers can't desync state-derived attributes;
       // mergeProps skips undefined, so consumer values apply while off.
-      disabled={local.isDisabled}
+      disabled={local.isDisabled ?? group.isDisabled}
       data-pending={local.isPending ? "true" : undefined}
       aria-disabled={local.isPending ? "true" : undefined}
     />

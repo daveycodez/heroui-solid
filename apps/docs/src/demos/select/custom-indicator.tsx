@@ -6,7 +6,9 @@ const states = [
   { id: "florida", name: "Florida" },
   { id: "delaware", name: "Delaware" },
   { id: "california", name: "California" },
-  { id: "texas", name: "Texas" }
+  { id: "texas", name: "Texas" },
+  { id: "new-york", name: "New York" },
+  { id: "washington", name: "Washington" }
 ]
 
 export function CustomIndicator() {

@@ -1,5 +1,4 @@
-import { Xmark } from "gravity-icons-solid"
-import { Button, Card } from "heroui-solid"
+import { Button, Card, CloseButton } from "heroui-solid"
 
 export function Horizontal() {
   return (
@@ -19,15 +18,10 @@ export function Horizontal() {
             Lorem ipsum dolor sit amet consectetur. Sed arcu donec id aliquam
             dolor sed amet faucibus etiam.
           </Card.Description>
-          <Button
+          <CloseButton
             aria-label="Close banner"
             class="absolute top-3 right-3"
-            isIconOnly
-            size="sm"
-            variant="ghost"
-          >
-            <Xmark />
-          </Button>
+          />
         </Card.Header>
         <Card.Footer class="mt-auto flex w-full items-center justify-between gap-3">
           <div class="flex flex-col">

@@ -80,6 +80,27 @@ When used inside a [Surface](/docs/components/surface) component, use `variant="
 
 ## Styling
 
+### Passing Tailwind CSS classes
+
+```tsx
+import { Label, TextArea } from "heroui-solid";
+
+function CustomTextArea() {
+  return (
+    <div class="flex flex-col gap-2">
+      <Label htmlFor="custom-textarea">Message</Label>
+      <TextArea
+        id="custom-textarea"
+        class="rounded-xl border border-border/70 bg-surface-secondary px-4 py-3 text-sm leading-6 shadow-sm"
+        placeholder="Let us know how we can help..."
+        rows={5}
+        style={{ resize: "vertical" }}
+      />
+    </div>
+  );
+}
+```
+
 ### Customizing the component classes
 
 Override the shared `.textarea` class once with Tailwind's `@layer components`.
