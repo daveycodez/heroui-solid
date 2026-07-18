@@ -1,114 +1,128 @@
-/* Code block + ComponentPreview overrides that target expressive-code's
- * markup. EC injects its base CSS as an unlayered <style> at render time,
- * which outranks every cascade layer — so these rules must stay unlayered
- * too and win on specificity. Theme-level EC styling (backgrounds, fonts,
- * copy button colors) is configured via markdown.expressiveCode
- * styleOverrides in solidbase.config.ts; only what styleOverrides can't
- * express lives here.
+/* Styles for the CodeBlock component (theme/code-block.tsx) — our own
+ * Highlight-API code renderer, markup fully under our control (no injected
+ * third-party styles to out-rank). Per-token colors arrive via each block's
+ * own `::highlight()` rules (emitted by src/remark-code-highlight.ts); this
+ * file owns the panel, gutter, and copy button. Visuals mirror the official
+ * HeroUI docs: github-light/dark tokens on a translucent panel, 13px
+ * system-mono type, no frame chrome.
  */
 
-/* Component docs pages stack many Shiki-highlighted blocks (the dropdown page
- * alone renders ~24, ~7.4k highlighted <span>s — 90%+ of the page's DOM).
- * Every element they contain participates in each synchronous style/layout
- * recalc, and overlays (Dropdown/Select/Menu) force several such recalcs on
- * open (floating-ui overflow-ancestor walks, solid-presence's
- * getComputedStyle animation probe, the scroll-lock scrollbar-width read) —
- * so open latency scaled with total page DOM and froze for 200ms+ on the
- * heaviest pages, worst in Safari. content-visibility skips rendering work
- * for the off-screen blocks (all but the one or two in view), cutting overlay
- * open time ~4x and lightening initial load; contain-intrinsic-size keeps the
- * scrollbar stable (`auto` remembers each block's real height once seen).
- *
- * `.frame pre` (not just `pre`): EC injects an unlayered
- * `.expressive-code :not(:is(svg, svg *)) { content-visibility: revert }`
- * reset at render time whose specificity ties a lone `.expressive-code pre`
- * and whose <style> sits later in the document, so the extra `.frame` class
- * is needed to out-rank it (same trick as the background override below). */
-.expressive-code .frame pre {
+.code-block {
+  position: relative;
+  margin-block: 1rem;
+}
+
+.code-block pre {
+  background: var(--docs-code-bg);
+  border-radius: 0.75rem;
+  padding: 0.875rem 1rem;
+  overflow-x: auto;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 0.8125rem;
+  line-height: 1.54;
+  /* Base text = the github theme foregrounds; ::highlight ranges paint the
+   * rest. Browsers without the Highlight API show this color throughout. */
+  color: #24292e;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+  /* Off-screen blocks skip rendering work (cheap insurance — the Highlight
+   * API markup is ~2 spans/line, so there is no EC-scale DOM to begin
+   * with). Registered ranges survive the rendering skip. */
   content-visibility: auto;
   contain-intrinsic-size: auto 300px;
+}
+
+[data-theme="dark"] .code-block pre {
+  color: #e1e4e8;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+/* Line-number gutter (demo blocks only — showLineNumbers is injected by
+ * remark-component-preview-code.ts). CSS counters, not text nodes: never
+ * part of a drag-selection copy, no per-line DOM text. */
+.code-block code {
+  counter-reset: line;
+}
+
+.code-block .line {
+  counter-increment: line;
+}
+
+.code-block .line-number {
+  display: inline-block;
+  min-width: 2ch;
+  margin-right: 1rem;
+  text-align: right;
+  user-select: none;
+}
+
+.code-block .line-number::before {
+  content: counter(line);
+  color: rgba(115, 138, 148, 0.4);
 }
 
 /* Inside a ComponentPreview card the code block loses its own frame AND its
  * panel color — the official preview code section is transparent (page
  * background, separated from the demo by the card border alone); the gray
  * panel belongs to standalone code blocks only. */
-.component-preview .expressive-code {
+.component-preview .code-block {
   margin: 0;
 }
 
-/* `.frame pre` (not just `pre`): EC's own `.expressive-code .frame pre`
- * background rule ties a two-class selector and its injected <style> sits
- * later in the document, so the override needs the extra class to win. */
-.component-preview .expressive-code .frame,
-.component-preview .expressive-code .frame pre {
+.component-preview .code-block pre {
   background: transparent;
   border-radius: 0;
-  box-shadow: none;
 }
 
 /* Copy button: port of the official heroui.com button — a 32px ghost
  * icon-only pill, gravity-ui "copy" glyph (16px, muted) pinned 10px/8px
- * from the frame's top-right over a blur backdrop, always visible (EC
- * hides it until the frame is hovered), and swapping to the "check" glyph
- * while the copied feedback is live instead of EC's tooltip. Selectors are
- * `.frame`-qualified to out-rank EC's injected styles; opacity needs
- * !important because EC's reveal rules stack :hover/:not() qualifiers. */
-.expressive-code .frame .copy {
+ * from the block's top-right over a blur backdrop, always visible, swapping
+ * to the "check" glyph while the copied feedback is live. */
+.code-copy {
+  position: absolute;
   inset-block-start: 0.625rem;
   inset-inline-end: 0.5rem;
-  backdrop-filter: blur(16px);
-  border-radius: 0.5rem;
-}
-
-.expressive-code .frame .copy button {
   width: 2rem;
   height: 2rem;
-  border-radius: 1.5rem;
+  border: none;
+  padding: 0;
   background: transparent;
-  /* biome-ignore lint/complexity/noImportantStyles: EC's injected styles hide
-     the button behind `@media (hover)` rules up to (0,5,1) specificity
-     (`.frame:hover .copy button:not(:hover)`); the official docs keep the
-     copy button always visible, and only !important beats the :not(:hover)
-     state flips without replicating every EC selector. */
-  opacity: 1 !important;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  backdrop-filter: blur(16px);
 }
 
-/* EC's hover-overlay layer; the official ghost hover stays transparent. */
-.expressive-code .frame .copy button > div {
-  display: none;
-}
-
-.expressive-code .frame .copy button::after {
+.code-copy::after {
+  content: "";
+  display: block;
+  width: 1rem;
+  height: 1rem;
   margin: 0.5rem;
   background-color: var(--muted);
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='black' fill-rule='evenodd' d='M12 2.5H8A1.5 1.5 0 0 0 6.5 4v1H8a3 3 0 0 1 3 3v1.5h1A1.5 1.5 0 0 0 13.5 8V4A1.5 1.5 0 0 0 12 2.5M11 11h1a3 3 0 0 0 3-3V4a3 3 0 0 0-3-3H8a3 3 0 0 0-3 3v1H4a3 3 0 0 0-3 3v4a3 3 0 0 0 3 3h4a3 3 0 0 0 3-3zM4 6.5h4A1.5 1.5 0 0 1 9.5 8v4A1.5 1.5 0 0 1 8 13.5H4A1.5 1.5 0 0 1 2.5 12V8A1.5 1.5 0 0 1 4 6.5' clip-rule='evenodd'/%3E%3C/svg%3E");
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='black' fill-rule='evenodd' d='M12 2.5H8A1.5 1.5 0 0 0 6.5 4v1H8a3 3 0 0 1 3 3v1.5h1A1.5 1.5 0 0 0 13.5 8V4A1.5 1.5 0 0 0 12 2.5M11 11h1a3 3 0 0 0 3-3V4a3 3 0 0 0-3-3H8a3 3 0 0 0-3 3v1H4a3 3 0 0 0-3 3v4a3 3 0 0 0 3 3h4a3 3 0 0 0 3-3zM4 6.5h4A1.5 1.5 0 0 1 9.5 8v4A1.5 1.5 0 0 1 8 13.5H4A1.5 1.5 0 0 1 2.5 12V8A1.5 1.5 0 0 1 4 6.5' clip-rule='evenodd'/%3E%3C/svg%3E");
 }
 
-.expressive-code .frame .copy button:hover::after {
+.code-copy:hover::after {
   background-color: var(--foreground);
 }
 
-.expressive-code .frame .copy:has(.feedback.show) button::after {
+.code-copy[data-copied]::after {
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='black' fill-rule='evenodd' d='M13.488 3.43a.75.75 0 0 1 .081 1.058l-6 7a.75.75 0 0 1-1.1.042l-3.5-3.5A.75.75 0 0 1 4.03 6.97l2.928 2.927l5.473-6.385a.75.75 0 0 1 1.057-.081' clip-rule='evenodd'/%3E%3C/svg%3E");
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='black' fill-rule='evenodd' d='M13.488 3.43a.75.75 0 0 1 .081 1.058l-6 7a.75.75 0 0 1-1.1.042l-3.5-3.5A.75.75 0 0 1 4.03 6.97l2.928 2.927l5.473-6.385a.75.75 0 0 1 1.057-.081' clip-rule='evenodd'/%3E%3C/svg%3E");
 }
 
-/* Keep EC's feedback lifecycle running (its JS reads the computed opacity
- * transition to time removal) — just never paint the tooltip. */
-.expressive-code .frame .copy .feedback {
-  visibility: hidden;
-}
-
-/* Shell blocks render as plain code panels like every other block — the
- * official docs have no terminal chrome. Titled terminals keep the bar. */
-.expressive-code .frame.is-terminal:not(.has-title) figcaption {
-  display: none;
-}
-
-.expressive-code .frame.is-terminal:not(.has-title) pre {
-  border-radius: 0.75rem;
+/* Titled blocks (none exist today — every include uses title=""): minimal
+ * filename header so a future title="x" doesn't render bare. */
+.code-block-title {
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 0.8125rem;
+  color: var(--muted);
+  padding: 0.5rem 1rem 0;
 }
 
 /* The collapsed code section fades out at the bottom; the Expand button

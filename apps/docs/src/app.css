@@ -19,7 +19,7 @@
    HeroUI docs — headings, body and UI all Inter; mono is the system stack). */
 @import "@fontsource-variable/inter";
 @import "./docs-theme.css" layer(docs);
-@import "./docs-code.css";
+@import "./docs-code.css" layer(docs);
 
 /* Docs chrome adopts the heroui theme: remap solidbase's design tokens onto
    heroui tokens. Unlayered, so it beats the layered solidbase defaults; dark

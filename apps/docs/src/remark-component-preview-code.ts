@@ -5,11 +5,13 @@
  * (preview card with a collapsed, expandable code block attached below).
  *
  * MDX pages keep the official authoring shape (self-closing element, then a
- * ```tsx file=... fence); this runs before solidbase's import-code-file and
- * expressive-code passes, both of which visit code nodes wherever they sit
- * in the tree. Same programmatic mdxJsxFlowElement-children technique as
- * solidbase's own remark plugins (code-tabs, preview) — safe for hydration,
- * unlike hand-authored JSX children in MDX (see mdx-components.tsx).
+ * ```tsx file=... fence); this runs after solidbase's import-code-file pass
+ * (user remark plugins run last) and before remark-code-highlight, which
+ * consumes the injected `showLineNumbers` and visits code nodes wherever
+ * they sit in the tree. Same programmatic mdxJsxFlowElement-children
+ * technique as solidbase's own remark plugins (code-tabs, preview) — safe
+ * for hydration, unlike hand-authored JSX children in MDX (see
+ * mdx-components.tsx).
  *
  * Dependency-free walk: unist-util-visit isn't hoisted where this config
  * runs under bun's isolated linker.
