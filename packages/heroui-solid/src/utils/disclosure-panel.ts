@@ -43,6 +43,9 @@ function createDisclosurePanel(options: DisclosurePanelOptions): void {
     const onBeforeMatch = () => {
       // Wait a frame to revert the browser's removal of the hidden attribute;
       // the expansion effect below cancels this when state actually changes.
+      // Cancel any still-pending frame first so a re-fire can't leave an
+      // orphaned callback that re-hides the panel after it expands.
+      cancelRaf()
       raf = requestAnimationFrame(() => {
         panel.setAttribute("hidden", "until-found")
       })
