@@ -26,20 +26,12 @@ interface ChipRootProps extends ComponentProps<"span"> {
 }
 
 const ChipRoot = (props: ChipRootProps) => {
-  const [local, rest] = splitProps(props, [
-    "class",
-    "color",
-    "size",
-    "variant",
-    "children"
-  ])
-  const slots = createMemo(() =>
-    chipVariants({
-      color: local.color,
-      size: local.size,
-      variant: local.variant
-    })
+  const [variantProps, local, rest] = splitProps(
+    props,
+    chipVariants.variantKeys,
+    ["class", "children"]
   )
+  const slots = createMemo(() => chipVariants(variantProps))
 
   return (
     <ChipContext.Provider

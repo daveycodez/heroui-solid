@@ -17,7 +17,7 @@ import {
   Value as SelectValuePrimitive,
   useSelectContext
 } from "@kobalte/core/select"
-import { mergeRefs } from "@kobalte/utils"
+import { callHandler, mergeRefs } from "@kobalte/utils"
 import {
   type Accessor,
   type ComponentProps,
@@ -200,6 +200,12 @@ const SelectRoot = <T extends ValidComponent = "div">(
         toOptions(local.defaultValue) as ListBoxItemDescriptor[] | undefined
       }
       onChange={handleChange}
+      // Kobalte's deferred prune-selection effect rewrites the selection on
+      // every collection change, and with duplicate events allowed (Kobalte's
+      // Select default) even a no-op rewrite fires onChange and closes the
+      // popover via closeOnSelection — breaking dynamic collections. Reselect
+      // activation closes via SelectPopover's handlers instead.
+      allowDuplicateSelectionEvents={false}
       placement={placement()}
       // Kobalte defaults sameWidth: true (pins the popover to the trigger's
       // exact width); upstream only enforces a min-width, so long labels
@@ -405,11 +411,29 @@ const SelectPopover = <T extends ValidComponent = "div">(
   const [local, rest] = splitProps(
     props as SelectPopoverProps & {
       ref?: HTMLElement | ((el: HTMLElement) => void)
+      onClick?: JSX.EventHandlerUnion<HTMLElement, MouseEvent>
+      onKeyDown?: JSX.EventHandlerUnion<HTMLElement, KeyboardEvent>
     },
-    ["class", "children", "placement", "ref"]
+    ["class", "children", "placement", "ref", "onClick", "onKeyDown"]
   )
   const context = useContext(SelectContext)
+  const selectContext = useSelectContext()
   const [contentEl, setContentEl] = createSignal<HTMLElement>()
+
+  // Duplicate selection events are disabled on the root (see SelectRoot), so
+  // Kobalte's closeOnSelection never sees a reselect of the current value —
+  // close on option activation here instead (clicks and Enter; Space is left
+  // to closeOnSelection since it can also be mid-typeahead). Runs after
+  // Kobalte's own bubble-phase handlers, so selection is already applied and
+  // a second close after a real selection change is a no-op.
+  const closeOnActivation = (option: Element | null | undefined) => {
+    if (!option || selectContext.isMultiple()) {
+      return
+    }
+    if (option.getAttribute("aria-disabled") !== "true") {
+      selectContext.close()
+    }
+  }
   const [resolvedSide, setResolvedSide] = createSignal<string>()
 
   createComputed(() => {
@@ -453,6 +477,27 @@ const SelectPopover = <T extends ValidComponent = "div">(
           data-placement={
             resolvedSide() ?? (local.placement ?? "bottom").split("-")[0]
           }
+          onClick={(
+            event: MouseEvent & { currentTarget: HTMLElement; target: Element }
+          ) => {
+            callHandler(event, local.onClick)
+            closeOnActivation(event.target.closest("[data-slot=list-box-item]"))
+          }}
+          onKeyDown={(
+            event: KeyboardEvent & {
+              currentTarget: HTMLElement
+              target: Element
+            }
+          ) => {
+            callHandler(event, local.onKeyDown)
+            if (event.key === "Enter") {
+              closeOnActivation(
+                contentEl()?.querySelector(
+                  "[data-slot=list-box-item][data-highlighted]"
+                )
+              )
+            }
+          }}
           {...rest}
         >
           <PreventScroll />

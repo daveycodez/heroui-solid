@@ -1,4 +1,4 @@
-import { createContext } from "solid-js"
+import { createContext, onCleanup } from "solid-js"
 
 // Marks the trigger slot of a menu: Dropdown's root provides `true`, its
 // popover resets to `false`. Button renders Kobalte's menu trigger when the
@@ -38,6 +38,9 @@ export const createLongPressHandlers = (
       timer = undefined
     }
   }
+  // Trigger may unmount mid-hold (route change / conditional render) before
+  // pointerup — clear the pending timer so it can't open() a disposed owner.
+  onCleanup(cancel)
 
   return {
     onPointerDown: (event: PointerEvent) => {

@@ -87,8 +87,22 @@ import { CustomCheckIcon as ListBoxCustomCheckIcon } from "./list-box/custom-che
 import { Default as ListBoxDefault } from "./list-box/default"
 import { MultiSelect as ListBoxMultiSelect } from "./list-box/multi-select"
 import { ScrollbarModes as ListBoxScrollbarModes } from "./list-box/scrollbar-modes"
+import { Virtualization as ListBoxVirtualization } from "./list-box/virtualization"
 import { WithDisabledItems as ListBoxWithDisabledItems } from "./list-box/with-disabled-items"
 import { WithSections as ListBoxWithSections } from "./list-box/with-sections"
+import { Basic as SearchFieldBasic } from "./search-field/basic"
+import { Controlled as SearchFieldControlled } from "./search-field/controlled"
+import { CustomIcons as SearchFieldCustomIcons } from "./search-field/custom-icons"
+import { Disabled as SearchFieldDisabled } from "./search-field/disabled"
+import { FormExample as SearchFieldFormExample } from "./search-field/form-example"
+import { FullWidth as SearchFieldFullWidth } from "./search-field/full-width"
+import { OnSurface as SearchFieldOnSurface } from "./search-field/on-surface"
+import { Required as SearchFieldRequired } from "./search-field/required"
+import { Validation as SearchFieldValidation } from "./search-field/validation"
+import { Variants as SearchFieldVariants } from "./search-field/variants"
+import { WithDescription as SearchFieldWithDescription } from "./search-field/with-description"
+import { WithKeyboardShortcut as SearchFieldWithKeyboardShortcut } from "./search-field/with-keyboard-shortcut"
+import { WithValidation as SearchFieldWithValidation } from "./search-field/with-validation"
 import { Controlled as SelectControlled } from "./select/controlled"
 import { ControlledMultiple as SelectControlledMultiple } from "./select/controlled-multiple"
 import { ControlledOpenState as SelectControlledOpenState } from "./select/controlled-open-state"
@@ -115,6 +129,15 @@ import { SpinnerBasic } from "./spinner/basic"
 import { SpinnerColors } from "./spinner/colors"
 import { SpinnerSizes } from "./spinner/sizes"
 import { Variants as SurfaceVariants } from "./surface/variants"
+import { TagGroupBasic } from "./tag-group/basic"
+import { TagGroupControlled } from "./tag-group/controlled"
+import { TagGroupDisabled } from "./tag-group/disabled"
+import { TagGroupSelectionModes } from "./tag-group/selection-modes"
+import { TagGroupSizes } from "./tag-group/sizes"
+import { TagGroupVariants } from "./tag-group/variants"
+import { TagGroupWithErrorMessage } from "./tag-group/with-error-message"
+import { TagGroupWithPrefix } from "./tag-group/with-prefix"
+import { TagGroupWithRemoveButton } from "./tag-group/with-remove-button"
 import { Basic as TextAreaBasic } from "./textarea/basic"
 import { Controlled as TextAreaControlled } from "./textarea/controlled"
 import { FullWidth as TextAreaFullWidth } from "./textarea/full-width"
@@ -227,6 +250,7 @@ export const demos: Record<string, Component> = {
   "list-box-custom-check-icon": ListBoxCustomCheckIcon,
   "list-box-controlled": ListBoxControlled,
   "list-box-scrollbar-modes": ListBoxScrollbarModes,
+  "list-box-virtualization": ListBoxVirtualization,
   "select-default": SelectDefault,
   "select-multiple-select": SelectMultipleSelect,
   "select-with-disabled-options": SelectWithDisabledOptions,
@@ -243,6 +267,19 @@ export const demos: Record<string, Component> = {
   "select-required": SelectRequired,
   "select-with-description": SelectWithDescription,
   "select-with-sections": SelectWithSections,
+  "search-field-basic": SearchFieldBasic,
+  "search-field-with-description": SearchFieldWithDescription,
+  "search-field-required": SearchFieldRequired,
+  "search-field-validation": SearchFieldValidation,
+  "search-field-disabled": SearchFieldDisabled,
+  "search-field-controlled": SearchFieldControlled,
+  "search-field-with-validation": SearchFieldWithValidation,
+  "search-field-custom-icons": SearchFieldCustomIcons,
+  "search-field-full-width": SearchFieldFullWidth,
+  "search-field-variants": SearchFieldVariants,
+  "search-field-on-surface": SearchFieldOnSurface,
+  "search-field-form-example": SearchFieldFormExample,
+  "search-field-with-keyboard-shortcut": SearchFieldWithKeyboardShortcut,
   "separator-basic": SeparatorBasic,
   "separator-vertical": SeparatorVertical,
   "separator-with-content": SeparatorWithContent,
@@ -269,5 +306,14 @@ export const demos: Record<string, Component> = {
   "textfield-textarea": TextFieldTextArea,
   "textfield-input-types": TextFieldInputTypes,
   "textfield-full-width": TextFieldFullWidth,
-  "textfield-on-surface": TextFieldOnSurface
+  "textfield-on-surface": TextFieldOnSurface,
+  "tag-group-basic": TagGroupBasic,
+  "tag-group-sizes": TagGroupSizes,
+  "tag-group-variants": TagGroupVariants,
+  "tag-group-disabled": TagGroupDisabled,
+  "tag-group-controlled": TagGroupControlled,
+  "tag-group-selection-modes": TagGroupSelectionModes,
+  "tag-group-with-prefix": TagGroupWithPrefix,
+  "tag-group-with-remove-button": TagGroupWithRemoveButton,
+  "tag-group-with-error-message": TagGroupWithErrorMessage
 }

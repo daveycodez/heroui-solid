@@ -1,20 +1,10 @@
-import type { JSX } from "solid-js"
+import { children, type JSX } from "solid-js"
 
 import {
   isItemDescriptor,
   LIST_BOX_SECTION,
   type ListBoxSectionDescriptor
 } from "../list-box/list-box"
-
-const flattenChildren = (value: unknown): unknown[] => {
-  if (typeof value === "function" && !(value as () => unknown).length) {
-    return flattenChildren((value as () => unknown)())
-  }
-  if (Array.isArray(value)) {
-    return value.flatMap(flattenChildren)
-  }
-  return value == null || value === false ? [] : [value]
-}
 
 /* -------------------------------------------------------------------------------------------------
  * ListBox Section Root
@@ -30,18 +20,15 @@ interface ListBoxSectionRootProps {
 // header's children are Header/Separator deferral markers, not DOM, so
 // resolving here creates nothing to desync hydration (see AGENTS.md).
 const ListBoxSectionRoot = (props: ListBoxSectionRootProps): JSX.Element => {
-  // Manual single-read cache instead of the children() helper: server memos
-  // evaluate eagerly while client memos stay lazy, and an unbalanced
+  // Reactive children() helper so dynamic sections (<For> of items driven by
+  // a signal) re-track, same as un-sectioned items in ListBoxRoot. Kobalte
+  // reads the items getter inside its collection memo, so re-resolution
+  // flows through without the enclosing ListBox re-running.
+  const resolved = children(() => props.children)
+  // Resolve at a fixed point on both server and client: server memos
+  // evaluate eagerly at creation while client memos are lazy — an unbalanced
   // first-resolution point desyncs hydration ids (see AGENTS.md).
-  let cache: unknown[] | undefined
-  const resolve = (): unknown[] => {
-    if (cache === undefined) {
-      cache = flattenChildren(props.children)
-    }
-    return cache
-  }
-  // Resolve at a fixed point on both server and client.
-  resolve()
+  resolved()
 
   const descriptor: ListBoxSectionDescriptor = {
     // @ts-expect-error marker key identifies section descriptors during child resolution
@@ -52,10 +39,16 @@ const ListBoxSectionRoot = (props: ListBoxSectionRootProps): JSX.Element => {
       return props.class
     },
     get items() {
-      return resolve().filter(isItemDescriptor)
+      // `as unknown[]` so the isItemDescriptor guard narrows (matches ListBox).
+      return (resolved.toArray() as unknown[]).filter(isItemDescriptor)
     },
     get header() {
-      return resolve().filter((child) => !isItemDescriptor(child))
+      return resolved
+        .toArray()
+        .filter(
+          (child) =>
+            child != null && child !== false && !isItemDescriptor(child)
+        )
     }
   }
 

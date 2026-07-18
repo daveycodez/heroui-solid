@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { fireEvent, render } from "@solidjs/testing-library"
+import { createSignal, For } from "solid-js"
 import { describe, expect, it, vi } from "vitest"
 import { HeaderRoot } from "../header/header"
 import { ListBoxSectionRoot } from "../list-box-section/list-box-section"
@@ -239,6 +240,36 @@ describe("ListBox sections", () => {
     fireEvent.click(item)
     expect(onAction).toHaveBeenCalledWith("edit-file")
     expect(onSelectionChange).toHaveBeenCalledOnce()
+  })
+
+  it("tracks signal-driven items inside a section", () => {
+    const [files, setFiles] = createSignal(["alpha", "beta"])
+    const { container } = render(() => (
+      <ListBoxRoot aria-label="Files">
+        <ListBoxSectionRoot>
+          <HeaderRoot>Files</HeaderRoot>
+          <For each={files()}>
+            {(id) => (
+              <ListBoxItem id={id} textValue={id}>
+                {id}
+              </ListBoxItem>
+            )}
+          </For>
+        </ListBoxSectionRoot>
+      </ListBoxRoot>
+    ))
+
+    const names = () =>
+      [...container.querySelectorAll("[data-slot=list-box-item]")].map(
+        (el) => el.textContent
+      )
+    expect(names()).toEqual(["alpha", "beta"])
+
+    setFiles(["alpha", "beta", "gamma"])
+    expect(names()).toEqual(["alpha", "beta", "gamma"])
+
+    setFiles(["beta"])
+    expect(names()).toEqual(["beta"])
   })
 
   it("renders an empty section as header only", () => {

@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { fireEvent, render } from "@solidjs/testing-library"
+import { createSignal, For } from "solid-js"
 import { describe, expect, it, vi } from "vitest"
 import { classSet } from "../../test/utils"
 import { HeaderRoot } from "../header/header"
@@ -173,6 +174,66 @@ describe("Select", () => {
 
     // The Separator between the two sections renders (deferred until open).
     expect(document.querySelectorAll("[data-slot=separator]").length).toBe(1)
+  })
+
+  it("tracks signal-driven items inside a section", () => {
+    const [countries, setCountries] = createSignal(["Sweden", "Norway"])
+    const { container } = render(() => (
+      <SelectRoot placeholder="Select a country">
+        <LabelRoot>Country</LabelRoot>
+        <SelectTrigger>
+          <SelectValue />
+          <SelectIndicator />
+        </SelectTrigger>
+        <SelectPopover>
+          <ListBoxRoot>
+            <ListBoxSectionRoot>
+              <HeaderRoot>Europe</HeaderRoot>
+              <For each={countries()}>
+                {(name) => (
+                  <ListBoxItem id={name} textValue={name}>
+                    {name}
+                  </ListBoxItem>
+                )}
+              </For>
+            </ListBoxSectionRoot>
+          </ListBoxRoot>
+        </SelectPopover>
+      </SelectRoot>
+    ))
+    openWithKeyboard(
+      container.querySelector("[data-slot=select-trigger]") as HTMLElement
+    )
+
+    const names = () =>
+      [...document.querySelectorAll("[data-slot=list-box-item]")].map(
+        (el) => el.textContent
+      )
+    expect(names()).toEqual(["Sweden", "Norway"])
+
+    setCountries(["Sweden", "Norway", "Finland"])
+    expect(names()).toEqual(["Sweden", "Norway", "Finland"])
+  })
+
+  it("closes the popover when the selected item is activated again", () => {
+    const onChange = vi.fn()
+    const { container } = render(() => (
+      <Anatomy defaultValue="texas" onChange={onChange} />
+    ))
+    const trigger = container.querySelector(
+      "[data-slot=select-trigger]"
+    ) as HTMLElement
+    openWithKeyboard(trigger)
+
+    const texas = [
+      ...document.querySelectorAll("[data-slot=list-box-item]")
+    ].find((el) => el.textContent?.includes("Texas")) as HTMLElement
+    expect(texas.getAttribute("aria-selected")).toBe("true")
+    fireEvent.pointerDown(texas, { pointerId: 1, pointerType: "mouse" })
+    fireEvent.click(texas)
+
+    expect(document.querySelector("[data-slot=select-popover]")).toBeNull()
+    expect(onChange).not.toHaveBeenCalled()
   })
 
   it("stamps data-placement for the default bottom placement", () => {

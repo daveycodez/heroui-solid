@@ -101,22 +101,21 @@ export const components: PortedComponent[] = [
   { slug: "label", demosDir: "label" },
   { slug: "link", demosDir: "link", skipDemos: [RENDER_PROP, AS_ELEMENT] },
   {
+    slug: "search-field",
+    demosDir: "search-field",
+    skipDemos: [RENDER_PROP],
+    skipSections: [RENDER_PROPS_SECTION("SearchFieldRenderProps")]
+  },
+  {
     slug: "list-box",
     demosDir: "list-box",
-    skipDemos: [
-      RENDER_PROP,
-      {
-        stem: "virtualization",
-        reason:
-          "built on React Aria's Virtualizer/ListLayout — no Solid/Kobalte equivalent (documented in the page's Differences section)"
-      }
-    ],
+    skipDemos: [RENDER_PROP],
     skipSections: [
       RENDER_PROPS_SECTION("RenderProps"),
       {
         heading: "ListLayout",
         reason:
-          "API reference for the skipped virtualization demo (React Aria Virtualizer)"
+          "our ListLayout is a minimal marker (Kobalte `virtualized` + @tanstack/solid-virtual do the windowing); upstream's ListLayout layout-strategy API surface has no Solid equivalent to document"
       }
     ]
   },
@@ -142,5 +141,18 @@ export const components: PortedComponent[] = [
     demosDir: "textfield",
     skipDemos: [RENDER_PROP],
     skipSections: [RENDER_PROPS_SECTION("TextFieldRenderProps")]
+  },
+  {
+    slug: "tag-group",
+    demosDir: "tag-group",
+    skipDemos: [
+      RENDER_PROP,
+      {
+        stem: "with-list-data",
+        reason:
+          "built on React Aria's useListData (@react-stately/data) — the port ships no dependency-free Solid equivalent"
+      }
+    ],
+    skipSections: [RENDER_PROPS_SECTION("RenderProps")]
   }
 ]

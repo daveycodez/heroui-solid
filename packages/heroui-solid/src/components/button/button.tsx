@@ -80,7 +80,7 @@ const ButtonRoot = <T extends ValidComponent = "button">(
     if (event.defaultPrevented) {
       return
     }
-    if (local.isPending || local.isDisabled) {
+    if (local.isPending || (local.isDisabled ?? group.isDisabled)) {
       event.preventDefault()
       event.stopImmediatePropagation()
       return

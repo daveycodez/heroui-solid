@@ -83,7 +83,10 @@ export function analyzeDemo(source: string): DemoShape {
     if (t) text.add(t)
   }
 
+  // iconIdents are default/named icon imports (`<Foo>`); iconNamespaces are
+  // namespace imports used as JSX namespaces (`import * as Icons` → `<Icons.Foo>`).
   const iconIdents = new Set<string>()
+  const iconNamespaces = new Set<string>()
   for (const stmt of sf.statements) {
     if (!ts.isImportDeclaration(stmt)) continue
     const spec = (stmt.moduleSpecifier as ts.StringLiteral).text
@@ -91,11 +94,22 @@ export function analyzeDemo(source: string): DemoShape {
     const clause = stmt.importClause
     if (!clause) continue
     if (clause.name) iconIdents.add(clause.name.text)
-    if (clause.namedBindings && ts.isNamedImports(clause.namedBindings)) {
-      for (const el of clause.namedBindings.elements) {
-        iconIdents.add(el.name.text)
+    if (clause.namedBindings) {
+      if (ts.isNamedImports(clause.namedBindings)) {
+        for (const el of clause.namedBindings.elements) {
+          iconIdents.add(el.name.text)
+        }
+      } else if (ts.isNamespaceImport(clause.namedBindings)) {
+        iconNamespaces.add(clause.namedBindings.name.text)
       }
     }
+  }
+  // A tag is an icon when it was imported from an icon package directly
+  // (`<Foo>`) or namespaced from one (`<Icons.Foo>`).
+  const isIconTag = (tag: string): boolean => {
+    if (iconIdents.has(tag)) return true
+    const ns = tag.includes(".") ? tag.slice(0, tag.indexOf(".")) : undefined
+    return ns !== undefined && iconNamespaces.has(ns)
   }
 
   // Hoisted style objects (`const iconStyle = {…}` used as `style={iconStyle}`)
@@ -185,9 +199,8 @@ export function analyzeDemo(source: string): DemoShape {
     }
     if (
       (ts.isJsxElement(node) &&
-        iconIdents.has(node.openingElement.tagName.getText())) ||
-      (ts.isJsxSelfClosingElement(node) &&
-        iconIdents.has(node.tagName.getText()))
+        isIconTag(node.openingElement.tagName.getText())) ||
+      (ts.isJsxSelfClosingElement(node) && isIconTag(node.tagName.getText()))
     ) {
       return
     }

@@ -26,8 +26,12 @@ interface KbdRootProps extends ComponentProps<"kbd"> {
 }
 
 const KbdRoot = (props: KbdRootProps) => {
-  const [local, rest] = splitProps(props, ["class", "variant"])
-  const slots = createMemo(() => kbdVariants({ variant: local.variant }))
+  const [variantProps, local, rest] = splitProps(
+    props,
+    kbdVariants.variantKeys,
+    ["class"]
+  )
+  const slots = createMemo(() => kbdVariants(variantProps))
 
   return (
     <KbdContext.Provider

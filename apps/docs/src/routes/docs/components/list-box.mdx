@@ -92,6 +92,16 @@ export default () => (
 
 ```
 
+### Virtualization
+
+ListBox supports virtualization through `Virtualizer`, enabling efficient rendering of large datasets by displaying only the rows visible within the viewport. It wraps the ListBox and windows the collection with [@tanstack/solid-virtual](https://tanstack.com/virtual) over Kobalte's virtualized listbox.
+
+<ComponentPreview name="list-box-virtualization" />
+
+```tsx file=../../../demos/list-box/virtualization.tsx title=""
+
+```
+
 ## Styling
 
 ### Passing Tailwind CSS classes

@@ -58,8 +58,12 @@ function pageRecords(url: string, raw: string): SearchRecord[] {
           sections.set(current, [])
           slugs.set(current, slug)
         }
-        continue
+      } else if (text) {
+        // h4-h6 stay in the current section's content — index the heading
+        // text, not the raw `####` markers.
+        sections.get(current)?.push(text)
       }
+      continue
     }
     if (line.trim()) {
       sections.get(current)?.push(line)
