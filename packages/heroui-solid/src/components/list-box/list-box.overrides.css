@@ -16,3 +16,11 @@
 .list-box-item:focus-visible {
   @apply status-focused;
 }
+
+/* Kobalte renders sections flat (label li + sibling option lis) — emulate
+   upstream's in-section gap-0 wrapper. */
+.list-box > [data-slot="list-box-section"] + [data-slot="list-box-item"],
+.list-box:has(> [data-slot="list-box-section"]) > [data-slot="list-box-item"]
+  + [data-slot="list-box-item"] {
+  @apply mt-0;
+}

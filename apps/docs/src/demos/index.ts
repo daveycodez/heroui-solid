@@ -1,4 +1,11 @@
 import type { Component } from "solid-js"
+import { Basic as AvatarBasic } from "./avatar/basic"
+import { Colors as AvatarColors } from "./avatar/colors"
+import { CustomStyles as AvatarCustomStyles } from "./avatar/custom-styles"
+import { Fallback as AvatarFallback } from "./avatar/fallback"
+import { Group as AvatarGroup } from "./avatar/group"
+import { Sizes as AvatarSizes } from "./avatar/sizes"
+import { Variants as AvatarVariants } from "./avatar/variants"
 import { Basic } from "./button/basic"
 import { CustomElement } from "./button/custom-element"
 import { CustomVariants } from "./button/custom-variants"
@@ -28,6 +35,12 @@ import { FullWidth as InputFullWidth } from "./input/full-width"
 import { OnSurface as InputOnSurface } from "./input/on-surface"
 import { Types as InputTypes } from "./input/types"
 import { Variants as InputVariants } from "./input/variants"
+import { Basic as KbdBasic } from "./kbd/basic"
+import { InlineUsage as KbdInlineUsage } from "./kbd/inline"
+import { InstructionalText as KbdInstructionalText } from "./kbd/instructional"
+import { NavigationKeys as KbdNavigationKeys } from "./kbd/navigation"
+import { SpecialKeys as KbdSpecialKeys } from "./kbd/special"
+import { Variants as KbdVariants } from "./kbd/variants"
 import { Basic as LabelBasic } from "./label/basic"
 import { LinkBasic } from "./link/basic"
 import { LinkCustomElement } from "./link/custom-element"
@@ -38,6 +51,9 @@ import { Controlled as ListBoxControlled } from "./list-box/controlled"
 import { CustomCheckIcon as ListBoxCustomCheckIcon } from "./list-box/custom-check-icon"
 import { Default as ListBoxDefault } from "./list-box/default"
 import { MultiSelect as ListBoxMultiSelect } from "./list-box/multi-select"
+import { ScrollbarModes as ListBoxScrollbarModes } from "./list-box/scrollbar-modes"
+import { WithDisabledItems as ListBoxWithDisabledItems } from "./list-box/with-disabled-items"
+import { WithSections as ListBoxWithSections } from "./list-box/with-sections"
 import { Controlled as SelectControlled } from "./select/controlled"
 import { CustomIndicator as SelectCustomIndicator } from "./select/custom-indicator"
 import { Default as SelectDefault } from "./select/default"
@@ -47,6 +63,12 @@ import { MultipleSelect as SelectMultipleSelect } from "./select/multiple-select
 import { OnSurface as SelectOnSurface } from "./select/on-surface"
 import { Variants as SelectVariants } from "./select/variants"
 import { WithDisabledOptions as SelectWithDisabledOptions } from "./select/with-disabled-options"
+import { Basic as SeparatorBasic } from "./separator/basic"
+import { ManualVariantOverride as SeparatorManualVariantOverride } from "./separator/manual-variant-override"
+import { Variants as SeparatorVariants } from "./separator/variants"
+import { Vertical as SeparatorVertical } from "./separator/vertical"
+import { WithContent as SeparatorWithContent } from "./separator/with-content"
+import { WithSurface as SeparatorWithSurface } from "./separator/with-surface"
 import { SpinnerBasic } from "./spinner/basic"
 import { SpinnerColors } from "./spinner/colors"
 import { SpinnerSizes } from "./spinner/sizes"
@@ -73,6 +95,13 @@ import { WithError as TextFieldWithError } from "./textfield/with-error"
 // official HeroUI docs structure (apps/docs/src/demos/<component>/<demo>.tsx,
 // referenced by "<component>-<demo>" name).
 export const demos: Record<string, Component> = {
+  "avatar-basic": AvatarBasic,
+  "avatar-sizes": AvatarSizes,
+  "avatar-colors": AvatarColors,
+  "avatar-variants": AvatarVariants,
+  "avatar-fallback": AvatarFallback,
+  "avatar-group": AvatarGroup,
+  "avatar-custom-styles": AvatarCustomStyles,
   "button-basic": Basic,
   "button-variants": Variants,
   "button-with-icons": WithIcons,
@@ -102,6 +131,12 @@ export const demos: Record<string, Component> = {
   "input-full-width": InputFullWidth,
   "input-variants": InputVariants,
   "input-on-surface": InputOnSurface,
+  "kbd-basic": KbdBasic,
+  "kbd-navigation": KbdNavigationKeys,
+  "kbd-inline": KbdInlineUsage,
+  "kbd-instructional": KbdInstructionalText,
+  "kbd-special": KbdSpecialKeys,
+  "kbd-variants": KbdVariants,
   "label-basic": LabelBasic,
   "link-basic": LinkBasic,
   "link-custom-icon": LinkCustomIcon,
@@ -109,9 +144,12 @@ export const demos: Record<string, Component> = {
   "link-underline-and-offset": LinkUnderlineAndOffset,
   "link-custom-element": LinkCustomElement,
   "list-box-default": ListBoxDefault,
+  "list-box-with-sections": ListBoxWithSections,
   "list-box-multi-select": ListBoxMultiSelect,
+  "list-box-with-disabled-items": ListBoxWithDisabledItems,
   "list-box-custom-check-icon": ListBoxCustomCheckIcon,
   "list-box-controlled": ListBoxControlled,
+  "list-box-scrollbar-modes": ListBoxScrollbarModes,
   "select-default": SelectDefault,
   "select-multiple-select": SelectMultipleSelect,
   "select-with-disabled-options": SelectWithDisabledOptions,
@@ -121,6 +159,12 @@ export const demos: Record<string, Component> = {
   "select-full-width": SelectFullWidth,
   "select-on-surface": SelectOnSurface,
   "select-disabled": SelectDisabled,
+  "separator-basic": SeparatorBasic,
+  "separator-vertical": SeparatorVertical,
+  "separator-with-content": SeparatorWithContent,
+  "separator-variants": SeparatorVariants,
+  "separator-with-surface": SeparatorWithSurface,
+  "separator-manual-variant-override": SeparatorManualVariantOverride,
   "spinner-basic": SpinnerBasic,
   "spinner-colors": SpinnerColors,
   "spinner-sizes": SpinnerSizes,

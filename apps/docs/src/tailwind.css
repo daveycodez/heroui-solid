@@ -19,6 +19,9 @@
  * which heroui-solid/styles defines at runtime. Same exact version pin as the
  * package (see AGENTS.md). */
 @import "@heroui/styles/themes/shared/theme.css" theme(reference);
+/* heroui @utility definitions (scrollbar, …) so demo-used utilities compile;
+ * pure @utility declarations — generated on demand, nothing re-emitted. */
+@import "@heroui/styles/utilities";
 @import "tailwindcss/utilities" layer(utilities);
 
 /* dark: keys off the docs theme attribute (substring: solidbase stamps

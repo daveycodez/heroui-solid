@@ -1,5 +1,6 @@
 import type { ComponentProps } from "solid-js"
 
+import { ListBoxSectionRoot } from "../list-box-section/list-box-section"
 import { ListBoxItem, ListBoxItemIndicator, ListBoxRoot } from "./list-box"
 
 /* -------------------------------------------------------------------------------------------------
@@ -8,7 +9,8 @@ import { ListBoxItem, ListBoxItemIndicator, ListBoxRoot } from "./list-box"
 export const ListBox = Object.assign(ListBoxRoot, {
   Root: ListBoxRoot,
   Item: ListBoxItem,
-  ItemIndicator: ListBoxItemIndicator
+  ItemIndicator: ListBoxItemIndicator,
+  Section: ListBoxSectionRoot
 })
 
 export type ListBox = {
@@ -16,6 +18,7 @@ export type ListBox = {
   RootProps: ComponentProps<typeof ListBoxRoot>
   ItemProps: ComponentProps<typeof ListBoxItem>
   ItemIndicatorProps: ComponentProps<typeof ListBoxItemIndicator>
+  SectionProps: ComponentProps<typeof ListBoxSectionRoot>
 }
 
 export type { ListBoxVariants } from "@heroui/styles"

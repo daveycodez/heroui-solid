@@ -39,6 +39,17 @@ Mirror the official HeroUI React source as closely as possible, adapting only
 what Solid requires. Fetch the source before porting (heroui-react MCP
 `get_component_source_code`, or the `v3` branch of heroui-inc/heroui on GitHub).
 
+- **Port dependencies first, recursively.** Before porting component X, fetch
+  X's upstream demos and enumerate every `@heroui/react` component they import
+  or use in JSX (compound members included). Port any that are missing —
+  applying this same rule to *their* demos — before X, so X's demos and docs
+  page can mirror upstream exactly. Never substitute or drop a dependency to
+  make a demo "work".
+- **Icons: always use `gravity-icons-solid`** (the Solid port of
+  `@gravity-ui/icons`, same icon names) when the icon exists there — it's what
+  the parity import mapping expects. Fall back to `unplugin-icons` only for
+  icons gravity-icons-solid doesn't have.
+
 - **File structure mirrors upstream**: `XRoot` naming, internal `XPrimitive`
   components, the same section banner comments where upstream has them,
   trailing `export {XRoot}` / `export type {XRootProps}`.

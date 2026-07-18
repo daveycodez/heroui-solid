@@ -21,6 +21,7 @@ import {
   fixtureDir,
   localDemosDir,
   localPagePath,
+  resolvePreviewStem,
   slugify
 } from "./analyze"
 import { components } from "./components"
@@ -127,13 +128,17 @@ for (const {
       )
       .toEqual([])
 
-    const requiredPreviews = up.previews.filter(
-      (p) => ![...excused].some((stem) => p.endsWith(`-${stem}`))
-    )
-    for (const preview of requiredPreviews) {
+    // Upstream preview names occasionally derive from export names instead
+    // of file stems — resolve each to its demo and require the local preview
+    // under our `<demosDir>-<stem>` convention.
+    const fixtureDemos = path.join(fixtureDir(slug), "demos")
+    for (const preview of up.previews) {
+      const stem = resolvePreviewStem(preview, demosDir, fixtureDemos)
+      if (stem !== undefined && excused.has(stem)) continue
+      const required = stem !== undefined ? `${demosDir}-${stem}` : preview
       expect
         .soft(local.previews, `${slug}: missing upstream preview "${preview}"`)
-        .toContain(preview)
+        .toContain(required)
     }
   })
 }

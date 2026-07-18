@@ -1,6 +1,9 @@
 // @vitest-environment jsdom
 import { fireEvent, render } from "@solidjs/testing-library"
 import { describe, expect, it, vi } from "vitest"
+import { HeaderRoot } from "../header/header"
+import { ListBoxSectionRoot } from "../list-box-section/list-box-section"
+import { SeparatorRoot } from "../separator/separator"
 import { ListBoxItem, ListBoxItemIndicator, ListBoxRoot } from "./list-box"
 
 const Anatomy = (props: Parameters<typeof ListBoxRoot>[0]) => (
@@ -126,5 +129,130 @@ describe("ListBox (standalone)", () => {
     fireEvent.click(fred)
     expect(fred.getAttribute("aria-selected")).not.toBe("true")
     expect(options[0]?.getAttribute("aria-selected")).toBe("true")
+  })
+})
+
+const Sectioned = (props: Parameters<typeof ListBoxRoot>[0]) => (
+  <ListBoxRoot aria-label="File actions" {...props}>
+    <ListBoxSectionRoot class="custom-section">
+      <HeaderRoot>Actions</HeaderRoot>
+      <ListBoxItem id="new-file" textValue="New file">
+        New file
+      </ListBoxItem>
+      <ListBoxItem id="edit-file" textValue="Edit file">
+        Edit file
+      </ListBoxItem>
+    </ListBoxSectionRoot>
+    <SeparatorRoot />
+    <ListBoxSectionRoot>
+      <HeaderRoot>Danger zone</HeaderRoot>
+      <ListBoxItem id="delete-file" textValue="Delete file" variant="danger">
+        Delete file
+      </ListBoxItem>
+    </ListBoxSectionRoot>
+  </ListBoxRoot>
+)
+
+describe("ListBox sections", () => {
+  it("renders sections, headers, and an interleaved separator in order", () => {
+    const { container } = render(() => <Sectioned selectionMode="none" />)
+
+    const list = container.querySelector("[data-slot=list-box]") as HTMLElement
+    const kinds = [...list.children].map(
+      (el) => el.getAttribute("data-slot") ?? el.tagName.toLowerCase()
+    )
+    expect(kinds).toEqual([
+      "list-box-section",
+      "list-box-item",
+      "list-box-item",
+      "separator",
+      "list-box-section",
+      "list-box-item"
+    ])
+
+    const sections = list.querySelectorAll("[data-slot=list-box-section]")
+    expect(sections[0]?.getAttribute("role")).toBe("presentation")
+    expect(sections[0]?.className).toContain("list-box-section")
+    expect(sections[0]?.className).toContain("custom-section")
+    expect(sections[0]?.querySelector("[data-slot=header]")?.textContent).toBe(
+      "Actions"
+    )
+    expect(sections[1]?.querySelector("[data-slot=header]")?.textContent).toBe(
+      "Danger zone"
+    )
+
+    const separator = list.querySelector("[data-slot=separator]")
+    expect(separator?.getAttribute("data-orientation")).toBe("horizontal")
+
+    const danger = list.querySelectorAll("[data-slot=list-box-item]")[2]
+    expect(danger?.className).toContain("list-box-item--danger")
+  })
+
+  it("fires onAction on click, Enter, and Space in selectionMode none", () => {
+    const onAction = vi.fn()
+    const { container } = render(() => (
+      <Sectioned onAction={onAction} selectionMode="none" />
+    ))
+
+    const item = container.querySelectorAll(
+      "[data-slot=list-box-item]"
+    )[0] as HTMLElement
+    fireEvent.click(item)
+    expect(onAction).toHaveBeenCalledWith("new-file")
+    expect(item.getAttribute("aria-selected")).not.toBe("true")
+
+    fireEvent.keyDown(item, { key: "Enter" })
+    fireEvent.keyDown(item, { key: " " })
+    expect(onAction).toHaveBeenCalledTimes(3)
+  })
+
+  it("does not fire onAction for disabled items", () => {
+    const onAction = vi.fn()
+    const { container } = render(() => (
+      <Sectioned
+        disabledKeys={["delete-file"]}
+        onAction={onAction}
+        selectionMode="none"
+      />
+    ))
+
+    const delete_ = container.querySelectorAll(
+      "[data-slot=list-box-item]"
+    )[2] as HTMLElement
+    expect(delete_.getAttribute("aria-disabled")).toBe("true")
+    fireEvent.click(delete_)
+    fireEvent.keyDown(delete_, { key: "Enter" })
+    expect(onAction).not.toHaveBeenCalled()
+  })
+
+  it("fires onAction alongside selection in single mode", () => {
+    const onAction = vi.fn()
+    const onSelectionChange = vi.fn()
+    const { container } = render(() => (
+      <Sectioned onAction={onAction} onSelectionChange={onSelectionChange} />
+    ))
+
+    const item = container.querySelectorAll(
+      "[data-slot=list-box-item]"
+    )[1] as HTMLElement
+    fireEvent.pointerDown(item, { pointerId: 1, pointerType: "mouse" })
+    fireEvent.click(item)
+    expect(onAction).toHaveBeenCalledWith("edit-file")
+    expect(onSelectionChange).toHaveBeenCalledOnce()
+  })
+
+  it("renders an empty section as header only", () => {
+    const { container } = render(() => (
+      <ListBoxRoot aria-label="Empty">
+        <ListBoxSectionRoot>
+          <HeaderRoot>Nothing here</HeaderRoot>
+        </ListBoxSectionRoot>
+      </ListBoxRoot>
+    ))
+    const section = container.querySelector("[data-slot=list-box-section]")
+    expect(section?.textContent).toBe("Nothing here")
+    expect(container.querySelectorAll("[data-slot=list-box-item]").length).toBe(
+      0
+    )
   })
 })

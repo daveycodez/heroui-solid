@@ -1,33 +1,51 @@
-import { Description, Label, ListBox, Surface } from "heroui-solid"
-import { For } from "solid-js"
-
-const users = [
-  { id: "1", name: "Bob", email: "bob@heroui.com" },
-  { id: "2", name: "Fred", email: "fred@heroui.com" },
-  { id: "3", name: "Martha", email: "martha@heroui.com" }
-]
+import { Avatar, Description, Label, ListBox, Surface } from "heroui-solid"
 
 export function MultiSelect() {
   return (
-    <Surface
-      style={{
-        width: "256px",
-        "border-radius": "1.5rem",
-        padding: "0.5rem"
-      }}
-    >
+    <Surface class="w-[256px] rounded-3xl shadow-surface">
       <ListBox aria-label="Users" selectionMode="multiple">
-        <For each={users}>
-          {(user) => (
-            <ListBox.Item id={user.id} textValue={user.name}>
-              <div style={{ display: "flex", "flex-direction": "column" }}>
-                <Label>{user.name}</Label>
-                <Description>{user.email}</Description>
-              </div>
-              <ListBox.ItemIndicator />
-            </ListBox.Item>
-          )}
-        </For>
+        <ListBox.Item id="1" textValue="Bob">
+          <Avatar size="sm">
+            <Avatar.Image
+              alt="Bob"
+              src="https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/blue.jpg"
+            />
+            <Avatar.Fallback>B</Avatar.Fallback>
+          </Avatar>
+          <div class="flex flex-col">
+            <Label>Bob</Label>
+            <Description>bob@heroui.com</Description>
+          </div>
+          <ListBox.ItemIndicator />
+        </ListBox.Item>
+        <ListBox.Item id="2" textValue="Fred">
+          <Avatar size="sm">
+            <Avatar.Image
+              alt="Fred"
+              src="https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/green.jpg"
+            />
+            <Avatar.Fallback>F</Avatar.Fallback>
+          </Avatar>
+          <div class="flex flex-col">
+            <Label>Fred</Label>
+            <Description>fred@heroui.com</Description>
+          </div>
+          <ListBox.ItemIndicator />
+        </ListBox.Item>
+        <ListBox.Item id="3" textValue="Martha">
+          <Avatar size="sm">
+            <Avatar.Image
+              alt="Martha"
+              src="https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/purple.jpg"
+            />
+            <Avatar.Fallback>M</Avatar.Fallback>
+          </Avatar>
+          <div class="flex flex-col">
+            <Label>Martha</Label>
+            <Description>martha@heroui.com</Description>
+          </div>
+          <ListBox.ItemIndicator />
+        </ListBox.Item>
       </ListBox>
     </Surface>
   )

@@ -275,7 +275,8 @@ When using a render function, `state` exposes `selectedOption()`, `selectedOptio
   by collecting `ListBox.Item` descriptors and registering them as Kobalte options.
   Inside a `Select`, the [ListBox](/docs/components/list-box) selection props are
   ignored — the Select root owns the selection state.
-- `ListBox.Section`, `Header`, and `Separator` are not ported yet — flat item lists only.
+- `ListBox.Section` is not supported inside a `Select` yet (the popover marker
+  protocol can't defer the section header) — flat item lists only.
 - `Select.Value` render props expose Kobalte's state (`selectedOptions()` accessors)
   instead of React Aria's `{ defaultChildren, isPlaceholder, state }`.
 - `Select.Popover` placements use Kobalte's syntax (`"top"`, `"bottom-start"`, …)

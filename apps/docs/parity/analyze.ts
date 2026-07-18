@@ -3,7 +3,7 @@
 // mechanical React→Solid adaptation untouched: the UI-framework imports, the
 // set of components used in JSX, and the text content. A page is compared on
 // its structure: title, description, section headings, and previews.
-import { existsSync, readdirSync } from "node:fs"
+import { existsSync, readdirSync, readFileSync } from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 import ts from "typescript"
@@ -151,11 +151,17 @@ export function analyzeDemo(source: string): DemoShape {
       const tag = node.tagName.getText()
       if (/^[A-Z]/.test(tag)) components.add(tag)
     }
+    // `typeof x === "function"` — type-tag comparisons are code mechanics.
+    const isTypeofOperand =
+      node.parent !== undefined &&
+      ts.isBinaryExpression(node.parent) &&
+      (ts.isTypeOfExpression(node.parent.left) ||
+        ts.isTypeOfExpression(node.parent.right))
     if (ts.isJsxText(node)) {
       addText(node.text)
     } else if (
-      ts.isStringLiteral(node) ||
-      ts.isNoSubstitutionTemplateLiteral(node)
+      (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) &&
+      !isTypeofOperand
     ) {
       addText(node.text)
     } else if (ts.isTemplateExpression(node)) {
@@ -254,6 +260,31 @@ export const slugify = (s: string): string =>
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "")
+
+const kebab = (s: string): string =>
+  s.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase()
+
+// Upstream preview names are registry keys that usually equal
+// `<demosDir>-<stem>` but occasionally derive from the demo's export name
+// (kbd-navigation-keys → navigation.tsx exports NavigationKeys). Resolve an
+// upstream preview to the demo stem it references, so the local requirement
+// can be stated in our own `<demosDir>-<stem>` convention.
+export function resolvePreviewStem(
+  preview: string,
+  demosDir: string,
+  fixtureDemosDir: string
+): string | undefined {
+  for (const stem of demoStems(fixtureDemosDir)) {
+    if (preview === `${demosDir}-${stem}`) return stem
+    const source = readFileSync(
+      path.join(fixtureDemosDir, `${stem}.tsx`),
+      "utf8"
+    )
+    const exported = source.match(/export function (\w+)/)?.[1]
+    if (exported && preview === `${demosDir}-${kebab(exported)}`) return stem
+  }
+  return undefined
+}
 
 /* -------------------------------------------------------------------------------------------------
  * Strict manifest

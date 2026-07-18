@@ -40,6 +40,7 @@ const RENDER_PROPS_SECTION = (heading: string): SectionSkip => ({
 })
 
 export const components: PortedComponent[] = [
+  { slug: "avatar", demosDir: "avatar" },
   {
     slug: "button",
     demosDir: "button",
@@ -68,6 +69,7 @@ export const components: PortedComponent[] = [
   },
   { slug: "field-error", demosDir: "field-error" },
   { slug: "input", demosDir: "input" },
+  { slug: "kbd", demosDir: "kbd" },
   { slug: "label", demosDir: "label" },
   { slug: "link", demosDir: "link", skipDemos: [RENDER_PROP] },
   {
@@ -96,6 +98,7 @@ export const components: PortedComponent[] = [
     skipDemos: [RENDER_PROP],
     skipSections: [RENDER_PROPS_SECTION("RenderProps")]
   },
+  { slug: "separator", demosDir: "separator", skipDemos: [RENDER_PROP] },
   { slug: "spinner", demosDir: "spinner" },
   { slug: "surface", demosDir: "surface" },
   { slug: "text-area", demosDir: "textarea" },
