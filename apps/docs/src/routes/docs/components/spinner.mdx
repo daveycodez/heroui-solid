@@ -1,0 +1,98 @@
+---
+title: Spinner
+---
+
+# Spinner
+
+A loading indicator component to show pending states.
+
+## Import
+
+```tsx
+import { Spinner } from "heroui-solid";
+```
+
+### Usage
+
+<ComponentPreview name="spinner-basic" />
+
+```tsx file=../../../demos/spinner/basic.tsx title=""
+
+```
+
+### Colors
+
+<ComponentPreview name="spinner-colors" />
+
+```tsx file=../../../demos/spinner/colors.tsx title=""
+
+```
+
+### Sizes
+
+<ComponentPreview name="spinner-sizes" />
+
+```tsx file=../../../demos/spinner/sizes.tsx title=""
+
+```
+
+## Styling
+
+### Passing Tailwind CSS classes
+
+```tsx
+import { Spinner } from "heroui-solid";
+
+function CustomSpinner() {
+  return <Spinner class="text-blue-500" />;
+}
+```
+
+### Customizing the component classes
+
+To customize the Spinner component classes, you can use the `@layer components` directive.
+[Learn more](https://tailwindcss.com/docs/adding-custom-styles#adding-component-classes).
+
+```css
+@layer components {
+  .spinner {
+    @apply animate-spin;
+  }
+
+  .spinner--accent {
+    color: var(--accent);
+  }
+}
+```
+
+HeroUI follows the [BEM](https://getbem.com/) methodology to ensure component variants and states are reusable and easy to customize.
+
+### CSS Classes
+
+The Spinner component uses these CSS classes ([View source styles](https://github.com/heroui-inc/heroui/blob/v3/packages/styles/components/spinner.css)):
+
+#### Base & Size Classes
+
+- `.spinner` - Base spinner styles with default size
+- `.spinner--sm` - Small size variant
+- `.spinner--md` - Medium size variant (default)
+- `.spinner--lg` - Large size variant
+- `.spinner--xl` - Extra large size variant
+
+#### Color Classes
+
+- `.spinner--current` - Inherits current text color
+- `.spinner--accent` - Accent color variant
+- `.spinner--danger` - Danger color variant
+- `.spinner--success` - Success color variant
+- `.spinner--warning` - Warning color variant
+
+## API Reference
+
+### Spinner Props
+
+| Prop    | Type                                                           | Default    | Description                  |
+| ------- | -------------------------------------------------------------- | ---------- | ---------------------------- |
+| `size`  | `"sm" \| "md" \| "lg" \| "xl"`                                  | `"md"`     | Size of the spinner          |
+| `color` | `"current" \| "accent" \| "success" \| "warning" \| "danger"`  | `"accent"` | Color variant of the spinner |
+| `class` | `string`                                                        | -          | Additional CSS classes       |

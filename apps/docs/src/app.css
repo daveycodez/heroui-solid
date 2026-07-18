@@ -1,0 +1,82 @@
+/* Cascade order for the whole docs app. `solidbase` (stamped onto all
+   @kobalte/solidbase CSS by the postcss plugin in vite.config.ts) sits above
+   heroui's preflight (base) but below its component styles; `docs` (our
+   official-docs-lookalike chrome, see docs-theme.css) beats the solidbase
+   theme but still loses to heroui components and Tailwind utilities. Must
+   stay the first statement so it's parsed before any layer blocks. */
+@layer properties,
+  theme,
+  base,
+  solidbase,
+  docs,
+  components,
+  utilities,
+  overrides;
+
+/* SolidStart's dev style crawler drops SolidBase's virtual fonts.css, so the
+   @font-face rules must enter through a real file to be SSR-inlined (FOUT
+   otherwise). Inter is the only webfont the docs use (same as the official
+   HeroUI docs — headings, body and UI all Inter; mono is the system stack). */
+@import "@fontsource-variable/inter";
+@import "./docs-theme.css" layer(docs);
+@import "./docs-code.css";
+
+/* Docs chrome adopts the heroui theme: remap solidbase's design tokens onto
+   heroui tokens. Unlayered, so it beats the layered solidbase defaults; dark
+   mode follows automatically — both systems key off html[data-theme].
+   Values mirror the official HeroUI docs global.css (Inter + system mono,
+   translucent code panels, foreground-leaning body text). */
+:root {
+  --docs-code-bg: rgba(0, 0, 0, 0.04);
+  --docs-hover-bg: rgba(0, 0, 0, 0.04);
+  /* Official fumadocs accent palette (global.css fd-accent /
+     fd-accent-foreground / fd-muted-foreground), consumed by the docs-theme
+     header controls (search toggles, theme switcher). */
+  --docs-accent: #f9f9f9;
+  --docs-accent-foreground: #171717;
+  --docs-muted-foreground: #737373;
+
+  --sb-background-color: var(--background);
+  --sb-heading-color: var(--foreground);
+  --sb-text-color: color-mix(in oklab, var(--foreground) 88%, var(--muted));
+  --sb-decoration-color: var(--muted);
+  --sb-active-link-color: var(--accent);
+  --sb-link-underline-color: color-mix(
+    in oklab,
+    var(--accent) 35%,
+    transparent
+  );
+  --sb-code-background-color: var(--docs-code-bg);
+  --sb-border-radius: var(--radius);
+  --sb-font-text: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --sb-font-headings: var(--sb-font-text);
+  --sb-font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Exact match: our theme manager always stamps data-theme="dark" (heroui
+   native). Code panel is the official rgba(40,40,40,0.4) pre-composited over
+   the official docs' dark page (#111) — solid, so it renders identically here
+   regardless of what sits behind the block. */
+[data-theme="dark"] {
+  --docs-code-bg: #1c1c1e;
+  --docs-hover-bg: rgba(255, 255, 255, 0.04);
+  --docs-accent: #2c2c2c;
+  --docs-accent-foreground: #fff;
+}
+
+/* SolidBase's sidebar sections play an entry animation whose first frame is
+   opacity:0; while hydration blocks the main thread the links sit on that
+   frame, so they "flicker in" after load. Suppress it (sections snap
+   open/closed instead of fading). Unlayered and attribute-heavy so it
+   out-specifies the theme's .section-content rules. Remove once
+   https://github.com/kobaltedev/solidbase/issues/154 is fixed. */
+aside nav ul[id^="collapsible-"][id$="-content"] {
+  animation: none;
+}

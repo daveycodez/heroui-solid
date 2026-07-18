@@ -1,0 +1,18 @@
+/*
+ * heroui-solid — consumer stylesheet ("heroui-solid/styles"): only the
+ * Kobalte state-attribute bridges (see AGENTS.md). Shipped as Tailwind v4
+ * source and compiled by the consumer's own Tailwind pass, after the
+ * upstream styles it patches:
+ *
+ *   @import "tailwindcss";
+ *   @import "@heroui/styles";
+ *   @import "heroui-solid/styles";
+ *
+ * Import order matters: the @apply'd heroui utilities resolve against
+ * @heroui/styles' @utility definitions in the same pass, and the @layer
+ * statement appends `overrides` after the layers @heroui/styles declares,
+ * so bridges beat the upstream `components` layer without specificity games.
+ */
+@layer overrides;
+
+@import "./overrides.css";

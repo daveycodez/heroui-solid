@@ -1,0 +1,533 @@
+/* Docs chrome restyled after the official HeroUI docs (heroui-inc/heroui#v3
+ * apps/docs/src/app/global.css), adapted to solidbase's DOM. Imported into
+ * the `docs` cascade layer from app.css: above the solidbase theme (these
+ * rules win without specificity games) but below heroui components and
+ * Tailwind utilities (so component CSS and demo/home utility classes keep
+ * winning). Dark selectors use the exact [data-theme="dark"] attribute our
+ * theme manager stamps (heroui native — see src/theme/theme.ts).
+ *
+ * Rules that must beat expressive-code's page-injected <style> (which is
+ * unlayered, so it outranks every layer) live in docs-code.css instead,
+ * imported without a layer.
+ */
+
+/* --- Typography ------------------------------------------------------- */
+
+article h1 {
+  font-size: 1.875rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+article :is(h2, h3, h4, h5, h6) {
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+article h2 {
+  font-size: 1.375rem;
+}
+
+article h3 {
+  font-size: 1.125rem;
+}
+
+/* Inline code: bordered pill, 13px — official `code` style. Scoped to
+ * prose containers so expressive-code blocks stay untouched. */
+article :is(p, li, td, h1, h2, h3, h4) > code {
+  border: 1px solid var(--separator);
+  background: transparent;
+  border-radius: 5px;
+  padding: 2px 4px;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+/* --- Home showcase tiles ----------------------------------------------- */
+
+/* Home page: solidbase's article info row (last-updated / edit link) renders
+ * empty here but keeps its 4rem top margin, leaving a dead gap below the
+ * home footer — collapse it on this page only. */
+article:has([data-home]) [class*="_info_"] {
+  display: none;
+}
+
+/* Demos are authored for the wide docs preview stage; inside a narrow home
+ * tile their root flex rows must wrap instead of overflowing the card. */
+.home-tile-demo > * {
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 100%;
+}
+
+/* --- Layout width ----------------------------------------------------- */
+
+/* Match heroui.com's docs shell width (global.css `--fd-layout-width:
+ * 1400px`): the sidebar + content + TOC band is capped and centered, with
+ * equal gutters on wider viewports instead of stretching edge to edge.
+ * Solidbase's grid is `width: 100dvw` with no cap, so it here gets the max
+ * width and centering. The sticky header is a grid child; it's re-fitted to
+ * 100% below with its divider drawn full-bleed, so the rule still spans the
+ * viewport like upstream's `#nd-subnav::after`. */
+[class*="_layout_"] {
+  max-width: 1400px;
+  margin-inline: auto;
+}
+
+/* On the desktop layout the shell is capped with gutters, so overflow-x is
+ * released from solidbase's `clip` to let the full-bleed header divider reach
+ * the viewport edges past the capped edge. Below the mobile breakpoint the
+ * shell already fills the viewport, so `clip` stays (it hides an upstream
+ * ~48px mobile overflow that would otherwise report as horizontal scroll).
+ * Matches solidbase's own mobileLayout breakpoint (1100px). */
+@media (min-width: 1101px) {
+  [class*="_layout_"] {
+    overflow-x: visible;
+  }
+}
+
+/* --- Header ----------------------------------------------------------- */
+
+/* [data-site-header] is stamped by theme/header.tsx. Never select bare
+ * `header` here: demo content renders heroui `<Header>` elements (portal'd
+ * dropdowns land directly under <body>), and an element selector repaints
+ * them with the site-chrome background/border. */
+body header:where([data-site-header]) {
+  /* Fill the capped layout (solidbase's module CSS sets 100dvw, which would
+   * overflow the centered 1400px shell); the divider goes full-bleed below. */
+  width: 100%;
+  background: var(--background);
+
+  /* Bottom divider spans the full viewport even though the header is capped,
+   * mirroring heroui.com's `#nd-subnav::after` (width: 100vw). position:
+   * sticky (from the module CSS) is the containing block for this absolute
+   * pseudo. */
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    width: 100vw;
+    height: 1px;
+    transform: translateX(-50%);
+    background: var(--separator);
+  }
+
+  /* Home page (frontmatter `layout: home`, stamped as data-home by
+   * theme/header.tsx): borderless header, like the official landing. */
+  &[data-home]::after {
+    display: none;
+  }
+
+  & a {
+    color: var(--muted);
+
+    &:hover {
+      color: var(--foreground);
+    }
+  }
+}
+
+/* Site title: bold foreground wordmark with the HeroUI mark on its left.
+ * The mark is the official icon (heroui-inc/heroui#v3 apps/docs
+ * heroui-plain-logo.tsx, viewBox 114x158) rotated 90° clockwise so it reads
+ * as an S — for Solid — and applied as a mask filled with currentColor so it
+ * tracks the text color through both themes. */
+body header:where([data-site-header]) a[class*="logo-link"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  color: var(--foreground);
+  white-space: nowrap;
+
+  &:hover {
+    color: var(--foreground);
+  }
+
+  &::before {
+    content: "";
+    flex: none;
+    width: 18px;
+    height: 13px;
+    background-color: currentColor;
+    -webkit-mask:
+      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 158 114'><path transform='translate(158 0) rotate(90)' d='M0 39.403v47.208a6.467 6.467 0 0 0 3.035 5.485l32.2 20.127c4.29 2.682 9.848-.413 9.848-5.485V67.056c0-2.283 1.2-4.397 3.159-5.56l19.64-11.672v101.703c0 5.055 5.525 8.153 9.817 5.505l33.234-20.503a6.467 6.467 0 0 0 3.067-5.505V33.361c0-5.03-5.476-8.132-9.769-5.534L67.883 49.824V6.473c0-5.016-5.45-8.12-9.744-5.549L3.14 33.853A6.467 6.467 0 0 0 0 39.404Z'/></svg>")
+      no-repeat center / contain;
+    mask:
+      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 158 114'><path transform='translate(158 0) rotate(90)' d='M0 39.403v47.208a6.467 6.467 0 0 0 3.035 5.485l32.2 20.127c4.29 2.682 9.848-.413 9.848-5.485V67.056c0-2.283 1.2-4.397 3.159-5.56l19.64-11.672v101.703c0 5.055 5.525 8.153 9.817 5.505l33.234-20.503a6.467 6.467 0 0 0 3.067-5.505V33.361c0-5.03-5.476-8.132-9.769-5.534L67.883 49.824V6.473c0-5.016-5.45-8.12-9.744-5.549L3.14 33.853A6.467 6.467 0 0 0 0 39.404Z'/></svg>")
+      no-repeat center / contain;
+  }
+}
+
+/* Search cluster (theme/header.tsx + theme/search.tsx): the official docs
+ * header centers the search bar between the logo cluster and the right-side
+ * cluster by giving both sides equal flex weight — desktop only; a zero
+ * flex-basis on mobile squeezes the logo into wrapping. The bar itself
+ * carries the fumadocs LargeSearchToggle metrics (w-full max-w-sm) via
+ * utilities. The header-end wrapper exists so the mobile search icon can sit
+ * beside solidbase's hamburger without being a .top-nav child (its module
+ * CSS hides every top-nav child but the hamburger below 500px). */
+body header:where([data-site-header]) .header-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.25rem;
+}
+
+@media (min-width: 768px) {
+  body header:where([data-site-header]) .header-start,
+  body header:where([data-site-header]) .header-end {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+
+body header:where([data-site-header]) .header-search {
+  display: flex;
+  /* Basis = the button's official 400px max plus the inline padding, so the
+   * bar actually reaches full width before the cluster starts shrinking. */
+  flex: 0 1 calc(400px + 2rem);
+  justify-content: center;
+  padding-inline: 1rem;
+}
+
+@media (max-width: 767px) {
+  body header:where([data-site-header]) .header-search {
+    display: none;
+  }
+}
+
+/* Search trigger: heroui.com's own docs override of the fumadocs search bar
+ * (`#nd-subnav [data-search-full]` in their compiled CSS, unlayered so it
+ * beats the fumadocs base classes): a borderless field-styled pill —
+ * field-background at 80% in oklab, field shadow, field radius, dark-mode
+ * backdrop blur — all tokens our @heroui/styles runtime ships with identical
+ * values. Because those overrides out-cascade the layered hover utilities,
+ * only the text color changes on hover (--docs-accent-foreground, defined
+ * with the fd palette in app.css); the fill and kbds don't react. Kbds are
+ * likewise borderless,
+ * solid default (light) / surface (dark). */
+.search-toggle {
+  border: none;
+  cursor: pointer;
+  border-radius: var(--field-radius, calc(var(--radius) * 1.5));
+  /* Width and kbd padding live here, not as utilities — the utilities layer
+   * would beat the docs layer and block the [data-home] overrides below. */
+  max-width: 400px;
+  background: color-mix(
+    in oklab,
+    var(--field-background, var(--default)) 80%,
+    transparent
+  );
+  box-shadow: var(--field-shadow);
+  color: var(--docs-muted-foreground);
+
+  &:hover {
+    color: var(--docs-accent-foreground);
+  }
+
+  & kbd {
+    background: var(--default);
+    padding-inline: 0.375rem;
+  }
+}
+
+[data-theme="dark"] .search-toggle {
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+
+  & kbd {
+    background: var(--surface);
+  }
+}
+
+/* Home header variant, mirroring heroui.com's `#nd-nav [data-search-full]`
+ * override (vs the docs #nd-subnav one): right-aligned next to the GitHub
+ * button, 240px, `--default` fill with no field shadow or blur, and
+ * surface-filled text-xs kbds in both modes. */
+body header:where([data-site-header])[data-home] .search-toggle {
+  max-width: 240px;
+  background: color-mix(in oklab, var(--default) 80%, transparent);
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+
+  & kbd {
+    background: var(--surface);
+    padding-inline: 0.25rem;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 500;
+    color: var(--muted);
+  }
+}
+
+body header:where([data-site-header]) .header-home-search {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  body header:where([data-site-header]) .header-home-search {
+    display: flex;
+    flex: 0 1 240px;
+  }
+
+  /* Right-cluster spacing: gap-2, like the official headers (home cluster
+   * and docs subnav both use md:gap-2); solidbase's top-nav default is 1rem.
+   * Applied to both the wrapper (search ↔ GitHub on home) and top-nav
+   * (GitHub ↔ theme toggle) so the whole cluster spaces evenly. */
+  body header:where([data-site-header]) .header-end,
+  body header:where([data-site-header]) .header-end [class*="top-nav"] {
+    gap: 0.5rem;
+  }
+}
+
+/* Mobile icon trigger: the official SearchToggle — no fill or border at
+ * rest, same muted foreground, fd-accent fill on hover. */
+.search-toggle-icon {
+  color: var(--docs-muted-foreground);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--docs-accent);
+    color: var(--docs-accent-foreground);
+  }
+}
+
+/* Theme switcher (theme/theme-toggle.tsx): official pill toggle metrics —
+ * fumadocs' `size-6.5 rounded-full p-1.5` items on the heroui docs' own
+ * container restyle (global.css `[data-theme-toggle]`: borderless, solid
+ * default/80 background), active item on an accent circle, muted otherwise. */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 9999px;
+  background: color-mix(in oklab, var(--default) 80%, transparent);
+
+  & button {
+    display: inline-flex;
+    width: 26px;
+    height: 26px;
+    padding: 6px;
+    border: 0;
+    border-radius: 9999px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+
+    &[data-active] {
+      background: var(--docs-accent);
+      color: var(--foreground);
+    }
+
+    & svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+/* --- Sidebar ---------------------------------------------------------- */
+
+/* SSR always paints the desktop layout — solidbase's `mobileLayout()` signal
+ * is false on the server and stays false until the client's window-load flip
+ * (theme/globals.ts) — so on narrow viewports both the side nav and the TOC
+ * arrive in the HTML and are then yanked out by JS; the side nav even plays
+ * solidbase's contentHide animation on the way out. Hide both by media query
+ * so a mobile refresh never paints them. Scoped to the SSR'd desktop
+ * elements only: the mobile drawer is a Kobalte Dialog <div> portaled to
+ * <body>, outside the layout grid, and unaffected. Breakpoint matches
+ * solidbase's mobileLayout query. */
+@media (max-width: 1100px) {
+  [class*="_layout_"] > aside[class*="_sidenav_"],
+  article > aside[class*="_aside_"] {
+    display: none;
+  }
+}
+
+/* HeroUI scrollbar (thin, 15%-foreground thumb on a transparent track — the
+ * theme's --scrollbar-* tokens) instead of solidbase's darker 50% color-mix,
+ * which these scroll containers otherwise inherit from html / set themselves
+ * (Article.module.css). Covers the desktop sidenav, the portaled mobile
+ * drawer (same module class), and the TOC aside. */
+[class*="_sidenav_"],
+article > aside[class*="_aside_"] {
+  scrollbar-width: var(--scrollbar-width);
+  scrollbar-color: var(--scrollbar-color);
+}
+
+/* Official box model (measured on heroui.com): items sit flush inside the
+ * column with uniform 8px padding — no nested indent, no overhang. Text
+ * alignment comes from the heading carrying the same 8px inset. */
+aside nav ul ul {
+  padding-left: 0;
+  border-left: none;
+}
+
+/* Solidbase keeps overflow:hidden on the section ul for its height-collapse
+ * keyframes, but those are suppressed in app.css (sections snap), so all it
+ * does is crop the active card's ring/shadow at the flush column edges. */
+aside nav ul[id^="collapsible-"][id$="-content"] {
+  overflow: visible;
+}
+
+aside nav li a {
+  /* --radius-field / --shadow-surface aren't emitted by the compiled heroui
+   * stylesheet at runtime, so literals stand in for the official
+   * rounded-lg pill + shadow-surface card. */
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: var(--muted);
+  transition: none;
+
+  &:hover {
+    background: var(--docs-hover-bg);
+    color: var(--foreground);
+  }
+
+  /* Active page: white card + subtle shadow, like the official sidebar. */
+  &[aria-current="page"] {
+    background: var(--surface);
+    box-shadow:
+      0 0 0 1px rgba(0, 0, 0, 0.04),
+      0 1px 2px rgba(0, 0, 0, 0.06);
+    color: var(--foreground);
+  }
+}
+
+/* Official dark sidebar: flat white-alpha pill, no shadow. */
+[data-theme="dark"] aside nav li a[aria-current="page"] {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+}
+
+/* Section titles ("Overview", "Components"): same 8px inset as the item
+ * text, so headings and item labels align like the official sidebar. */
+aside nav > ul > li > :is(button, span, div) {
+  color: var(--foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding-left: 0.5rem;
+}
+
+/* --- Table of contents ------------------------------------------------ */
+
+/* Official "On this page" panel: icon + muted title, 13px links hanging off
+ * a faint left rail, active link in bright foreground, and a 1px thumb that
+ * glides along the rail (element injected by theme/Layout.tsx).
+ * `:not([hidden])` is a pure specificity bump: it lifts every nested rule
+ * above the earlier header-section selectors (biome noDescendingSpecificity)
+ * without relying on source order against the sidebar rules, which also
+ * match these links via `aside nav li a`. */
+article > aside nav:not([hidden]) {
+  position: relative;
+
+  & > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--muted);
+    font-size: 0.875rem;
+    font-weight: 400;
+
+    &::before {
+      content: "";
+      width: 1rem;
+      height: 1rem;
+      background: currentColor;
+      mask:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 18H3'/%3E%3Cpath d='M17 6H3'/%3E%3Cpath d='M21 12H3'/%3E%3C/svg%3E")
+        no-repeat center / contain;
+    }
+  }
+
+  & > ol {
+    border-left: 1px solid
+      color-mix(in oklab, var(--foreground) 10%, transparent);
+  }
+
+  /* Same story as the nav's :not([hidden]) — biome rates the nested
+   * fragment on its own, so the bump has to sit on the link too. */
+  & li > a:not([hidden]) {
+    padding: 0.375rem 0.5rem 0.375rem 0.75rem;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--muted);
+    opacity: 1;
+    min-width: 0;
+
+    &:hover {
+      background: transparent;
+      border-radius: 0;
+      color: var(--foreground);
+    }
+
+    /* Neutralize solidbase's own scroll-spy color: the `toc-active` class
+     * set by theme/Layout.tsx is the single source of the bright state
+     * (solidbase's spy can't reach headings near the page bottom). */
+    &[class*="_active"] {
+      color: var(--muted);
+    }
+
+    &.toc-active {
+      color: var(--foreground);
+    }
+  }
+
+  /* Depth indentation, official ps-3 / ps-6 / ps-9. The :not([hidden])
+   * bump keeps these above the padded link rule, as before. */
+  & ol ol a:not([hidden]) {
+    padding-left: 1.5rem;
+  }
+
+  & ol ol ol a:not([hidden]) {
+    padding-left: 2.25rem;
+  }
+}
+
+.toc-thumb {
+  position: absolute;
+  width: 1px;
+  background: var(--foreground);
+  opacity: 0;
+  transition:
+    top 0.15s linear,
+    height 0.15s linear,
+    opacity 0.15s linear;
+  pointer-events: none;
+}
+
+/* --- Tables (props/API): pill header row, borderless body -------------- */
+
+article table {
+  border-collapse: separate;
+  border-spacing: 0;
+
+  & th {
+    background: var(--default);
+    border: none;
+    font-weight: 500;
+    text-align: left;
+  }
+
+  & th:first-child {
+    border-radius: 0.75rem 0 0 0.75rem;
+  }
+
+  & th:last-child {
+    border-radius: 0 0.75rem 0.75rem 0;
+  }
+
+  & td {
+    border: none;
+    border-bottom: 1px solid var(--separator);
+  }
+
+  & tr:last-child td {
+    border-bottom: none;
+  }
+}

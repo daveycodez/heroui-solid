@@ -1,0 +1,87 @@
+{
+  "name": "heroui-solid",
+  "version": "0.1.0",
+  "description": "Unofficial SolidJS port of HeroUI v3, built on Kobalte and @heroui/styles",
+  "license": "Apache-2.0",
+  "type": "module",
+  "keywords": [
+    "solid",
+    "solidjs",
+    "heroui",
+    "kobalte",
+    "components",
+    "ui"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daveycodez/heroui-solid.git"
+  },
+  "files": [
+    "dist",
+    "src",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "solid": "./dist/index.jsx",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./styles": "./src/styles/styles.css",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": [
+    "*.css"
+  ],
+  "nx": {
+    "targets": {
+      "dev": {
+        "dependsOn": [
+          "dev:types"
+        ]
+      },
+      "dev:types": {
+        "cache": false,
+        "continuous": true
+      }
+    }
+  },
+  "scripts": {
+    "build:js": "vite build && tsc -p tsconfig.build.json",
+    "build": "rm -rf dist && bun run build:js",
+    "dev": "vite build --watch",
+    "dev:types": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "prepack": "cp ../../README.md README.md",
+    "postpack": "rm -f README.md",
+    "check:publish": "publint && attw --pack . --profile esm-only --ignore-rules internal-resolution-error --entrypoints ."
+  },
+  "peerDependencies": {
+    "@heroui/styles": "3.2.2",
+    "solid-js": "^1.9.0"
+  },
+  "dependencies": {
+    "@kobalte/core": "^0.13.12",
+    "@kobalte/utils": "^0.9.2",
+    "@tanstack/solid-virtual": "^3.13.33",
+    "tailwind-merge": "3.6.0"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
+    "@heroui/styles": "3.2.2",
+    "@solidjs/testing-library": "^0.8.10",
+    "jsdom": "^29.1.1",
+    "publint": "^0.3.21",
+    "solid-js": "^1.9.14",
+    "typescript": "~7.0.2",
+    "vite": "^8.1.5",
+    "vite-plugin-solid": "^2.11.12",
+    "vitest": "^4.1.10"
+  }
+}

@@ -1,0 +1,266 @@
+---
+title: Link
+---
+
+# Link
+
+A styled anchor component for navigation with built-in icon support.
+
+## Import
+
+```tsx
+import { Link } from "heroui-solid";
+```
+
+### Usage
+
+<ComponentPreview name="link-basic" />
+
+```tsx file=../../../demos/link/basic.tsx title=""
+
+```
+
+### Anatomy
+
+Import the Link component and access all parts using dot notation.
+
+```tsx
+import { Link } from "heroui-solid";
+
+export default () => (
+  <Link href="#">
+    Call to action
+    <Link.Icon />
+  </Link>
+);
+```
+
+### Custom Icon
+
+<ComponentPreview name="link-custom-icon" />
+
+```tsx file=../../../demos/link/custom-icon.tsx title=""
+
+```
+
+### Icon Placement
+
+<ComponentPreview name="link-icon-placement" />
+
+```tsx file=../../../demos/link/icon-placement.tsx title=""
+
+```
+
+> **Accessibility:** The default external-link icon is decorative (`aria-hidden`), so screen readers don't announce it. When a link opens in a new tab, convey that in the link text or an `aria-label`, e.g. `aria-label="Creator Hub (opens in new tab)"`.
+
+### Text Decoration with Tailwind CSS
+
+Link is underlined on hover by default. Use Tailwind CSS text-decoration utilities to make the underline always visible, remove it entirely, or customize its color, style, thickness, and offset.
+
+<ComponentPreview name="link-underline-and-offset" />
+
+```tsx file=../../../demos/link/underline-and-offset.tsx title=""
+
+```
+
+**Text Decoration Line:**
+
+- `underline` - Always visible underline
+- `no-underline` - Remove underline
+- default `Link` styles - Underline appears on hover
+
+**Text Decoration Color:**
+
+- `decoration-accent`, `decoration-muted`, etc. - Set underline color using theme colors
+- `decoration-muted/50` - Use opacity modifiers for semi-transparent underlines
+
+**Text Decoration Style:**
+
+- `decoration-solid` - Solid line (default)
+- `decoration-double` - Double line
+- `decoration-dotted` - Dotted line
+- `decoration-dashed` - Dashed line
+- `decoration-wavy` - Wavy line
+
+**Text Decoration Thickness:**
+
+- `decoration-1`, `decoration-2`, `decoration-4`, etc. - Control underline thickness
+
+**Underline Offset:**
+
+- `underline-offset-1`, `underline-offset-2`, `underline-offset-4`, etc. - Adjust spacing between text and underline
+
+For more details, see the Tailwind CSS documentation:
+
+- [text-decoration-line](https://tailwindcss.com/docs/text-decoration-line)
+- [text-decoration-color](https://tailwindcss.com/docs/text-decoration-color)
+- [text-decoration-style](https://tailwindcss.com/docs/text-decoration-style)
+- [text-decoration-thickness](https://tailwindcss.com/docs/text-decoration-thickness)
+- [text-underline-offset](https://tailwindcss.com/docs/text-underline-offset)
+
+### Custom Element
+
+HeroUI React overrides the rendered element with a `render` prop. This port uses
+Kobalte's polymorphic `as` prop instead — for example, a button element that
+looks like a link:
+
+<ComponentPreview name="link-custom-element" />
+
+```tsx file=../../../demos/link/custom-element.tsx title=""
+
+```
+
+## Related Components
+
+- **Breadcrumbs**: Display the user's current location within a hierarchy (not ported yet)
+
+## Styling
+
+### Passing Tailwind CSS classes
+
+```tsx
+import { Link } from "heroui-solid";
+
+function CustomLink() {
+  return (
+    <Link
+      href="#"
+      class="text-lg font-bold text-accent hover:text-accent/80"
+    >
+      Custom styled link
+    </Link>
+  );
+}
+```
+
+### Customizing the component classes
+
+To customize the Link component classes, you can use the `@layer components` directive.
+[Learn more](https://tailwindcss.com/docs/adding-custom-styles#adding-component-classes).
+
+```css
+@layer components {
+  .link {
+    @apply font-semibold;
+  }
+}
+```
+
+HeroUI follows the [BEM](https://getbem.com/) methodology to ensure component variants and states are reusable and easy to customize.
+
+### CSS Classes
+
+The Link component uses these CSS classes ([View source styles](https://github.com/heroui-inc/heroui/blob/v3/packages/styles/components/link.css)):
+
+#### Base Classes
+
+- `.link` - Base link styles
+- `.link__icon` - Link icon styles
+
+### Interactive States
+
+The component supports CSS pseudo-classes and data attributes:
+
+- **Focus**: `:focus-visible` (shows focus ring)
+- **Hover**: `:hover`
+- **Pressed**: `:active`
+- **Disabled**: `[aria-disabled="true"]` (reduced opacity, no pointer events)
+
+## API Reference
+
+### Link Props
+
+| Prop         | Type                                             | Default   | Description                                             |
+| ------------ | ------------------------------------------------ | --------- | ------------------------------------------------------- |
+| `href`       | `string`                                         | -         | Destination URL for the anchor                          |
+| `target`     | `string`                                         | `"_self"` | Controls where to open the linked document              |
+| `rel`        | `string`                                         | -         | Relationship between the current and linked documents   |
+| `download`   | `boolean \| string`                              | -         | Prompts file download instead of navigation             |
+| `isDisabled` | `boolean`                                        | `false`   | Disables pointer and keyboard interaction               |
+| `class`      | `string`                                         | -         | Custom classes merged with the default styles           |
+| `children`   | `JSX.Element`                                    | -         | Content rendered inside the link                        |
+| `onClick`    | `JSX.EventHandlerUnion<HTMLElement, MouseEvent>` | -         | Handler called when the link is clicked                 |
+| `as`         | `ValidComponent`                                 | `"a"`     | Overrides the default DOM element (Kobalte polymorphic) |
+
+### Link.Icon Props
+
+| Prop       | Type          | Default | Description                                                            |
+| ---------- | ------------- | ------- | ---------------------------------------------------------------------- |
+| `children` | `JSX.Element` | -       | Custom icon element; defaults to the built-in arrow icon when omitted  |
+| `class`    | `string`      | -       | Additional CSS classes                                                 |
+
+### Using with Routing Libraries
+
+With SolidStart, `@solidjs/router` intercepts native `<a>` elements for
+client-side navigation, so `Link` works out of the box — just pass `href`:
+
+```tsx
+import { Link } from "heroui-solid";
+
+export default function Demo() {
+  return (
+    <Link href="/about">
+      About Page
+      <Link.Icon />
+    </Link>
+  );
+}
+```
+
+For routers that ship their own link component, like TanStack Router, use
+variant functions to style it:
+
+```tsx
+import { Link as RouterLink } from "@tanstack/solid-router";
+import { Link, linkVariants } from "heroui-solid";
+
+export default function Demo() {
+  const slots = linkVariants();
+
+  return (
+    <RouterLink class={slots.base()} to="/about">
+      About Page
+      <Link.Icon class={slots.icon()} />
+    </RouterLink>
+  );
+}
+```
+
+### Direct Class Application
+
+Since HeroUI uses [BEM](https://getbem.com/) classes, you can apply Link styles directly to any link element:
+
+```tsx
+import { Link as RouterLink } from "@tanstack/solid-router";
+
+// Apply classes directly with Tailwind utilities
+export default function Demo() {
+  return (
+    <RouterLink class="link underline-offset-2" to="/about">
+      About Page
+    </RouterLink>
+  );
+}
+
+// Or with a native anchor
+export default function NativeLink() {
+  return (
+    <a class="link underline decoration-accent underline-offset-4" href="/about">
+      About Page
+      <Link.Icon class="link__icon" />
+    </a>
+  );
+}
+```
+
+## Differences from HeroUI React
+
+- Use `class` instead of `className`; the element type is overridden with Kobalte's
+  polymorphic `as` prop instead of React's `render` prop.
+- Use `onClick` (Solid's native event) instead of React Aria's `onPress`.
+- `children` is plain JSX — the React render-prop form (receiving `isHovered`,
+  `isPressed`, etc.) isn't supported.
+- Hover/press styling relies on HeroUI's native `:hover` / `:active` CSS fallbacks rather
+  than React Aria's `data-hovered` / `data-pressed` attributes — visuals are identical.
+- The routing example uses TanStack Router instead of Next.js — with SolidStart's own
+  router, native `<a>` interception means `Link` needs no adapter at all.

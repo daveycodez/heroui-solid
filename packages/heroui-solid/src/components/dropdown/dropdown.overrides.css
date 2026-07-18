@@ -1,0 +1,40 @@
+/* Kobalte stamps no data-focus-visible (React Aria does upstream), and the
+   native fallback `:focus-visible:not(:focus)` never matches — bridge the
+   trigger focus ring onto :focus-visible, gated on keyboard modality
+   (utils/interaction-modality.ts): Kobalte refocuses the trigger on close
+   and Chromium carries :focus-visible across programmatic focus moves. */
+html:not([data-heroui-modality="pointer"]) .dropdown__trigger:focus-visible {
+  @apply status-focused;
+}
+
+/* Kobalte signals presence with data-expanded/data-closed instead of React
+   Aria's data-entering/data-exiting, and exposes the popper origin via a CSS
+   variable instead of --trigger-anchor-point. data-placement is stamped by
+   dropdown.tsx from the popper-resolved side, mirroring React Aria. */
+.dropdown__popover {
+  transform-origin: var(--kb-menu-content-transform-origin);
+}
+
+.dropdown__popover[data-expanded] {
+  @apply animate-in duration-150 ease-smooth fade-in-0 zoom-in-90;
+
+  &[data-placement="top"] {
+    @apply slide-in-from-bottom-1;
+  }
+
+  &[data-placement="bottom"] {
+    @apply slide-in-from-top-1;
+  }
+
+  &[data-placement="left"] {
+    @apply slide-in-from-right-1;
+  }
+
+  &[data-placement="right"] {
+    @apply slide-in-from-left-1;
+  }
+}
+
+.dropdown__popover[data-closed] {
+  @apply animate-out duration-100 ease-smooth zoom-out-95 fade-out;
+}

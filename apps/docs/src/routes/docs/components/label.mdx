@@ -1,0 +1,113 @@
+---
+title: Label
+---
+
+# Label
+
+Renders an accessible label associated with form controls.
+
+## Import
+
+```tsx
+import { Label } from "heroui-solid";
+```
+
+## Usage
+
+<ComponentPreview name="label-basic" />
+
+```tsx file=../../../demos/label/basic.tsx title=""
+
+```
+
+## Related Components
+
+- **Input**: Single-line text input
+- **TextArea**: Multiline text input
+- **TextField**: Composition-friendly fields with labels and validation
+
+## Accessibility
+
+The Label component is built on the native HTML `<label>` element ([MDN Reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label)) and follows WAI-ARIA best practices:
+
+- Associates with form controls using the `for` attribute
+- Provides semantic HTML `<label>` element
+- Supports keyboard navigation when associated with form controls
+- Communicates required and invalid states to screen readers
+- Clicking the label focuses/activates the associated form control
+
+Inside a [TextField](/docs/components/text-field), the `for` attribute and ids are
+wired automatically.
+
+## Styling
+
+### CSS Classes
+
+The Label component uses these CSS classes ([View source styles](https://github.com/heroui-inc/heroui/blob/v3/packages/styles/components/label.css)):
+
+#### Base Classes
+
+- `.label` - Base label styles with text styling
+
+#### State Modifier Classes
+
+- `.label--required` or `[data-required="true"] > .label` - Shows required asterisk indicator
+- `.label--disabled` or `[data-disabled="true"] .label` - Disabled state styling
+- `.label--invalid` or `[data-invalid="true"] .label` - Invalid state styling (danger/red text color)
+
+**Note**: The required asterisk is smartly applied using role and data-slot detection. It excludes:
+
+- Elements with `role="group"`, `role="radiogroup"`, or `role="checkboxgroup"`
+- Elements with `data-slot="radio"` or `data-slot="checkbox"`
+
+This prevents duplicate asterisks when using group components with required fields.
+
+## API
+
+### Label Props
+
+| Prop         | Type          | Default | Description                                        |
+| ------------ | ------------- | ------- | -------------------------------------------------- |
+| `for`        | `string`      | -       | The id of the element the label is associated with |
+| `isRequired` | `boolean`     | `false` | Whether to display a required indicator            |
+| `isDisabled` | `boolean`     | `false` | Whether the label is in a disabled state           |
+| `isInvalid`  | `boolean`     | `false` | Whether the label is in an invalid state           |
+| `class`      | `string`      | -       | Additional CSS classes                             |
+| `children`   | `JSX.Element` | -       | The content of the label                           |
+
+## Examples
+
+### With Required Indicator
+
+```tsx
+<Label for="email" isRequired>
+  Email Address
+</Label>
+<Input id="email" type="email" />
+```
+
+### With Disabled State
+
+```tsx
+<Label for="username" isDisabled>
+  Username
+</Label>
+<Input disabled id="username" />
+```
+
+### With Invalid State
+
+```tsx
+<Label for="password" isInvalid>
+  Password
+</Label>
+<Input id="password" />
+```
+
+## Differences from HeroUI React
+
+- Use `for` (Solid's native attribute) instead of `htmlFor`, and `class` instead of
+  `className`.
+- Inside a TextField the label renders through Kobalte and receives its `for`
+  automatically; the required asterisk comes from the field's `data-required="true"`
+  attribute rather than a prop.

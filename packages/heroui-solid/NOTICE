@@ -1,0 +1,31 @@
+heroui-solid
+Copyright 2026 heroui-solid contributors
+
+This is an UNOFFICIAL port of HeroUI v3 to SolidJS.
+
+This product depends on and redistributes compiled CSS from HeroUI
+(https://heroui.com, https://github.com/heroui-inc/heroui), © HeroUI Inc.,
+via the `@heroui/styles` npm package, used under the Apache License 2.0 as
+published in the LICENSE file bundled inside the `@heroui/styles` and
+`@heroui/react` npm packages.
+
+Note: at the time of writing, the `@heroui/styles` and `@heroui/react`
+packages declare "license": "MIT" in their package.json while bundling the
+Apache License 2.0 text as their LICENSE file. We attribute under Apache-2.0
+per the bundled LICENSE file and document the discrepancy here.
+
+This product depends on Kobalte (https://kobalte.dev,
+https://github.com/kobaltedev/kobalte), used under the MIT License.
+Kobalte is itself inspired by and portions are derived from Radix UI,
+React Aria, and Zag.js — see Kobalte's own LICENSE.md for details.
+
+This product includes a SolidJS port of the usePreventScroll scroll lock
+from React Aria / React Spectrum
+(https://github.com/adobe/react-spectrum), Copyright Adobe, used under the
+Apache License 2.0 (the ported prevent-scroll source file retains Adobe's
+license notice).
+
+Component prop names, variant names, and documentation examples are modeled
+on HeroUI v3's public API for compatibility purposes; except where noted
+above (in particular the React Aria-derived scroll lock), the SolidJS
+implementation is original to this project.

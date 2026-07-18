@@ -1,0 +1,164 @@
+---
+title: TextArea
+---
+
+# TextArea
+
+Primitive multiline text input component that accepts standard HTML attributes.
+
+## Import
+
+```tsx
+import { TextArea } from "heroui-solid";
+```
+
+> For validation, labels, and error messages, see **[TextField](/docs/components/text-field)**.
+
+### Usage
+
+<ComponentPreview name="textarea-basic" />
+
+```tsx file=../../../demos/textarea/basic.tsx title=""
+
+```
+
+### Controlled
+
+Standalone textareas are controlled with Solid's native `onInput` event (HeroUI React
+uses React's `onChange`, which fires per keystroke — Solid's `onChange` fires on blur).
+
+<ComponentPreview name="textarea-controlled" />
+
+```tsx file=../../../demos/textarea/controlled.tsx title=""
+
+```
+
+### Rows and Resizing
+
+<ComponentPreview name="textarea-rows" />
+
+```tsx file=../../../demos/textarea/rows.tsx title=""
+
+```
+
+### Full Width
+
+<ComponentPreview name="textarea-full-width" />
+
+```tsx file=../../../demos/textarea/full-width.tsx title=""
+
+```
+
+### Variants
+
+The TextArea component supports two visual variants:
+
+- **`primary`** (default) - Standard styling with shadow, suitable for most use cases
+- **`secondary`** - Lower emphasis variant without shadow, suitable for use in Surface components
+
+<ComponentPreview name="textarea-variants" />
+
+```tsx file=../../../demos/textarea/variants.tsx title=""
+
+```
+
+### In Surface
+
+When used inside a [Surface](/docs/components/surface) component, use `variant="secondary"` to apply the lower emphasis variant suitable for surface backgrounds.
+
+<ComponentPreview name="textarea-on-surface" />
+
+```tsx file=../../../demos/textarea/on-surface.tsx title=""
+
+```
+
+## Related Components
+
+- **TextField**: Composition-friendly fields with labels and validation
+- **Input**: Single-line text input
+- **Label**: Accessible label for form controls
+
+## Styling
+
+### Passing Tailwind CSS classes
+
+```tsx
+import { Label, TextArea } from "heroui-solid";
+
+function CustomTextArea() {
+  return (
+    <div class="flex flex-col gap-2">
+      <Label htmlFor="custom-textarea">Message</Label>
+      <TextArea
+        id="custom-textarea"
+        class="rounded-xl border border-border/70 bg-surface-secondary px-4 py-3 text-sm leading-6 shadow-sm"
+        placeholder="Let us know how we can help..."
+        rows={5}
+        style={{ resize: "vertical" }}
+      />
+    </div>
+  );
+}
+```
+
+### Customizing the component classes
+
+Override the shared `.textarea` class once with Tailwind's `@layer components`.
+
+```css
+@layer components {
+  .textarea {
+    @apply rounded-xl border border-border px-4 py-3 text-sm leading-6 shadow-sm;
+
+    &:hover {
+      @apply bg-surface-secondary border-border/80;
+    }
+
+    &:focus-visible {
+      @apply border-accent ring-2 ring-accent/20;
+    }
+
+    &[data-invalid] {
+      @apply border-danger text-danger;
+    }
+  }
+}
+```
+
+### CSS Classes
+
+- `.textarea` – Underlying `<textarea>` element styling
+- `.textarea--primary` / `.textarea--secondary` – Visual variants
+- `.textarea--full-width` – Full width modifier
+
+### Interactive States
+
+- **Hover**: `:hover`
+- **Focus**: `:focus`
+- **Invalid**: `[data-invalid]` (stamped by the enclosing TextField)
+- **Disabled**: `:disabled`
+
+## API Reference
+
+### TextArea Props
+
+TextArea accepts all standard HTML `<textarea>` attributes plus the following:
+
+| Prop            | Type                       | Default     | Description                                                                                                                                                        |
+| --------------- | -------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `class`         | `string`                   | -           | Tailwind classes merged with the base styles.                                                                                                                      |
+| `rows`          | `number`                   | -           | Number of visible text lines.                                                                                                                                      |
+| `fullWidth`     | `boolean`                  | `false`     | Whether the textarea should take full width of its container                                                                                                       |
+| `variant`       | `"primary" \| "secondary"` | `"primary"` | Visual variant of the component. `primary` is the default style with shadow. `secondary` is a lower emphasis variant without shadow, suitable for use in surfaces. |
+| `autoResize`    | `boolean`                  | `false`     | Grow the textarea to fit its content (Kobalte, only inside a TextField)                                                                                            |
+| `submitOnEnter` | `boolean`                  | `false`     | Submit the enclosing form on Enter (Kobalte, only inside a TextField)                                                                                              |
+
+> For validation props like `isInvalid` and `isRequired`, use **[TextField](/docs/components/text-field)** with TextArea as a child component.
+
+## Differences from HeroUI React
+
+- Use `class` instead of `className` and `for` instead of `htmlFor` on labels.
+- Control standalone textareas with `onInput` (per keystroke); Solid's `onChange`
+  fires on blur. Inside a TextField, use the field's `onChange(value)` instead.
+- `autoResize` and `submitOnEnter` are Kobalte extras not present upstream; they
+  only apply when the TextArea is inside a TextField.

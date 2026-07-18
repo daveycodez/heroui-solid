@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      # Runs Biome over the repo, then every project's unit tests, typecheck,
+      # and the docs SSR/hydration gate (headless Chrome — preinstalled on
+      # ubuntu runners) via nx. Same entry point as local `bun run test:all`.
+      - name: Test
+        run: bun run test:all

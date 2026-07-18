@@ -1,0 +1,10 @@
+/* Inside a group, upstream keeps the focus ring inset so it stays within the
+   button's bounds. Its selectors key off React Aria attrs Kobalte doesn't
+   stamp (data-focus-visible) plus the dead :focus-visible:not(:focus), so the
+   ring rides native :focus-visible — modality-gated like the base button ring
+   (button.overrides.css). Higher specificity than the base bridge, so the
+   inset props win. */
+html:not([data-heroui-modality="pointer"]) .button-group .button:focus-visible {
+  --tw-ring-offset-width: 0px;
+  @apply ring-inset;
+}

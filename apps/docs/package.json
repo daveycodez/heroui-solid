@@ -1,0 +1,49 @@
+{
+  "name": "docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev --port 3000",
+    "build": "vite build",
+    "preview": "vite preview",
+    "ssr-test": "bun scripts/ssr-test.mjs",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.2.8",
+    "@heroui/styles": "3.2.2",
+    "@fontsource-variable/jetbrains-mono": "^5.2.8",
+    "@fontsource-variable/lexend": "^5.2.11",
+    "@iconify-json/ri": "^1.2.5",
+    "@kobalte/core": "^0.13.12",
+    "@kobalte/solidbase": "0.6.9",
+    "@orama/orama": "^3.1.18",
+    "@solidjs/meta": "^0.29.4",
+    "@solidjs/router": "^0.16.2",
+    "@solidjs/start": "2.0.0-beta.0",
+    "gravity-icons-solid": "^0.1.0",
+    "heroui-solid": "workspace:*",
+    "nitro": "^3.0.260610-beta",
+    "resolve": "^1.22.10",
+    "solid-js": "^1.9.14",
+    "tailwind-variants": "^3.2.2",
+    "vite": "^8.0.0"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "devDependencies": {
+    "@iconify-json/devicon": "^1.2.62",
+    "@iconify-json/ion": "^1.2.7",
+    "@iconify-json/mdi": "^1.2.3",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^26.1.1",
+    "github-slugger": "2.0.0",
+    "playwright-core": "^1.56.1",
+    "tailwindcss": "^4.3.3",
+    "typescript": "~6.0.3",
+    "unplugin-icons": "^23.0.1",
+    "vitest": "^4.1.10"
+  }
+}

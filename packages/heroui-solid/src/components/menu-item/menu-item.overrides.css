@@ -1,0 +1,16 @@
+/* No data-highlighted bridge on purpose: upstream's hover bg is
+   pointer-only (`:hover` inside @media (hover: hover), already live here
+   natively), while Kobalte's data-highlighted also rides keyboard focus —
+   bridging it painted the hover bg without a hover (see list-box). */
+
+/* Keyboard navigation ring, mirroring upstream's data-focus-visible +
+   dead `:focus-visible:not(:focus)` fallback — modality-gated like every
+   focus bridge (utils/interaction-modality.ts). */
+html:not([data-heroui-modality="pointer"]) .menu-item:focus-visible {
+  @apply status-focused;
+}
+
+/* Kobalte stamps data-disabled as an empty string (React Aria stamps "true"). */
+.menu-item[data-disabled] {
+  @apply status-disabled;
+}

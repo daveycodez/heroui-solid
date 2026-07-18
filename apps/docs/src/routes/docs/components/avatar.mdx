@@ -1,0 +1,187 @@
+---
+title: Avatar
+---
+
+# Avatar
+
+Display user profile images with customizable fallback content
+
+## Import
+
+```tsx
+import { Avatar } from "heroui-solid";
+```
+
+### Usage
+
+<ComponentPreview name="avatar-basic" />
+
+```tsx file=../../../demos/avatar/basic.tsx title=""
+
+```
+
+### Anatomy
+
+Import the Avatar component and access all parts using dot notation.
+
+```tsx
+import { Avatar } from "heroui-solid";
+
+export default () => (
+  <Avatar>
+    <Avatar.Image />
+    <Avatar.Fallback />
+  </Avatar>
+);
+```
+
+### Sizes
+
+<ComponentPreview name="avatar-sizes" />
+
+```tsx file=../../../demos/avatar/sizes.tsx title=""
+
+```
+
+### Colors
+
+<ComponentPreview name="avatar-colors" />
+
+```tsx file=../../../demos/avatar/colors.tsx title=""
+
+```
+
+### Variants
+
+<ComponentPreview name="avatar-variants" />
+
+```tsx file=../../../demos/avatar/variants.tsx title=""
+
+```
+
+### Fallback Content
+
+<ComponentPreview name="avatar-fallback" />
+
+```tsx file=../../../demos/avatar/fallback.tsx title=""
+
+```
+
+### Avatar Group
+
+<ComponentPreview name="avatar-group" />
+
+```tsx file=../../../demos/avatar/group.tsx title=""
+
+```
+
+### Custom Styles
+
+<ComponentPreview name="avatar-custom-styles" />
+
+```tsx file=../../../demos/avatar/custom-styles.tsx title=""
+
+```
+
+## Styling
+
+### Passing Tailwind CSS classes
+
+```tsx
+import { Avatar } from "heroui-solid";
+
+function CustomAvatar() {
+  return (
+    <Avatar class="size-20">
+      <Avatar.Image src="..." alt="..." />
+      <Avatar.Fallback>XL</Avatar.Fallback>
+    </Avatar>
+  );
+}
+```
+
+### Customizing the component classes
+
+To customize the Avatar component classes, you can use the `@layer components` directive.
+<br/>[Learn more](https://tailwindcss.com/docs/adding-custom-styles#adding-component-classes).
+
+```css
+@layer components {
+  .avatar {
+    @apply size-16 border-2 border-primary;
+  }
+
+  .avatar__fallback {
+    @apply bg-gradient-to-br from-purple-500 to-pink-500;
+  }
+}
+```
+
+HeroUI follows the [BEM](https://getbem.com/) methodology to ensure component variants and states are reusable and easy to customize.
+
+### CSS Classes
+
+The Avatar component uses these CSS classes ([View source styles](https://github.com/heroui-inc/heroui/blob/v3/packages/styles/components/avatar.css)):
+
+#### Base Classes
+
+- `.avatar` - Base container with default size (size-10)
+- `.avatar__image` - Image element with aspect-square sizing
+- `.avatar__fallback` - Fallback container with centered content
+
+#### Size Modifiers
+
+- `.avatar--sm` - Small avatar (size-8)
+- `.avatar--md` - Medium avatar (default, no additional styles)
+- `.avatar--lg` - Large avatar (size-12)
+
+#### Variant Modifiers
+
+- `.avatar--soft` - Soft variant with lighter background
+
+#### Color Modifiers
+
+- `.avatar__fallback--default` - Default text color
+- `.avatar__fallback--accent` - Accent text color
+- `.avatar__fallback--success` - Success text color
+- `.avatar__fallback--warning` - Warning text color
+- `.avatar__fallback--danger` - Danger text color
+
+## API Reference
+
+### Avatar Props
+
+| Prop      | Type                                                          | Default     | Description            |
+| --------- | ------------------------------------------------------------- | ----------- | ---------------------- |
+| `size`    | `"sm" \| "md" \| "lg"`                                        | `"md"`      | Avatar size            |
+| `color`   | `"default" \| "accent" \| "success" \| "warning" \| "danger"` | `"default"` | Fallback color theme   |
+| `variant` | `"default" \| "soft"`                                         | `"default"` | Visual style variant   |
+| `class`   | `string`                                                      | -           | Additional CSS classes |
+
+### Avatar.Image Props
+
+| Prop    | Type     | Default | Description                    |
+| ------- | -------- | ------- | ------------------------------ |
+| `src`   | `string` | -       | Image source URL               |
+| `alt`   | `string` | -       | Alternative text for the image |
+| `class` | `string` | -       | Additional CSS classes         |
+
+The image only mounts once it has loaded (Kobalte Image); until then the
+fallback renders.
+
+### Avatar.Fallback Props
+
+| Prop      | Type                                                          | Default | Description                                 |
+| --------- | ------------------------------------------------------------- | ------- | ------------------------------------------- |
+| `delayMs` | `number`                                                      | -       | Delay before showing fallback (prevents flash) |
+| `color`   | `"default" \| "accent" \| "success" \| "warning" \| "danger"` | -       | Override color from parent                  |
+| `class`   | `string`                                                      | -       | Additional CSS classes                      |
+
+## Differences from HeroUI React
+
+- Built on Kobalte's Image primitive instead of Radix Avatar — same
+  loading/fallback semantics.
+- `Avatar.Image` doesn't forward `srcSet`/`sizes`/`loading`/`crossOrigin`
+  handling through a preloader the way Radix does; standard `img` attributes
+  pass through to the element once mounted.
+- The React `render` prop is replaced by Kobalte's `as` prop.

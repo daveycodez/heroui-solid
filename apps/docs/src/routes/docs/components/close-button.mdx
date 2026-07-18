@@ -1,0 +1,103 @@
+---
+title: CloseButton
+---
+
+# CloseButton
+
+Button component for closing dialogs, modals, or dismissing content
+
+## Import
+
+```tsx
+import { CloseButton } from "heroui-solid";
+```
+
+### Usage
+
+<ComponentPreview name="close-button-default" />
+
+```tsx file=../../../demos/close-button/default.tsx title=""
+
+```
+
+### With Custom Icon
+
+<ComponentPreview name="close-button-with-custom-icon" />
+
+```tsx file=../../../demos/close-button/with-custom-icon.tsx title=""
+
+```
+
+### Interactive
+
+<ComponentPreview name="close-button-interactive" />
+
+```tsx file=../../../demos/close-button/interactive.tsx title=""
+
+```
+
+## Styling
+
+### Passing Tailwind CSS classes
+
+```tsx
+import { CloseButton } from "heroui-solid";
+
+function CustomCloseButton() {
+  return <CloseButton class="text-danger hover:bg-danger/10" />;
+}
+```
+
+### Customizing the component classes
+
+To customize the CloseButton component classes, you can use the `@layer components` directive.
+<br/>[Learn more](https://tailwindcss.com/docs/adding-custom-styles#adding-component-classes).
+
+```css
+@layer components {
+  .close-button {
+    @apply bg-danger/10 text-danger hover:bg-danger/20;
+  }
+
+  .close-button--custom {
+    @apply rounded-full border-2 border-danger/30;
+  }
+}
+```
+
+HeroUI follows the [BEM](https://getbem.com/) methodology to ensure component variants and states are reusable and easy to customize.
+
+### CSS Classes
+
+The CloseButton component uses these CSS classes ([View source styles](https://github.com/heroui-inc/heroui/blob/v3/packages/styles/components/close-button.css)):
+
+#### Base Classes
+
+- `.close-button` - Base component styles
+
+#### Variant Classes
+
+- `.close-button--default` - Default variant
+
+### Interactive States
+
+Kobalte stamps `data-disabled`; the other states ride native pseudo-classes (the
+focus ring is modality-gated via `close-button.overrides.css`):
+
+- **Hover**: `:hover`
+- **Active/Pressed**: `:active`
+- **Focus**: `:focus-visible`
+- **Disabled**: `:disabled` or `[data-disabled]`
+
+## API Reference
+
+### CloseButton Props
+
+| Prop         | Type             | Default         | Description                                 |
+| ------------ | ---------------- | --------------- | ------------------------------------------- |
+| `variant`    | `"default"`      | `"default"`     | Visual variant of the button                |
+| `children`   | `JSX.Element`    | `<CloseIcon />` | Content to display (defaults to close icon) |
+| `onClick`    | `(event) => void`| -               | Handler called when the button is activated |
+| `class`      | `string`         | -               | Additional CSS classes                      |
+| `aria-label` | `string`         | `"Close"`       | Accessible label for screen readers         |
+| `as`         | `ValidComponent` | `"button"`      | Overrides the default DOM element (Kobalte polymorphic) |

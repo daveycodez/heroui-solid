@@ -1,0 +1,20 @@
+node_modules
+dist
+.output
+.vinxi
+.nitro
+.nx
+.solidbase
+*.tsbuildinfo
+*.log
+.DS_Store
+
+# pack-time copy of the root README (prepack/postpack in the package)
+packages/heroui-solid/README.md
+
+# vendored upstream HeroUI docs, refetched deterministically from
+# upstream.lock.json (apps/docs/parity/sync.ts, auto-run by the test setup)
+apps/docs/parity/fixtures
+
+.claude/worktrees
+.claude/settings.local.json

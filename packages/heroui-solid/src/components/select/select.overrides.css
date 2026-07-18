@@ -1,0 +1,59 @@
+/* Kobalte stamps no data-focus-visible (React Aria does upstream), and the
+   native fallback `:focus-visible:not(:focus)` never matches — bridge the
+   trigger focus ring onto :focus-visible, gated on keyboard modality
+   (utils/interaction-modality.ts): Kobalte refocuses the trigger on close,
+   and Chromium's heuristic carries :focus-visible across programmatic focus
+   moves, so an ungated bridge rings after pure mouse dismissal. */
+html:not([data-heroui-modality="pointer"]) .select__trigger:focus-visible {
+  @apply status-focused;
+  border-color: var(--field-border-focus);
+  background-color: var(--field-focus);
+}
+
+html:not([data-heroui-modality="pointer"])
+  .select--secondary
+  .select__trigger:focus-visible {
+  background-color: var(--select-trigger-bg-focus);
+}
+
+/* Kobalte stamps data-placeholder-shown (empty string) instead of React
+   Aria's data-placeholder="true". */
+.select__value[data-placeholder-shown] {
+  @apply text-field-placeholder;
+}
+
+/* Kobalte signals presence with data-expanded/data-closed instead of React
+   Aria's data-entering/data-exiting, and exposes the popper origin via a CSS
+   variable instead of --trigger-anchor-point. data-placement is stamped by
+   select.tsx from the popper-resolved side, mirroring React Aria. Upstream's
+   min-w-(--trigger-width) is a dead rule here (React Aria sets that var);
+   Kobalte stamps --kb-popper-anchor-width, bridged with sameWidth={false}
+   on the root so the popover is at least trigger-wide but can grow. */
+.select__popover {
+  transform-origin: var(--kb-select-content-transform-origin);
+  min-width: var(--kb-popper-anchor-width);
+}
+
+.select__popover[data-expanded] {
+  @apply animate-in duration-150 ease-smooth fade-in-0 zoom-in-95;
+
+  &[data-placement="top"] {
+    @apply slide-in-from-bottom-1;
+  }
+
+  &[data-placement="bottom"] {
+    @apply slide-in-from-top-1;
+  }
+
+  &[data-placement="left"] {
+    @apply slide-in-from-right-1;
+  }
+
+  &[data-placement="right"] {
+    @apply slide-in-from-left-1;
+  }
+}
+
+.select__popover[data-closed] {
+  @apply animate-out duration-100 ease-smooth zoom-out-95 fade-out;
+}

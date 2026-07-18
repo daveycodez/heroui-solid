@@ -1,0 +1,159 @@
+---
+title: Input
+---
+
+# Input
+
+Primitive single-line text input component that accepts standard HTML attributes.
+
+## Import
+
+```tsx
+import { Input } from "heroui-solid";
+```
+
+> For validation, labels, and error messages, see **[TextField](/docs/components/text-field)**.
+
+### Usage
+
+<ComponentPreview name="input-basic" />
+
+```tsx file=../../../demos/input/basic.tsx title=""
+
+```
+
+### Input Types
+
+<ComponentPreview name="input-types" />
+
+```tsx file=../../../demos/input/types.tsx title=""
+
+```
+
+### Controlled
+
+Standalone inputs are controlled with Solid's native `onInput` event (HeroUI React
+uses React's `onChange`, which fires per keystroke — Solid's `onChange` fires on blur).
+
+<ComponentPreview name="input-controlled" />
+
+```tsx file=../../../demos/input/controlled.tsx title=""
+
+```
+
+### Full Width
+
+<ComponentPreview name="input-full-width" />
+
+```tsx file=../../../demos/input/full-width.tsx title=""
+
+```
+
+### Variants
+
+The Input component supports two visual variants:
+
+- **`primary`** (default) - Standard styling with shadow, suitable for most use cases
+- **`secondary`** - Lower emphasis variant without shadow, suitable for use in Surface components
+
+<ComponentPreview name="input-variants" />
+
+```tsx file=../../../demos/input/variants.tsx title=""
+
+```
+
+### In Surface
+
+When used inside a [Surface](/docs/components/surface) component, use `variant="secondary"` to apply the lower emphasis variant suitable for surface backgrounds.
+
+<ComponentPreview name="input-on-surface" />
+
+```tsx file=../../../demos/input/on-surface.tsx title=""
+
+```
+
+## Related Components
+
+- **TextField**: Composition-friendly fields with labels and validation
+- **TextArea**: Multiline text input
+- **Label**: Accessible label for form controls
+
+## Styling
+
+### Passing Tailwind CSS classes
+
+```tsx
+import { Input, Label } from "heroui-solid";
+
+function CustomInput() {
+  return (
+    <div class="flex flex-col gap-2">
+      <Label htmlFor="custom-input">Project name</Label>
+      <Input
+        id="custom-input"
+        class="rounded-xl border border-border/70 bg-surface-secondary px-4 py-2 text-sm shadow-sm focus-visible:border-accent"
+        placeholder="New web app"
+      />
+    </div>
+  );
+}
+```
+
+### Customizing the component classes
+
+The base class `.input` powers every instance. Override it once with `@layer components`.
+
+```css
+@layer components {
+  .input {
+    @apply rounded-lg border border-border px-4 py-2 text-sm shadow-sm transition-colors;
+
+    &:hover {
+      @apply bg-surface-secondary border-border/80;
+    }
+
+    &:focus-visible {
+      @apply border-accent ring-2 ring-accent/20;
+    }
+
+    &[data-invalid] {
+      @apply border-danger text-danger;
+    }
+  }
+}
+```
+
+### CSS Classes
+
+- `.input` – Native input element styling
+- `.input--primary` / `.input--secondary` – Visual variants
+- `.input--full-width` – Full width modifier
+
+### Interactive States
+
+- **Hover**: `:hover`
+- **Focus**: `:focus`
+- **Invalid**: `[data-invalid]` (stamped by the enclosing TextField; also syncs with `aria-invalid`)
+- **Disabled**: `:disabled`
+
+## API Reference
+
+### Input Props
+
+Input accepts all standard HTML `<input>` attributes plus the following:
+
+| Prop        | Type                       | Default     | Description                                                                                                                                                        |
+| ----------- | -------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `class`     | `string`                   | -           | Tailwind classes merged with the component styles.                                                                                                                 |
+| `fullWidth` | `boolean`                  | `false`     | Whether the input should take full width of its container                                                                                                          |
+| `variant`   | `"primary" \| "secondary"` | `"primary"` | Visual variant of the component. `primary` is the default style with shadow. `secondary` is a lower emphasis variant without shadow, suitable for use in surfaces. |
+
+> For validation props like `isInvalid` and `isRequired`, use **[TextField](/docs/components/text-field)** with Input as a child component.
+
+## Differences from HeroUI React
+
+- Use `class` instead of `className` and `for` instead of `htmlFor` on labels.
+- Control standalone inputs with `onInput` (per keystroke); Solid's `onChange`
+  fires on blur. Inside a TextField, use the field's `onChange(value)` instead.
+- Inside a TextField the input is wired through Kobalte, which stamps
+  `data-invalid` as an attribute (no `="true"` value) — both selector forms are styled.

@@ -1,0 +1,249 @@
+---
+title: Button
+---
+
+# Button
+
+A clickable button component with multiple variants and states.
+
+## Import
+
+```tsx
+import { Button } from "heroui-solid";
+```
+
+### Usage
+
+<ComponentPreview name="button-basic" />
+
+```tsx file=../../../demos/button/basic.tsx title=""
+
+```
+
+### Variants
+
+<ComponentPreview name="button-variants" />
+
+```tsx file=../../../demos/button/variants.tsx title=""
+
+```
+
+### With Icons
+
+<ComponentPreview name="button-with-icons" />
+
+```tsx file=../../../demos/button/with-icons.tsx title=""
+
+```
+
+### Icon Only
+
+<ComponentPreview name="button-icon-only" />
+
+```tsx file=../../../demos/button/icon-only.tsx title=""
+
+```
+
+### Loading
+
+<ComponentPreview name="button-loading" />
+
+```tsx file=../../../demos/button/loading.tsx title=""
+
+```
+
+### Loading State
+
+<ComponentPreview name="button-loading-state" />
+
+```tsx file=../../../demos/button/loading-state.tsx title=""
+
+```
+
+### Sizes
+
+<ComponentPreview name="button-sizes" />
+
+```tsx file=../../../demos/button/sizes.tsx title=""
+
+```
+
+### Full Width
+
+<ComponentPreview name="button-full-width" />
+
+```tsx file=../../../demos/button/full-width.tsx title=""
+
+```
+
+### Disabled State
+
+<ComponentPreview name="button-disabled" />
+
+```tsx file=../../../demos/button/disabled.tsx title=""
+
+```
+
+### Social Buttons
+
+<ComponentPreview name="button-social" />
+
+```tsx file=../../../demos/button/social.tsx title=""
+
+```
+
+### Custom Element
+
+HeroUI React overrides the rendered element with a `render` prop. This port uses
+Kobalte's polymorphic `as` prop instead — for example, an anchor that looks like a
+button:
+
+<ComponentPreview name="button-custom-element" />
+
+```tsx file=../../../demos/button/custom-element.tsx title=""
+
+```
+
+## Related Components
+
+- **Popover**: Displays content in context with a trigger (not ported yet)
+- **Tooltip**: Contextual information on hover or focus (not ported yet)
+- **Form**: Form validation and submission handling (not ported yet)
+
+## Styling
+
+### Passing Tailwind CSS classes
+
+```tsx
+import { Button } from "heroui-solid";
+
+function CustomButton() {
+  return (
+    <Button class="bg-purple-500 text-white hover:bg-purple-600">
+      Purple Button
+    </Button>
+  );
+}
+```
+
+### Customizing the component classes
+
+To customize the Button component classes, you can use the `@layer components` directive.
+[Learn more](https://tailwindcss.com/docs/adding-custom-styles#adding-component-classes).
+
+```css
+@layer components {
+  .button {
+    @apply bg-purple-500 text-white hover:bg-purple-600;
+  }
+
+  .button--icon-only {
+    @apply rounded-lg bg-blue-500;
+  }
+}
+```
+
+HeroUI follows the [BEM](https://getbem.com/) methodology to ensure component variants and states are reusable and easy to customize.
+
+### Adding custom variants
+
+You can extend HeroUI components by wrapping them and adding your own custom variants.
+
+<ComponentPreview name="button-custom-variants" />
+
+```tsx file=../../../demos/button/custom-variants.tsx title=""
+
+```
+
+### Adding Ripple Effect
+
+HeroUI React adds a ripple through composition — nesting a React-only
+`<Ripple />` child (e.g. [m3-ripple](https://github.com/saltyaom/m3-ripple)).
+This Solid port ships the effect as a CSS flag instead: the `--button-ripple`
+custom property, off by default. Add the `ripple` class to enable it on a single
+button:
+
+<ComponentPreview name="button-ripple" />
+
+```tsx file=../../../demos/button/ripple.tsx title=""
+
+```
+
+Because the property inherits, you can enable ripple for **every** button by
+setting it once at the root, then opt individual buttons back out with
+`no-ripple`:
+
+```css
+:root {
+  --button-ripple: 1;
+}
+```
+
+The ripple expands from the press point and follows Material 3's touch
+heuristics: mouse and pen ripple immediately on press, keyboard activation
+ripples from the center, and a touch only ripples once it's clearly a tap or
+hold — a touch that turns into a scroll never fires it. It uses `currentColor`
+and honors `prefers-reduced-motion`; tune it with `--button-ripple-color` and
+`--button-ripple-opacity`.
+
+### CSS Classes
+
+The Button component uses these CSS classes ([View source styles](https://github.com/heroui-inc/heroui/blob/v3/packages/styles/components/button.css)):
+
+#### Base & Size Classes
+
+- `.button` - Base button styles
+- `.button--sm` - Small size variant
+- `.button--md` - Medium size variant
+- `.button--lg` - Large size variant
+
+#### Variant Classes
+
+- `.button--primary`
+- `.button--secondary`
+- `.button--tertiary`
+- `.button--outline`
+- `.button--ghost`
+- `.button--danger`
+- `.button--danger-soft`
+
+#### Modifier Classes
+
+- `.button--icon-only`
+- `.button--icon-only.button--sm`
+- `.button--icon-only.button--lg`
+
+### Interactive States
+
+The button supports CSS pseudo-classes and data attributes:
+
+- **Hover**: `:hover`
+- **Active/Pressed**: `:active` (includes scale transform)
+- **Focus**: `:focus-visible` (shows focus ring)
+- **Disabled**: `:disabled` or `[aria-disabled="true"]` (reduced opacity, no pointer events)
+- **Pending**: `[data-pending]` (no pointer events during loading)
+
+## API Reference
+
+### Button Props
+
+| Prop         | Type                                                                                          | Default     | Description                                                  |
+| ------------ | --------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------- |
+| `variant`    | `"primary" \| "secondary" \| "tertiary" \| "outline" \| "ghost" \| "danger" \| "danger-soft"` | `"primary"` | Visual style variant                                          |
+| `size`       | `"sm" \| "md" \| "lg"`                                                                         | `"md"`      | Size of the button                                            |
+| `fullWidth`  | `boolean`                                                                                      | `false`     | Whether the button should take full width of its container    |
+| `isDisabled` | `boolean`                                                                                      | `false`     | Whether the button is disabled                                |
+| `isPending`  | `boolean`                                                                                      | `false`     | Whether the button is in a loading state                      |
+| `isIconOnly` | `boolean`                                                                                      | `false`     | Whether the button contains only an icon                      |
+| `onClick`    | `JSX.EventHandlerUnion<HTMLElement, MouseEvent>`                                               | -           | Handler called when the button is clicked                     |
+| `children`   | `JSX.Element \| (state: { isPending: boolean }) => JSX.Element`                                     | -           | Button content or render prop                                 |
+| `as`         | `ValidComponent`                                                                               | `"button"`  | Overrides the default DOM element (Kobalte polymorphic `as`)  |
+
+## Differences from HeroUI React
+
+- Use `onClick` (Solid's native event) instead of React Aria's `onPress`.
+- Polymorphism uses Kobalte's `as` prop instead of React's `render` prop override.
+- The render-prop `state` exposes `isPending` only (no `isPressed`/`isHovered`/`isFocused`)
+  — read fields off `state` inside JSX rather than destructuring, so updates stay reactive.
+- Hover/press styling relies on HeroUI's native `:hover` / `:active` CSS fallbacks rather
+  than React Aria's `data-hovered` / `data-pressed` attributes — visuals are identical.

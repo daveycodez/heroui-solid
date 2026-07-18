@@ -1,0 +1,216 @@
+---
+title: Card
+---
+
+# Card
+
+Flexible container component for grouping related content and actions.
+
+## Import
+
+```tsx
+import { Card } from "heroui-solid";
+```
+
+### Usage
+
+<ComponentPreview name="card-default" />
+
+```tsx file=../../../demos/card/default.tsx title=""
+
+```
+
+### Anatomy
+
+Import the Card component and access all parts using dot notation.
+
+```tsx
+import { Card } from "heroui-solid";
+
+export default () => (
+  <Card>
+    <Card.Header>
+      <Card.Title />
+      <Card.Description />
+    </Card.Header>
+    <Card.Content />
+    <Card.Footer />
+  </Card>
+);
+```
+
+### Variants
+
+Cards come in semantic variants that describe their prominence level rather than specific visual styles. This allows themes to interpret them differently:
+
+<ComponentPreview name="card-variants" />
+
+```tsx file=../../../demos/card/variants.tsx title=""
+
+```
+
+- **`transparent`** - Minimal prominence, transparent background (great for nested cards)
+- **`default`** - Standard card for most use cases
+- **`secondary`** - Medium prominence to draw moderate attention
+- **`tertiary`** - Higher prominence for important content
+
+### Horizontal Layout
+
+<ComponentPreview name="card-horizontal" />
+
+```tsx file=../../../demos/card/horizontal.tsx title=""
+
+```
+
+### With Avatar
+
+<ComponentPreview name="card-with-avatar" />
+
+```tsx file=../../../demos/card/with-avatar.tsx title=""
+
+```
+
+### With Images
+
+<ComponentPreview name="card-with-images" />
+
+```tsx file=../../../demos/card/with-images.tsx title=""
+
+```
+
+### With Form
+
+<ComponentPreview name="card-with-form" />
+
+```tsx file=../../../demos/card/with-form.tsx title=""
+
+```
+
+## Accessibility
+
+```tsx
+import { Card } from "heroui-solid";
+import { cardVariants } from "heroui-solid";
+
+// Semantic markup
+<Card role="article" aria-labelledby="card-title">
+  <Card.Header>
+    <Card.Title id="card-title">Article Title</Card.Title>
+  </Card.Header>
+</Card>
+
+// Interactive cards
+<a class={cardVariants().base()} href="/details" aria-label="View product details">
+  <Card.Title>Product Name</Card.Title>
+</a>
+```
+
+## Related Components
+
+- **Surface**: Base container surface
+- **Avatar**: Display user profile images (not ported yet)
+- **Form**: Form validation and submission handling (not ported yet)
+
+## Styling
+
+### Component Customization
+
+```tsx
+<Card class="border-2 border-blue-500 bg-gradient-to-r from-blue-50 to-purple-50">
+  <Card.Header>
+    <Card.Title class="text-blue-900">Custom Styled Card</Card.Title>
+    <Card.Description class="text-blue-700">Custom colors applied</Card.Description>
+  </Card.Header>
+  <Card.Content>
+    <p class="text-blue-800">Content with custom styling</p>
+  </Card.Content>
+</Card>
+```
+
+### CSS Variable Overrides
+
+```css
+/* Override specific variants */
+.card--secondary {
+  @apply bg-gradient-to-br from-blue-50 to-purple-50;
+}
+
+/* Custom element styles */
+.card__title {
+  @apply text-xl font-bold;
+}
+```
+
+## CSS Classes
+
+Card uses [BEM](https://getbem.com/) naming for predictable styling ([View source styles](https://github.com/heroui-inc/heroui/blob/v3/packages/styles/components/card.css)):
+
+#### Base Classes
+
+- `.card` - Base container with padding and border
+- `.card__header` - Header section container
+- `.card__title` - Title with base font size and weight
+- `.card__description` - Muted description text
+- `.card__content` - Flexible content container
+- `.card__footer` - Footer with row layout
+
+#### Variant Classes
+
+- `.card--transparent` - Minimal prominence, transparent background
+- `.card--default` - Standard appearance (default)
+- `.card--secondary` - Medium prominence
+- `.card--tertiary` - Higher prominence
+
+## API Reference
+
+### Card
+
+| Prop       | Type                                                      | Default     | Description                                              |
+| ---------- | --------------------------------------------------------- | ----------- | -------------------------------------------------------- |
+| `variant`  | `"transparent" \| "default" \| "secondary" \| "tertiary"` | `"default"` | Semantic variant indicating prominence level             |
+| `class`    | `string`                                                   | -           | Additional CSS classes                                   |
+| `children` | `JSX.Element`                                              | -           | Card content                                             |
+| `as`       | `ValidComponent`                                           | `"div"`     | Overrides the default DOM element (Kobalte polymorphic)  |
+
+### Card.Header
+
+| Prop       | Type            | Default | Description            |
+| ---------- | --------------- | ------- | ---------------------- |
+| `class`    | `string`        | -       | Additional CSS classes |
+| `children` | `JSX.Element`   | -       | Header content         |
+
+### Card.Title
+
+| Prop       | Type            | Default | Description                     |
+| ---------- | --------------- | ------- | ------------------------------- |
+| `class`    | `string`        | -       | Additional CSS classes          |
+| `children` | `JSX.Element`   | -       | Title content (renders as `h3`) |
+
+### Card.Description
+
+| Prop       | Type            | Default | Description                          |
+| ---------- | --------------- | ------- | ------------------------------------ |
+| `class`    | `string`        | -       | Additional CSS classes               |
+| `children` | `JSX.Element`   | -       | Description content (renders as `p`) |
+
+### Card.Content
+
+| Prop       | Type            | Default | Description            |
+| ---------- | --------------- | ------- | ---------------------- |
+| `class`    | `string`        | -       | Additional CSS classes |
+| `children` | `JSX.Element`   | -       | Main content           |
+
+### Card.Footer
+
+| Prop       | Type            | Default | Description            |
+| ---------- | --------------- | ------- | ---------------------- |
+| `class`    | `string`        | -       | Additional CSS classes |
+| `children` | `JSX.Element`   | -       | Footer content         |
+
+## Differences from HeroUI React
+
+- Use `class` instead of `className`; the element type is overridden with Kobalte's
+  polymorphic `as` prop instead of React's `render` prop.
+- The "With Avatar" and "With Images" examples from the official docs are omitted —
+  they rely on `Avatar` and `CloseButton`, which aren't ported yet.
+- All parts accept `as` for custom elements (e.g. `<Card.Title as="h2">`).

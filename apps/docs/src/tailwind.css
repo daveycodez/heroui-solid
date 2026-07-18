@@ -1,0 +1,16 @@
+/* Consumer-style Tailwind v4 entry — exactly the quick-start setup every
+ * heroui-solid app uses (this app's own Tailwind pass compiles heroui's
+ * source styles), so the docs dogfood the real consumer path. Import order
+ * matters: tailwindcss first, then @heroui/styles (theme keys + component
+ * BEM CSS + @utility defs), then our overrides (see the entry's own header).
+ *
+ * The utilities layer slots into the order declared at the top of app.css
+ * (parsed first via app.tsx import order). */
+@import "tailwindcss";
+@import "@heroui/styles";
+@import "heroui-solid/styles";
+
+/* dark: keys off heroui's exact data-theme attribute (our theme manager in
+ * src/theme/theme.ts always resolves to exact "dark"/"light"), not
+ * prefers-color-scheme. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
