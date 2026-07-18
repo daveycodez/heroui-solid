@@ -1,28 +1,21 @@
-/* Docs-local Tailwind pass: generates utilities for classes used in this
- * app's source (demos, MDX, theme components). Kept separate from app.css on
- * purpose — the @tailwindcss/vite plugin inlines every @import in a sheet it
- * compiles, which would erase the per-rule source info the postcss plugin in
- * vite.config.ts needs to scope the heroui-solid/dist dark-mode selector
- * rewrite.
+/* Consumer-style Tailwind v4 entry — exactly the quick-start setup every
+ * heroui-solid app uses (this app's own Tailwind pass compiles heroui's
+ * source styles), so the docs dogfood the real consumer path. Import order
+ * matters: tailwindcss first, then @heroui/styles (theme keys + component
+ * BEM CSS + @utility defs), then our overrides (see the entry's own header).
  *
- * theme(reference) compiles utilities against the default theme without
- * re-emitting its variables: at runtime they resolve to the identically named
- * variables heroui-solid/styles already ships (--spacing, --color-*, ...),
- * so heroui's theme values stay authoritative. No preflight import — heroui's
- * stylesheet already includes one. The utilities layer slots into the order
- * declared at the top of app.css.
- */
-@import "tailwindcss/theme" theme(reference);
-/* heroui's theme keys (--color-muted, --color-surface, ...) so heroui-token
- * utilities like text-muted / bg-surface compile here too. `@theme inline` in
- * the file makes utilities emit the underlying var (e.g. color: var(--muted)),
- * which heroui-solid/styles defines at runtime. Same exact version pin as the
- * package (see AGENTS.md). */
-@import "@heroui/styles/themes/shared/theme.css" theme(reference);
-/* heroui @utility definitions (scrollbar, …) so demo-used utilities compile;
- * pure @utility declarations — generated on demand, nothing re-emitted. */
-@import "@heroui/styles/utilities";
-@import "tailwindcss/utilities" layer(utilities);
+ * Kept separate from app.css on purpose: the postcss plugin in
+ * vite.config.ts rewrites this file's exact [data-theme=dark|light]
+ * selectors to substring matches (solidbase stamps "sdark"/"slight" when
+ * following the OS), and the rewrite is scoped per entry file — app.css and
+ * solidbase's own CSS must keep exact matches (solidbase's ThemeSelector
+ * tells "dark" from "sdark" to pick the trigger icon).
+ *
+ * The utilities layer slots into the order declared at the top of app.css
+ * (parsed first via app.tsx import order). */
+@import "tailwindcss";
+@import "@heroui/styles";
+@import "heroui-solid/styles";
 
 /* dark: keys off the docs theme attribute (substring: solidbase stamps
  * "sdark" when following the OS), not prefers-color-scheme. */

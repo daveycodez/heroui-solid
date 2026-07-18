@@ -18,7 +18,6 @@
    otherwise). Inter is the only webfont the docs use (same as the official
    HeroUI docs — headings, body and UI all Inter; mono is the system stack). */
 @import "@fontsource-variable/inter";
-@import "heroui-solid/styles";
 @import "./docs-theme.css" layer(docs);
 @import "./docs-code.css";
 
@@ -30,6 +29,12 @@
 :root {
   --docs-code-bg: rgba(0, 0, 0, 0.04);
   --docs-hover-bg: rgba(0, 0, 0, 0.04);
+  /* Official fumadocs accent palette (global.css fd-accent /
+     fd-accent-foreground / fd-muted-foreground), consumed by the docs-theme
+     header controls (search toggles, theme switcher). */
+  --docs-accent: #f9f9f9;
+  --docs-accent-foreground: #171717;
+  --docs-muted-foreground: #737373;
 
   --sb-background-color: var(--background);
   --sb-heading-color: var(--foreground);
@@ -62,6 +67,8 @@
 [data-theme*="dark"] {
   --docs-code-bg: #1c1c1e;
   --docs-hover-bg: rgba(255, 255, 255, 0.04);
+  --docs-accent: #2c2c2c;
+  --docs-accent-foreground: #fff;
 }
 
 /* SolidBase's sidebar sections play an entry animation whose first frame is

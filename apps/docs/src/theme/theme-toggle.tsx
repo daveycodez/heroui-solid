@@ -1,6 +1,6 @@
 import { getThemeVariant, setTheme } from "@kobalte/solidbase/client"
 import { Display, Moon, Sun } from "gravity-icons-solid"
-import { createSignal, onMount } from "solid-js"
+import { createSignal, For, onMount } from "solid-js"
 
 // Solid port of the official HeroUI docs theme switcher (heroui-inc/heroui#v3
 // apps/docs src/components/fumadocs/ui/theme-toggle.tsx, the docs'
@@ -21,16 +21,19 @@ export default function ThemeToggle() {
 
   return (
     <div class="theme-toggle" data-theme-toggle="">
-      {OPTIONS.map(([key, Icon]) => (
-        <button
-          type="button"
-          aria-label={key}
-          data-active={value() === key ? "" : undefined}
-          onClick={() => setTheme(key)}
-        >
-          <Icon />
-        </button>
-      ))}
+      <For each={OPTIONS}>
+        {([key, Icon]) => (
+          <button
+            type="button"
+            aria-label={key}
+            aria-pressed={value() === key}
+            data-active={value() === key ? "" : undefined}
+            onClick={() => setTheme(key)}
+          >
+            <Icon />
+          </button>
+        )}
+      </For>
     </div>
   )
 }

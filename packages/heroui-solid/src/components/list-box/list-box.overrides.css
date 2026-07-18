@@ -1,19 +1,21 @@
-/* Kobalte highlights items with data-highlighted (virtual focus follows both
-   hover and keyboard); upstream keys these off React Aria's data-hovered /
-   data-focus-visible attributes. */
-.list-box-item[data-highlighted] {
-  @apply bg-default;
-}
+/* No data-highlighted bridge on purpose: upstream's hover bg is
+   pointer-only (`:hover` inside @media (hover: hover), already live here
+   natively), while Kobalte's data-highlighted also rides keyboard focus and
+   the selected item on open — bridging it painted the hover bg without a
+   hover. Keyboard highlight is the ring below, exactly like upstream. */
 
 /* Kobalte stamps data-disabled as an empty string (React Aria stamps "true"). */
 .list-box-item[data-disabled] {
   @apply status-disabled;
 }
 
-/* Standalone listbox items take real DOM focus on keyboard navigation;
-   upstream's ring rides data-focus-visible and a dead
-   `:focus-visible:not(:focus)` fallback. */
-.list-box-item:focus-visible {
+/* Items take real DOM focus on navigation — including Kobalte's
+   focus-follows-hover inside a Select — and Chromium keeps :focus-visible
+   matching across those programmatic moves, so the upstream ring
+   (data-focus-visible + a dead `:focus-visible:not(:focus)` fallback) is
+   bridged onto :focus-visible gated on keyboard modality
+   (utils/interaction-modality.ts): keyboard highlights ring, hovers don't. */
+html:not([data-heroui-modality="pointer"]) .list-box-item:focus-visible {
   @apply status-focused;
 }
 

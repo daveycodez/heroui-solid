@@ -28,10 +28,6 @@
       "dependsOn": ["^build"],
       "cache": false,
       "continuous": true
-    },
-    "dev:css": {
-      "cache": false,
-      "continuous": true
     }
   },
   "analytics": false

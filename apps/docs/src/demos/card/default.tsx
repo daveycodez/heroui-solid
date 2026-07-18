@@ -6,7 +6,7 @@ export function Default() {
     <Card class="w-[400px]">
       <CircleDollar
         aria-label="Dollar sign icon"
-        class="text-primary size-6"
+        class="text-accent size-6"
         role="img"
       />
       <Card.Header>

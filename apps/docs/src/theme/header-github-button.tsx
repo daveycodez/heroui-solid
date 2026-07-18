@@ -14,7 +14,7 @@ export default function HeaderGithubButton() {
       variant="tertiary"
     >
       <GitHubIcon class="text-foreground" />
-      <span class="text-muted">GitHub</span>
+      <span class="text-muted text-xs">GitHub</span>
     </Button>
   )
 }

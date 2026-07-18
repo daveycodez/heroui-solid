@@ -68,9 +68,13 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   the tv functions (`buttonVariants`), `cn`, and the `XVariants` types are the
   exact code the React implementation uses. No local `*.styles.ts` modules, no
   convenience types upstream doesn't export.
-- **`@heroui/styles` is pinned to an exact version (no `^`/`~`)** — classes,
-  `variantKeys`, and prop types all come from it at runtime, so bumps must be
-  deliberate: update the pin, re-run tests, and re-check docs parity.
+- **`@heroui/styles` is a peerDependency, pinned exact (no `^`/`~`)** —
+  consumers install it themselves (`bun add @heroui/styles heroui-solid`,
+  mirroring the React quick start), and classes, `variantKeys`, and prop
+  types all come from it at runtime, so bumps must be deliberate: update the
+  peer + dev pins in packages/heroui-solid and the dependency in apps/docs
+  (a consumer like any other — the exact peer requirement makes a mismatched
+  bump fail at install), re-run tests, and re-check docs parity.
 - **Variant keys are dynamic**: `splitProps(props, xVariants.variantKeys,
   [/* behavior keys */])` — the tv function exposes its config at runtime.
   Never hardcode a variant key list.
@@ -134,12 +138,38 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   then bridge in a colocated `<x>.overrides.css` (working pseudo-class or
   Kobalte's attrs → `@apply` the same HeroUI utility, e.g.
   `.button:focus-visible { @apply status-focused; }`) registered in the
-  `src/styles/overrides.css` barrel with `layer(overrides)`; rebuild with
-  `bun run build:css`. `dist/styles.css` is the package's ONLY stylesheet —
-  the barrel is imported by `src/styles/styles.css`, never compiled as its own
-  entry (a split overrides-only entry was tried and removed; Tailwind
-  `@reference` also re-emits the referenced stylesheet when nested under
-  another entry's `@import`).
+  `src/styles/overrides.css` barrel with `layer(overrides)`. The package
+  ships NO compiled CSS: `heroui-solid/styles` exports the source entry
+  (`src/styles/styles.css` — an `@layer overrides` statement plus the
+  barrel), and the consumer's own Tailwind v4 pass compiles it after
+  `@import "tailwindcss"` and `@import "@heroui/styles"` (quick-start order);
+  the `@apply`'d heroui utilities resolve against @heroui/styles' `@utility`
+  defs in that same pass, and `overrides` appends after the upstream layers
+  so bridges beat the `components` layer. `src` is in package.json `files`
+  for exactly this reason.
+- **Focus-ring bridges must be modality-gated — bare `:focus-visible` is
+  wrong wherever Kobalte moves focus programmatically.** Kobalte focuses
+  options on pointer hover (Select/Menu) and refocuses triggers on close,
+  and Chromium's :focus-visible heuristic follows programmatic focus moves —
+  ungated bridges ringed hovered options and mouse-dismissed triggers.
+  `src/utils/interaction-modality.ts` (trimmed port of React Aria's global
+  modality tracker) stamps `data-heroui-modality="keyboard"|"pointer"` on
+  `<html>`; ring bridges select with
+  `html:not([data-heroui-modality="pointer"]) .x:focus-visible` and the
+  components that move focus (Select, Dropdown, ListBox) install the tracker
+  in `onMount`. Absent attribute = gate no-op, so lone Buttons keep native
+  behavior. Text inputs stay ungated on purpose — browsers correctly ring
+  them on mouse click, as upstream does.
+- **Never bridge Kobalte's `data-highlighted` to hover styles.** It's
+  virtual focus, not hover: it rides keyboard navigation and lands on the
+  selected item the moment a Select/Menu opens, so a
+  `[data-highlighted] → bg-default` bridge paints the hover background with
+  no pointer anywhere near (selected option lit up on open). Upstream's
+  hover bg is pointer-only (`:hover`/`data-hovered` inside
+  `@media (hover: hover)`) and the native `:hover` half already works here
+  with no bridging — so hover needs NO override at all, and keyboard
+  highlight is only the modality-gated focus ring above. Applies to every
+  collection port (ListBox, Menu; future ComboBox, Autocomplete…).
 
 ## Solid SSR/Hydration Rules (hard-won — violations cost a full day)
 
@@ -250,11 +280,14 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
 - Solidbase stamps `data-theme="sdark"/"slight"` when following the OS
   (s-prefix = system), so the same postcss plugin rewrites heroui's exact
   `[data-theme=dark|light]` selectors to substring matches (`*=`) — without
-  it, heroui tokens stay light in system-dark mode. The rewrite is scoped to
-  rules originating from `heroui-solid/dist` (per-rule source check, since
-  the import is inlined into app.css): solidbase's own CSS must keep exact
-  matches — its ThemeSelector tells "dark" from "sdark" to pick the trigger
-  icon (a global rewrite rendered two moons).
+  it, heroui tokens stay light in system-dark mode. heroui's CSS enters
+  through the consumer-style Tailwind entry (`src/tailwind.css`:
+  tailwindcss → @heroui/styles → heroui-solid/styles, exactly the published
+  quick-start), and @tailwindcss/vite inlines its imports without per-rule
+  source info, so the rewrite is scoped per entry file (everything in
+  tailwind.css gets rewritten; nothing else does): solidbase's own CSS must
+  keep exact matches — its ThemeSelector tells "dark" from "sdark" to pick
+  the trigger icon (a global rewrite rendered two moons).
 
 ## Docs Search (apps/docs)
 
@@ -341,12 +374,12 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
 
 - `nx dev docs`: the docs vite config aliases `heroui-solid` to the package
   **source** in dev, so component edits HMR instantly — no package build or
-  restart. The one-shot `^build` at startup only provides `dist/styles.css`
-  and `.d.ts` for editor types. Package CSS edits need `bun run build:css`
-  (or the `dev:css` watcher).
-- External projects consuming via `bun link` read `dist/` — run
-  `nx dev heroui-solid` (vite bundle + tsc jsx/dts + CSS watchers) for that
-  workflow.
+  restart. The one-shot `^build` at startup only provides `.d.ts` for editor
+  types. Package CSS (the overrides) ships as source and flows through the
+  docs' own Tailwind pass, so those edits HMR too — no CSS build exists.
+- External projects consuming via `bun link` read `dist/` for JS — run
+  `nx dev heroui-solid` (vite bundle + tsc jsx/dts watchers) for that
+  workflow; styles resolve from `src` directly, no build step.
 - When checking Biome from scripts, surface the exit code — don't pipe output
   through `tail`/`grep` in a way that swallows failures.
 - **`bun run test:all` is the single CI entry point** (also run by

@@ -6,33 +6,13 @@
 // section that lost its SSR content after hydration. Run via
 // `bun nx run docs:ssr-test`. Requires Google Chrome (or CHROME_PATH).
 import { spawn } from "node:child_process"
-import { existsSync, readdirSync } from "node:fs"
+import { readdirSync } from "node:fs"
 import { fileURLToPath } from "node:url"
 import { chromium } from "playwright-core"
 
 const PORT = 3199
 const BASE = `http://localhost:${PORT}`
 const docsDir = fileURLToPath(new URL("..", import.meta.url))
-const workspaceRoot = fileURLToPath(new URL("../../..", import.meta.url))
-
-// The dev server serves heroui-solid from source, but still imports the
-// package's built stylesheet — make sure dist exists.
-if (
-  !existsSync(
-    `${workspaceRoot}/packages/heroui-solid/dist/styles.css`.replace(
-      /\/+/g,
-      "/"
-    )
-  )
-) {
-  console.log("dist/styles.css missing — building heroui-solid first…")
-  const build = Bun.spawnSync(["bunx", "nx", "build", "heroui-solid"], {
-    cwd: workspaceRoot,
-    stdout: "inherit",
-    stderr: "inherit"
-  })
-  if (build.exitCode !== 0) process.exit(build.exitCode)
-}
 
 const componentPages = readdirSync(
   fileURLToPath(new URL("../src/routes/docs/components", import.meta.url))

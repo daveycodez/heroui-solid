@@ -1,5 +1,8 @@
 /* Kobalte stamps no data-focus-visible (React Aria does upstream), so the
-   focus ring must ride native :focus-visible instead. */
-.button:focus-visible {
+   focus ring rides native :focus-visible instead — gated on keyboard
+   modality so a menu/select closing onto its trigger button doesn't ring
+   after pure mouse interaction (utils/interaction-modality.ts; on pages
+   with no tracker the attribute is absent and the gate is a no-op). */
+html:not([data-heroui-modality="pointer"]) .button:focus-visible {
   @apply status-focused;
 }

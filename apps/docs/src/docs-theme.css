@@ -157,8 +157,9 @@ body header .header-search {
  * field-background at 80% in oklab, field shadow, field radius, dark-mode
  * backdrop blur — all tokens our @heroui/styles runtime ships with identical
  * values. Because those overrides out-cascade the layered hover utilities,
- * only the text color changes on hover (fd-accent-foreground: #171717 light,
- * #fff dark); the fill and kbds don't react. Kbds are likewise borderless,
+ * only the text color changes on hover (--docs-accent-foreground, defined
+ * with the fd palette in app.css); the fill and kbds don't react. Kbds are
+ * likewise borderless,
  * solid default (light) / surface (dark). */
 .search-toggle {
   border: none;
@@ -173,10 +174,10 @@ body header .header-search {
     transparent
   );
   box-shadow: var(--field-shadow);
-  color: #737373;
+  color: var(--docs-muted-foreground);
 
   &:hover {
-    color: #171717;
+    color: var(--docs-accent-foreground);
   }
 
   & kbd {
@@ -188,10 +189,6 @@ body header .header-search {
 [data-theme*="dark"] .search-toggle {
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
-
-  &:hover {
-    color: #fff;
-  }
 
   & kbd {
     background: var(--surface);
@@ -242,18 +239,13 @@ body header .header-home-search {
 /* Mobile icon trigger: the official SearchToggle — no fill or border at
  * rest, same muted foreground, fd-accent fill on hover. */
 .search-toggle-icon {
-  color: #737373;
+  color: var(--docs-muted-foreground);
   cursor: pointer;
 
   &:hover {
-    background: #f9f9f9;
-    color: #171717;
+    background: var(--docs-accent);
+    color: var(--docs-accent-foreground);
   }
-}
-
-[data-theme*="dark"] .search-toggle-icon:hover {
-  background: #2c2c2c;
-  color: #fff;
 }
 
 /* Theme switcher (theme/theme-toggle.tsx): official pill toggle metrics —
@@ -279,8 +271,7 @@ body header .header-home-search {
     cursor: pointer;
 
     &[data-active] {
-      /* Official fd-accent values (global.css): #f9f9f9 light, #2c2c2c dark. */
-      background: #f9f9f9;
+      background: var(--docs-accent);
       color: var(--foreground);
     }
 
@@ -289,10 +280,6 @@ body header .header-home-search {
       height: 100%;
     }
   }
-}
-
-[data-theme*="dark"] .theme-toggle button[data-active] {
-  background: #2c2c2c;
 }
 
 /* --- Sidebar ---------------------------------------------------------- */

@@ -22,10 +22,12 @@ import {
   createContext,
   createMemo,
   type JSX,
+  onMount,
   splitProps,
   useContext,
   type ValidComponent
 } from "solid-js"
+import { setupInteractionModality } from "../../utils/interaction-modality"
 
 /* -------------------------------------------------------------------------------------------------
  * ListBox Context
@@ -193,6 +195,7 @@ const ListBoxRoot = <T extends ValidComponent = "ul">(
     ]
   )
   const setItems = useContext(ListBoxCollectionContext)
+  onMount(setupInteractionModality)
 
   const resolved = children(() => local.children)
 

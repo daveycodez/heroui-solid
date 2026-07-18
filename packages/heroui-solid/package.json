@@ -18,6 +18,7 @@
   },
   "files": [
     "dist",
+    "src",
     "LICENSE",
     "NOTICE"
   ],
@@ -31,7 +32,7 @@
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
-    "./styles": "./dist/styles.css",
+    "./styles": "./src/styles/styles.css",
     "./package.json": "./package.json"
   },
   "sideEffects": [
@@ -41,7 +42,6 @@
     "targets": {
       "dev": {
         "dependsOn": [
-          "dev:css",
           "dev:types"
         ]
       },
@@ -53,11 +53,9 @@
   },
   "scripts": {
     "build:js": "vite build && tsc -p tsconfig.build.json",
-    "build:css": "tailwindcss -i src/styles/styles.css -o dist/styles.css --minify",
-    "build": "rm -rf dist && bun run build:js && bun run build:css",
+    "build": "rm -rf dist && bun run build:js",
     "dev": "vite build --watch",
     "dev:types": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
-    "dev:css": "tailwindcss -i src/styles/styles.css -o dist/styles.css --watch",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "prepack": "cp ../../README.md README.md",
@@ -65,23 +63,21 @@
     "check:publish": "publint && attw --pack . --profile esm-only --ignore-rules internal-resolution-error --entrypoints ."
   },
   "peerDependencies": {
+    "@heroui/styles": "3.2.2",
     "solid-js": "^1.9.0"
   },
   "dependencies": {
     "@kobalte/core": "^0.13.12",
     "@kobalte/utils": "^0.9.2",
-    "@heroui/styles": "3.2.2",
     "tailwind-merge": "3.6.0"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
+    "@heroui/styles": "3.2.2",
     "@solidjs/testing-library": "^0.8.10",
-    "@tailwindcss/cli": "^4.3.3",
     "jsdom": "^29.1.1",
     "publint": "^0.3.21",
     "solid-js": "^1.9.14",
-    "tailwindcss": "^4.3.3",
-    "tw-animate-css": "1.4.0",
     "typescript": "~7.0.2",
     "vite": "^8.1.5",
     "vite-plugin-solid": "^2.11.12",

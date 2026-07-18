@@ -169,7 +169,10 @@ export function SearchDialog() {
       <Dialog.Portal>
         <Dialog.Overlay class="fixed inset-0 z-50 bg-backdrop" />
         <div class="fixed inset-0 z-50 flex items-start justify-center px-4 pt-[12vh]">
-          <Dialog.Content class="flex w-full max-w-[550px] flex-col overflow-hidden rounded-2xl border border-border bg-overlay text-overlay-foreground shadow-2xl">
+          <Dialog.Content
+            aria-label="Search documentation"
+            class="flex w-full max-w-[550px] flex-col overflow-hidden rounded-2xl border border-border bg-overlay text-overlay-foreground shadow-2xl"
+          >
             <PreventScroll />
             <div class="flex items-center gap-2.5 border-b border-border px-4">
               <Magnifier class="size-4 shrink-0 text-muted" />

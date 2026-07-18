@@ -24,10 +24,12 @@ import {
   createSignal,
   type JSX,
   onCleanup,
+  onMount,
   splitProps,
   useContext,
   type ValidComponent
 } from "solid-js"
+import { setupInteractionModality } from "../../utils/interaction-modality"
 import {
   createLongPressHandlers,
   MenuTriggerBehaviorContext,
@@ -99,6 +101,7 @@ const DropdownRoot = (props: DropdownRootProps) => {
   const [internalOpen, setInternalOpen] = createSignal(
     local.defaultOpen ?? false
   )
+  onMount(setupInteractionModality)
   const isLongPress = () => local.trigger === "longPress"
   const isOpen = () => local.isOpen ?? internalOpen()
   const openMenu = () => {

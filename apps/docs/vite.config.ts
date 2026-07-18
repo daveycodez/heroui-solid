@@ -46,24 +46,26 @@ export default defineConfig(({ command }) => ({
             // Solidbase stamps data-theme="sdark"/"slight" in system mode
             // (the s-prefix means "follow the OS"), so heroui's exact
             // [data-theme=dark|light] selectors must substring-match here,
-            // like solidbase's own [data-theme*="dark"] CSS does. Scoped per
-            // rule via its original source file: heroui-solid/styles reaches
-            // postcss inlined into app.css, and solidbase's own CSS must
-            // keep its exact matches (its ThemeSelector distinguishes
-            // "dark" from "sdark" to pick the trigger icon).
-            root.walkRules((rule) => {
-              if (
-                rule.source?.input.file
-                  ?.replace(/\\/g, "/")
-                  .includes("heroui-solid/dist") &&
-                rule.selector.includes("[data-theme=")
-              ) {
-                rule.selector = rule.selector.replace(
-                  /\[data-theme="?(dark|light)"?\]/g,
-                  '[data-theme*="$1"]'
-                )
-              }
-            })
+            // like solidbase's own [data-theme*="dark"] CSS does. heroui's
+            // CSS enters through the consumer-style Tailwind entry
+            // (src/tailwind.css) — @tailwindcss/vite inlines its imports, so
+            // the rewrite is scoped per entry file, not per rule. Nothing
+            // else in that entry uses exact [data-theme=…] (our overrides
+            // have none; the docs dark variant is substring already), and
+            // solidbase's own CSS — separate files — keeps its exact
+            // matches (its ThemeSelector distinguishes "dark" from "sdark"
+            // to pick the trigger icon).
+            if (file.endsWith("/src/tailwind.css")) {
+              root.walkRules((rule) => {
+                if (rule.selector.includes("[data-theme=")) {
+                  rule.selector = rule.selector.replace(
+                    /\[data-theme="?(dark|light)"?\]/g,
+                    '[data-theme*="$1"]'
+                  )
+                }
+              })
+              return
+            }
             if (!file.includes("@kobalte/solidbase")) {
               return
             }
@@ -91,8 +93,9 @@ export default defineConfig(({ command }) => ({
               // Dev only: resolve heroui-solid to its TypeScript source so
               // component edits HMR instantly without a package build.
               // Exact match — subpath imports like heroui-solid/styles
-              // still resolve through dist (CSS needs the tailwind build).
-              // Production builds use dist, same as published consumers.
+              // resolve through package exports (the styles are shipped as
+              // source, so they HMR too). Production builds use dist JS,
+              // same as published consumers.
               find: /^heroui-solid$/,
               replacement: fileURLToPath(
                 new URL(

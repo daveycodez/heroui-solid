@@ -17,18 +17,26 @@
 
 ## Install
 
+Requires [Tailwind CSS v4](https://tailwindcss.com/docs/installation/framework-guides),
+same as HeroUI for React.
+
 ```bash
-bun add heroui-solid solid-js
+bun add @heroui/styles heroui-solid
 ```
 
-Then import the stylesheet once (no Tailwind required):
+Then add to the CSS file your Tailwind build compiles (import order matters):
 
-```ts
-import "heroui-solid/styles";
+```css
+@import "tailwindcss";
+@import "@heroui/styles";
+@import "heroui-solid/styles";
 ```
 
-The stylesheet is self-contained — it bundles [`@heroui/styles`](https://www.npmjs.com/package/@heroui/styles)
-(preflight, theme, and component CSS), so there is nothing else to install or import.
+`@heroui/styles` is HeroUI's own stylesheet, exactly as a React app consumes it;
+`heroui-solid/styles` adds only the small overrides layer bridging HeroUI's
+interactive-state CSS onto Kobalte's attributes. Your Tailwind pass compiles both, so
+HeroUI's theme tokens are also available as utilities in your own markup
+(`text-muted`, `bg-surface`, …).
 
 ## Usage
 
@@ -59,7 +67,7 @@ Built with Nx + bun; lint/format via biome.
 
 ```bash
 bun install
-bun nx run-many -t build   # build library (JS + CSS) and docs
+bun nx run-many -t build   # build library and docs
 bun nx test heroui-solid
 bun run lint
 ```

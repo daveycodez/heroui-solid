@@ -1,13 +1,18 @@
 /* Kobalte stamps no data-focus-visible (React Aria does upstream), and the
    native fallback `:focus-visible:not(:focus)` never matches — bridge the
-   trigger focus ring onto plain :focus-visible. */
-.select__trigger:focus-visible {
+   trigger focus ring onto :focus-visible, gated on keyboard modality
+   (utils/interaction-modality.ts): Kobalte refocuses the trigger on close,
+   and Chromium's heuristic carries :focus-visible across programmatic focus
+   moves, so an ungated bridge rings after pure mouse dismissal. */
+html:not([data-heroui-modality="pointer"]) .select__trigger:focus-visible {
   @apply status-focused;
   border-color: var(--field-border-focus);
   background-color: var(--field-focus);
 }
 
-.select--secondary .select__trigger:focus-visible {
+html:not([data-heroui-modality="pointer"])
+  .select--secondary
+  .select__trigger:focus-visible {
   background-color: var(--select-trigger-bg-focus);
 }
 

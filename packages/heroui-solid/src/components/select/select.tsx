@@ -20,6 +20,7 @@ import {
   createEffect,
   createMemo,
   createSignal,
+  For,
   type JSX,
   onCleanup,
   onMount,
@@ -30,6 +31,7 @@ import {
 } from "solid-js"
 
 import { FieldContext } from "../../utils/field-context"
+import { setupInteractionModality } from "../../utils/interaction-modality"
 import { PreventScroll } from "../../utils/prevent-scroll"
 import {
   isListBoxRenderMarker,
@@ -110,7 +112,10 @@ const SelectRoot = <T extends ValidComponent = "div">(
   const [placement, setPlacement] =
     createSignal<SelectPopoverPlacement>("bottom")
   const [mounted, setMounted] = createSignal(false)
-  onMount(() => setMounted(true))
+  onMount(() => {
+    setMounted(true)
+    setupInteractionModality()
+  })
 
   const isMultiple = () => local.selectionMode === "multiple"
   const disabledKeys = createMemo(() => new Set(local.disabledKeys ?? []))
@@ -410,11 +415,9 @@ const SelectPopover = <T extends ValidComponent = "div">(
           {...rest}
         >
           <PreventScroll />
-          {resolved
-            .toArray()
-            .map((child) =>
-              isListBoxRenderMarker(child) ? child.render() : child
-            )}
+          <For each={resolved.toArray()}>
+            {(child) => (isListBoxRenderMarker(child) ? child.render() : child)}
+          </For>
         </SelectContentPrimitive>
       </SelectPortalPrimitive>
     </SurfaceContext.Provider>
