@@ -1,4 +1,5 @@
-/* Kobalte stamps no data-focus-visible (React Aria does upstream), and the
+/* The trigger is a focusable Select.Trigger rendered as a <div> (role=button).
+   Kobalte stamps no data-focus-visible (React Aria does upstream), and the
    native fallback `:focus-visible:not(:focus)` never matches — bridge the
    trigger focus ring onto :focus-visible, gated on keyboard modality
    (utils/interaction-modality.ts): Kobalte refocuses the trigger on close, and

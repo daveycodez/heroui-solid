@@ -412,7 +412,7 @@ describe("Select", () => {
     expect(trigger.classList.contains("select__trigger--full-width")).toBe(true)
   })
 
-  it("renders the item indicator only for selected items", () => {
+  it("mounts the item indicator on every item and marks the selected one", () => {
     const { container } = render(() => <Anatomy defaultValue="texas" />)
     const trigger = container.querySelector(
       "[data-slot=select-trigger]"
@@ -424,12 +424,16 @@ describe("Select", () => {
     ) as HTMLElement[]
     const texas = items.find((item) => item.textContent?.includes("Texas"))
     const florida = items.find((item) => item.textContent?.includes("Florida"))
+    // Upstream keeps the checkmark mounted on every item (it draws in via
+    // stroke-dashoffset only when selected), so it's present on unselected items
+    // too; the selected item is distinguished by aria-selected.
     expect(texas?.getAttribute("aria-selected")).toBe("true")
     expect(
       texas?.querySelector("[data-slot=list-box-item-indicator]")
     ).not.toBeNull()
+    expect(florida?.getAttribute("aria-selected")).not.toBe("true")
     expect(
       florida?.querySelector("[data-slot=list-box-item-indicator]")
-    ).toBeNull()
+    ).not.toBeNull()
   })
 })

@@ -87,7 +87,11 @@ describe("Autocomplete", () => {
     const trigger = container.querySelector(
       "[data-slot=autocomplete-trigger]"
     ) as HTMLElement
-    expect(trigger.tagName).toBe("BUTTON")
+    // The trigger is a focusable Select.Trigger rendered as a div (role=button,
+    // not a native <button>), so the nested clear button and tag remove buttons
+    // in the value are valid HTML and keyboard-reachable.
+    expect(trigger.tagName).toBe("DIV")
+    expect(trigger.getAttribute("role")).toBe("button")
     expect(trigger.classList.contains("autocomplete__trigger")).toBe(true)
 
     const value = container.querySelector(
@@ -106,10 +110,13 @@ describe("Autocomplete", () => {
     // No selection yet — the clear button marks itself empty.
     expect(clearButton.getAttribute("data-empty")).toBe("true")
 
+    // The default indicator is a plain, non-focusable svg (the trigger owns
+    // focus + keyboard opening).
     const indicator = container.querySelector(
       "[data-slot=autocomplete-default-indicator]"
     ) as HTMLElement
     expect(indicator.tagName.toLowerCase()).toBe("svg")
+    expect(indicator.getAttribute("tabindex")).toBeNull()
     expect(
       classSet(indicator.getAttribute("class") ?? "").has(
         "autocomplete__indicator"
@@ -286,10 +293,14 @@ describe("Autocomplete", () => {
     expect(root.getAttribute("data-required")).toBe("true")
     expect(root.getAttribute("data-disabled")).toBe("true")
 
+    // The trigger is a Select.Trigger div; Kobalte stamps aria-disabled="true"
+    // (which the HeroUI CSS keys disabled styling off), plus an empty
+    // data-disabled. It also drops the tab stop.
     const trigger = container.querySelector(
       "[data-slot=autocomplete-trigger]"
-    ) as HTMLButtonElement
-    expect(trigger.disabled).toBe(true)
+    ) as HTMLElement
+    expect(trigger.getAttribute("aria-disabled")).toBe("true")
+    expect(trigger.getAttribute("tabindex")).toBeNull()
   })
 
   it("clears the selection when the clear button is pressed", () => {

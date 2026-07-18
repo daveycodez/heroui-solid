@@ -571,6 +571,14 @@ const AutocompleteRoot = <T extends ValidComponent = "div">(
       // every options() change (see select.tsx). Reselect closes via the
       // popover's activation handlers instead.
       allowDuplicateSelectionEvents={false}
+      // Modal traps focus inside the popover (Kobalte couples trapFocus with
+      // isModal) so Tab from the search field cycles within the popover instead
+      // of escaping to the page — matching upstream, which wraps the popover in
+      // a focus-trapping Dialog. `preventScroll={false}` keeps Kobalte's own
+      // (html-breaking) scroll lock off; we scroll-lock with <PreventScroll />
+      // instead (see AGENTS.md).
+      modal
+      preventScroll={false}
       placement={placement()}
       sameWidth={false}
       virtualized={virtualized()}
@@ -632,7 +640,16 @@ interface AutocompleteTriggerProps {
   children?: JSX.Element
 }
 
-const AutocompleteTrigger = <T extends ValidComponent = "button">(
+// The trigger is Kobalte's Select.Trigger rendered as a <div> (not the default
+// <button>): it stays the single focusable control that owns keyboard opening
+// (Enter/Space/Arrow) and focus restoration on close (Kobalte refocuses the
+// trigger — so Escape lands back here to keep navigating), while a non-button
+// element keeps the nested clear button and any tag remove buttons in the value
+// valid HTML and keyboard-reachable. A native <button> trigger would be invalid
+// (nested buttons) — the parser hoists them out and hydration drops them. The
+// default indicator stays a plain, non-focusable svg (only the trigger + the X
+// buttons are tab stops).
+const AutocompleteTrigger = <T extends ValidComponent = "div">(
   props: PolymorphicProps<T, AutocompleteTriggerProps>
 ) => {
   const [local, rest] = splitProps(props as AutocompleteTriggerProps, ["class"])
@@ -640,6 +657,7 @@ const AutocompleteTrigger = <T extends ValidComponent = "button">(
 
   return (
     <SelectTriggerPrimitive
+      as="div"
       class={cn(context.slots?.trigger(), local.class)}
       data-slot="autocomplete-trigger"
       {...rest}
@@ -821,6 +839,9 @@ const AutocompleteIndicator = (props: AutocompleteIndicatorProps) => {
     <Show
       when={resolved()}
       fallback={
+        // Default indicator: a plain, non-focusable svg. The trigger owns
+        // focus + keyboard opening (Kobalte Select.Trigger); the chevron is
+        // decorative only.
         <IconChevronDown
           class={cn(context.slots?.indicator(), local.class)}
           data-open={selectContext.isOpen() ? "true" : undefined}
@@ -829,6 +850,8 @@ const AutocompleteIndicator = (props: AutocompleteIndicatorProps) => {
         />
       }
     >
+      {/* Custom indicator: a plain (non-focusable) element, mirroring upstream's
+        cloneElement of the provided icon. */}
       <span
         class={cn(context.slots?.indicator(), local.class)}
         data-open={selectContext.isOpen() ? "true" : undefined}

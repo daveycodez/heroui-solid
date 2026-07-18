@@ -163,12 +163,16 @@ const SearchFieldRootInner = (props: SearchFieldRootProps) => {
   const clear = () => {
     setValue("")
     local.onClear?.()
-    inputEl?.focus()
+    // preventScroll: inside the Autocomplete popover the input is portaled, so a
+    // bare focus() scrolls the page to it (Kobalte focuses without scrolling).
+    inputEl?.focus({ preventScroll: true })
   }
 
   // Kobalte's TextField root is a <div>, so autoFocus must land on the input.
+  // preventScroll so autofocusing the in-popover field on open doesn't scroll
+  // the page to it (see clear()).
   onMount(() => {
-    if (local.autoFocus) inputEl?.focus()
+    if (local.autoFocus) inputEl?.focus({ preventScroll: true })
   })
 
   const context: SearchFieldContextValue = {

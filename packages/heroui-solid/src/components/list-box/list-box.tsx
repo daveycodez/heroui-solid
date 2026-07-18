@@ -568,18 +568,28 @@ const ListBoxItem = (props: ListBoxItemProps): JSX.Element => {
 /* -------------------------------------------------------------------------------------------------
  * ListBox Item Indicator
  * -----------------------------------------------------------------------------------------------*/
+// Upstream's exact checkmark (list-box-item.tsx): a polyline on a 17×18 viewBox
+// that draws in on selection via stroke-dashoffset (dasharray 22; 66 = hidden,
+// 44 = drawn). The indicator force-mounts (below) so the undrawn check exists to
+// animate from; `stroke-dashoffset="66"` is the undrawn base as a presentation
+// attribute, and the selected → 44 override lives in list-box.overrides.css
+// (@heroui/styles ships only the transition, since upstream sets the value
+// inline per isSelected). The offset transition is defined by @heroui/styles.
 const IconCheck = (props: ComponentProps<"svg">) => (
   <svg
     aria-hidden="true"
     fill="none"
+    role="presentation"
     stroke="currentColor"
+    stroke-dasharray="22"
+    stroke-dashoffset="66"
     stroke-linecap="round"
     stroke-linejoin="round"
-    stroke-width="3"
-    viewBox="0 0 24 24"
+    stroke-width="2"
+    viewBox="0 0 17 18"
     {...props}
   >
-    <path d="M5 13l4 4L19 7" />
+    <polyline points="1 9 7 14 15 4" />
   </svg>
 )
 
@@ -594,13 +604,20 @@ const ListBoxItemIndicator = <T extends ValidComponent = "div">(
 ) => {
   const [local, rest] = splitProps(props as ListBoxItemIndicatorProps, [
     "class",
-    "children"
+    "children",
+    "forceMount"
   ])
 
   return (
     <ItemIndicatorPrimitive
       class={cn(listboxItemVariants({}).indicator(), local.class)}
       data-slot="list-box-item-indicator"
+      // Always mount (upstream keeps the checkmark in the DOM, toggling
+      // data-visible) so the undrawn check exists to animate in on selection via
+      // stroke-dashoffset (see IconCheck + list-box.overrides.css). In a Select/
+      // Autocomplete the popover is closed during SSR, so this only mounts
+      // client-side on open; standalone it renders identically on both sides.
+      forceMount={local.forceMount ?? true}
       {...rest}
     >
       {(() => {
