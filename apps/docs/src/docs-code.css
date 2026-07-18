@@ -7,6 +7,28 @@
  * express lives here.
  */
 
+/* Component docs pages stack many Shiki-highlighted blocks (the dropdown page
+ * alone renders ~24, ~7.4k highlighted <span>s — 90%+ of the page's DOM).
+ * Every element they contain participates in each synchronous style/layout
+ * recalc, and overlays (Dropdown/Select/Menu) force several such recalcs on
+ * open (floating-ui overflow-ancestor walks, solid-presence's
+ * getComputedStyle animation probe, the scroll-lock scrollbar-width read) —
+ * so open latency scaled with total page DOM and froze for 200ms+ on the
+ * heaviest pages, worst in Safari. content-visibility skips rendering work
+ * for the off-screen blocks (all but the one or two in view), cutting overlay
+ * open time ~4x and lightening initial load; contain-intrinsic-size keeps the
+ * scrollbar stable (`auto` remembers each block's real height once seen).
+ *
+ * `.frame pre` (not just `pre`): EC injects an unlayered
+ * `.expressive-code :not(:is(svg, svg *)) { content-visibility: revert }`
+ * reset at render time whose specificity ties a lone `.expressive-code pre`
+ * and whose <style> sits later in the document, so the extra `.frame` class
+ * is needed to out-rank it (same trick as the background override below). */
+.expressive-code .frame pre {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 300px;
+}
+
 /* Inside a ComponentPreview card the code block loses its own frame AND its
  * panel color — the official preview code section is transparent (page
  * background, separated from the demo by the card border alone); the gray
