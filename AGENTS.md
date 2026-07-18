@@ -300,17 +300,38 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   `app.css` (unlayered `:root`, wins in both modes — both systems key dark
   off `html[data-theme]`). Restyle chrome by extending that remap, not by
   editing solidbase CSS.
-- Solidbase stamps `data-theme="sdark"/"slight"` when following the OS
-  (s-prefix = system), so the same postcss plugin rewrites heroui's exact
-  `[data-theme=dark|light]` selectors to substring matches (`*=`) — without
-  it, heroui tokens stay light in system-dark mode. heroui's CSS enters
-  through the consumer-style Tailwind entry (`src/tailwind.css`:
-  tailwindcss → @heroui/styles → heroui-solid/styles, exactly the published
-  quick-start), and @tailwindcss/vite inlines its imports without per-rule
-  source info, so the rewrite is scoped per entry file (everything in
-  tailwind.css gets rewritten; nothing else does): solidbase's own CSS must
-  keep exact matches — its ThemeSelector tells "dark" from "sdark" to pick
-  the trigger icon (a global rewrite rendered two moons).
+- **Dark mode is HeroUI-native `data-theme="dark"|"light"` (exact), owned by
+  `src/theme/theme.ts` — NOT solidbase's theme system.** heroui keys dark mode
+  (and `color-scheme`) off the exact attribute; solidbase instead stamps
+  `data-theme="sdark"/"slight"` (s = "follow the OS") from a cookie, values
+  heroui's exact CSS never matches. Reconciling the two used to require a
+  postcss substring rewrite of heroui's selectors plus an early inline script,
+  and it still flashed: on a static prerender the server can't know the OS, and
+  solidbase's own theme listener (baked into DefaultLayout, not removable
+  without patching) writes `sdark` mid-hydration, briefly losing heroui's
+  `[data-theme="dark"]` cascade to the always-on `:root { color-scheme: light }`
+  → one light frame. The rewrite is gone; the whole scheme is now:
+  - `THEME_INIT_SCRIPT` (in `theme.ts`, injected as the **first `<head>` child**
+    by `entry-server.tsx`) runs before any CSS: reads `localStorage["theme"]`
+    (`light`/`dark`/`system`, default `system`), resolves to exact
+    `dark`/`light`, sets `data-theme` **and** pins `style.color-scheme` (so the
+    pre-CSS UA canvas matches the choice, not the OS). It installs a
+    `MutationObserver` that re-applies our resolved value on any write — that's
+    what neutralizes solidbase's `sdark`/`slight` writes — plus a `matchMedia`
+    listener for live OS changes in `system` mode. No cookies (useless on a
+    static prerender).
+  - `ThemeToggle` (`theme/theme-toggle.tsx`) drives `theme.ts`
+    (`setPreference`/`preference`/`initThemeManager`), not solidbase's
+    `setTheme`/`getThemeVariant`.
+  - CSS keys on exact `[data-theme="dark"]` everywhere: the `dark` custom-variant
+    in `tailwind.css`, `app.css`, `docs-theme.css`. heroui's CSS still enters
+    through the consumer-style Tailwind entry (`src/tailwind.css`:
+    tailwindcss → @heroui/styles → heroui-solid/styles, the published
+    quick-start). Solidbase's own CSS keeps `[data-theme*="dark"]` (its Preview
+    module) — harmless, `*="dark"` still matches our exact `"dark"`.
+  - `entry-server.tsx` renders `<html … data-theme="light">` as the no-JS
+    fallback (spread `getHtmlProps()` first so its lang wins but our explicit
+    attribute replaces solidbase's `getTheme()` "ystem" bug).
 
 ## Docs Search (apps/docs)
 

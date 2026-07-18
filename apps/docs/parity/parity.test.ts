@@ -33,11 +33,21 @@ for (const {
   skipSections = []
 } of components) {
   it(`${slug} has no unported upstream demos`, () => {
-    const { missingDemos, staleSkips } = computeGaps(slug, demosDir, skipDemos)
+    const { missingDemos, extraDemos, staleSkips } = computeGaps(
+      slug,
+      demosDir,
+      skipDemos
+    )
     expect
       .soft(
         missingDemos,
         `${slug}: upstream demos not ported — port them into src/demos/${demosDir}/, or (only if impossible in Solid) add a reasoned skip in parity/components.ts`
+      )
+      .toEqual([])
+    expect
+      .soft(
+        extraDemos,
+        `${slug}: local demos with no upstream counterpart — remove them, or (if an intentional Solid-only adaptation like the \`as\` demos) add a reasoned skip with \`local: true\` in parity/components.ts`
       )
       .toEqual([])
     expect

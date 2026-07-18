@@ -60,11 +60,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Substring match: solidbase stamps data-theme="sdark" in system-dark mode.
-   Code panel is the official rgba(40,40,40,0.4) pre-composited over the
-   official docs' dark page (#111) — solid, so it renders identically here
+/* Exact match: our theme manager always stamps data-theme="dark" (heroui
+   native). Code panel is the official rgba(40,40,40,0.4) pre-composited over
+   the official docs' dark page (#111) — solid, so it renders identically here
    regardless of what sits behind the block. */
-[data-theme*="dark"] {
+[data-theme="dark"] {
   --docs-code-bg: #1c1c1e;
   --docs-hover-bg: rgba(255, 255, 255, 0.04);
   --docs-accent: #2c2c2c;

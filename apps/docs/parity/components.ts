@@ -7,11 +7,13 @@ export const UPSTREAM_REF = "v3"
 export const UPSTREAM_MDX_ROOT = "apps/docs/content/docs/en/react/components"
 export const UPSTREAM_DEMOS_ROOT = "apps/docs/src/demos/en"
 
-// A skip excuses an upstream demo from the strict missing-demo check. Skips
-// are for demos that CANNOT exist in the Solid port (React-only APIs or
-// dependencies) — never for demos that are merely not ported yet; those stay
-// failing until ported. Every skip carries its justification.
-export type DemoSkip = { stem: string; reason: string }
+// A skip excuses a demo from the strict manifest check in either direction.
+// Default (missing-skip): an upstream demo that CANNOT exist in the Solid port
+// (React-only APIs or dependencies) — never one merely not ported yet, which
+// stays failing until ported. With `local: true` (extra-skip): a Solid-only
+// demo upstream doesn't have (e.g. the `as`/custom-element adaptations of
+// upstream's render-prop demos). Every skip carries its justification.
+export type DemoSkip = { stem: string; reason: string; local?: boolean }
 
 // Same contract for upstream page sections: only for sections documenting
 // React-impossible API (render props, virtualization). A skipped demo's own
@@ -33,6 +35,16 @@ const RENDER_PROP: DemoSkip = {
     "React render-prop API — the Solid port adapts it as Kobalte's `as` prop (see the custom-element demos where ported)"
 }
 
+// The Solid-only counterpart to the render-prop demo above: upstream's
+// `custom-render-function` is adapted as a Kobalte `as`/custom-element demo,
+// which has no upstream file. Extra-skip so the manifest doesn't flag it.
+const AS_ELEMENT: DemoSkip = {
+  stem: "custom-element",
+  local: true,
+  reason:
+    "Solid-only adaptation of upstream's render-prop demo — Kobalte's `as` prop replaces React's render function"
+}
+
 const RENDER_PROPS_SECTION = (heading: string): SectionSkip => ({
   heading,
   reason:
@@ -46,6 +58,7 @@ export const components: PortedComponent[] = [
     demosDir: "button",
     skipDemos: [
       RENDER_PROP,
+      AS_ELEMENT,
       {
         stem: "ripple-effect",
         reason: "composition example built on m3-ripple, a React-only package"
@@ -86,7 +99,7 @@ export const components: PortedComponent[] = [
   { slug: "input", demosDir: "input" },
   { slug: "kbd", demosDir: "kbd" },
   { slug: "label", demosDir: "label" },
-  { slug: "link", demosDir: "link", skipDemos: [RENDER_PROP] },
+  { slug: "link", demosDir: "link", skipDemos: [RENDER_PROP, AS_ELEMENT] },
   {
     slug: "list-box",
     demosDir: "list-box",

@@ -43,29 +43,6 @@ export default defineConfig(({ command }) => ({
             if (!file) {
               return
             }
-            // Solidbase stamps data-theme="sdark"/"slight" in system mode
-            // (the s-prefix means "follow the OS"), so heroui's exact
-            // [data-theme=dark|light] selectors must substring-match here,
-            // like solidbase's own [data-theme*="dark"] CSS does. heroui's
-            // CSS enters through the consumer-style Tailwind entry
-            // (src/tailwind.css) — @tailwindcss/vite inlines its imports, so
-            // the rewrite is scoped per entry file, not per rule. Nothing
-            // else in that entry uses exact [data-theme=…] (our overrides
-            // have none; the docs dark variant is substring already), and
-            // solidbase's own CSS — separate files — keeps its exact
-            // matches (its ThemeSelector distinguishes "dark" from "sdark"
-            // to pick the trigger icon).
-            if (file.endsWith("/src/tailwind.css")) {
-              root.walkRules((rule) => {
-                if (rule.selector.includes("[data-theme=")) {
-                  rule.selector = rule.selector.replace(
-                    /\[data-theme="?(dark|light)"?\]/g,
-                    '[data-theme*="$1"]'
-                  )
-                }
-              })
-              return
-            }
             if (!file.includes("@kobalte/solidbase")) {
               return
             }

@@ -344,18 +344,28 @@ export function resolvePreviewStem(
 export function computeGaps(
   slug: string,
   demosDir: string,
-  skips: Array<{ stem: string; reason: string }>
-): { missingDemos: string[]; staleSkips: string[] } {
+  skips: Array<{ stem: string; reason: string; local?: boolean }>
+): { missingDemos: string[]; extraDemos: string[]; staleSkips: string[] } {
   const upstreamStems = demoStems(path.join(fixtureDir(slug), "demos"))
   const localStems = demoStems(localDemosDir(demosDir))
-  const skipStems = new Set(skips.map((s) => s.stem))
+  // A skip is either a missing-skip (upstream demo we can't port) or, with
+  // `local: true`, an extra-skip (a Solid-only demo upstream doesn't have).
+  const missingSkips = new Set(skips.filter((s) => !s.local).map((s) => s.stem))
+  const extraSkips = new Set(skips.filter((s) => s.local).map((s) => s.stem))
   return {
     missingDemos: upstreamStems.filter(
-      (s) => !localStems.includes(s) && !skipStems.has(s)
+      (s) => !localStems.includes(s) && !missingSkips.has(s)
+    ),
+    extraDemos: localStems.filter(
+      (s) => !upstreamStems.includes(s) && !extraSkips.has(s)
     ),
     staleSkips: skips
-      .filter(
-        (s) => localStems.includes(s.stem) || !upstreamStems.includes(s.stem)
+      .filter((s) =>
+        s.local
+          ? // extra-skip rots when the local demo is gone or upstream added it
+            !localStems.includes(s.stem) || upstreamStems.includes(s.stem)
+          : // missing-skip rots when we ported it or upstream dropped it
+            localStems.includes(s.stem) || !upstreamStems.includes(s.stem)
       )
       .map((s) => s.stem)
   }

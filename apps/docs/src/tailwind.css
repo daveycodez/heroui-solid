@@ -4,19 +4,13 @@
  * matters: tailwindcss first, then @heroui/styles (theme keys + component
  * BEM CSS + @utility defs), then our overrides (see the entry's own header).
  *
- * Kept separate from app.css on purpose: the postcss plugin in
- * vite.config.ts rewrites this file's exact [data-theme=dark|light]
- * selectors to substring matches (solidbase stamps "sdark"/"slight" when
- * following the OS), and the rewrite is scoped per entry file — app.css and
- * solidbase's own CSS must keep exact matches (solidbase's ThemeSelector
- * tells "dark" from "sdark" to pick the trigger icon).
- *
  * The utilities layer slots into the order declared at the top of app.css
  * (parsed first via app.tsx import order). */
 @import "tailwindcss";
 @import "@heroui/styles";
 @import "heroui-solid/styles";
 
-/* dark: keys off the docs theme attribute (substring: solidbase stamps
- * "sdark" when following the OS), not prefers-color-scheme. */
-@custom-variant dark (&:where([data-theme*="dark"], [data-theme*="dark"] *));
+/* dark: keys off heroui's exact data-theme attribute (our theme manager in
+ * src/theme/theme.ts always resolves to exact "dark"/"light"), not
+ * prefers-color-scheme. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));

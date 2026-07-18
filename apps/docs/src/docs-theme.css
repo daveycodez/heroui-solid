@@ -3,8 +3,8 @@
  * the `docs` cascade layer from app.css: above the solidbase theme (these
  * rules win without specificity games) but below heroui components and
  * Tailwind utilities (so component CSS and demo/home utility classes keep
- * winning). Dark selectors substring-match [data-theme*="dark"] because
- * solidbase stamps data-theme="sdark"/"slight" when following the OS.
+ * winning). Dark selectors use the exact [data-theme="dark"] attribute our
+ * theme manager stamps (heroui native — see src/theme/theme.ts).
  *
  * Rules that must beat expressive-code's page-injected <style> (which is
  * unlayered, so it outranks every layer) live in docs-code.css instead,
@@ -233,7 +233,7 @@ body header:where([data-site-header]) .header-search {
   }
 }
 
-[data-theme*="dark"] .search-toggle {
+[data-theme="dark"] .search-toggle {
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
 
@@ -400,7 +400,7 @@ aside nav li a {
 }
 
 /* Official dark sidebar: flat white-alpha pill, no shadow. */
-[data-theme*="dark"] aside nav li a[aria-current="page"] {
+[data-theme="dark"] aside nav li a[aria-current="page"] {
   background: rgba(255, 255, 255, 0.08);
   box-shadow: none;
 }
