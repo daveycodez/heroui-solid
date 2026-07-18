@@ -2,7 +2,7 @@ import { Dialog } from "@kobalte/core/dialog"
 import { type AnyOrama, create, insertMultiple, search } from "@orama/orama"
 import { A, useNavigate } from "@solidjs/router"
 import { FileText, Hashtag, Magnifier } from "gravity-icons-solid"
-import { PreventScroll, Spinner } from "heroui-solid"
+import { Kbd, PreventScroll, Spinner } from "heroui-solid"
 import {
   createEffect,
   createResource,
@@ -67,8 +67,12 @@ export function SearchButton() {
       <Magnifier class="size-4" />
       Search
       <div class="ms-auto inline-flex gap-0.5">
-        <kbd class="rounded-md">⌘</kbd>
-        <kbd class="rounded-md">K</kbd>
+        <Kbd class="rounded-md">
+          <Kbd.Abbr keyValue="command" />
+        </Kbd>
+        <Kbd class="rounded-md">
+          <Kbd.Content>K</Kbd.Content>
+        </Kbd>
       </div>
     </button>
   )
@@ -181,9 +185,9 @@ export function SearchDialog() {
                 onInput={(event) => setQuery(event.currentTarget.value)}
                 onKeyDown={onInputKeyDown}
               />
-              <kbd class="rounded-md border border-border bg-background px-1.5 text-xs text-muted">
-                Esc
-              </kbd>
+              <Kbd class="rounded-md border border-border bg-background px-1.5 text-xs">
+                <Kbd.Content>Esc</Kbd.Content>
+              </Kbd>
             </div>
             <div
               id="docs-search-listbox"
