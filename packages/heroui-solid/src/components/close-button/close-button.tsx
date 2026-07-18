@@ -5,12 +5,15 @@ import {
 } from "@heroui/styles"
 import { Root as ButtonPrimitive } from "@kobalte/core/button"
 import type { PolymorphicProps } from "@kobalte/core/polymorphic"
+import { callHandler } from "@kobalte/utils"
 import {
   type ComponentProps,
   type JSX,
   splitProps,
+  useContext,
   type ValidComponent
 } from "solid-js"
+import { OverlayTriggerContext } from "../../utils/overlay-trigger-context"
 
 /* -------------------------------------------------------------------------------------------------
  * Close Icon
@@ -44,6 +47,7 @@ const CloseIcon = (props: ComponentProps<"svg">) => (
 interface CloseButtonRootProps extends CloseButtonVariants {
   class?: string
   children?: JSX.Element
+  onClick?: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent>
 }
 
 const CloseButtonRoot = <T extends ValidComponent = "button">(
@@ -52,14 +56,27 @@ const CloseButtonRoot = <T extends ValidComponent = "button">(
   const [variantProps, local, rest] = splitProps(
     props as CloseButtonRootProps,
     closeButtonVariants.variantKeys,
-    ["class", "children"]
+    ["class", "children", "onClick"]
   )
+  // Inside an AlertDialog a close button dismisses it (no-op elsewhere).
+  const overlay = useContext(OverlayTriggerContext)
+
+  const handleClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (
+    event
+  ) => {
+    callHandler(event, local.onClick)
+    if (event.defaultPrevented) {
+      return
+    }
+    overlay.close?.()
+  }
 
   return (
     <ButtonPrimitive
       aria-label="Close"
       class={cn(closeButtonVariants(variantProps), local.class)}
       data-slot="close-button"
+      on:click={handleClick}
       {...rest}
     >
       {local.children ?? <CloseIcon data-slot="close-button-icon" />}
