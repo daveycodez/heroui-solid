@@ -179,7 +179,10 @@ interface AutocompleteSearchBridgeProps {
 
 const AutocompleteSearchBridge = (props: AutocompleteSearchBridgeProps) => {
   const context = useSelectContext()
-  let inputEl: HTMLInputElement | undefined
+  // `inputEl` is a signal, not a plain ref: the SearchField mounts a beat after
+  // the popover opens, so effects that observe the popover DOM must re-run once
+  // the input actually lands (see the DOM-revision observer below).
+  const [inputEl, setInputEl] = createSignal<HTMLInputElement>()
   const manager = () => context.listState().selectionManager()
 
   // Enabled, selectable option keys in document order (skips sections, disabled
@@ -201,7 +204,7 @@ const AutocompleteSearchBridge = (props: AutocompleteSearchBridgeProps) => {
   // Match by data-key iteration rather than an attribute selector so arbitrary
   // option keys need no CSS escaping (and jsdom, which lacks CSS.escape, works).
   const optionEl = (key: string): HTMLElement | undefined => {
-    const content = inputEl?.closest("[data-slot=autocomplete-popover]")
+    const content = inputEl()?.closest("[data-slot=autocomplete-popover]")
     if (!content) {
       return undefined
     }
@@ -224,7 +227,31 @@ const AutocompleteSearchBridge = (props: AutocompleteSearchBridgeProps) => {
     }
   }
 
+  // Re-resolve the active option element whenever the popover DOM changes, not
+  // only when the focused key changes. In the virtualized listbox the focused
+  // option often isn't rendered at the instant focus moves — a jump (Home/End)
+  // or a far step scrolls the virtualizer, which re-windows and mounts the
+  // focused row a frame later. Observing the popover's child list bumps this
+  // revision so `aria-activedescendant`/highlight re-resolve once the row
+  // mounts. (Kobalte's own combobox resolves activedescendant by the same DOM
+  // query, and Kobalte option ids carry a createUniqueId(), so the id can't be
+  // derived from the key ahead of render.)
+  const [domRevision, setDomRevision] = createSignal(0)
+  createEffect(() => {
+    if (!context.isOpen()) {
+      return
+    }
+    const content = inputEl()?.closest("[data-slot=autocomplete-popover]")
+    if (!content) {
+      return
+    }
+    const observer = new MutationObserver(() => setDomRevision((r) => r + 1))
+    observer.observe(content, { childList: true, subtree: true })
+    onCleanup(() => observer.disconnect())
+  })
+
   const activeDescendant = () => {
+    domRevision()
     const key = manager().focusedKey()
     return key != null ? optionEl(key)?.id : undefined
   }
@@ -289,7 +316,7 @@ const AutocompleteSearchBridge = (props: AutocompleteSearchBridgeProps) => {
     value: () => props.searchControl.value(),
     onChange: (next) => props.searchControl.onChange(next),
     registerInput: (el) => {
-      inputEl = el
+      setInputEl(el)
     },
     onInputKeyDown,
     inputAria: () => ({
