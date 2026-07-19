@@ -2,6 +2,14 @@
   @apply -rotate-180;
 }
 
+/* hideSeparator is a HeroUI-only visual prop with no Kobalte equivalent. The
+   Root stamps data-hide-separator; this hides every item's separator line via
+   CSS cascade (upstream instead keys off each item's own attribute — we key off
+   the root so a single root prop covers all items, no per-item plumbing). */
+.accordion[data-hide-separator="true"] .accordion__item::after {
+  display: none;
+}
+
 /* HeroUI's panel animates height via a JS-measured --disclosure-panel-height
    var (React port); we dropped that JS, so drive the height animation off
    Kobalte's own measured --kb-accordion-content-height + data-expanded/

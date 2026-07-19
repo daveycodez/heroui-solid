@@ -82,11 +82,7 @@ export function Controlled() {
                   <Accordion.Indicator />
                 </Accordion.Trigger>
               </Accordion.Header>
-              <Accordion.Content>
-                <div class="accordion__body">
-                  <div class="accordion__body-inner">{item.content}</div>
-                </div>
-              </Accordion.Content>
+              <Accordion.Content>{item.content}</Accordion.Content>
             </Accordion.Item>
           )}
         </For>

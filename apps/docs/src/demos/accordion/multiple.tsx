@@ -11,13 +11,9 @@ export function Multiple() {
           </Accordion.Trigger>
         </Accordion.Header>
         <Accordion.Content>
-          <div class="accordion__body">
-            <div class="accordion__body-inner">
-              Learn the basics of HeroUI and how to integrate it into your React
-              project. This section covers installation, setup, and your first
-              component.
-            </div>
-          </div>
+          Learn the basics of HeroUI and how to integrate it into your React
+          project. This section covers installation, setup, and your first
+          component.
         </Accordion.Content>
       </Accordion.Item>
 
@@ -29,13 +25,9 @@ export function Multiple() {
           </Accordion.Trigger>
         </Accordion.Header>
         <Accordion.Content>
-          <div class="accordion__body">
-            <div class="accordion__body-inner">
-              Understand the fundamental concepts behind HeroUI, including the
-              compound component pattern, styling with Tailwind CSS, and
-              accessibility features.
-            </div>
-          </div>
+          Understand the fundamental concepts behind HeroUI, including the
+          compound component pattern, styling with Tailwind CSS, and
+          accessibility features.
         </Accordion.Content>
       </Accordion.Item>
 
@@ -47,13 +39,8 @@ export function Multiple() {
           </Accordion.Trigger>
         </Accordion.Header>
         <Accordion.Content>
-          <div class="accordion__body">
-            <div class="accordion__body-inner">
-              Explore advanced features like custom variants, theme
-              customization, and integration with other libraries in your React
-              ecosystem.
-            </div>
-          </div>
+          Explore advanced features like custom variants, theme customization,
+          and integration with other libraries in your React ecosystem.
         </Accordion.Content>
       </Accordion.Item>
 
@@ -65,12 +52,8 @@ export function Multiple() {
           </Accordion.Trigger>
         </Accordion.Header>
         <Accordion.Content>
-          <div class="accordion__body">
-            <div class="accordion__body-inner">
-              Follow our recommended best practices for building performant,
-              accessible, and maintainable applications with HeroUI components.
-            </div>
-          </div>
+          Follow our recommended best practices for building performant,
+          accessible, and maintainable applications with HeroUI components.
         </Accordion.Content>
       </Accordion.Item>
     </Accordion>

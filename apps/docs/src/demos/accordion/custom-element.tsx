@@ -11,12 +11,8 @@ export function CustomElement() {
           </Accordion.Trigger>
         </Accordion.Header>
         <Accordion.Content>
-          <div class="accordion__body">
-            <div class="accordion__body-inner">
-              This accordion renders a section root, an article item, and an h4
-              heading via Kobalte's polymorphic as prop.
-            </div>
-          </div>
+          This accordion renders a section root, an article item, and an h4
+          heading via Kobalte's polymorphic as prop.
         </Accordion.Content>
       </Accordion.Item>
     </Accordion>

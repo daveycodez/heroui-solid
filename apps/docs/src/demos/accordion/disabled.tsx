@@ -16,12 +16,7 @@ export function Disabled() {
               </Accordion.Trigger>
             </Accordion.Header>
             <Accordion.Content>
-              <div class="accordion__body">
-                <div class="accordion__body-inner">
-                  This content cannot be accessed when the accordion is
-                  disabled.
-                </div>
-              </div>
+              This content cannot be accessed when the accordion is disabled.
             </Accordion.Content>
           </Accordion.Item>
 
@@ -33,12 +28,7 @@ export function Disabled() {
               </Accordion.Trigger>
             </Accordion.Header>
             <Accordion.Content>
-              <div class="accordion__body">
-                <div class="accordion__body-inner">
-                  This content cannot be accessed when the accordion is
-                  disabled.
-                </div>
-              </div>
+              This content cannot be accessed when the accordion is disabled.
             </Accordion.Content>
           </Accordion.Item>
         </Accordion>
@@ -57,11 +47,7 @@ export function Disabled() {
               </Accordion.Trigger>
             </Accordion.Header>
             <Accordion.Content>
-              <div class="accordion__body">
-                <div class="accordion__body-inner">
-                  This item is active and can be toggled normally.
-                </div>
-              </div>
+              This item is active and can be toggled normally.
             </Accordion.Content>
           </Accordion.Item>
 
@@ -73,11 +59,7 @@ export function Disabled() {
               </Accordion.Trigger>
             </Accordion.Header>
             <Accordion.Content>
-              <div class="accordion__body">
-                <div class="accordion__body-inner">
-                  This content cannot be accessed when the item is disabled.
-                </div>
-              </div>
+              This content cannot be accessed when the item is disabled.
             </Accordion.Content>
           </Accordion.Item>
 
@@ -89,11 +71,7 @@ export function Disabled() {
               </Accordion.Trigger>
             </Accordion.Header>
             <Accordion.Content>
-              <div class="accordion__body">
-                <div class="accordion__body-inner">
-                  This item is also active and can be toggled.
-                </div>
-              </div>
+              This item is also active and can be toggled.
             </Accordion.Content>
           </Accordion.Item>
         </Accordion>

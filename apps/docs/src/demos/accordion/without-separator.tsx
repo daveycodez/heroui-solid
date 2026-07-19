@@ -1,9 +1,4 @@
-import {
-  ChevronDown,
-  CreditCard,
-  Receipt,
-  ShoppingBag
-} from "gravity-icons-solid"
+import { CreditCard, Receipt, ShoppingBag } from "gravity-icons-solid"
 import { Accordion } from "heroui-solid"
 import { For, type JSX } from "solid-js"
 
@@ -30,28 +25,18 @@ export function WithoutSeparator() {
   ]
 
   return (
-    <Accordion collapsible class="w-full max-w-md">
+    <Accordion collapsible hideSeparator class="w-full max-w-md">
       <For each={items}>
         {(item) => (
-          <Accordion.Item value={item.title} data-hide-separator="true">
+          <Accordion.Item value={item.title}>
             <Accordion.Header>
               <Accordion.Trigger>
-                {item.icon ? (
-                  <span class="mr-3 size-4 shrink-0 text-muted">
-                    {item.icon}
-                  </span>
-                ) : null}
+                <span class="mr-3 size-4 shrink-0 text-muted">{item.icon}</span>
                 {item.title}
-                <Accordion.Indicator>
-                  <ChevronDown />
-                </Accordion.Indicator>
+                <Accordion.Indicator />
               </Accordion.Trigger>
             </Accordion.Header>
-            <Accordion.Content>
-              <div class="accordion__body">
-                <div class="accordion__body-inner">{item.content}</div>
-              </div>
-            </Accordion.Content>
+            <Accordion.Content>{item.content}</Accordion.Content>
           </Accordion.Item>
         )}
       </For>

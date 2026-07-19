@@ -66,6 +66,21 @@ and docs* — not as the API or behavior to mirror.
   exposes it — mirror the Kobalte primitive's parts, not HeroUI React's, when
   the two diverge. (Packaging conventions like the `index.ts` compound layout
   below are unaffected.)
+- **Demos (and docs) express ONLY our public API — never upstream's internals.**
+  A ported demo uses our compound parts and their props and nothing else:
+  content goes straight into the part (`<Accordion.Content>{item.content}</…>`),
+  and you reach for our add-on parts (`<Accordion.Indicator />`). Do **not**
+  hand-stamp a slot/BEM class on a raw element
+  (`<ChevronDown class="accordion__indicator">`) and do **not** reproduce
+  upstream's internal DOM (`<div class="accordion__body"><div
+  class="accordion__body-inner">…`). Those `*__slot` classes are the
+  component's private implementation — fold any structure/padding/text styling
+  a demo seems to need *into the component* (a part or its props, e.g. Content
+  applying the `body`/`bodyInner` slots), not into the demo markup. (`data-slot`
+  is a deliberate public styling hook and may be targeted from a demo's own
+  classes.) **When a demo needs a capability our API doesn't expose, stop and
+  flag it for evaluation** — never hand-roll the missing feature in the demo by
+  reaching past the public parts. Adapt demos to our API; surface the gaps.
 
 - **Port dependencies first, recursively.** Before porting component X, fetch
   X's upstream demos and enumerate every `@heroui/react` component they import

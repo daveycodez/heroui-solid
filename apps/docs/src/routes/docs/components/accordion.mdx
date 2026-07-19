@@ -206,6 +206,7 @@ The component supports both CSS pseudo-classes and data attributes for flexibili
 | `multiple`     | `boolean`                    | `false`     | Whether multiple items can be expanded at once               |
 | `collapsible`  | `boolean`                    | `false`     | Whether the open item can be collapsed in single mode        |
 | `variant`      | `"default" \| "surface"`     | `"default"` | The visual variant of the accordion                          |
+| `hideSeparator`| `boolean`                    | `false`     | Hide the separator line between items                        |
 | `class`        | `string`                     | -           | Additional CSS classes                                       |
 | `children`     | `JSX.Element`                | -           | The accordion items                                          |
 | `as`           | `ValidComponent`             | `"div"`     | Overrides the default DOM element (Kobalte polymorphic `as`) |
@@ -262,9 +263,9 @@ The component supports both CSS pseudo-classes and data attributes for flexibili
 - Disabling is per-item via `disabled` (Kobalte) — there is no root-level
   `isDisabled`.
 - Compound parts follow Kobalte: `Accordion.Header` and `Accordion.Content`
-  (not `Accordion.Heading`/`Accordion.Panel`). There is no `Accordion.Body` —
-  wrap panel content in the `accordion__body` / `accordion__body-inner` slots
-  as shown in the demos.
+  (not `Accordion.Heading`/`Accordion.Panel`). There is no separate
+  `Accordion.Body` — put content directly in `Accordion.Content`, which carries
+  the body padding itself.
 - Polymorphism uses Kobalte's `as` prop instead of React's `render` prop.
 - `Accordion.Indicator` renders a default chevron and rotates via CSS; pass
   children to customize the icon.

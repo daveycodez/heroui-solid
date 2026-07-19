@@ -1,4 +1,3 @@
-import { ChevronDown } from "gravity-icons-solid"
 import { Accordion } from "heroui-solid"
 import { For } from "solid-js"
 
@@ -65,16 +64,10 @@ export function FAQ() {
                     <Accordion.Header>
                       <Accordion.Trigger>
                         {item.title}
-                        <Accordion.Indicator>
-                          <ChevronDown />
-                        </Accordion.Indicator>
+                        <Accordion.Indicator />
                       </Accordion.Trigger>
                     </Accordion.Header>
-                    <Accordion.Content>
-                      <div class="accordion__body">
-                        <div class="accordion__body-inner">{item.content}</div>
-                      </div>
-                    </Accordion.Content>
+                    <Accordion.Content>{item.content}</Accordion.Content>
                   </Accordion.Item>
                 )}
               </For>

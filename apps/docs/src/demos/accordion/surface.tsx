@@ -1,7 +1,6 @@
 import {
   ArrowsRotateLeft,
   Box,
-  ChevronDown,
   CreditCard,
   PlanetEarth,
   Receipt,
@@ -57,20 +56,12 @@ export function Surface() {
           <Accordion.Item value={item.title}>
             <Accordion.Header>
               <Accordion.Trigger>
-                {item.icon ? (
-                  <span class="mr-3 size-4 shrink-0 text-muted">
-                    {item.icon}
-                  </span>
-                ) : null}
+                <span class="mr-3 size-4 shrink-0 text-muted">{item.icon}</span>
                 {item.title}
-                <ChevronDown class="accordion__indicator" />
+                <Accordion.Indicator />
               </Accordion.Trigger>
             </Accordion.Header>
-            <Accordion.Content>
-              <div class="accordion__body">
-                <div class="accordion__body-inner">{item.content}</div>
-              </div>
-            </Accordion.Content>
+            <Accordion.Content>{item.content}</Accordion.Content>
           </Accordion.Item>
         )}
       </For>

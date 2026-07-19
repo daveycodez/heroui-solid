@@ -1,4 +1,3 @@
-import { ChevronDown } from "gravity-icons-solid"
 import { Accordion, cn } from "heroui-solid"
 import { For } from "solid-js"
 
@@ -48,30 +47,22 @@ export function CustomStyles() {
           >
             <Accordion.Header>
               <Accordion.Trigger class="hover:bgsurface group flex items-center gap-2 transition-none">
-                {item.iconUrl ? (
-                  <img
-                    alt={item.title}
-                    class="h-11 w-11 transition-[scale,rotate] duration-300 ease-out group-hover/item:scale-120 group-hover/item:-rotate-10 group-hover/item:drop-shadow-lg"
-                    src={item.iconUrl}
-                  />
-                ) : null}
+                <img
+                  alt={item.title}
+                  class="h-11 w-11 transition-[scale,rotate] duration-300 ease-out group-hover/item:scale-120 group-hover/item:-rotate-10 group-hover/item:drop-shadow-lg"
+                  src={item.iconUrl}
+                />
                 <div class="flex flex-col gap-0">
                   <span class="leading-5 font-medium">{item.title}</span>
                   <span class="leading-6 font-normal text-muted/80">
                     {item.subtitle}
                   </span>
                 </div>
-                <Accordion.Indicator class="text-muted/50 [&>svg]:size-4">
-                  <ChevronDown />
-                </Accordion.Indicator>
+                <Accordion.Indicator class="text-muted/50 [&>svg]:size-4" />
               </Accordion.Trigger>
             </Accordion.Header>
-            <Accordion.Content>
-              <div class="accordion__body">
-                <div class="accordion__body-inner text-muted/80">
-                  {item.content}
-                </div>
-              </div>
+            <Accordion.Content class="text-muted/80">
+              {item.content}
             </Accordion.Content>
           </Accordion.Item>
         )}

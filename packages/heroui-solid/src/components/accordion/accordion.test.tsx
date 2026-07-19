@@ -18,10 +18,18 @@ import {
 // data-slot hooks, the variant modifier, class merging, and the Indicator.
 
 const renderAccordion = (
-  props: { variant?: "default" | "surface"; indicator?: JSX.Element } = {}
+  props: {
+    variant?: "default" | "surface"
+    indicator?: JSX.Element
+    hideSeparator?: boolean
+  } = {}
 ) =>
   render(() => (
-    <AccordionRoot variant={props.variant} defaultValue={["a"]}>
+    <AccordionRoot
+      variant={props.variant}
+      hideSeparator={props.hideSeparator}
+      defaultValue={["a"]}
+    >
       <AccordionItem value="a" class="item-custom">
         <AccordionHeader>
           <AccordionTrigger class="trigger-custom">
@@ -81,6 +89,18 @@ describe("Accordion (thin skin)", () => {
         "accordion--surface"
       )
     ).toBe(true)
+  })
+
+  it("stamps data-hide-separator on the root only when hideSeparator is set", () => {
+    const off = renderAccordion()
+    expect(
+      bySlot(off.container, "accordion")!.getAttribute("data-hide-separator")
+    ).toBeNull()
+
+    const on = renderAccordion({ hideSeparator: true })
+    expect(
+      bySlot(on.container, "accordion")!.getAttribute("data-hide-separator")
+    ).toBe("true")
   })
 
   it("renders a default chevron when the Indicator has no children", () => {

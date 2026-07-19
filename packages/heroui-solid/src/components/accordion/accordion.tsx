@@ -9,7 +9,9 @@ import { type ComponentProps, splitProps, type ValidComponent } from "solid-js"
 type AccordionRootProps<T extends ValidComponent = "div"> = ComponentProps<
   typeof Accordion<T>
 > &
-  AccordionVariants
+  AccordionVariants & {
+    hideSeparator?: boolean
+  }
 
 const AccordionRoot = <T extends ValidComponent = "div">(
   props: AccordionRootProps<T>
@@ -17,13 +19,14 @@ const AccordionRoot = <T extends ValidComponent = "div">(
   const [variantProps, local, rest] = splitProps(
     props as AccordionRootProps,
     accordionVariants.variantKeys,
-    ["class"]
+    ["class", "hideSeparator"]
   )
 
   return (
     <Accordion
       class={cn(accordionVariants(variantProps).base(), local.class)}
       data-slot="accordion"
+      data-hide-separator={local.hideSeparator ? "true" : undefined}
       {...rest}
     />
   )
@@ -120,7 +123,12 @@ const AccordionContent = <T extends ValidComponent = "div">(
   const [local, rest] = splitProps(props as AccordionContentProps, ["class"])
   return (
     <Accordion.Content
-      class={cn(accordionVariants().panel(), local.class)}
+      class={cn(
+        accordionVariants().panel(),
+        accordionVariants().body(),
+        accordionVariants().bodyInner(),
+        local.class
+      )}
       data-slot="accordion-panel"
       {...rest}
     />
