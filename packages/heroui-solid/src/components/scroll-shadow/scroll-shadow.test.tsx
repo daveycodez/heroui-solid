@@ -1,8 +1,13 @@
 // @vitest-environment jsdom
 import { render } from "@solidjs/testing-library"
+import { createRoot } from "solid-js"
 import { describe, expect, it } from "vitest"
 import { classSet } from "../../test/utils"
 import { ScrollShadowRoot } from "./scroll-shadow"
+import {
+  createScrollShadow,
+  type UseScrollShadowProps
+} from "./use-scroll-shadow"
 
 describe("ScrollShadow", () => {
   it("renders a div with BEM classes, data-slot, orientation, and size", () => {
@@ -70,5 +75,49 @@ describe("ScrollShadow", () => {
       "[data-slot=scroll-shadow]"
     ) as HTMLElement
     expect(el.classList.contains("custom")).toBe(true)
+  })
+})
+
+// The initialShadow seed (SSR / first frame) can't be observed through a
+// client render(): on mount the auto-detection effect measures zero-size
+// jsdom nodes and clears it. Read the hook directly with no container, so
+// the measurement effect early-returns and the seed stays put.
+describe("createScrollShadow initialShadow seed", () => {
+  const seed = (over: Partial<UseScrollShadowProps>) =>
+    createRoot((dispose) => {
+      const attrs = createScrollShadow({
+        assumeOverflow: () => false,
+        containerRef: () => undefined,
+        isEnabled: () => true,
+        offset: () => 0,
+        orientation: () => "vertical",
+        visibility: () => "auto",
+        ...over
+      })
+      const result = attrs()
+      dispose()
+      return result
+    })
+
+  it("seeds the far-edge shadow when overflow is assumed (vertical)", () => {
+    expect(seed({ assumeOverflow: () => true })).toEqual({
+      "data-bottom-scroll": "true"
+    })
+  })
+
+  it("seeds the far-edge shadow when overflow is assumed (horizontal)", () => {
+    expect(
+      seed({ assumeOverflow: () => true, orientation: () => "horizontal" })
+    ).toEqual({ "data-right-scroll": "true" })
+  })
+
+  it("seeds nothing by default", () => {
+    expect(seed({})).toEqual({})
+  })
+
+  it("seeds nothing when disabled, even if overflow is assumed", () => {
+    expect(
+      seed({ assumeOverflow: () => true, isEnabled: () => false })
+    ).toEqual({})
   })
 })
