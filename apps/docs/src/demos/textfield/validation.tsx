@@ -18,8 +18,8 @@ export function Validation() {
   return (
     <div class="flex w-full max-w-64 flex-col gap-4">
       <TextField
-        isRequired
-        isInvalid={isUsernameInvalid()}
+        required
+        validationState={isUsernameInvalid() ? "invalid" : undefined}
         name="username"
         value={username()}
         onChange={setUsername}
@@ -39,8 +39,8 @@ export function Validation() {
       </TextField>
 
       <TextField
-        isRequired
-        isInvalid={isBioInvalid()}
+        required
+        validationState={isBioInvalid() ? "invalid" : undefined}
         name="bio"
         value={bio()}
         onChange={setBio}

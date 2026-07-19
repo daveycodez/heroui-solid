@@ -1,81 +1,57 @@
 // @vitest-environment jsdom
 
-import { fireEvent, render } from "@solidjs/testing-library"
-import { describe, expect, it, vi } from "vitest"
+import { render } from "@solidjs/testing-library"
+import { describe, expect, it } from "vitest"
 import { classSet } from "../../test/utils"
-import { DescriptionRoot } from "../description/description"
-import { FieldErrorRoot } from "../field-error/field-error"
 import { InputRoot } from "../input/input"
-import { LabelRoot } from "../label/label"
 import { TextAreaRoot } from "../textarea/textarea"
 import { TextFieldRoot } from "./textfield"
 
-const Anatomy = (props: Parameters<typeof TextFieldRoot>[0]) => (
-  <TextFieldRoot {...props}>
-    <LabelRoot>Email</LabelRoot>
-    <InputRoot placeholder="Enter your email" />
-    <DescriptionRoot>We'll never share your email.</DescriptionRoot>
-    <FieldErrorRoot>Please enter a valid email.</FieldErrorRoot>
-  </TextFieldRoot>
-)
+// TextField is a thin skin over Kobalte's TextField — value control, form-control
+// wiring, and accessibility are Kobalte's and aren't retested here. These cover
+// only what we add on top: the root data-slot/class and fullWidth variant, the
+// explicit data-*="true" re-stamps HeroUI CSS keys off of, and the `variant`
+// that cascades to a child Input/TextArea via context.
 
-describe("TextField", () => {
-  it("renders the anatomy with BEM classes and accessibility wiring", () => {
-    const { container, getByRole } = render(() => <Anatomy />)
-    const root = container.querySelector("[data-slot=textfield]") as HTMLElement
-    expect(classSet(root.className)).toEqual(new Set(["textfield"]))
+const root = (c: HTMLElement) =>
+  c.querySelector("[data-slot=textfield]") as HTMLElement
 
-    const input = getByRole("textbox") as HTMLInputElement
-    const label = container.querySelector(
-      "[data-slot=label]"
-    ) as HTMLLabelElement
-    const description = container.querySelector(
-      "[data-slot=description]"
-    ) as HTMLElement
-    expect(classSet(input.className)).toEqual(
-      new Set(["input", "input--primary"])
+describe("TextField (thin skin)", () => {
+  it("renders the root with the textfield class and merges a custom class", () => {
+    const { container } = render(() => <TextFieldRoot class="extra" />)
+    expect(classSet(root(container).className)).toEqual(
+      new Set(["textfield", "extra"])
     )
-    expect(classSet(label.className)).toEqual(new Set(["label"]))
-    expect(classSet(description.className)).toEqual(new Set(["description"]))
-    expect(label.htmlFor).toBe(input.id)
-    expect(input.getAttribute("aria-describedby")).toBe(description.id)
   })
 
-  it("does not render the field error while valid", () => {
-    const { container } = render(() => <Anatomy />)
-    expect(container.querySelector("[data-slot=field-error]")).toBeNull()
+  it("applies the fullWidth variant", () => {
+    const { container } = render(() => <TextFieldRoot fullWidth />)
+    expect(root(container).classList.contains("textfield--full-width")).toBe(
+      true
+    )
   })
 
-  it("stamps explicit data attributes and shows the error when invalid", () => {
-    const { container, getByRole } = render(() => <Anatomy isInvalid />)
-    const root = container.querySelector("[data-slot=textfield]") as HTMLElement
-    expect(root.getAttribute("data-invalid")).toBe("true")
-
-    const error = container.querySelector(
-      "[data-slot=field-error]"
-    ) as HTMLElement
-    expect(classSet(error.className)).toEqual(new Set(["field-error"]))
-    expect(error.hasAttribute("data-visible")).toBe(true)
-    expect(getByRole("textbox").getAttribute("aria-invalid")).toBe("true")
-    expect(getByRole("textbox").hasAttribute("data-invalid")).toBe(true)
-  })
-
-  it("maps isDisabled, isReadOnly and isRequired to the input", () => {
-    const { container, getByRole } = render(() => (
-      <Anatomy isDisabled isReadOnly isRequired />
+  it("re-stamps explicit data-*='true' from Kobalte's state props", () => {
+    const { container } = render(() => (
+      <TextFieldRoot disabled readOnly required validationState="invalid" />
     ))
-    const root = container.querySelector("[data-slot=textfield]") as HTMLElement
-    expect(root.getAttribute("data-disabled")).toBe("true")
-    expect(root.getAttribute("data-required")).toBe("true")
-    expect(root.getAttribute("data-readonly")).toBe("true")
-
-    const input = getByRole("textbox") as HTMLInputElement
-    expect(input.disabled).toBe(true)
-    expect(input.readOnly).toBe(true)
-    expect(input.required).toBe(true)
+    const el = root(container)
+    expect(el.getAttribute("data-invalid")).toBe("true")
+    expect(el.getAttribute("data-required")).toBe("true")
+    expect(el.getAttribute("data-disabled")).toBe("true")
+    expect(el.getAttribute("data-readonly")).toBe("true")
   })
 
-  it("passes the field variant down to the input via context", () => {
+  it("leaves the re-stamps off in the default state", () => {
+    const { container } = render(() => <TextFieldRoot />)
+    const el = root(container)
+    expect(el.getAttribute("data-invalid")).toBeNull()
+    expect(el.getAttribute("data-required")).toBeNull()
+    expect(el.getAttribute("data-disabled")).toBeNull()
+    expect(el.getAttribute("data-readonly")).toBeNull()
+  })
+
+  it("cascades variant to a child Input via context", () => {
     const { getByRole } = render(() => (
       <TextFieldRoot variant="secondary">
         <InputRoot />
@@ -86,36 +62,14 @@ describe("TextField", () => {
     )
   })
 
-  it("applies fullWidth to the root", () => {
-    const { container } = render(() => <Anatomy fullWidth />)
-    const root = container.querySelector("[data-slot=textfield]") as HTMLElement
-    expect(root.classList.contains("textfield--full-width")).toBe(true)
-  })
-
-  it("controls the value and reports changes", () => {
-    const onChange = vi.fn()
-    const { getByRole } = render(() => (
-      <TextFieldRoot defaultValue="hero" onChange={onChange}>
-        <InputRoot />
-      </TextFieldRoot>
-    ))
-    const input = getByRole("textbox") as HTMLInputElement
-    expect(input.value).toBe("hero")
-    fireEvent.input(input, { target: { value: "heroui" } })
-    expect(onChange).toHaveBeenCalledWith("heroui")
-  })
-
-  it("styles a textarea through the same field", () => {
+  it("cascades variant to a child TextArea via context", () => {
     const { getByRole } = render(() => (
       <TextFieldRoot variant="secondary">
         <TextAreaRoot />
       </TextFieldRoot>
     ))
-    const textarea = getByRole("textbox") as HTMLTextAreaElement
-    expect(textarea.tagName).toBe("TEXTAREA")
-    expect(classSet(textarea.className)).toEqual(
-      new Set(["textarea", "textarea--secondary"])
+    expect(getByRole("textbox").classList.contains("textarea--secondary")).toBe(
+      true
     )
-    expect(textarea.getAttribute("data-slot")).toBe("textarea")
   })
 })

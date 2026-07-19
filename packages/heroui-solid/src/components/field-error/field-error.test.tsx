@@ -16,7 +16,7 @@ const bySlot = (root: HTMLElement) =>
 describe("FieldError (thin skin)", () => {
   it("mounts on an invalid field with data-visible, content, and BEM classes", () => {
     const { container } = render(() => (
-      <TextFieldRoot isInvalid>
+      <TextFieldRoot validationState="invalid">
         <FieldErrorRoot class="extra">Required</FieldErrorRoot>
       </TextFieldRoot>
     ))
@@ -42,7 +42,7 @@ describe("FieldError (thin skin)", () => {
 
   it("stamps data-visible once the field is invalid", () => {
     const { container } = render(() => (
-      <TextFieldRoot isInvalid>
+      <TextFieldRoot validationState="invalid">
         <FieldErrorRoot forceMount>Required</FieldErrorRoot>
       </TextFieldRoot>
     ))

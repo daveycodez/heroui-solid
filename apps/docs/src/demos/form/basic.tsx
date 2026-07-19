@@ -53,8 +53,8 @@ export function Basic() {
   return (
     <Form class="flex w-96 flex-col gap-4" onSubmit={onSubmit}>
       <TextField
-        isInvalid={!!emailError()}
-        isRequired
+        validationState={emailError() ? "invalid" : undefined}
+        required
         name="email"
         onChange={setEmail}
         value={email()}
@@ -65,8 +65,8 @@ export function Basic() {
       </TextField>
 
       <TextField
-        isInvalid={!!passwordError()}
-        isRequired
+        validationState={passwordError() ? "invalid" : undefined}
+        required
         name="password"
         onChange={setPassword}
         value={password()}

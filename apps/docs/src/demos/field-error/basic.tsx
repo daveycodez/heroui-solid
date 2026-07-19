@@ -8,7 +8,7 @@ export function Basic() {
   return (
     <TextField
       class="w-64"
-      isInvalid={isInvalid()}
+      validationState={isInvalid() ? "invalid" : undefined}
       value={value()}
       onChange={setValue}
     >

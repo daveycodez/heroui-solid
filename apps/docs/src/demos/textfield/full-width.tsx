@@ -7,7 +7,7 @@ export function FullWidth() {
         <Label>Your name</Label>
         <Input placeholder="John" />
       </TextField>
-      <TextField fullWidth isInvalid isRequired name="password">
+      <TextField fullWidth required validationState="invalid" name="password">
         <Label>Password</Label>
         <Input type="password" />
         <FieldError>Password must be longer than 8 characters</FieldError>

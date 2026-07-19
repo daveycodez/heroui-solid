@@ -1,30 +1,16 @@
-import type { ComponentProps } from "solid-js"
-
-import { TextFieldRoot } from "./textfield"
+import type { TextFieldRootProps } from "./textfield"
 
 /* -------------------------------------------------------------------------------------------------
- * Compound Component
+ * Component
  * -----------------------------------------------------------------------------------------------*/
-export const TextField = Object.assign(TextFieldRoot, {
-  Root: TextFieldRoot
-})
+export { TextFieldContext, TextFieldRoot as TextField } from "./textfield"
 
 export type TextField = {
-  Props: ComponentProps<typeof TextFieldRoot>
-  RootProps: ComponentProps<typeof TextFieldRoot>
+  Props: TextFieldRootProps
 }
 
-export type { TextFieldVariants } from "@heroui/styles"
 /* -------------------------------------------------------------------------------------------------
  * Variants
  * -----------------------------------------------------------------------------------------------*/
+export type { TextFieldVariants } from "@heroui/styles"
 export { textFieldVariants } from "@heroui/styles"
-export type {
-  TextFieldContextValue,
-  TextFieldRootProps,
-  TextFieldRootProps as TextFieldProps
-} from "./textfield"
-/* -------------------------------------------------------------------------------------------------
- * Named Component
- * -----------------------------------------------------------------------------------------------*/
-export { TextFieldContext, TextFieldRoot } from "./textfield"
