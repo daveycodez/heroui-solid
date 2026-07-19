@@ -1,5 +1,11 @@
 import { cn, type SpinnerVariants, spinnerVariants } from "@heroui/styles"
-import { type ComponentProps, createUniqueId, splitProps } from "solid-js"
+import { Polymorphic, type PolymorphicProps } from "@kobalte/core/polymorphic"
+import {
+  type ComponentProps,
+  createUniqueId,
+  splitProps,
+  type ValidComponent
+} from "solid-js"
 
 /* -------------------------------------------------------------------------------------------------
  * Internal
@@ -60,11 +66,15 @@ const SpinnerPrimitive = (props: SpinnerPrimitiveProps) => {
 /* -------------------------------------------------------------------------------------------------
  * Spinner Root
  * -----------------------------------------------------------------------------------------------*/
-type SpinnerRootProps = ComponentProps<"span"> & SpinnerVariants
+interface SpinnerRootProps extends SpinnerVariants {
+  class?: string
+}
 
-const SpinnerRoot = (props: SpinnerRootProps) => {
+const SpinnerRoot = <T extends ValidComponent = "span">(
+  props: PolymorphicProps<T, SpinnerRootProps>
+) => {
   const [variantProps, local, rest] = splitProps(
-    props,
+    props as SpinnerRootProps,
     spinnerVariants.variantKeys,
     ["class"]
   )
@@ -73,7 +83,8 @@ const SpinnerRoot = (props: SpinnerRootProps) => {
   // a11y tree (see AGENTS.md, a11y bugs). We put role="status" + aria-label on
   // the root live region so the loading state is announced, svg stays decorative.
   return (
-    <span
+    <Polymorphic
+      as="span"
       aria-label="Loading"
       class={cn(spinnerVariants(variantProps), local.class)}
       data-slot="spinner"
@@ -81,7 +92,7 @@ const SpinnerRoot = (props: SpinnerRootProps) => {
       {...rest}
     >
       <SpinnerPrimitive />
-    </span>
+    </Polymorphic>
   )
 }
 

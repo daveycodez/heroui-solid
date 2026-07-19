@@ -30,4 +30,10 @@ describe("Spinner", () => {
     const root = container.querySelector('[data-slot="spinner"]')
     expect(root?.getAttribute("aria-label")).toBe("Chargement")
   })
+
+  it("is polymorphic via as", () => {
+    const { container } = render(() => <SpinnerRoot as="button" />)
+    const root = container.querySelector('[data-slot="spinner"]')
+    expect(root?.tagName).toBe("BUTTON")
+  })
 })

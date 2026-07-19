@@ -51,4 +51,14 @@ describe("Kbd", () => {
     expect(abbrs[1]?.textContent).toBe("⎋")
     expect(abbrs[1]?.getAttribute("title")).toBe("Escape")
   })
+
+  it("is polymorphic via as", () => {
+    const { container } = render(() => (
+      <KbdRoot as="div">
+        <KbdContent as="p">K</KbdContent>
+      </KbdRoot>
+    ))
+    expect(container.querySelector(".kbd")?.tagName).toBe("DIV")
+    expect(container.querySelector(".kbd__content")?.tagName).toBe("P")
+  })
 })

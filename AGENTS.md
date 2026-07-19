@@ -147,6 +147,18 @@ and docs* — not as the API or behavior to mirror.
   [/* behavior keys */])` — the tv function exposes its config at runtime.
   Never hardcode a variant key list.
 - **Class composition**: `class={cn(xVariants(variantProps), local.class)}`.
+- **Presentational parts still get `as`.** A component with no Kobalte primitive
+  (Spinner, Kbd, Surface) is still polymorphic if upstream declares it so —
+  upstream stamps `DOMRenderProps<E>` + renders via `dom.<tag>`, which is the
+  React-side element override. Match it with Kobalte's own polymorphism, exactly
+  as Kobalte's primitives do: `import { Polymorphic, type PolymorphicProps } from
+  "@kobalte/core/polymorphic"`, type the part `PolymorphicProps<T, XPartProps>`
+  (`XPartProps` an interface of the *own* props — variants, `class`, `children`,
+  `keyValue`…, since `PolymorphicProps` doesn't auto-list `class`/`children`),
+  `<T extends ValidComponent = "<defaultTag>">`, and render `<Polymorphic
+  as="<defaultTag>" … {...rest} />`. Do NOT reach for `ComponentProps<typeof
+  Polymorphic<T>>` — it drops the intrinsic element attrs. Every upstream-
+  polymorphic part gets this (Kbd does it on Root, Abbr, and Content).
 - **Behavior is Kobalte's, always** — not "where it adds value". Reach for the
   Kobalte primitive by default and let it own the behavior; `callHandler` from
   `@kobalte/utils` only when a HeroUI add-on genuinely must intercept a handler.
