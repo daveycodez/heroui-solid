@@ -1,36 +1,36 @@
-import { cn, type FieldErrorVariants, fieldErrorVariants } from "@heroui/styles"
+import { cn, fieldErrorVariants } from "@heroui/styles"
 import { FormControlContext } from "@kobalte/core"
 import { ErrorMessage as FieldErrorPrimitive } from "@kobalte/core/text-field"
-import { type ComponentProps, splitProps, useContext } from "solid-js"
+import {
+  type ComponentProps,
+  splitProps,
+  useContext,
+  type ValidComponent
+} from "solid-js"
 
 /* -------------------------------------------------------------------------------------------------
  * Field Error Root
  * -----------------------------------------------------------------------------------------------*/
-interface FieldErrorRootProps
-  extends ComponentProps<"div">,
-    FieldErrorVariants {
-  forceMount?: boolean
-}
+type FieldErrorRootProps<T extends ValidComponent = "div"> = ComponentProps<
+  typeof FieldErrorPrimitive<T>
+>
 
-const FieldErrorRoot = (props: FieldErrorRootProps) => {
-  const [variantProps, local, rest] = splitProps(
-    props,
-    fieldErrorVariants.variantKeys,
-    ["class"]
-  )
+const FieldErrorRoot = <T extends ValidComponent = "div">(
+  props: FieldErrorRootProps<T>
+) => {
+  const [local, rest] = splitProps(props as FieldErrorRootProps, ["class"])
   const formControl = useContext(FormControlContext)
 
-  // Outside a field there is no validation state to key off, mirroring
-  // upstream, where FieldError renders nothing without a field context.
-  // data-visible keys off the invalid state (upstream stamps it
-  // unconditionally, but only mounts while invalid) so forceMount stays
-  // hidden on valid fields and the CSS reveal transition can run.
+  // In-field only: Kobalte's ErrorMessage throws standalone, and there's no
+  // validation state to key off otherwise. data-visible keys off the invalid
+  // state (upstream stamps it unconditionally but only mounts while invalid) so
+  // a forceMount'd error stays hidden on valid fields and the CSS reveal runs.
   return formControl ? (
     <FieldErrorPrimitive
       data-visible={
-        formControl?.validationState() === "invalid" ? "" : undefined
+        formControl.validationState() === "invalid" ? "" : undefined
       }
-      class={cn(fieldErrorVariants(variantProps), local.class)}
+      class={cn(fieldErrorVariants(), local.class)}
       data-slot="field-error"
       {...rest}
     />
@@ -38,7 +38,4 @@ const FieldErrorRoot = (props: FieldErrorRootProps) => {
 }
 
 export type { FieldErrorRootProps }
-/* -------------------------------------------------------------------------------------------------
- * Exports
- * -----------------------------------------------------------------------------------------------*/
 export { FieldErrorRoot }

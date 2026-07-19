@@ -1,29 +1,15 @@
-import type { ComponentProps } from "solid-js"
-
-import { FieldErrorRoot } from "./field-error"
+import { FieldErrorRoot, type FieldErrorRootProps } from "./field-error"
 
 /* -------------------------------------------------------------------------------------------------
- * Compound Component
+ * Component
  * -----------------------------------------------------------------------------------------------*/
-export const FieldError = Object.assign(FieldErrorRoot, {
-  Root: FieldErrorRoot
-})
+export const FieldError = FieldErrorRoot
 
 export type FieldError = {
-  Props: ComponentProps<typeof FieldErrorRoot>
-  RootProps: ComponentProps<typeof FieldErrorRoot>
+  Props: FieldErrorRootProps
 }
 
-export type { FieldErrorVariants } from "@heroui/styles"
 /* -------------------------------------------------------------------------------------------------
  * Variants
  * -----------------------------------------------------------------------------------------------*/
 export { fieldErrorVariants } from "@heroui/styles"
-export type {
-  FieldErrorRootProps,
-  FieldErrorRootProps as FieldErrorProps
-} from "./field-error"
-/* -------------------------------------------------------------------------------------------------
- * Named Component
- * -----------------------------------------------------------------------------------------------*/
-export { FieldErrorRoot }
