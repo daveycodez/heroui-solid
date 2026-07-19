@@ -1,3 +1,4 @@
+// biome-ignore-all lint/complexity/noUselessSwitchCase: kept verbatim from upstream HeroUI React (packages/react/src/utils/calendar.ts)
 import type { DateValue } from "@internationalized/date"
 
 import { isSameDay, startOfWeek, startOfYear } from "@internationalized/date"
