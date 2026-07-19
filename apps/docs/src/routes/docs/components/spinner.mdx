@@ -108,5 +108,15 @@ The Spinner component uses these CSS classes ([View source styles](https://githu
 | ------- | -------------------------------------------------------------- | ---------- | ---------------------------- |
 | `size`  | `"sm" \| "md" \| "lg" \| "xl"`                                  | `"md"`     | Size of the spinner          |
 | `color` | `"current" \| "accent" \| "success" \| "warning" \| "danger"`  | `"accent"` | Color variant of the spinner |
+| `as`    | `ValidComponent`                                               | `"span"`   | Overrides the rendered element (Kobalte polymorphic). |
 | `class` | `string`                                                        | -          | Additional CSS classes       |
-| `as`    | `ValidComponent`                                               | `"span"`   | Overrides the default DOM element (Kobalte polymorphic) |
+
+*Plus standard `<span>` attributes.*
+
+### Rendered Elements
+
+Every part is polymorphic — pass `as` to override its element.
+
+| Component   | Default Element |
+| ----------- | --------------- |
+| `Spinner` | `<span>`        |

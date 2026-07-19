@@ -200,52 +200,24 @@ TextField automatically manages these data attributes based on its state:
 
 TextField is built on Kobalte's [TextField](https://kobalte.dev/docs/core/components/text-field) primitive.
 
-#### Base Props
+| Prop              | Type                       | Default     | Description                                                     |
+| ----------------- | -------------------------- | ----------- | --------------------------------------------------------------- |
+| `variant`         | `"primary" \| "secondary"` | `"primary"` | Variant applied to child Input/TextArea via context             |
+| `fullWidth`       | `boolean`                  | `false`     | Whether the text field should take full width of its container  |
+| `value`           | `string`                   | -           | Current value (controlled)                                      |
+| `defaultValue`    | `string`                   | -           | Default value (uncontrolled)                                    |
+| `onChange`        | `(value: string) => void`  | -           | Handler called when the value changes                           |
+| `id`              | `string`                   | -           | A unique identifier, used to generate ids for nested components |
+| `name`            | `string`                   | -           | Name of the input element, for HTML form submission             |
+| `validationState` | `"valid" \| "invalid"`     | -           | Whether the field displays its valid/invalid styling            |
+| `required`        | `boolean`                  | `false`     | Whether user input is required before form submission           |
+| `disabled`        | `boolean`                  | `false`     | Whether the input is disabled                                   |
+| `readOnly`        | `boolean`                  | `false`     | Whether the input can be selected but not changed               |
+| `as`              | `ValidComponent`           | `"div"`     | Overrides the rendered element (Kobalte polymorphic)            |
+| `class`           | `string`                   | -           | Additional CSS classes                                          |
+| `children`        | `JSX.Element`              | -           | Child components (Label, Input, etc.)                           |
 
-| Prop        | Type                       | Default     | Description                                                    |
-| ----------- | -------------------------- | ----------- | -------------------------------------------------------------- |
-| `variant`   | `"primary" \| "secondary"` | `"primary"` | Variant applied to child Input/TextArea via context            |
-| `fullWidth` | `boolean`                  | `false`     | Whether the text field should take full width of its container |
-| `id`        | `string`                   | -           | The element's unique identifier                                |
-| `class`     | `string`                   | -           | Additional CSS classes                                         |
-| `children`  | `JSX.Element`              | -           | Child components (Label, Input, etc.)                          |
-| `as`        | `ValidComponent`           | `"div"`     | Overrides the default DOM element (Kobalte polymorphic)        |
-
-#### Validation Props
-
-| Prop              | Type                     | Default | Description                                            |
-| ----------------- | ------------------------ | ------- | ----------------------------------------------------- |
-| `required`        | `boolean`                | `false` | Whether user input is required before form submission |
-| `validationState` | `"valid" \| "invalid"`   | -       | Whether the field displays its valid/invalid styling  |
-
-#### Value Props
-
-| Prop           | Type                      | Default | Description                            |
-| -------------- | ------------------------- | ------- | -------------------------------------- |
-| `value`        | `string`                  | -       | Current value (controlled)             |
-| `defaultValue` | `string`                  | -       | Default value (uncontrolled)           |
-| `onChange`     | `(value: string) => void` | -       | Handler called when the value changes  |
-
-#### State Props
-
-| Prop       | Type      | Default | Description                                       |
-| ---------- | --------- | ------- | ------------------------------------------------- |
-| `disabled` | `boolean` | -       | Whether the input is disabled                     |
-| `readOnly` | `boolean` | -       | Whether the input can be selected but not changed |
-
-#### Form Props
-
-| Prop   | Type     | Default | Description                                         |
-| ------ | -------- | ------- | -------------------------------------------------- |
-| `name` | `string` | -       | Name of the input element, for HTML form submission |
-
-#### Accessibility Props
-
-| Prop              | Type     | Default | Description                                       |
-| ----------------- | -------- | ------- | ------------------------------------------------- |
-| `aria-label`      | `string` | -       | Accessibility label when no visible label is present |
-| `aria-labelledby` | `string` | -       | ID of elements that label this field              |
-| `aria-describedby` | `string` | -      | ID of elements that describe this field           |
+*Plus standard `<div>` attributes (including `aria-label`, `aria-labelledby`, `aria-describedby`).*
 
 ### Composition Components
 
@@ -269,3 +241,11 @@ TextField works with these separate components that should be imported and used 
 - No `validate`/`validationBehavior`/`validationErrors` props — drive `validationState`
   yourself (see the Validation example) or use a form library.
 - `autoFocus` belongs on the `Input` element.
+
+### Rendered Elements
+
+Every part is polymorphic — pass `as` to override its element.
+
+| Component | Default Element |
+| --------- | --------------- |
+| `TextField` | `<div>` |

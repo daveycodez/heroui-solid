@@ -66,15 +66,16 @@ This prevents duplicate asterisks when using group components with required fiel
 
 ### Label Props
 
-| Prop         | Type          | Default | Description                                        |
-| ------------ | ------------- | ------- | -------------------------------------------------- |
-| `for`        | `string`      | -       | The id of the element the label is associated with |
-| `isRequired` | `boolean`     | `false` | Whether to display a required indicator            |
-| `isDisabled` | `boolean`     | `false` | Whether the label is in a disabled state           |
-| `isInvalid`  | `boolean`     | `false` | Whether the label is in an invalid state           |
-| `class`      | `string`      | -       | Additional CSS classes                             |
-| `children`   | `JSX.Element` | -       | The content of the label                           |
-| `as`         | `ValidComponent` | `"label"` | Overrides the default DOM element (Kobalte polymorphic) |
+| Prop         | Type             | Default   | Description                                              |
+| ------------ | ---------------- | --------- | ------------------------------------------------------- |
+| `isRequired` | `boolean`        | `false`   | Whether to display a required indicator.                |
+| `isDisabled` | `boolean`        | `false`   | Whether the label is in a disabled state.               |
+| `isInvalid`  | `boolean`        | `false`   | Whether the label is in an invalid state.               |
+| `as`         | `ValidComponent` | `"label"` | Overrides the rendered element (Kobalte polymorphic).   |
+| `class`      | `string`         | -         | Additional CSS classes.                                 |
+| `children`   | `JSX.Element`    | -         | The content of the label.                               |
+
+*Plus standard `<label>` attributes (e.g. `for`).*
 
 ## Examples
 
@@ -112,3 +113,11 @@ This prevents duplicate asterisks when using group components with required fiel
 - Inside a TextField the label renders through Kobalte and receives its `for`
   automatically; the required asterisk comes from the field's `data-required="true"`
   attribute rather than a prop.
+
+### Rendered Elements
+
+Every part is polymorphic — pass `as` to override its element.
+
+| Component | Default Element |
+| --------- | --------------- |
+| `Label` | `<label>`       |

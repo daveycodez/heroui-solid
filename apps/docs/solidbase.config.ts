@@ -43,7 +43,10 @@ const config: SolidBaseConfig<DefaultThemeConfig> = {
         {
           title: "Overview",
           collapsed: false,
-          items: [{ title: "Getting Started", link: "/docs/getting-started" }]
+          items: [
+            { title: "Getting Started", link: "/docs/getting-started" },
+            { title: "Polymorphism", link: "/docs/polymorphism" }
+          ]
         },
         {
           title: "Components",

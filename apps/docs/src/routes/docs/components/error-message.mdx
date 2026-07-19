@@ -63,11 +63,13 @@ For form validation, we recommend using `FieldError` — it keys off Kobalte's `
 
 ### ErrorMessage Props
 
-| Prop       | Type             | Default  | Description                                             |
-| ---------- | ---------------- | -------- | ------------------------------------------------------- |
-| `class`    | `string`         | -        | Additional CSS classes                                  |
-| `children` | `JSX.Element`    | -        | The error message content                               |
-| `as`       | `ValidComponent` | `"span"` | Overrides the default DOM element (Kobalte polymorphic) |
+| Prop       | Type             | Default  | Description                                            |
+| ---------- | ---------------- | -------- | ----------------------------------------------------- |
+| `as`       | `ValidComponent` | `"span"` | Overrides the rendered element (Kobalte polymorphic). |
+| `class`    | `string`         | -        | Additional CSS classes.                               |
+| `children` | `JSX.Element`    | -        | The error message content.                            |
+
+*Plus standard `<span>` attributes.*
 
 **Note**: `ErrorMessage` renders a `<span slot="errorMessage">`. It can be targeted using the `[slot=errorMessage]` CSS selector.
 
@@ -125,3 +127,11 @@ HeroUI follows the [BEM](https://getbem.com/) methodology to ensure component va
 #### Slot Classes
 
 - `[slot="errorMessage"]` - ErrorMessage slot styles for field-control integration
+
+### Rendered Elements
+
+Every part is polymorphic — pass `as` to override its element.
+
+| Component        | Default Element |
+| ---------------- | --------------- |
+| `ErrorMessage` | `<span>`        |

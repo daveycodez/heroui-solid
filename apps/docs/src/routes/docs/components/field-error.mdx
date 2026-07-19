@@ -115,11 +115,14 @@ function EmailField() {
 
 ### FieldError Props
 
-| Prop         | Type          | Default | Description                                                     |
-| ------------ | ------------- | ------- | --------------------------------------------------------------- |
-| `class`      | `string`      | -       | Additional CSS classes                                          |
-| `children`   | `JSX.Element` | -       | Error message content                                           |
-| `forceMount` | `boolean`     | `false` | Keep the element mounted while the field is valid; it stays hidden (no `data-visible`) until invalid, letting the reveal transition animate (Kobalte extra) |
+| Prop         | Type             | Default | Description                                                                                                                                                  |
+| ------------ | ---------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `forceMount` | `boolean`        | `false` | Keep the element mounted while the field is valid; it stays hidden (no `data-visible`) until invalid, letting the reveal transition animate (Kobalte extra). |
+| `as`         | `ValidComponent` | `"div"` | Overrides the rendered element (Kobalte polymorphic).                                                                                                        |
+| `class`      | `string`         | -       | Additional CSS classes.                                                                                                                                      |
+| `children`   | `JSX.Element`    | -       | Error message content.                                                                                                                                       |
+
+*Plus standard `<div>` attributes.*
 
 ## Differences from HeroUI React
 
@@ -128,3 +131,11 @@ function EmailField() {
   message content from your own state (see the Usage example).
 - Renders only inside a field (`TextField` for now); standalone usage renders nothing,
   matching upstream behavior.
+
+### Rendered Elements
+
+Every part is polymorphic — pass `as` to override its element.
+
+| Component      | Default Element |
+| -------------- | --------------- |
+| `FieldError` | `<div>`         |

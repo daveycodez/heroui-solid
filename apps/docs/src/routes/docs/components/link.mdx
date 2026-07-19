@@ -170,24 +170,27 @@ The component supports CSS pseudo-classes and data attributes:
 
 ### Link Props
 
-| Prop         | Type                                             | Default   | Description                                             |
-| ------------ | ------------------------------------------------ | --------- | ------------------------------------------------------- |
-| `href`       | `string`                                         | -         | Destination URL for the anchor                          |
-| `target`     | `string`                                         | `"_self"` | Controls where to open the linked document              |
-| `rel`        | `string`                                         | -         | Relationship between the current and linked documents   |
-| `download`   | `boolean \| string`                              | -         | Prompts file download instead of navigation             |
-| `disabled`   | `boolean`                                        | `false`   | Disables pointer and keyboard interaction               |
-| `class`      | `string`                                         | -         | Custom classes merged with the default styles           |
-| `children`   | `JSX.Element`                                    | -         | Content rendered inside the link                        |
-| `onClick`    | `JSX.EventHandlerUnion<HTMLElement, MouseEvent>` | -         | Handler called when the link is clicked                 |
-| `as`         | `ValidComponent`                                 | `"a"`     | Overrides the default DOM element (Kobalte polymorphic) |
+`linkVariants` is slots-only, so Link adds no variant props — it forwards
+Kobalte's `Link` option and any standard anchor attribute (`href`, `target`,
+`rel`, `download`, …) straight through.
+
+| Prop       | Type             | Default | Description                                             |
+| ---------- | ---------------- | ------- | ------------------------------------------------------- |
+| `disabled` | `boolean`        | `false` | Whether the link is disabled (no pointer/keyboard)      |
+| `as`       | `ValidComponent` | `"a"`   | Overrides the rendered element (Kobalte polymorphic).   |
+| `class`    | `string`         | -       | Custom classes merged with the default styles           |
+| `children` | `JSX.Element`    | -       | Content rendered inside the link                        |
+
+*Plus standard `<a>` attributes.*
 
 ### Link.Icon Props
 
 | Prop       | Type          | Default | Description                                                            |
 | ---------- | ------------- | ------- | ---------------------------------------------------------------------- |
-| `children` | `JSX.Element` | -       | Custom icon element; defaults to the built-in arrow icon when omitted  |
 | `class`    | `string`      | -       | Additional CSS classes                                                 |
+| `children` | `JSX.Element` | -       | Custom icon element; defaults to the built-in arrow icon when omitted  |
+
+*Plus standard `<span>` attributes.*
 
 ### Using with Routing Libraries
 
@@ -264,3 +267,13 @@ export default function NativeLink() {
   than React Aria's `data-hovered` / `data-pressed` attributes — visuals are identical.
 - The routing example uses TanStack Router instead of Next.js — with SolidStart's own
   router, native `<a>` interception means `Link` needs no adapter at all.
+
+### Rendered Elements
+
+Every part is polymorphic — pass `as` to override its element. (`Link.Icon`
+renders a fixed `<span>` and does not accept `as`.)
+
+| Component    | Default Element |
+| ------------ | --------------- |
+| `Link`       | `<a>`           |
+| `Link.Icon`  | `<span>`        |

@@ -152,16 +152,15 @@ Override the shared `.textarea` class once with Tailwind's `@layer components`.
 
 ### TextArea Props
 
-TextArea accepts all standard HTML `<textarea>` attributes plus the following:
-
 | Prop            | Type                       | Default     | Description                                                                                                                                                        |
 | --------------- | -------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `variant`       | `"primary" \| "secondary"` | `"primary"` | Visual variant of the component. `primary` is the default style with shadow. `secondary` is a lower emphasis variant without shadow, suitable for use in surfaces. Falls back to the parent TextField's variant when not set. |
+| `fullWidth`     | `boolean`                  | `false`     | Whether the textarea should take full width of its container.                                                                                                      |
+| `autoResize`    | `boolean`                  | `false`     | Grow the textarea to fit its content as you type (Kobalte extra, not present upstream). Works standalone and inside a TextField.                                    |
+| `submitOnEnter` | `boolean`                  | `false`     | Submit the enclosing form on Enter (Shift+Enter inserts a newline) (Kobalte extra, not present upstream).                                                           |
 | `class`         | `string`                   | -           | Tailwind classes merged with the base styles.                                                                                                                      |
-| `rows`          | `number`                   | -           | Number of visible text lines.                                                                                                                                      |
-| `fullWidth`     | `boolean`                  | `false`     | Whether the textarea should take full width of its container                                                                                                       |
-| `variant`       | `"primary" \| "secondary"` | `"primary"` | Visual variant of the component. `primary` is the default style with shadow. `secondary` is a lower emphasis variant without shadow, suitable for use in surfaces. |
-| `autoResize`    | `boolean`                  | `false`     | Grow the textarea to fit its content (Kobalte extra, not present upstream)                                                                                         |
-| `submitOnEnter` | `boolean`                  | `false`     | Submit the enclosing form on Enter without Shift (Kobalte extra, not present upstream)                                                                             |
+
+*Plus standard `<textarea>` attributes (`value`, `placeholder`, `rows`, `disabled`, `readOnly`, `required`, `onInput`, …).*
 
 > For validation props like `isInvalid` and `isRequired`, use **[TextField](/docs/components/text-field)** with TextArea as a child component.
 
@@ -172,3 +171,9 @@ TextArea accepts all standard HTML `<textarea>` attributes plus the following:
   fires on blur. Inside a TextField, use the field's `onChange(value)` instead.
 - `autoResize` and `submitOnEnter` are Kobalte extras not present upstream. They
   work on a standalone TextArea as well as inside a TextField.
+
+### Rendered Elements
+
+| Component    | Default Element |
+| ------------ | --------------- |
+| `TextArea` | `<textarea>`    |

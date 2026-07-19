@@ -73,14 +73,24 @@ When using the [TextField](/docs/components/text-field) component, accessibility
 
 ### Description Props
 
-| Prop       | Type          | Default | Description                    |
-| ---------- | ------------- | ------- | ------------------------------ |
-| `class`    | `string`         | -       | Additional CSS classes                                  |
-| `children` | `JSX.Element`    | -       | The content of the description                          |
-| `as`       | `ValidComponent` | `"div"` | Overrides the default DOM element (Kobalte polymorphic) |
+| Prop       | Type             | Default | Description                                           |
+| ---------- | ---------------- | ------- | ----------------------------------------------------- |
+| `as`       | `ValidComponent` | `"div"` | Overrides the rendered element (Kobalte polymorphic). |
+| `class`    | `string`         | -       | Additional CSS classes.                               |
+| `children` | `JSX.Element`    | -       | The content of the description.                       |
+
+*Plus standard `<div>` attributes.*
 
 ## Differences from HeroUI React
 
 - Use `class` instead of `className`.
 - Renders a `<div>` (Kobalte's default) instead of React Aria's `<span>` — the
   `.description` styles are identical either way.
+
+### Rendered Elements
+
+Every part is polymorphic — pass `as` to override its element.
+
+| Component       | Default Element |
+| --------------- | --------------- |
+| `Description` | `<div>`         |

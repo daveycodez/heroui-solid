@@ -198,59 +198,76 @@ The component supports both CSS pseudo-classes and data attributes for flexibili
 
 ### Accordion Props
 
-| Prop           | Type                         | Default     | Description                                                  |
-| -------------- | ---------------------------- | ----------- | ------------------------------------------------------------ |
-| `value`        | `string[]`                   | -           | The controlled expanded item values                          |
-| `defaultValue` | `string[]`                   | -           | The initial expanded item values (uncontrolled)              |
-| `onChange`     | `(value: string[]) => void`  | -           | Handler called when the expanded values change               |
-| `multiple`     | `boolean`                    | `false`     | Whether multiple items can be expanded at once               |
-| `collapsible`  | `boolean`                    | `false`     | Whether the open item can be collapsed in single mode        |
-| `variant`      | `"default" \| "surface"`     | `"default"` | The visual variant of the accordion                          |
-| `hideSeparator`| `boolean`                    | `false`     | Hide the separator line between items                        |
-| `class`        | `string`                     | -           | Additional CSS classes                                       |
-| `children`     | `JSX.Element`                | -           | The accordion items                                          |
-| `as`           | `ValidComponent`             | `"div"`     | Overrides the default DOM element (Kobalte polymorphic `as`) |
+| Prop              | Type                        | Default     | Description                                                  |
+| ----------------- | --------------------------- | ----------- | ------------------------------------------------------------ |
+| `variant`         | `"default" \| "surface"`    | `"default"` | The visual variant of the accordion                          |
+| `hideSeparator`   | `boolean`                   | `false`     | Hide the separator line between items                        |
+| `value`           | `string[]`                  | -           | The controlled expanded item values                          |
+| `defaultValue`    | `string[]`                  | -           | The initial expanded item values (uncontrolled)              |
+| `onChange`        | `(value: string[]) => void` | -           | Handler called when the expanded values change               |
+| `multiple`        | `boolean`                   | `false`     | Whether multiple items can be expanded at once               |
+| `collapsible`     | `boolean`                   | `false`     | Whether the open item can be collapsed in single mode        |
+| `shouldFocusWrap` | `boolean`                   | `true`      | Whether keyboard focus wraps around at the start/end         |
+| `as`              | `ValidComponent`            | `"div"`     | Overrides the rendered element (Kobalte polymorphic).        |
+| `class`           | `string`                    | -           | Additional CSS classes                                       |
+| `children`        | `JSX.Element`               | -           | The accordion items                                          |
+
+*Plus standard `<div>` attributes.*
 
 ### Accordion.Item Props
 
-| Prop       | Type             | Default | Description                                                  |
-| ---------- | ---------------- | ------- | ------------------------------------------------------------ |
-| `value`    | `string`         | -       | A unique value for the item (required)                       |
-| `disabled` | `boolean`        | `false` | Whether this item is disabled                                |
-| `class`    | `string`         | -       | Additional CSS classes                                       |
-| `children` | `JSX.Element`    | -       | The item content                                             |
-| `as`       | `ValidComponent` | `"div"` | Overrides the default DOM element (Kobalte polymorphic `as`) |
+| Prop         | Type             | Default | Description                                                  |
+| ------------ | ---------------- | ------- | ------------------------------------------------------------ |
+| `value`      | `string`         | -       | A unique value for the item (required)                       |
+| `disabled`   | `boolean`        | `false` | Whether this item is disabled                                |
+| `forceMount` | `boolean`        | `false` | Force mounting the item content (for animation control)      |
+| `as`         | `ValidComponent` | `"div"` | Overrides the rendered element (Kobalte polymorphic).        |
+| `class`      | `string`         | -       | Additional CSS classes                                       |
+| `children`   | `JSX.Element`    | -       | The item content                                             |
+
+*Plus standard `<div>` attributes.*
 
 ### Accordion.Header Props
 
 | Prop       | Type             | Default | Description                                                  |
 | ---------- | ---------------- | ------- | ------------------------------------------------------------ |
+| `as`       | `ValidComponent` | `"h3"`  | Overrides the rendered element (Kobalte polymorphic).        |
 | `class`    | `string`         | -       | Additional CSS classes                                       |
 | `children` | `JSX.Element`    | -       | The heading content (usually a `Accordion.Trigger`)          |
-| `as`       | `ValidComponent` | `"h3"`  | Overrides the default DOM element (Kobalte polymorphic `as`) |
+
+*Plus standard `<h3>` attributes.*
 
 ### Accordion.Trigger Props
 
 | Prop       | Type             | Default    | Description                                                  |
 | ---------- | ---------------- | ---------- | ------------------------------------------------------------ |
+| `as`       | `ValidComponent` | `"button"` | Overrides the rendered element (Kobalte polymorphic).        |
 | `class`    | `string`         | -          | Additional CSS classes                                       |
 | `children` | `JSX.Element`    | -          | Trigger content                                              |
-| `as`       | `ValidComponent` | `"button"` | Overrides the default DOM element (Kobalte polymorphic `as`) |
+
+*Plus standard `<button>` attributes.*
 
 ### Accordion.Content Props
 
 | Prop       | Type             | Default | Description                                                  |
 | ---------- | ---------------- | ------- | ------------------------------------------------------------ |
+| `as`       | `ValidComponent` | `"div"` | Overrides the rendered element (Kobalte polymorphic).        |
 | `class`    | `string`         | -       | Additional CSS classes                                       |
 | `children` | `JSX.Element`    | -       | Panel content                                                |
-| `as`       | `ValidComponent` | `"div"` | Overrides the default DOM element (Kobalte polymorphic `as`) |
+
+*Plus standard `<div>` attributes.*
 
 ### Accordion.Indicator Props
+
+`Accordion.Indicator` is a HeroUI add-on with no Kobalte equivalent. It renders a
+plain `<span>` (not polymorphic, so no `as`).
 
 | Prop       | Type          | Default | Description                                             |
 | ---------- | ------------- | ------- | ------------------------------------------------------ |
 | `class`    | `string`      | -       | Additional CSS classes                                 |
 | `children` | `JSX.Element` | -       | Custom indicator icon (defaults to a rotating chevron) |
+
+*Plus standard `<span>` attributes.*
 
 ## Differences from HeroUI React
 
@@ -269,3 +286,17 @@ The component supports both CSS pseudo-classes and data attributes for flexibili
 - Polymorphism uses Kobalte's `as` prop instead of React's `render` prop.
 - `Accordion.Indicator` renders a default chevron and rotates via CSS; pass
   children to customize the icon.
+
+### Rendered Elements
+
+Every part except `Accordion.Indicator` is polymorphic — pass `as` to override
+its element.
+
+| Component              | Default Element |
+| ---------------------- | --------------- |
+| `Accordion`            | `<div>`         |
+| `Accordion.Item`       | `<div>`         |
+| `Accordion.Header`     | `<h3>`          |
+| `Accordion.Trigger`    | `<button>`      |
+| `Accordion.Content`    | `<div>`         |
+| `Accordion.Indicator`  | `<span>`        |

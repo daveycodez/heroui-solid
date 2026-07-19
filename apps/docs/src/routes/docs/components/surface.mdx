@@ -112,9 +112,11 @@ The Surface component uses these CSS classes ([View source styles](https://githu
 | Prop       | Type                                                       | Default     | Description                                             |
 | ---------- | ---------------------------------------------------------- | ----------- | ------------------------------------------------------- |
 | `variant`  | `"transparent" \| "default" \| "secondary" \| "tertiary"`  | `"default"` | The visual variant of the surface                       |
+| `as`       | `ValidComponent`                                            | `"div"`     | Overrides the rendered element (Kobalte polymorphic).   |
 | `class`    | `string`                                                    | -           | Additional CSS classes                                  |
 | `children` | `JSX.Element`                                               | -           | The surface content                                     |
-| `as`       | `ValidComponent`                                            | `"div"`     | Overrides the default DOM element (Kobalte polymorphic) |
+
+*Plus standard `<div>` attributes.*
 
 ## Context API
 
@@ -138,3 +140,11 @@ function MyComponent() {
   polymorphic `as` prop instead of React's `render` prop.
 - Read `surface.variant` off the context object inside JSX (a getter keeps it
   reactive) instead of destructuring it.
+
+### Rendered Elements
+
+Every part is polymorphic — pass `as` to override its element.
+
+| Component   | Default Element |
+| ----------- | --------------- |
+| `Surface` | `<div>`         |

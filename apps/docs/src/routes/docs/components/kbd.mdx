@@ -128,25 +128,34 @@ The Kbd component uses these CSS classes ([View source styles](https://github.co
 
 ### Kbd Props
 
-| Prop       | Type                     | Default     | Description                 |
-| ---------- | ------------------------ | ----------- | --------------------------- |
-| `children` | `JSX.Element`            | -           | Content of the key          |
-| `variant`  | `"default" \| "light"`   | `"default"` | Variant of the keyboard key |
-| `class`    | `string`                 | -           | Custom CSS classes          |
+| Prop       | Type                     | Default     | Description                                            |
+| ---------- | ------------------------ | ----------- | ----------------------------------------------------- |
+| `variant`  | `"default" \| "light"`   | `"default"` | Variant of the keyboard key                           |
+| `as`       | `ValidComponent`         | `"kbd"`     | Overrides the rendered element (Kobalte polymorphic). |
+| `class`    | `string`                 | -           | Custom CSS classes                                    |
+| `children` | `JSX.Element`            | -           | Content of the key                                    |
+
+*Plus standard `<kbd>` attributes.*
 
 ### Kbd.Abbr Props
 
-| Prop       | Type     | Default | Description                                                     |
-| ---------- | -------- | ------- | --------------------------------------------------------------- |
-| `keyValue` | `KbdKey` | -       | The keyboard key to display (symbol and accessible title)       |
-| `class`    | `string` | -       | Custom CSS classes                                              |
+| Prop       | Type             | Default  | Description                                               |
+| ---------- | ---------------- | -------- | -------------------------------------------------------- |
+| `keyValue` | `KbdKey`         | -        | The keyboard key to display (symbol and accessible title) |
+| `as`       | `ValidComponent` | `"abbr"` | Overrides the rendered element (Kobalte polymorphic).    |
+| `class`    | `string`         | -        | Custom CSS classes                                       |
+
+*Plus standard `<abbr>` attributes.*
 
 ### Kbd.Content Props
 
-| Prop       | Type          | Default | Description             |
-| ---------- | ------------- | ------- | ----------------------- |
-| `children` | `JSX.Element` | -       | Text content of the key |
-| `class`    | `string`      | -       | Custom CSS classes      |
+| Prop       | Type             | Default  | Description                                            |
+| ---------- | ---------------- | -------- | ----------------------------------------------------- |
+| `as`       | `ValidComponent` | `"span"` | Overrides the rendered element (Kobalte polymorphic). |
+| `class`    | `string`         | -        | Custom CSS classes                                    |
+| `children` | `JSX.Element`    | -        | Text content of the key                               |
+
+*Plus standard `<span>` attributes.*
 
 ### KbdKey values
 
@@ -162,3 +171,13 @@ Available key values for the `keyValue` prop of `Kbd.Abbr`:
 | `win`         | `capslock`   | `pagedown`      |               |
 |               | `help`       | `home`          |               |
 |               |              | `end`           |               |
+
+### Rendered Elements
+
+Every part is polymorphic — pass `as` to override its element.
+
+| Component       | Default Element |
+| --------------- | --------------- |
+| `Kbd`         | `<kbd>`         |
+| `Kbd.Abbr`    | `<abbr>`        |
+| `Kbd.Content` | `<span>`        |

@@ -1,0 +1,104 @@
+---
+title: Polymorphism
+---
+
+# Polymorphism
+
+Every heroui-solid component is a thin skin over [Kobalte](https://kobalte.dev),
+and inherits Kobalte's **polymorphism**: the `as` prop lets you change the
+element (or component) a part renders as, while keeping its behavior,
+accessibility, styling, and state management intact.
+
+## The `as` prop
+
+Any part whose API Reference lists an `as` prop is polymorphic. Pass a tag name
+to swap the underlying element:
+
+```tsx
+import { Link } from "heroui-solid";
+
+// Looks and behaves like a Link, but renders a <button>
+<Link as="button" onClick={logOut}>
+  Log out
+</Link>
+```
+
+The HeroUI classes, `data-*` state attributes, and any Kobalte behavior stay on
+the element — only the tag changes.
+
+## Rendering a different element
+
+```tsx
+import { Kbd, Surface } from "heroui-solid";
+
+<Surface as="section">…</Surface>
+<Kbd as="div">⌘K</Kbd>
+```
+
+Each part has its own default. Component-heavy parts keep semantic defaults —
+`Accordion.Trigger` is a `<button>`, `Accordion.Header` an `<h3>`, `Link` an
+`<a>` — so reach for `as` only when your markup needs a different element.
+
+## Rendering as a component
+
+`as` also accepts a Solid component. heroui-solid forwards the computed props
+(class, event handlers, ARIA attributes, refs) to it, so the component must
+spread them onto a real element:
+
+```tsx
+import { Link } from "heroui-solid";
+import { A } from "@solidjs/router";
+
+// Integrate with the router's link component
+<Link as={A} href="/dashboard">
+  Dashboard
+</Link>
+```
+
+> **Note:** Some parts drive behavior off their leaf element. `Avatar.Image`,
+> for example, uses the native `<img>` `load`/`error` events to decide when to
+> reveal the fallback — so a custom `as={MyImage}` must forward
+> `src`/`onLoad`/`onError` to a real `<img>`, or that logic can't run.
+
+## Default rendered elements
+
+Every component's API Reference ends with a **Rendered Elements** table listing
+the default tag for each part. A few common ones:
+
+| Part                  | Default element |
+| --------------------- | --------------- |
+| `Link`                | `a`             |
+| `Surface`             | `div`           |
+| `Spinner`             | `span`          |
+| `Kbd`                 | `kbd`           |
+| `Avatar`              | `span`          |
+| `Avatar.Image`        | `img`           |
+| `Accordion.Trigger`   | `button`        |
+| `Accordion.Header`    | `h3`            |
+
+Parts that render a fixed element with no polymorphism (a plain `Form`, or a
+native standalone `TextArea` fallback) do not accept `as`; their API Reference
+omits the prop.
+
+## Typing your own polymorphic wrapper
+
+When you wrap a heroui-solid component and want to keep `as` working with correct
+types, reuse Kobalte's `PolymorphicProps` — the same shape our components use:
+
+```tsx
+import { type ValidComponent } from "solid-js";
+import { type PolymorphicProps } from "@kobalte/core/polymorphic";
+import { Surface } from "heroui-solid";
+
+type PanelProps<T extends ValidComponent = "div"> = PolymorphicProps<
+  T,
+  { heading?: string }
+>;
+
+function Panel<T extends ValidComponent = "div">(props: PanelProps<T>) {
+  return <Surface {...props} />;
+}
+
+// Consumers still get `as`, typed against the element they choose
+<Panel as="section" heading="Billing" />;
+```

@@ -157,15 +157,21 @@ The Avatar component uses these CSS classes ([View source styles](https://github
 | `color`         | `"default" \| "accent" \| "success" \| "warning" \| "danger"` | `"default"` | Fallback color theme                            |
 | `variant`       | `"default" \| "soft"`                                         | `"default"` | Visual style variant                            |
 | `fallbackDelay` | `number`                                                      | -           | Delay (ms) before showing fallback (prevents flash) |
+| `as`            | `ValidComponent`                                             | `"span"`    | Overrides the rendered element (Kobalte polymorphic). |
 | `class`         | `string`                                                      | -           | Additional CSS classes                          |
+
+*Plus standard `<span>` attributes.*
 
 ### Avatar.Image Props
 
 | Prop    | Type     | Default | Description                    |
 | ------- | -------- | ------- | ------------------------------ |
-| `src`   | `string` | -       | Image source URL               |
-| `alt`   | `string` | -       | Alternative text for the image |
-| `class` | `string` | -       | Additional CSS classes         |
+| `src`   | `string`         | -       | Image source URL               |
+| `alt`   | `string`         | -       | Alternative text for the image |
+| `as`    | `ValidComponent` | `"img"` | Overrides the rendered element (Kobalte polymorphic). |
+| `class` | `string`         | -       | Additional CSS classes         |
+
+*Plus standard `<img>` attributes.*
 
 The image only mounts once it has loaded (Kobalte Image); until then the
 fallback renders.
@@ -175,7 +181,10 @@ fallback renders.
 | Prop    | Type                                                          | Default | Description                |
 | ------- | ------------------------------------------------------------- | ------- | -------------------------- |
 | `color` | `"default" \| "accent" \| "success" \| "warning" \| "danger"` | -       | Override color from parent |
+| `as`    | `ValidComponent`                                             | `"span"` | Overrides the rendered element (Kobalte polymorphic). |
 | `class` | `string`                                                      | -       | Additional CSS classes     |
+
+*Plus standard `<span>` attributes.*
 
 ## Differences from HeroUI React
 
@@ -187,3 +196,13 @@ fallback renders.
   pass straight through to `Avatar.Image`; Kobalte doesn't run Radix's
   preloader, but the element receives them once mounted.
 - The React `render` prop is replaced by Kobalte's `as` prop.
+
+### Rendered Elements
+
+Every part is polymorphic — pass `as` to override its element.
+
+| Component | Default Element |
+| --------- | --------------- |
+| `Avatar` | `<span>` |
+| `Avatar.Image` | `<img>` |
+| `Avatar.Fallback` | `<span>` |

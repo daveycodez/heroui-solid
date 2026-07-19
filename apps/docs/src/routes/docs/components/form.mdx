@@ -63,19 +63,17 @@ function CustomForm() {
 
 ### Form Props
 
-The Form component renders a native `<form>` element and forwards all of its
-attributes. It accepts every prop of an HTML `<form>`, including:
+`Form` is a plain pass-through over the native `<form>` element — it adds no
+props of its own and is not a Kobalte primitive, so every attribute you pass
+lands directly on the `<form>`.
 
-| Prop       | Type                                          | Default | Description                                     |
-| ---------- | --------------------------------------------- | ------- | ----------------------------------------------- |
-| `action`   | `string`                                      | -       | The URL to submit the form data to              |
-| `method`   | `'get' \| 'post'`                             | -       | The HTTP method to use when submitting the form |
-| `encType`  | `string`                                      | -       | The encoding type for form data submission      |
-| `target`   | `'_self' \| '_blank' \| '_parent' \| '_top'`  | -       | Where to display the response after submitting  |
-| `onSubmit` | `(event: SubmitEvent) => void`                | -       | Handler called when the form is submitted       |
-| `onReset`  | `(event: Event) => void`                      | -       | Handler called when the form is reset           |
-| `class`    | `string`                                      | -       | Tailwind CSS classes applied to the form element |
-| `children` | `JSX.Element`                                 | -       | Form content (fields, buttons, etc.)            |
+| Prop       | Type          | Default | Description                          |
+| ---------- | ------------- | ------- | ------------------------------------ |
+| `class`    | `string`      | -       | Tailwind CSS classes for the form    |
+| `children` | `JSX.Element` | -       | Form content (fields, buttons, etc.) |
+
+*Plus standard `<form>` attributes* (`action`, `method`, `encType`, `target`,
+`onSubmit`, `onReset`, …).
 
 ### Form Validation
 
@@ -134,3 +132,9 @@ Place them inside the `<Form>` and they submit as part of its `FormData`.
 For richer flows — server-side validation, form-context providers, or integration
 with a third-party form library — compose those around the plain `<form>`; the
 Form component intentionally stays a thin native wrapper.
+
+### Rendered Elements
+
+| Component | Default Element |
+| --------- | --------------- |
+| `Form`    | `<form>`        |
