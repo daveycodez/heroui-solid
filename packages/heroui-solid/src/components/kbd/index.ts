@@ -1,6 +1,11 @@
-import type { ComponentProps } from "solid-js"
-
-import { KbdAbbr, KbdContent, KbdRoot } from "./kbd"
+import {
+  KbdAbbr,
+  type KbdAbbrProps,
+  KbdContent,
+  type KbdContentProps,
+  KbdRoot,
+  type KbdRootProps
+} from "./kbd"
 
 /* -------------------------------------------------------------------------------------------------
  * Compound Component
@@ -12,26 +17,14 @@ export const Kbd = Object.assign(KbdRoot, {
 })
 
 export type Kbd = {
-  Props: ComponentProps<typeof KbdRoot>
-  RootProps: ComponentProps<typeof KbdRoot>
-  AbbrProps: ComponentProps<typeof KbdAbbr>
-  ContentProps: ComponentProps<typeof KbdContent>
+  Props: KbdRootProps
+  AbbrProps: KbdAbbrProps
+  ContentProps: KbdContentProps
 }
 
-export type { KbdVariants } from "@heroui/styles"
 /* -------------------------------------------------------------------------------------------------
  * Variants
  * -----------------------------------------------------------------------------------------------*/
+export type { KbdVariants } from "@heroui/styles"
 export { kbdVariants } from "@heroui/styles"
-export type {
-  KbdAbbrProps,
-  KbdContentProps,
-  KbdRootProps,
-  KbdRootProps as KbdProps
-} from "./kbd"
-/* -------------------------------------------------------------------------------------------------
- * Named Component
- * -----------------------------------------------------------------------------------------------*/
-export { KbdAbbr, KbdContent, KbdRoot } from "./kbd"
 export type { KbdKey } from "./kbd.constants"
-export { kbdKeysLabelMap, kbdKeysMap } from "./kbd.constants"
