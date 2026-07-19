@@ -55,6 +55,7 @@ type SearchFieldContextValue = {
   slots: () => ReturnType<typeof searchFieldVariants>
   isInvalid: () => boolean
   isDisabled: () => boolean
+  isEmpty: () => boolean
   clear: () => void
   submit: () => void
   registerInput: (el: HTMLInputElement) => void
@@ -179,6 +180,7 @@ const SearchFieldRootInner = (props: SearchFieldRootProps) => {
     slots,
     isInvalid: () => !!local.isInvalid,
     isDisabled: () => !!local.isDisabled,
+    isEmpty: () => value() === "",
     clear,
     submit: () => local.onSubmit?.(value()),
     registerInput: (el) => {
@@ -345,6 +347,10 @@ const SearchFieldClearButton = (props: SearchFieldClearButtonProps) => {
       // React Aria disables the clear button with the field; mirror that so it
       // can't wipe the value + refocus a disabled input.
       disabled={ctx.isDisabled()}
+      // When empty the button is hidden (opacity-0 pointer-events-none), which
+      // still leaves it in the tab order — a keyboard user lands on an invisible
+      // control. Drop it from the tab order until there's a value to clear.
+      tabindex={ctx.isEmpty() ? -1 : undefined}
       onClick={handleClick}
       {...rest}
     />

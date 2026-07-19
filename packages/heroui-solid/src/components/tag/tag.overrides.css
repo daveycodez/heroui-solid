@@ -1,0 +1,9 @@
+/* The tag remove button is a bare Kobalte Button (not the CloseButton upstream
+   composes — that stacked .close-button's 24px sizing onto .tag__remove-button
+   and squished the icon), so it misses the cursor .close-button provides.
+   Restore the interactive cursor upstream's X has. */
+.tag__remove-button {
+  cursor: var(--cursor-interactive);
+  /* Round the button so its keyboard focus ring is circular around the X. */
+  @apply rounded-full;
+}

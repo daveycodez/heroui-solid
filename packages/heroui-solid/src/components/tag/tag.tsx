@@ -92,7 +92,7 @@ const TagRoot = (props: TagRootProps) => {
       group.allowsRemoving()
     ) {
       event.preventDefault()
-      group.remove(new Set([key()]))
+      group.remove(new Set([key()]), el)
     }
   }
 
@@ -173,7 +173,9 @@ const TagRemoveButton = (props: TagRemoveButtonProps) => {
   const [local, rest] = splitProps(props as TagRemoveButtonProps, [
     "class",
     "children",
-    "onClick"
+    "onClick",
+    "onPointerDown",
+    "onKeyDown"
   ])
 
   const handleClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (
@@ -184,7 +186,46 @@ const TagRemoveButton = (props: TagRemoveButtonProps) => {
       event,
       local.onClick as JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent>
     )
-    group.remove(new Set([tag.tagKey()]))
+    group.remove(new Set([tag.tagKey()]), event.currentTarget)
+  }
+
+  // When the tag lives inside a Select/Autocomplete trigger, Kobalte's
+  // Select.Trigger toggles the popover on pointerdown — which fires before this
+  // button's click. Stop it here so pressing the X removes the tag without
+  // opening the popover (mirrors the autocomplete clear button); harmless
+  // standalone.
+  const handlePointerDown: JSX.EventHandler<HTMLButtonElement, PointerEvent> = (
+    event
+  ) => {
+    event.stopPropagation()
+    callHandler(
+      event,
+      local.onPointerDown as JSX.EventHandlerUnion<
+        HTMLButtonElement,
+        PointerEvent
+      >
+    )
+  }
+
+  // Enter/Space remove the tag. Handle them here (rather than leaning on the
+  // native button click) and stop propagation so they don't bubble to the tag
+  // (which toggles selection) or a Select/Autocomplete trigger (which opens the
+  // popover on Enter/Space).
+  const handleKeyDown: JSX.EventHandler<HTMLButtonElement, KeyboardEvent> = (
+    event
+  ) => {
+    callHandler(
+      event,
+      local.onKeyDown as JSX.EventHandlerUnion<HTMLButtonElement, KeyboardEvent>
+    )
+    if (event.defaultPrevented) {
+      return
+    }
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault()
+      event.stopPropagation()
+      group.remove(new Set([tag.tagKey()]), event.currentTarget)
+    }
   }
 
   // A bare button styled solely by the tag__remove-button slot — NOT the
@@ -197,8 +238,13 @@ const TagRemoveButton = (props: TagRemoveButtonProps) => {
       class={cn(tag.slots().removeButton(), local.class)}
       data-slot="tag-remove-button"
       slot="remove"
-      tabindex={-1}
+      // Focusable as its own tab stop (in addition to focusing the tag and
+      // pressing Delete/Backspace): the native button fires its click — and thus
+      // removal — on Enter/Space.
+      tabindex={0}
       onClick={handleClick}
+      onPointerDown={handlePointerDown}
+      onKeyDown={handleKeyDown}
       {...rest}
     >
       {local.children ?? <CloseIcon />}

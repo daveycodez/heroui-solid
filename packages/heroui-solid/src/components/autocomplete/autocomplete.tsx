@@ -777,6 +777,11 @@ const AutocompleteClearButton = (props: AutocompleteClearButtonProps) => {
   const selectContext = useSelectContext()
   const isEmpty = () => selectContext.listState().selectionManager().isEmpty()
 
+  const clear = () => {
+    selectContext.listState().selectionManager().clearSelection()
+    context.setQuery?.("")
+  }
+
   const handleClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (
     event
   ) => {
@@ -784,8 +789,19 @@ const AutocompleteClearButton = (props: AutocompleteClearButtonProps) => {
     // trigger's toggle (which opens on pointer down; stopped there too).
     event.stopPropagation()
     callHandler(event, local.onClick)
-    selectContext.listState().selectionManager().clearSelection()
-    context.setQuery?.("")
+    clear()
+  }
+
+  // Enter/Space clear. Handle them here and stop propagation so they don't
+  // bubble to the Select trigger, which opens the popover on Enter/Space.
+  const handleKeyDown: JSX.EventHandler<HTMLButtonElement, KeyboardEvent> = (
+    event
+  ) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault()
+      event.stopPropagation()
+      clear()
+    }
   }
 
   return (
@@ -795,7 +811,11 @@ const AutocompleteClearButton = (props: AutocompleteClearButtonProps) => {
       class={cn(context.slots?.clearButton(), local.class)}
       data-slot="autocomplete-clear-button"
       data-empty={isEmpty() ? "true" : undefined}
+      // Hidden (opacity-0 pointer-events-none) with no selection, so drop it
+      // from the tab order until there's something to clear.
+      tabindex={isEmpty() ? -1 : undefined}
       onClick={handleClick}
+      onKeyDown={handleKeyDown}
       onPointerDown={(event) => event.stopPropagation()}
       {...rest}
     >
