@@ -120,18 +120,34 @@ type AccordionContentProps<T extends ValidComponent = "div"> = ComponentProps<
 const AccordionContent = <T extends ValidComponent = "div">(
   props: AccordionContentProps<T>
 ) => {
-  const [local, rest] = splitProps(props as AccordionContentProps, ["class"])
+  const [local, rest] = splitProps(props as AccordionContentProps, [
+    "class",
+    "style",
+    "children"
+  ])
+  // The panel is the element whose height animates, so it stays padding-free —
+  // padding on an animated-height element reflows and jitters on collapse.
+  // Body padding lives on an inner wrapper (upstream's panel > body > bodyInner
+  // structure, folded into the component so demos still pass content directly).
+  // The caller's `class`/`style` go on that inner wrapper so they can override
+  // the padding/text styling; Kobalte keeps the panel (it owns the height var).
   return (
     <Accordion.Content
-      class={cn(
-        accordionVariants().panel(),
-        accordionVariants().body(),
-        accordionVariants().bodyInner(),
-        local.class
-      )}
+      class={accordionVariants().panel()}
       data-slot="accordion-panel"
       {...rest}
-    />
+    >
+      <div
+        class={cn(
+          accordionVariants().body(),
+          accordionVariants().bodyInner(),
+          local.class
+        )}
+        style={local.style}
+      >
+        {local.children}
+      </div>
+    </Accordion.Content>
   )
 }
 

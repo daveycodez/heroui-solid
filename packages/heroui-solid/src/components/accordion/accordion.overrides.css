@@ -15,7 +15,7 @@
    Kobalte's own measured --kb-accordion-content-height + data-expanded/
    data-closed state instead. Kobalte's collapsible is built for this — it
    toggles animation-name around its measurement pass to (re)trigger these. */
-.accordion__panel[data-expanded] {
+.accordion__panel {
   opacity: 1;
   animation: slideDown 200ms var(--ease-out-quad);
   @apply motion-reduce:animate-none;
