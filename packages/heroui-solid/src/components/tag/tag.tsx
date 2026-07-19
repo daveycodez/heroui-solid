@@ -1,4 +1,5 @@
 import { cn, tagVariants } from "@heroui/styles"
+import { Root as ButtonPrimitive } from "@kobalte/core/button"
 import { callHandler } from "@kobalte/utils"
 import {
   type ComponentProps,
@@ -12,7 +13,6 @@ import {
   useContext
 } from "solid-js"
 
-import { CloseButtonRoot } from "../close-button/close-button"
 import {
   type TagKey,
   type TagSize,
@@ -92,7 +92,7 @@ const TagRoot = (props: TagRootProps) => {
       group.allowsRemoving()
     ) {
       event.preventDefault()
-      group.remove(new Set([key()]))
+      group.remove(new Set([key()]), el)
     }
   }
 
@@ -145,7 +145,27 @@ const TagRoot = (props: TagRootProps) => {
 /* -------------------------------------------------------------------------------------------------
  * Tag Remove Button
  * -----------------------------------------------------------------------------------------------*/
-interface TagRemoveButtonProps extends ComponentProps<typeof CloseButtonRoot> {}
+// Upstream stamps aria-label on this aria-hidden svg (an a11y defect); dropped
+// here, keeping aria-hidden + role="presentation" (see AGENTS.md, CloseIcon).
+const CloseIcon = (props: ComponentProps<"svg">) => (
+  <svg
+    aria-hidden="true"
+    fill="none"
+    role="presentation"
+    viewBox="0 0 16 16"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      clip-rule="evenodd"
+      d="M3.47 3.47a.75.75 0 0 1 1.06 0L8 6.94l3.47-3.47a.75.75 0 1 1 1.06 1.06L9.06 8l3.47 3.47a.75.75 0 1 1-1.06 1.06L8 9.06l-3.47 3.47a.75.75 0 0 1-1.06-1.06L6.94 8 3.47 4.53a.75.75 0 0 1 0-1.06Z"
+      fill="currentColor"
+      fill-rule="evenodd"
+    />
+  </svg>
+)
+
+interface TagRemoveButtonProps extends ComponentProps<typeof ButtonPrimitive> {}
 
 const TagRemoveButton = (props: TagRemoveButtonProps) => {
   const tag = useTag()
@@ -153,27 +173,77 @@ const TagRemoveButton = (props: TagRemoveButtonProps) => {
   const [local, rest] = splitProps(props as TagRemoveButtonProps, [
     "class",
     "children",
-    "onClick"
+    "onClick",
+    "onPointerDown",
+    "onKeyDown"
   ])
 
   const handleClick: JSX.EventHandler<HTMLElement, MouseEvent> = (event) => {
     event.stopPropagation()
     callHandler(event, local.onClick)
-    group.remove(new Set([tag.tagKey()]))
+    group.remove(new Set([tag.tagKey()]), event.currentTarget)
   }
 
+  // When the tag lives inside a Select/Autocomplete trigger, Kobalte's
+  // Select.Trigger toggles the popover on pointerdown — which fires before this
+  // button's click. Stop it here so pressing the X removes the tag without
+  // opening the popover (mirrors the autocomplete clear button); harmless
+  // standalone.
+  const handlePointerDown: JSX.EventHandler<HTMLButtonElement, PointerEvent> = (
+    event
+  ) => {
+    event.stopPropagation()
+    callHandler(
+      event,
+      local.onPointerDown as JSX.EventHandlerUnion<
+        HTMLButtonElement,
+        PointerEvent
+      >
+    )
+  }
+
+  // Enter/Space remove the tag. Handle them here (rather than leaning on the
+  // native button click) and stop propagation so they don't bubble to the tag
+  // (which toggles selection) or a Select/Autocomplete trigger (which opens the
+  // popover on Enter/Space).
+  const handleKeyDown: JSX.EventHandler<HTMLButtonElement, KeyboardEvent> = (
+    event
+  ) => {
+    callHandler(
+      event,
+      local.onKeyDown as JSX.EventHandlerUnion<HTMLButtonElement, KeyboardEvent>
+    )
+    if (event.defaultPrevented) {
+      return
+    }
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault()
+      event.stopPropagation()
+      group.remove(new Set([tag.tagKey()]), event.currentTarget)
+    }
+  }
+
+  // A bare button styled solely by the tag__remove-button slot — NOT the
+  // CloseButton component. Composing CloseButtonRoot stacked .close-button
+  // (built for a 24px button: p-1, size-4 svg) onto .tag__remove-button (12px,
+  // size-[inherit] svg), and the two svg rules collided into a squished icon.
   return (
-    <CloseButtonRoot
+    <ButtonPrimitive
       aria-label="Remove tag"
       class={cn(tag.slots().removeButton(), local.class)}
       data-slot="tag-remove-button"
       slot="remove"
-      tabindex={-1}
+      // Focusable as its own tab stop (in addition to focusing the tag and
+      // pressing Delete/Backspace): the native button fires its click — and thus
+      // removal — on Enter/Space.
+      tabindex={0}
       onClick={handleClick}
+      onPointerDown={handlePointerDown}
+      onKeyDown={handleKeyDown}
       {...rest}
     >
-      {local.children}
-    </CloseButtonRoot>
+      {local.children ?? <CloseIcon />}
+    </ButtonPrimitive>
   )
 }
 

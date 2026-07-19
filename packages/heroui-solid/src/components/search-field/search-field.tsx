@@ -19,6 +19,7 @@ import {
   useContext
 } from "solid-js"
 
+import { useCollectionDefer } from "../../utils/collection-defer"
 import { FieldContext } from "../../utils/field-context"
 import { CloseButtonRoot } from "../close-button/close-button"
 
@@ -54,6 +55,7 @@ type SearchFieldContextValue = {
   slots: () => ReturnType<typeof searchFieldVariants>
   isInvalid: () => boolean
   isDisabled: () => boolean
+  isEmpty: () => boolean
   clear: () => void
   submit: () => void
   registerInput: (el: HTMLInputElement) => void
@@ -68,6 +70,25 @@ const useSearchField = (): SearchFieldContextValue => {
   }
   return ctx
 }
+
+// Optional external control: a parent (e.g. Autocomplete.Filter) drives the
+// field's value/onChange without the consumer wiring `value` explicitly. When
+// present and the field has no `value` prop, the field binds here; absent, the
+// field behaves standalone (uncontrolled/controlled as before). The optional
+// members let the parent turn the input into an aria-activedescendant combobox
+// over an adjacent listbox (Autocomplete's virtual-focus keyboard nav): it
+// registers the input element, intercepts navigation keys, and supplies the
+// combobox ARIA attributes.
+type SearchFieldControlContextValue = {
+  value: () => string
+  onChange: (value: string) => void
+  registerInput?: (el: HTMLInputElement) => void
+  onInputKeyDown?: (event: KeyboardEvent) => void
+  inputAria?: () => Record<string, string | boolean | undefined>
+}
+
+const SearchFieldControlContext =
+  createContext<SearchFieldControlContextValue>()
 
 /* -------------------------------------------------------------------------------------------------
  * SearchField Root
@@ -89,6 +110,19 @@ interface SearchFieldRootProps extends SearchFieldVariants {
 }
 
 const SearchFieldRoot = (props: SearchFieldRootProps) => {
+  // Inside a collection-deferring picker (the Autocomplete popover) hold the
+  // field as a deferred render so its <input> DOM isn't created while the
+  // closed popover eagerly registers its collection (SSR/hydration-safe — see
+  // AGENTS.md). The marker's render() mounts a fresh field, so onMount/autofocus
+  // still fire when the popover opens. Standalone (no provider) it renders now.
+  const deferred = useCollectionDefer(() => <SearchFieldRootInner {...props} />)
+  if (deferred) {
+    return deferred as unknown as JSX.Element
+  }
+  return <SearchFieldRootInner {...props} />
+}
+
+const SearchFieldRootInner = (props: SearchFieldRootProps) => {
   const [variantProps, local, rest] = splitProps(
     props,
     searchFieldVariants.variantKeys,
@@ -109,10 +143,20 @@ const SearchFieldRoot = (props: SearchFieldRootProps) => {
   )
   const slots = createMemo(() => searchFieldVariants(variantProps))
 
+  // Optional parent control (Autocomplete.Filter) — used only when the field
+  // has no explicit `value` prop, so standalone behavior is unchanged.
+  const control = useContext(SearchFieldControlContext)
   const [uncontrolled, setUncontrolled] = createSignal(local.defaultValue ?? "")
-  const value = () => local.value ?? uncontrolled()
+  const value = () => {
+    if (local.value !== undefined) return local.value
+    if (control) return control.value()
+    return uncontrolled()
+  }
   const setValue = (next: string) => {
-    if (local.value === undefined) setUncontrolled(next)
+    if (local.value === undefined) {
+      if (control) control.onChange(next)
+      else setUncontrolled(next)
+    }
     local.onChange?.(next)
   }
 
@@ -120,18 +164,23 @@ const SearchFieldRoot = (props: SearchFieldRootProps) => {
   const clear = () => {
     setValue("")
     local.onClear?.()
-    inputEl?.focus()
+    // preventScroll: inside the Autocomplete popover the input is portaled, so a
+    // bare focus() scrolls the page to it (Kobalte focuses without scrolling).
+    inputEl?.focus({ preventScroll: true })
   }
 
   // Kobalte's TextField root is a <div>, so autoFocus must land on the input.
+  // preventScroll so autofocusing the in-popover field on open doesn't scroll
+  // the page to it (see clear()).
   onMount(() => {
-    if (local.autoFocus) inputEl?.focus()
+    if (local.autoFocus) inputEl?.focus({ preventScroll: true })
   })
 
   const context: SearchFieldContextValue = {
     slots,
     isInvalid: () => !!local.isInvalid,
     isDisabled: () => !!local.isDisabled,
+    isEmpty: () => value() === "",
     clear,
     submit: () => local.onSubmit?.(value()),
     registerInput: (el) => {
@@ -200,11 +249,24 @@ interface SearchFieldInputProps extends TextFieldInputProps {}
 const SearchFieldInput = (props: SearchFieldInputProps) => {
   const [local, rest] = splitProps(props, ["class", "ref", "onKeyDown"])
   const ctx = useSearchField()
+  // Present only when a parent (Autocomplete) drives virtual-focus keyboard nav.
+  const control = useContext(SearchFieldControlContext)
 
   const handleKeyDown: JSX.EventHandler<HTMLInputElement, KeyboardEvent> = (
     event
   ) => {
     callHandler(event, local.onKeyDown)
+    // Honor a consumer that consumed the key in their own onKeyDown.
+    if (event.defaultPrevented) {
+      return
+    }
+    // Virtual-focus nav (ArrowUp/Down/Home/End/Enter/Escape) runs next and
+    // preventDefaults the keys it owns, so the field's own Escape/Enter
+    // behavior only fires for keys the parent left alone.
+    control?.onInputKeyDown?.(event)
+    if (event.defaultPrevented) {
+      return
+    }
     if (event.key === "Escape") {
       event.preventDefault()
       ctx.clear()
@@ -218,9 +280,10 @@ const SearchFieldInput = (props: SearchFieldInputProps) => {
       type="search"
       class={cn(ctx.slots().input(), local.class)}
       data-slot="search-field-input"
-      ref={mergeRefs(ctx.registerInput, local.ref)}
+      ref={mergeRefs(ctx.registerInput, control?.registerInput, local.ref)}
       onKeyDown={handleKeyDown}
       {...(rest as TextFieldInputProps)}
+      {...(control?.inputAria?.() ?? {})}
     />
   )
 }
@@ -283,6 +346,10 @@ const SearchFieldClearButton = (props: SearchFieldClearButtonProps) => {
       // React Aria disables the clear button with the field; mirror that so it
       // can't wipe the value + refocus a disabled input.
       disabled={ctx.isDisabled()}
+      // When empty the button is hidden (opacity-0 pointer-events-none), which
+      // still leaves it in the tab order — a keyboard user lands on an invisible
+      // control. Drop it from the tab order until there's a value to clear.
+      tabindex={ctx.isEmpty() ? -1 : undefined}
       onClick={handleClick}
       {...rest}
     />
@@ -292,6 +359,7 @@ const SearchFieldClearButton = (props: SearchFieldClearButtonProps) => {
 export type {
   SearchFieldClearButtonProps,
   SearchFieldContextValue,
+  SearchFieldControlContextValue,
   SearchFieldGroupProps,
   SearchFieldInputProps,
   SearchFieldRootProps,
@@ -303,6 +371,7 @@ export type {
 export {
   SearchFieldClearButton,
   SearchFieldContext,
+  SearchFieldControlContext,
   SearchFieldGroup,
   SearchFieldInput,
   SearchFieldRoot,

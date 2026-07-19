@@ -34,13 +34,37 @@ type TagGroupContextValue = {
   toggle: (key: TagKey) => void
   isDisabled: (key: TagKey) => boolean
   allowsRemoving: () => boolean
-  remove: (keys: Set<TagKey>) => void
+  remove: (keys: Set<TagKey>, originEl?: HTMLElement) => void
   tabStopKey: () => TagKey | undefined
   register: (registration: TagRegistration) => () => void
   onListKeyDown: JSX.EventHandler<HTMLDivElement, KeyboardEvent>
 }
 
 const TagGroupContext = createContext<TagGroupContextValue>()
+
+const TABBABLE_SELECTOR =
+  "a[href],button:not([disabled]),input:not([disabled])," +
+  "select:not([disabled]),textarea:not([disabled])," +
+  "[tabindex]:not([tabindex='-1'])"
+
+// The last tabbable element that precedes `fromEl` in document order and isn't
+// inside `excludeEl`. `fromEl` itself need not be tabbable (e.g. the group
+// container). Used to land focus on whatever comes before the tag group — the
+// Select/Autocomplete trigger the tags render inside — when a tag is removed.
+const previousTabbable = (
+  fromEl: Element,
+  excludeEl?: Element | null
+): HTMLElement | undefined => {
+  let result: HTMLElement | undefined
+  for (const el of document.querySelectorAll<HTMLElement>(TABBABLE_SELECTOR)) {
+    const precedes =
+      fromEl.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_PRECEDING
+    if (!precedes) continue
+    if (excludeEl?.contains(el)) continue
+    result = el
+  }
+  return result
+}
 
 const useTagGroup = (): TagGroupContextValue => {
   const ctx = useContext(TagGroupContext)
@@ -168,7 +192,45 @@ const TagGroupRoot = (props: TagGroupRootProps) => {
     toggle,
     isDisabled: (key) => disabledKeys().has(key),
     allowsRemoving: () => local.onRemove !== undefined,
-    remove: (keys) => local.onRemove?.(keys),
+    remove: (keys, originEl) => {
+      // Removing a tag re-renders the whole tag list (the Select value's render
+      // prop rebuilds it), so captured tag/remove-button elements are stale by
+      // the time focus should move. Instead record the removed tag's position
+      // and a stable fallback now, then after the re-render re-query the live
+      // list: focus the previous tag's remove button, else the element before
+      // the group (e.g. the Select/Autocomplete trigger).
+      let container: Element | null = null
+      let removedIndex = -1
+      let fallback: HTMLElement | undefined
+      if (originEl) {
+        const tagEl = originEl.closest("[data-slot='tag']")
+        const groupEl = originEl.closest("[data-slot='tag-group']")
+        // The group's parent survives the list rebuild; scope re-queries to it.
+        container = groupEl?.parentElement ?? groupEl
+        if (groupEl && tagEl) {
+          removedIndex = Array.from(
+            groupEl.querySelectorAll("[data-slot='tag']")
+          ).indexOf(tagEl)
+        }
+        fallback = previousTabbable(groupEl ?? originEl, groupEl ?? tagEl)
+      }
+      local.onRemove?.(keys)
+      queueMicrotask(() => {
+        let target: HTMLElement | undefined
+        if (removedIndex > 0 && container?.isConnected) {
+          const buttons = Array.from(
+            container.querySelectorAll<HTMLElement>(
+              "[data-slot='tag-remove-button']"
+            )
+          )
+          target = buttons[Math.min(removedIndex - 1, buttons.length - 1)]
+        }
+        if (!target?.isConnected && fallback?.isConnected) {
+          target = fallback
+        }
+        target?.focus({ preventScroll: true })
+      })
+    },
     tabStopKey,
     register: (registration) => {
       setTags((prev) => [...prev, registration])

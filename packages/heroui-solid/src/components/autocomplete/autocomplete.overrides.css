@@ -1,0 +1,72 @@
+/* The trigger is a focusable Select.Trigger rendered as a <div> (role=button).
+   Kobalte stamps no data-focus-visible (React Aria does upstream), and the
+   native fallback `:focus-visible:not(:focus)` never matches — bridge the
+   trigger focus ring onto :focus-visible, gated on keyboard modality
+   (utils/interaction-modality.ts): Kobalte refocuses the trigger on close, and
+   Chromium carries :focus-visible across programmatic focus moves, so an
+   ungated bridge rings after pure mouse dismissal. */
+html:not([data-heroui-modality="pointer"])
+.autocomplete__trigger:focus-visible {
+  @apply status-focused;
+  border-color: var(--field-border-focus);
+  background-color: var(--field-focus);
+}
+
+html:not([data-heroui-modality="pointer"])
+  .autocomplete--secondary
+  .autocomplete__trigger:focus-visible {
+  background-color: var(--autocomplete-trigger-bg-focus);
+}
+
+/* Kobalte stamps data-placeholder-shown (empty string) instead of React Aria's
+   data-placeholder="true". */
+.autocomplete__value[data-placeholder-shown] {
+  @apply text-field-placeholder;
+}
+
+/* Virtual focus: options never take DOM focus (the SearchField keeps it), so
+   the keyboard highlight rides Kobalte's data-highlighted (the focused key)
+   instead of :focus-visible. Bridge it to the same ring upstream paints on
+   data-focus-visible, gated on keyboard modality (utils/interaction-modality.ts):
+   under pointer modality data-highlighted rides hover, where the native
+   :hover → bg-default already matches upstream, so the ring must not paint. */
+html:not([data-heroui-modality="pointer"]) [data-slot="autocomplete-popover"]
+  .list-box-item[data-highlighted] {
+  @apply status-focused;
+}
+
+/* Upstream pins the popover to the trigger width via --trigger-width and its
+   transform origin via --trigger-anchor-point (both React Aria vars). Kobalte
+   exposes the anchor width as --kb-popper-anchor-width and the origin via
+   --kb-select-content-transform-origin; data-placement is stamped by
+   autocomplete.tsx from the popper-resolved side. */
+.autocomplete__popover {
+  --trigger-width: var(--kb-popper-anchor-width);
+  transform-origin: var(--kb-select-content-transform-origin);
+}
+
+/* Kobalte signals presence with data-expanded/data-closed instead of React
+   Aria's data-entering/data-exiting. */
+.autocomplete__popover[data-expanded] {
+  @apply animate-in duration-250 ease-out-fluid fade-in-0 zoom-in-95;
+
+  &[data-placement="top"] {
+    @apply slide-in-from-bottom-1;
+  }
+
+  &[data-placement="bottom"] {
+    @apply slide-in-from-top-1;
+  }
+
+  &[data-placement="left"] {
+    @apply slide-in-from-right-1;
+  }
+
+  &[data-placement="right"] {
+    @apply slide-in-from-left-1;
+  }
+}
+
+.autocomplete__popover[data-closed] {
+  @apply animate-out duration-100 ease-out-quad zoom-out-95 fade-out;
+}
