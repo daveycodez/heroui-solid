@@ -12,7 +12,7 @@ import {
   useContext
 } from "solid-js"
 
-import { TextFieldContext } from "../textfield/textfield"
+import { TextFieldContext } from "../textfield"
 
 /* -------------------------------------------------------------------------------------------------
  * TextArea Root

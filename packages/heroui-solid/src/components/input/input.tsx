@@ -10,7 +10,7 @@ import {
 } from "solid-js"
 
 import { ComboBoxInputContext } from "../combo-box/combo-box"
-import { TextFieldContext } from "../textfield/textfield"
+import { TextFieldContext } from "../textfield"
 
 type InputPrimitiveProps = ComponentProps<typeof InputPrimitive>
 type ComboboxInputPrimitiveProps = ComponentProps<typeof ComboboxInputPrimitive>

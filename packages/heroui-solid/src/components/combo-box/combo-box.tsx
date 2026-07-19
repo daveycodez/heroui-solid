@@ -54,7 +54,7 @@ import {
   type ListBoxSectionDescriptor
 } from "../list-box/list-box"
 import { SurfaceContext } from "../surface/surface"
-import { TextFieldContext } from "../textfield/textfield"
+import { TextFieldContext } from "../textfield"
 
 type Key = string
 type FilterPredicate = (textValue: string, inputValue: string) => boolean
