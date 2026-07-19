@@ -1,7 +1,9 @@
 import { cn, type InputVariants, inputVariants } from "@heroui/styles"
 import { FormControlContext } from "@kobalte/core"
-import { Input as ComboboxInputPrimitive } from "@kobalte/core/combobox"
-import { Input as InputPrimitive } from "@kobalte/core/text-field"
+// Both @kobalte/core/combobox and /text-field export `Input`; the source-named
+// aliases disambiguate the genuine clash (not the forbidden `XPrimitive` style).
+import { Input as ComboboxInput } from "@kobalte/core/combobox"
+import { Input as TextFieldInput } from "@kobalte/core/text-field"
 import {
   type ComponentProps,
   mergeProps,
@@ -11,9 +13,6 @@ import {
 
 import { ComboBoxInputContext } from "../combo-box/combo-box"
 import { TextFieldContext } from "../textfield/textfield"
-
-type InputPrimitiveProps = ComponentProps<typeof InputPrimitive>
-type ComboboxInputPrimitiveProps = ComponentProps<typeof ComboboxInputPrimitive>
 
 /* -------------------------------------------------------------------------------------------------
  * Input Root
@@ -41,19 +40,19 @@ const InputRoot = (props: InputRootProps) => {
   // the filter text + combobox a11y; standalone behavior is unchanged.
   if (inComboBox) {
     return (
-      <ComboboxInputPrimitive
+      <ComboboxInput
         class={cn(inputVariants(resolvedVariants), local.class)}
         data-slot="input"
-        {...(rest as ComboboxInputPrimitiveProps)}
+        {...(rest as ComponentProps<typeof ComboboxInput>)}
       />
     )
   }
 
   return formControl ? (
-    <InputPrimitive
+    <TextFieldInput
       class={cn(inputVariants(resolvedVariants), local.class)}
       data-slot="input"
-      {...(rest as InputPrimitiveProps)}
+      {...(rest as ComponentProps<typeof TextFieldInput>)}
     />
   ) : (
     <input

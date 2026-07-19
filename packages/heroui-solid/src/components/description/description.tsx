@@ -1,7 +1,7 @@
 import { cn, descriptionVariants } from "@heroui/styles"
 import { FormControlContext } from "@kobalte/core"
 import { Polymorphic, type PolymorphicProps } from "@kobalte/core/polymorphic"
-import { Description as DescriptionPrimitive } from "@kobalte/core/text-field"
+import { Description } from "@kobalte/core/text-field"
 import { splitProps, useContext, type ValidComponent } from "solid-js"
 
 /* -------------------------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ const DescriptionRoot = <T extends ValidComponent = "div">(
   // Inside a form control, Kobalte's Description wires the aria-describedby id;
   // standalone it would throw, so render a plain (polymorphic) element instead.
   return formControl ? (
-    <DescriptionPrimitive
+    <Description
       class={cn(descriptionVariants(), local.class)}
       data-slot="description"
       {...rest}

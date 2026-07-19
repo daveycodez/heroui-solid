@@ -1,6 +1,6 @@
 import { cn, fieldErrorVariants } from "@heroui/styles"
 import { FormControlContext } from "@kobalte/core"
-import { ErrorMessage as FieldErrorPrimitive } from "@kobalte/core/text-field"
+import { ErrorMessage } from "@kobalte/core/text-field"
 import {
   type ComponentProps,
   splitProps,
@@ -12,7 +12,7 @@ import {
  * Field Error Root
  * -----------------------------------------------------------------------------------------------*/
 type FieldErrorRootProps<T extends ValidComponent = "div"> = ComponentProps<
-  typeof FieldErrorPrimitive<T>
+  typeof ErrorMessage<T>
 >
 
 const FieldErrorRoot = <T extends ValidComponent = "div">(
@@ -21,12 +21,13 @@ const FieldErrorRoot = <T extends ValidComponent = "div">(
   const [local, rest] = splitProps(props as FieldErrorRootProps, ["class"])
   const formControl = useContext(FormControlContext)
 
-  // In-field only: Kobalte's ErrorMessage throws standalone, and there's no
-  // validation state to key off otherwise. data-visible keys off the invalid
-  // state (upstream stamps it unconditionally but only mounts while invalid) so
-  // a forceMount'd error stays hidden on valid fields and the CSS reveal runs.
+  // Renders only inside a field — matching upstream, whose RAC FieldError does
+  // `if (!validation?.isInvalid) return null` (no context ⇒ null; it does not
+  // throw). data-visible keys off the invalid state (upstream stamps it
+  // unconditionally but only mounts while invalid) so a forceMount'd error stays
+  // hidden on valid fields and the CSS reveal transition can run.
   return formControl ? (
-    <FieldErrorPrimitive
+    <ErrorMessage
       data-visible={
         formControl.validationState() === "invalid" ? "" : undefined
       }
