@@ -1,8 +1,7 @@
 import { cn, type LabelVariants, labelVariants } from "@heroui/styles"
+import { FormControlContext } from "@kobalte/core"
 import { Label } from "@kobalte/core/text-field"
 import { type ComponentProps, splitProps, useContext } from "solid-js"
-
-import { FieldContext } from "../../utils/field-context"
 
 /* -------------------------------------------------------------------------------------------------
  * Label Root
@@ -15,9 +14,9 @@ const LabelRoot = (props: LabelRootProps) => {
     labelVariants.variantKeys,
     ["class"]
   )
-  const field = useContext(FieldContext)
+  const formControl = useContext(FormControlContext)
 
-  return field ? (
+  return formControl ? (
     <Label
       class={cn(labelVariants(variantProps), local.class)}
       data-slot="label"

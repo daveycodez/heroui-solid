@@ -41,7 +41,6 @@ import {
   CollectionDeferContext,
   renderDeferred
 } from "../../utils/collection-defer"
-import { FieldContext } from "../../utils/field-context"
 import { setupInteractionModality } from "../../utils/interaction-modality"
 import { PreventScroll } from "../../utils/prevent-scroll"
 import {
@@ -305,42 +304,40 @@ const ComboBoxRoot = <T extends ValidComponent = "div">(
       data-readonly={local.isReadOnly ? "true" : undefined}
       {...rest}
     >
-      <FieldContext.Provider value={true}>
-        <TextFieldContext.Provider value={{ variant: local.variant }}>
-          <ComboBoxContext.Provider
-            value={{
-              get slots() {
-                return slots()
-              },
-              setPlacement,
-              mounted
-            }}
-          >
-            <ListBoxCollectionContext.Provider value={setOptions}>
-              <ListBoxCollectionListboxContext.Provider
-                value={ComboboxListboxPrimitive}
-              >
-                {/* Header/Separator inside the popover's ListBox resolve to
+      <TextFieldContext.Provider value={{ variant: local.variant }}>
+        <ComboBoxContext.Provider
+          value={{
+            get slots() {
+              return slots()
+            },
+            setPlacement,
+            mounted
+          }}
+        >
+          <ListBoxCollectionContext.Provider value={setOptions}>
+            <ListBoxCollectionListboxContext.Provider
+              value={ComboboxListboxPrimitive}
+            >
+              {/* Header/Separator inside the popover's ListBox resolve to
                     deferral markers (not DOM) so the closed popover's eager
                     option registration stays hydration-safe (see AGENTS.md). */}
-                <CollectionDeferContext.Provider value={true}>
-                  <ComboBoxController
-                    inputValue={local.inputValue}
-                    defaultInputValue={local.defaultInputValue}
-                  />
-                  {/* Client-only: it renders an <option> per item, but items
+              <CollectionDeferContext.Provider value={true}>
+                <ComboBoxController
+                  inputValue={local.inputValue}
+                  defaultInputValue={local.defaultInputValue}
+                />
+                {/* Client-only: it renders an <option> per item, but items
                       register after Kobalte snapshots them on the server (SSR
                       memos never re-run), so hydrating it desyncs keys. */}
-                  <Show when={mounted()}>
-                    <ComboboxHiddenSelectPrimitive />
-                  </Show>
-                  {local.children}
-                </CollectionDeferContext.Provider>
-              </ListBoxCollectionListboxContext.Provider>
-            </ListBoxCollectionContext.Provider>
-          </ComboBoxContext.Provider>
-        </TextFieldContext.Provider>
-      </FieldContext.Provider>
+                <Show when={mounted()}>
+                  <ComboboxHiddenSelectPrimitive />
+                </Show>
+                {local.children}
+              </CollectionDeferContext.Provider>
+            </ListBoxCollectionListboxContext.Provider>
+          </ListBoxCollectionContext.Provider>
+        </ComboBoxContext.Provider>
+      </TextFieldContext.Provider>
     </ComboboxPrimitive>
   )
 }

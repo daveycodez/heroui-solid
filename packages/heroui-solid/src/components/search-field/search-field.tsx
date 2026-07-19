@@ -20,7 +20,6 @@ import {
 } from "solid-js"
 
 import { useCollectionDefer } from "../../utils/collection-defer"
-import { FieldContext } from "../../utils/field-context"
 import { CloseButtonRoot } from "../close-button/close-button"
 
 /* -------------------------------------------------------------------------------------------------
@@ -207,11 +206,9 @@ const SearchFieldRootInner = (props: SearchFieldRootProps) => {
       data-empty={value() === "" ? "true" : undefined}
       {...rest}
     >
-      <FieldContext.Provider value={true}>
-        <SearchFieldContext.Provider value={context}>
-          {local.children}
-        </SearchFieldContext.Provider>
-      </FieldContext.Provider>
+      <SearchFieldContext.Provider value={context}>
+        {local.children}
+      </SearchFieldContext.Provider>
     </TextFieldPrimitive>
   )
 }

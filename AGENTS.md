@@ -194,12 +194,19 @@ and docs* — not as the API or behavior to mirror.
   site (see the Accordion indicator's default chevron and Link's default arrow).
   Same approach for future upstream a11y defects: fix here, note the deviation,
   consider reporting upstream.
-- **Form controls provide `FieldContext`** (`src/utils/field-context.tsx`,
-  value `true`): the field satellites (Label, Description, FieldError, Input,
-  TextArea) render the Kobalte form-control primitive when the marker is
-  present and a plain element otherwise (Kobalte's primitives throw outside
-  their provider). Every new Kobalte form-control root (Select, Checkbox…)
-  must provide it. Also re-stamp `data-invalid/required/disabled/readonly`
+- **Field satellites detect Kobalte's own `FormControlContext`** — never a
+  parallel marker. `import { FormControlContext } from "@kobalte/core"` and
+  `useContext(FormControlContext)` (the raw context — the `useFormControlContext`
+  *hook* throws; `useContext` returns `undefined` outside a provider). The
+  satellites (Label, Description, FieldError, Input, TextArea) render the Kobalte
+  form-control primitive when it's present and a plain element otherwise
+  (Kobalte's primitives throw outside their provider). Every Kobalte
+  form-control root (TextField, Select, SearchField, ComboBox, Autocomplete)
+  already provides `FormControlContext` around its children — verified in
+  Kobalte's `text-field`/`select-base`/`combobox-base` roots — so our roots need
+  only render the Kobalte primitive with the satellites as descendants; they do
+  NOT provide any field marker of their own. Also re-stamp
+  `data-invalid/required/disabled/readonly`
   as `"true"` on the root — HeroUI CSS matches explicit values while Kobalte
   stamps empty strings, and props spread after Kobalte's dataset, so the
   re-stamp wins (see textfield.tsx); descendant-level Kobalte attrs are

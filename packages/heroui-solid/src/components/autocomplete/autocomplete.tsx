@@ -43,7 +43,6 @@ import {
   renderDeferred,
   useCollectionDefer
 } from "../../utils/collection-defer"
-import { FieldContext } from "../../utils/field-context"
 import { setupInteractionModality } from "../../utils/interaction-modality"
 import { PreventScroll } from "../../utils/prevent-scroll"
 import {
@@ -606,40 +605,38 @@ const AutocompleteRoot = <T extends ValidComponent = "div">(
       data-disabled={local.isDisabled ? "true" : undefined}
       {...rest}
     >
-      <FieldContext.Provider value={true}>
-        <AutocompleteContext.Provider value={context}>
-          <ListBoxCollectionContext.Provider value={setRawOptions}>
-            <ListBoxEmptyContext.Provider value={isCollectionEmpty}>
-              <ListBoxVirtualizeContext.Provider value={setVirtualized}>
-                {/* The popover's ListBox renders through a virtual-focus listbox
+      <AutocompleteContext.Provider value={context}>
+        <ListBoxCollectionContext.Provider value={setRawOptions}>
+          <ListBoxEmptyContext.Provider value={isCollectionEmpty}>
+            <ListBoxVirtualizeContext.Provider value={setVirtualized}>
+              {/* The popover's ListBox renders through a virtual-focus listbox
                   so the SearchField keeps DOM focus during keyboard nav. */}
-                <ListBoxCollectionListboxContext.Provider
-                  value={AutocompleteListbox}
-                >
-                  {/* Header/Separator inside the popover's ListBox resolve to
+              <ListBoxCollectionListboxContext.Provider
+                value={AutocompleteListbox}
+              >
+                {/* Header/Separator inside the popover's ListBox resolve to
                     deferral markers (not DOM) so the closed popover's eager
                     option registration stays hydration-safe (see AGENTS.md). */}
-                  <CollectionDeferContext.Provider value={true}>
-                    {/* Client-only: renders an <option> per item, but items
+                <CollectionDeferContext.Provider value={true}>
+                  {/* Client-only: renders an <option> per item, but items
                       register after the server snapshots the collection, so
                       hydrating it desyncs keys (see AGENTS.md). */}
-                    <Show when={mounted()}>
-                      <HiddenSelectPrimitive />
-                    </Show>
-                    {/* Bridges the in-popover SearchField to the Select's list
+                  <Show when={mounted()}>
+                    <HiddenSelectPrimitive />
+                  </Show>
+                  {/* Bridges the in-popover SearchField to the Select's list
                       state (value + virtual-focus keyboard nav). Rendered here,
                       inside the Kobalte Select, so it can read the shared state;
                       provides SearchFieldControlContext to the popover. */}
-                    <AutocompleteSearchBridge searchControl={searchControl}>
-                      {local.children}
-                    </AutocompleteSearchBridge>
-                  </CollectionDeferContext.Provider>
-                </ListBoxCollectionListboxContext.Provider>
-              </ListBoxVirtualizeContext.Provider>
-            </ListBoxEmptyContext.Provider>
-          </ListBoxCollectionContext.Provider>
-        </AutocompleteContext.Provider>
-      </FieldContext.Provider>
+                  <AutocompleteSearchBridge searchControl={searchControl}>
+                    {local.children}
+                  </AutocompleteSearchBridge>
+                </CollectionDeferContext.Provider>
+              </ListBoxCollectionListboxContext.Provider>
+            </ListBoxVirtualizeContext.Provider>
+          </ListBoxEmptyContext.Provider>
+        </ListBoxCollectionContext.Provider>
+      </AutocompleteContext.Provider>
     </SelectPrimitive>
   )
 }

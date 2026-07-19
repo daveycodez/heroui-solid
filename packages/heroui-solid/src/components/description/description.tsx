@@ -3,10 +3,9 @@ import {
   type DescriptionVariants,
   descriptionVariants
 } from "@heroui/styles"
+import { FormControlContext } from "@kobalte/core"
 import { Description as DescriptionPrimitive } from "@kobalte/core/text-field"
 import { type ComponentProps, splitProps, useContext } from "solid-js"
-
-import { FieldContext } from "../../utils/field-context"
 
 /* -------------------------------------------------------------------------------------------------
  * Description Root
@@ -21,9 +20,9 @@ const DescriptionRoot = (props: DescriptionRootProps) => {
     descriptionVariants.variantKeys,
     ["class"]
   )
-  const field = useContext(FieldContext)
+  const formControl = useContext(FormControlContext)
 
-  return field ? (
+  return formControl ? (
     <DescriptionPrimitive
       class={cn(descriptionVariants(variantProps), local.class)}
       data-slot="description"

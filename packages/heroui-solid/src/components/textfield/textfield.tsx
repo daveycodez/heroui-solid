@@ -8,8 +8,6 @@ import {
   type ValidComponent
 } from "solid-js"
 
-import { FieldContext } from "../../utils/field-context"
-
 /* ------------------------------------------------------------------------------------------------
  * TextField Context
  * --------------------------------------------------------------------------------------------- */
@@ -73,17 +71,15 @@ const TextFieldRoot = <T extends ValidComponent = "div">(
       data-readonly={local.isReadOnly ? "true" : undefined}
       {...rest}
     >
-      <FieldContext.Provider value={true}>
-        <TextFieldContext.Provider
-          value={{
-            get variant() {
-              return local.variant
-            }
-          }}
-        >
-          {local.children}
-        </TextFieldContext.Provider>
-      </FieldContext.Provider>
+      <TextFieldContext.Provider
+        value={{
+          get variant() {
+            return local.variant
+          }
+        }}
+      >
+        {local.children}
+      </TextFieldContext.Provider>
     </TextFieldPrimitive>
   )
 }

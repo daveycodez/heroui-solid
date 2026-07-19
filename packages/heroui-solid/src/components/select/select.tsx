@@ -40,7 +40,6 @@ import {
   CollectionDeferContext,
   renderDeferred
 } from "../../utils/collection-defer"
-import { FieldContext } from "../../utils/field-context"
 import { setupInteractionModality } from "../../utils/interaction-modality"
 import { PreventScroll } from "../../utils/prevent-scroll"
 import {
@@ -230,32 +229,30 @@ const SelectRoot = <T extends ValidComponent = "div">(
       data-disabled={local.isDisabled ? "true" : undefined}
       {...rest}
     >
-      <FieldContext.Provider value={true}>
-        <SelectContext.Provider
-          value={{
-            get slots() {
-              return slots()
-            },
-            setPlacement,
-            mounted
-          }}
-        >
-          <ListBoxCollectionContext.Provider value={setOptions}>
-            {/* Header/Separator inside the popover's ListBox resolve to
+      <SelectContext.Provider
+        value={{
+          get slots() {
+            return slots()
+          },
+          setPlacement,
+          mounted
+        }}
+      >
+        <ListBoxCollectionContext.Provider value={setOptions}>
+          {/* Header/Separator inside the popover's ListBox resolve to
                 deferral markers (not DOM) so the closed popover's eager option
                 registration stays hydration-safe (see AGENTS.md). */}
-            <CollectionDeferContext.Provider value={true}>
-              {/* Client-only: it renders an <option> per item, but items
+          <CollectionDeferContext.Provider value={true}>
+            {/* Client-only: it renders an <option> per item, but items
                   register after Kobalte snapshots them on the server (SSR memos
                   never re-run), so hydrating it desyncs keys (see AGENTS.md). */}
-              <Show when={mounted()}>
-                <HiddenSelectPrimitive />
-              </Show>
-              {local.children}
-            </CollectionDeferContext.Provider>
-          </ListBoxCollectionContext.Provider>
-        </SelectContext.Provider>
-      </FieldContext.Provider>
+            <Show when={mounted()}>
+              <HiddenSelectPrimitive />
+            </Show>
+            {local.children}
+          </CollectionDeferContext.Provider>
+        </ListBoxCollectionContext.Provider>
+      </SelectContext.Provider>
     </SelectPrimitive>
   )
 }

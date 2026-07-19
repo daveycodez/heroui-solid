@@ -1,4 +1,5 @@
 import { cn, type TextAreaVariants, textAreaVariants } from "@heroui/styles"
+import { FormControlContext } from "@kobalte/core"
 import { TextArea as TextAreaPrimitive } from "@kobalte/core/text-field"
 import {
   type ComponentProps,
@@ -7,7 +8,6 @@ import {
   useContext
 } from "solid-js"
 
-import { FieldContext } from "../../utils/field-context"
 import { TextFieldContext } from "../textfield/textfield"
 
 type TextAreaPrimitiveProps = ComponentProps<typeof TextAreaPrimitive>
@@ -28,7 +28,7 @@ const TextAreaRoot = (props: TextAreaRootProps) => {
     textAreaVariants.variantKeys,
     ["class", "autoResize", "submitOnEnter"]
   )
-  const field = useContext(FieldContext)
+  const formControl = useContext(FormControlContext)
   const textFieldContext = useContext(TextFieldContext)
 
   // Use variant from context if not explicitly provided
@@ -38,7 +38,7 @@ const TextAreaRoot = (props: TextAreaRootProps) => {
     }
   })
 
-  return field ? (
+  return formControl ? (
     <TextAreaPrimitive
       class={cn(textAreaVariants(resolvedVariants), local.class)}
       data-slot="textarea"

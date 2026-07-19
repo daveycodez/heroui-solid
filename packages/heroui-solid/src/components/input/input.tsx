@@ -1,4 +1,5 @@
 import { cn, type InputVariants, inputVariants } from "@heroui/styles"
+import { FormControlContext } from "@kobalte/core"
 import { Input as ComboboxInputPrimitive } from "@kobalte/core/combobox"
 import { Input as InputPrimitive } from "@kobalte/core/text-field"
 import {
@@ -8,7 +9,6 @@ import {
   useContext
 } from "solid-js"
 
-import { FieldContext } from "../../utils/field-context"
 import { ComboBoxInputContext } from "../combo-box/combo-box"
 import { TextFieldContext } from "../textfield/textfield"
 
@@ -26,7 +26,7 @@ const InputRoot = (props: InputRootProps) => {
     inputVariants.variantKeys,
     ["class"]
   )
-  const field = useContext(FieldContext)
+  const formControl = useContext(FormControlContext)
   const textFieldContext = useContext(TextFieldContext)
   const inComboBox = useContext(ComboBoxInputContext)
 
@@ -49,7 +49,7 @@ const InputRoot = (props: InputRootProps) => {
     )
   }
 
-  return field ? (
+  return formControl ? (
     <InputPrimitive
       class={cn(inputVariants(resolvedVariants), local.class)}
       data-slot="input"

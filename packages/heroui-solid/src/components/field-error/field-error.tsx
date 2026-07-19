@@ -3,8 +3,6 @@ import { FormControlContext } from "@kobalte/core"
 import { ErrorMessage as FieldErrorPrimitive } from "@kobalte/core/text-field"
 import { type ComponentProps, splitProps, useContext } from "solid-js"
 
-import { FieldContext } from "../../utils/field-context"
-
 /* -------------------------------------------------------------------------------------------------
  * Field Error Root
  * -----------------------------------------------------------------------------------------------*/
@@ -20,7 +18,6 @@ const FieldErrorRoot = (props: FieldErrorRootProps) => {
     fieldErrorVariants.variantKeys,
     ["class"]
   )
-  const field = useContext(FieldContext)
   const formControl = useContext(FormControlContext)
 
   // Outside a field there is no validation state to key off, mirroring
@@ -28,7 +25,7 @@ const FieldErrorRoot = (props: FieldErrorRootProps) => {
   // data-visible keys off the invalid state (upstream stamps it
   // unconditionally, but only mounts while invalid) so forceMount stays
   // hidden on valid fields and the CSS reveal transition can run.
-  return field ? (
+  return formControl ? (
     <FieldErrorPrimitive
       data-visible={
         formControl?.validationState() === "invalid" ? "" : undefined
