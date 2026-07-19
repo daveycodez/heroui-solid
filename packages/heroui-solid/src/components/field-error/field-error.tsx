@@ -1,12 +1,7 @@
 import { cn, fieldErrorVariants } from "@heroui/styles"
-import { FormControlContext } from "@kobalte/core"
+import { useFormControlContext } from "@kobalte/core"
 import { ErrorMessage } from "@kobalte/core/text-field"
-import {
-  type ComponentProps,
-  splitProps,
-  useContext,
-  type ValidComponent
-} from "solid-js"
+import { type ComponentProps, splitProps, type ValidComponent } from "solid-js"
 
 /* -------------------------------------------------------------------------------------------------
  * Field Error Root
@@ -19,14 +14,12 @@ const FieldErrorRoot = <T extends ValidComponent = "div">(
   props: FieldErrorRootProps<T>
 ) => {
   const [local, rest] = splitProps(props as FieldErrorRootProps, ["class"])
-  const formControl = useContext(FormControlContext)
+  // Pass-through to Kobalte's ErrorMessage (throws outside a field, like the
+  // primitive itself). We add only HeroUI's data-visible, keyed off the invalid
+  // state so the CSS reveal transition can run.
+  const formControl = useFormControlContext()
 
-  // Renders only inside a field — matching upstream, whose RAC FieldError does
-  // `if (!validation?.isInvalid) return null` (no context ⇒ null; it does not
-  // throw). data-visible keys off the invalid state (upstream stamps it
-  // unconditionally but only mounts while invalid) so a forceMount'd error stays
-  // hidden on valid fields and the CSS reveal transition can run.
-  return formControl ? (
+  return (
     <ErrorMessage
       data-visible={
         formControl.validationState() === "invalid" ? "" : undefined
@@ -35,7 +28,7 @@ const FieldErrorRoot = <T extends ValidComponent = "div">(
       data-slot="field-error"
       {...rest}
     />
-  ) : null
+  )
 }
 
 /* -------------------------------------------------------------------------------------------------
