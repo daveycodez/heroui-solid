@@ -1,44 +1,34 @@
 // @vitest-environment jsdom
 import { render } from "@solidjs/testing-library"
 import { describe, expect, it } from "vitest"
+import { classSet } from "../../test/utils"
 import { SeparatorRoot } from "./separator"
 
-const classSet = (classes: string) =>
-  new Set(classes.split(/\s+/).filter(Boolean))
+// Orientation, role, aria and polymorphic `as` are Kobalte's Separator and are
+// not retested here. These guard only the thin skin we own: slot class,
+// data-slot hook, and the orientation/variant modifiers.
 
-describe("Separator", () => {
-  it("renders an hr with BEM classes, data-slot, and orientation", () => {
+describe("Separator (thin skin)", () => {
+  it("renders an hr with BEM classes and data-slot", () => {
     const { container } = render(() => <SeparatorRoot />)
     const separator = container.querySelector(
       "[data-slot=separator]"
     ) as HTMLElement
     expect(separator.tagName).toBe("HR")
-    expect(separator.getAttribute("data-orientation")).toBe("horizontal")
     expect(classSet(separator.className)).toEqual(
       new Set(["separator", "separator--horizontal", "separator--default"])
     )
   })
 
-  it("supports vertical orientation and variants", () => {
+  it("applies vertical orientation and variant modifiers", () => {
     const { container } = render(() => (
       <SeparatorRoot orientation="vertical" variant="secondary" />
     ))
     const separator = container.querySelector(
       "[data-slot=separator]"
     ) as HTMLElement
-    expect(separator.getAttribute("data-orientation")).toBe("vertical")
-    expect(separator.getAttribute("aria-orientation")).toBe("vertical")
     expect(classSet(separator.className)).toEqual(
       new Set(["separator", "separator--vertical", "separator--secondary"])
     )
-  })
-
-  it("supports polymorphic as with separator role", () => {
-    const { container } = render(() => <SeparatorRoot as="div" />)
-    const separator = container.querySelector(
-      "[data-slot=separator]"
-    ) as HTMLElement
-    expect(separator.tagName).toBe("DIV")
-    expect(separator.getAttribute("role")).toBe("separator")
   })
 })

@@ -5,7 +5,11 @@ import { describe, expect, it } from "vitest"
 import { classSet } from "../../test/utils"
 import { LabelRoot } from "./label"
 
-describe("Label", () => {
+// The in-field render (Kobalte Label) is covered via the TextField anatomy. These
+// guard only the thin skin we own: the standalone fallback branch, slot class,
+// data-slot, the state variant modifiers, class merging, and the polymorphic `as`.
+
+describe("Label (thin skin)", () => {
   it("renders a plain label with BEM classes outside a field", () => {
     const { getByText } = render(() => (
       <LabelRoot class="custom" for="email">

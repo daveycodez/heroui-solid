@@ -55,16 +55,4 @@ describe("Link (thin skin)", () => {
       new Set(["link__icon", "custom-icon"])
     )
   })
-
-  it("disables interaction via disabled", () => {
-    const { container } = render(() => (
-      <LinkRoot disabled href="#">
-        Disabled
-      </LinkRoot>
-    ))
-    const link = container.querySelector("[data-slot=link]") as HTMLElement
-    expect(link.getAttribute("aria-disabled")).toBe("true")
-    expect(link.getAttribute("data-disabled")).not.toBeNull()
-    expect(link.getAttribute("href")).toBeNull()
-  })
 })

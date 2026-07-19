@@ -8,7 +8,12 @@ import { FieldErrorRoot } from "./field-error"
 const bySlot = (root: HTMLElement) =>
   root.querySelector("[data-slot=field-error]") as HTMLElement | null
 
-describe("FieldError", () => {
+// FieldError is a pure pass-through to Kobalte's ErrorMessage — mount gating,
+// forceMount, and the outside-field throw are Kobalte's, not retested for their
+// own sake. These guard only the thin skin we own: the data-visible reveal
+// stamp, class merging, data-slot, and our deliberate no-fallback design.
+
+describe("FieldError (thin skin)", () => {
   it("mounts on an invalid field with data-visible, content, and BEM classes", () => {
     const { container } = render(() => (
       <TextFieldRoot isInvalid>
@@ -22,15 +27,6 @@ describe("FieldError", () => {
     expect(classSet(error?.className ?? "")).toEqual(
       new Set(["field-error", "extra"])
     )
-  })
-
-  it("does not mount on a valid field without forceMount", () => {
-    const { container } = render(() => (
-      <TextFieldRoot>
-        <FieldErrorRoot>Required</FieldErrorRoot>
-      </TextFieldRoot>
-    ))
-    expect(bySlot(container)).toBeNull()
   })
 
   it("forceMount stays mounted but without data-visible while valid", () => {

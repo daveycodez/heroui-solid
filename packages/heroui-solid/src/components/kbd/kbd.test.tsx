@@ -1,12 +1,14 @@
 // @vitest-environment jsdom
 import { render } from "@solidjs/testing-library"
 import { describe, expect, it } from "vitest"
+import { classSet } from "../../test/utils"
 import { KbdAbbr, KbdContent, KbdRoot } from "./kbd"
 
-const classSet = (classes: string) =>
-  new Set(classes.split(/\s+/).filter(Boolean))
+// Kbd is presentational. These guard only the thin skin we own: slot classes,
+// the KbdKey symbol/title maps, the variant modifier, class merging, and the
+// polymorphic `as`.
 
-describe("Kbd", () => {
+describe("Kbd (thin skin)", () => {
   it("renders the anatomy with BEM classes and key symbol/label", () => {
     const { container } = render(() => (
       <KbdRoot>

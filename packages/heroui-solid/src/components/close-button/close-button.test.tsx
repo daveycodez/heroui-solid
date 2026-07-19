@@ -1,12 +1,15 @@
 // @vitest-environment jsdom
-import { render } from "@solidjs/testing-library"
-import { describe, expect, it } from "vitest"
+import { fireEvent, render } from "@solidjs/testing-library"
+import { describe, expect, it, vi } from "vitest"
+import { classSet } from "../../test/utils"
+import { OverlayTriggerContext } from "../../utils/overlay-trigger-context"
 import { CloseButtonRoot } from "./close-button"
 
-const classSet = (classes: string) =>
-  new Set(classes.split(/\s+/).filter(Boolean))
+// Press/focus/disabled are Kobalte's Button. These guard only the thin skin we
+// own: the default icon + aria-label, the icon/label overrides, class merging,
+// and the OverlayTriggerContext dismiss it triggers on click.
 
-describe("CloseButton", () => {
+describe("CloseButton (thin skin)", () => {
   it("renders a button with the default icon, label, and BEM classes", () => {
     const { container } = render(() => <CloseButtonRoot />)
 
@@ -52,5 +55,31 @@ describe("CloseButton", () => {
     ) as HTMLElement
     expect(button.classList.contains("absolute")).toBe(true)
     expect(button.classList.contains("close-button")).toBe(true)
+  })
+
+  it("closes the enclosing overlay on click", () => {
+    const close = vi.fn()
+    const { container } = render(() => (
+      <OverlayTriggerContext.Provider value={{ close }}>
+        <CloseButtonRoot />
+      </OverlayTriggerContext.Provider>
+    ))
+    fireEvent.click(
+      container.querySelector('[data-slot="close-button"]') as HTMLElement
+    )
+    expect(close).toHaveBeenCalledTimes(1)
+  })
+
+  it("lets a consumer onClick preventDefault to keep the overlay open", () => {
+    const close = vi.fn()
+    const { container } = render(() => (
+      <OverlayTriggerContext.Provider value={{ close }}>
+        <CloseButtonRoot onClick={(event) => event.preventDefault()} />
+      </OverlayTriggerContext.Provider>
+    ))
+    fireEvent.click(
+      container.querySelector('[data-slot="close-button"]') as HTMLElement
+    )
+    expect(close).not.toHaveBeenCalled()
   })
 })

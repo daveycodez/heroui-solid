@@ -1,11 +1,16 @@
 // @vitest-environment jsdom
 
 import { render } from "@solidjs/testing-library"
+import { useContext } from "solid-js"
 import { describe, expect, it } from "vitest"
 import { classSet } from "../../test/utils"
-import { SurfaceRoot } from "./surface"
+import { SurfaceContext, SurfaceRoot } from "./surface"
 
-describe("Surface", () => {
+// Surface is presentational. These guard only the thin skin we own: slot class,
+// data-slot, variant modifiers, class merging, the polymorphic `as`, and the
+// SurfaceContext variant it provides to descendants.
+
+describe("Surface (thin skin)", () => {
   it("renders a div with BEM classes, data-slot and caller class last", () => {
     const { container } = render(() => (
       <SurfaceRoot class="custom">Content</SurfaceRoot>
@@ -37,5 +42,33 @@ describe("Surface", () => {
       "[data-slot=surface]"
     ) as HTMLElement
     expect(surface.tagName).toBe("SECTION")
+  })
+
+  it("provides its variant to descendants via SurfaceContext", () => {
+    let seen: string | undefined
+    const Probe = () => {
+      seen = useContext(SurfaceContext).variant
+      return null
+    }
+    render(() => (
+      <SurfaceRoot variant="secondary">
+        <Probe />
+      </SurfaceRoot>
+    ))
+    expect(seen).toBe("secondary")
+  })
+
+  it("defaults the provided context variant to default", () => {
+    let seen: string | undefined
+    const Probe = () => {
+      seen = useContext(SurfaceContext).variant
+      return null
+    }
+    render(() => (
+      <SurfaceRoot>
+        <Probe />
+      </SurfaceRoot>
+    ))
+    expect(seen).toBe("default")
   })
 })

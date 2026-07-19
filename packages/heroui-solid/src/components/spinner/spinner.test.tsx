@@ -5,7 +5,11 @@ import { describe, expect, it } from "vitest"
 import { classSet } from "../../test/utils"
 import { SpinnerRoot } from "./spinner"
 
-describe("Spinner", () => {
+// Spinner is presentational. These guard only the thin skin we own: the anatomy
+// and slot classes, the size/color modifiers, our role=status/aria-label a11y
+// fix, class merging, and the polymorphic `as`.
+
+describe("Spinner (thin skin)", () => {
   it("renders HeroUI's anatomy: span[data-slot=spinner] > svg[data-slot=spinner-icon]", () => {
     const { container } = render(() => (
       <SpinnerRoot color="current" size="sm" class="extra" />
