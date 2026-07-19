@@ -35,6 +35,7 @@ export * from "./components/tag"
 export * from "./components/tag-group"
 export * from "./components/textarea"
 export * from "./components/textfield"
+export * from "./components/tooltip"
 export { PreventScroll } from "./utils/prevent-scroll"
 export type { Key } from "./utils/types"
 export type {

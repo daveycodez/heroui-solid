@@ -1,0 +1,10 @@
+/*
+ * Enter/exit + placement animations ship in @heroui/styles' tooltip.css, keyed
+ * off `data-entering`/`data-exiting`/`data-placement` — bridged onto the content
+ * in tooltip.tsx. Upstream's zoom origin reads `--trigger-anchor-point` (a RAC
+ * var); map it to Kobalte's own transform-origin so the zoom emanates from the
+ * trigger anchor instead of the element center.
+ */
+.tooltip {
+  --trigger-anchor-point: var(--kb-tooltip-content-transform-origin);
+}
