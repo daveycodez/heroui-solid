@@ -327,14 +327,9 @@ const SearchFieldClearButton = (props: SearchFieldClearButtonProps) => {
   ])
   const ctx = useSearchField()
 
-  const handleClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (
-    event
-  ) => {
+  const handleClick: JSX.EventHandler<HTMLElement, MouseEvent> = (event) => {
     if (ctx.isDisabled()) return
-    callHandler(
-      event,
-      local.onClick as JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent>
-    )
+    callHandler(event, local.onClick)
     ctx.clear()
   }
 

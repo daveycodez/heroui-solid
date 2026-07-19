@@ -1,0 +1,114 @@
+/* Styling for the CodeBlock component (code-block.tsx) — the panel, the
+ * line-number gutter, and the copy button. Per-token colors do NOT live here:
+ * they arrive as `::highlight()` rules emitted per page by
+ * remark-code-highlight.ts. Markup is fully ours (no injected third-party
+ * styles to out-rank). Visuals mirror the official HeroUI docs: github
+ * light/dark token colors on a translucent panel, 13px system-mono, no frame
+ * chrome.
+ *
+ * Consumer-provided tokens: --docs-code-bg (panel fill), --muted / --foreground
+ * (copy glyph). The ComponentPreview integration (transparent panel inside a
+ * preview card) lives in docs-code.css, not here. */
+
+.code-block {
+  position: relative;
+  margin-block: 1rem;
+}
+
+.code-block pre {
+  background: var(--docs-code-bg);
+  border-radius: 0.75rem;
+  padding: 0.875rem 1rem;
+  overflow-x: auto;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 0.8125rem;
+  line-height: 1.54;
+  /* Base text = the github theme foregrounds; ::highlight ranges paint the
+   * rest. Browsers without the Highlight API show this color throughout. */
+  color: #24292e;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+  /* NO content-visibility: Safari does not repaint CSS Custom Highlights when
+   * a content-visibility:auto subtree goes from skipped to rendered, so
+   * off-screen blocks scrolled into view showed uncolored (white) code. The
+   * single-text-node markup (~5 nodes/block) is light enough not to need the
+   * skip anyway. */
+}
+
+[data-theme="dark"] .code-block pre {
+  color: #e1e4e8;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.code-block code {
+  display: block;
+  white-space: pre;
+}
+
+/* Line-number gutter (demo blocks only — showLineNumbers is injected by
+ * remark-component-preview-code.ts): a single sibling text node ("1\n2\n…"),
+ * aligned to the code by shared line-height, scrolling with it. Not inside
+ * <code>, so it never lands in a drag-selection copy. */
+.code-block pre:has(.ln-gutter) {
+  display: flex;
+}
+
+.code-block .ln-gutter {
+  flex: none;
+  margin-right: 1rem;
+  text-align: right;
+  white-space: pre;
+  user-select: none;
+  color: rgba(115, 138, 148, 0.4);
+}
+
+/* Copy button: port of the official heroui.com button — a 32px ghost
+ * icon-only pill, gravity-ui "copy" glyph (16px, muted) pinned 10px/8px
+ * from the block's top-right over a blur backdrop, always visible, swapping
+ * to the "check" glyph while the copied feedback is live. */
+.code-copy {
+  position: absolute;
+  inset-block-start: 0.625rem;
+  inset-inline-end: 0.5rem;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  backdrop-filter: blur(16px);
+}
+
+.code-copy::after {
+  content: "";
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  margin: 0.5rem;
+  background-color: var(--muted);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='black' fill-rule='evenodd' d='M12 2.5H8A1.5 1.5 0 0 0 6.5 4v1H8a3 3 0 0 1 3 3v1.5h1A1.5 1.5 0 0 0 13.5 8V4A1.5 1.5 0 0 0 12 2.5M11 11h1a3 3 0 0 0 3-3V4a3 3 0 0 0-3-3H8a3 3 0 0 0-3 3v1H4a3 3 0 0 0-3 3v4a3 3 0 0 0 3 3h4a3 3 0 0 0 3-3zM4 6.5h4A1.5 1.5 0 0 1 9.5 8v4A1.5 1.5 0 0 1 8 13.5H4A1.5 1.5 0 0 1 2.5 12V8A1.5 1.5 0 0 1 4 6.5' clip-rule='evenodd'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='black' fill-rule='evenodd' d='M12 2.5H8A1.5 1.5 0 0 0 6.5 4v1H8a3 3 0 0 1 3 3v1.5h1A1.5 1.5 0 0 0 13.5 8V4A1.5 1.5 0 0 0 12 2.5M11 11h1a3 3 0 0 0 3-3V4a3 3 0 0 0-3-3H8a3 3 0 0 0-3 3v1H4a3 3 0 0 0-3 3v4a3 3 0 0 0 3 3h4a3 3 0 0 0 3-3zM4 6.5h4A1.5 1.5 0 0 1 9.5 8v4A1.5 1.5 0 0 1 8 13.5H4A1.5 1.5 0 0 1 2.5 12V8A1.5 1.5 0 0 1 4 6.5' clip-rule='evenodd'/%3E%3C/svg%3E");
+}
+
+.code-copy:hover::after {
+  background-color: var(--foreground);
+}
+
+.code-copy[data-copied]::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='black' fill-rule='evenodd' d='M13.488 3.43a.75.75 0 0 1 .081 1.058l-6 7a.75.75 0 0 1-1.1.042l-3.5-3.5A.75.75 0 0 1 4.03 6.97l2.928 2.927l5.473-6.385a.75.75 0 0 1 1.057-.081' clip-rule='evenodd'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='black' fill-rule='evenodd' d='M13.488 3.43a.75.75 0 0 1 .081 1.058l-6 7a.75.75 0 0 1-1.1.042l-3.5-3.5A.75.75 0 0 1 4.03 6.97l2.928 2.927l5.473-6.385a.75.75 0 0 1 1.057-.081' clip-rule='evenodd'/%3E%3C/svg%3E");
+}
+
+/* Titled blocks (none exist today — every include uses title=""): minimal
+ * filename header so a future title="x" doesn't render bare. */
+.code-block-title {
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 0.8125rem;
+  color: var(--muted);
+  padding: 0.5rem 1rem 0;
+}

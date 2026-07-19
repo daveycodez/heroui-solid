@@ -18,6 +18,7 @@ import {
   MenuTriggerBehaviorContext,
   MenuTriggerContext
 } from "../../utils/menu-trigger-context"
+import { OverlayTriggerContext } from "../../utils/overlay-trigger-context"
 import { ButtonGroupContext } from "../button-group"
 
 // Material 3 ripple timings, after m3-ripple: how long a touch must hold (or
@@ -56,6 +57,10 @@ const ButtonRoot = <T extends ValidComponent = "button">(
     isMenuTrigger ? useContext(MenuTriggerBehaviorContext) : undefined
   )
 
+  // As an AlertDialog trigger (or a `slot="close"` action button) the button
+  // drives the enclosing dialog — see utils/overlay-trigger-context.tsx.
+  const overlay = useContext(OverlayTriggerContext)
+
   // Direct props win over the enclosing ButtonGroup's shared values; outside a
   // group the context default is empty, so these fall back to the local props.
   const group = useContext(ButtonGroupContext)
@@ -92,6 +97,16 @@ const ButtonRoot = <T extends ValidComponent = "button">(
       endRipple(event.currentTarget)
     }
     callHandler(event, local.onClick)
+    if (event.defaultPrevented) {
+      return
+    }
+    // A `slot="close"` button closes the enclosing dialog; any other button in
+    // the trigger region opens it (both no-op outside an AlertDialog).
+    if ((props as { slot?: string }).slot === "close") {
+      overlay.close?.()
+    } else {
+      overlay.open?.()
+    }
   }
 
   // Ripple (opt-in via the inherited --button-ripple flag — see

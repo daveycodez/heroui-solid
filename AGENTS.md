@@ -408,11 +408,24 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   red until ported. The only excuse is a reasoned `skipDemos` entry in
   `parity/components.ts`, reserved for React-impossible demos
   (`custom-render-function`, virtualization…); stale skips fail too.
-- Catch up with upstream via `bun apps/docs/parity/sync.ts --update` (re-pins
-  to upstream HEAD); the scheduled `docs-parity.yml` workflow runs
-  `sync.ts --check` and files an issue when upstream's tracked files move.
-- New ported component: add it to `parity/components.ts`, sync, port until
-  green.
+- **Never run `sync.ts --update` on a feature branch unless explicitly told
+  to.** `--update` re-pins `upstream.lock.json` to whatever upstream `v3` HEAD
+  is at that moment — a whole-workspace decision, not something a
+  single-component PR should carry. Two branches that both `--update` capture
+  different upstream commits, so the lock's top-level `sha` diverges and the
+  file *always* conflicts on merge (independent of which components each added,
+  and unresolvable except by regenerating). Whole-workspace HEAD bumps belong
+  to the scheduled `docs-parity.yml` workflow (which runs `sync.ts --check`,
+  files an issue when upstream's tracked files move, and opens a dedicated bump
+  PR) — keep them out of component PRs. On a feature branch, sync at **main's
+  existing pin** (plain `bun apps/docs/parity/sync.ts`, no `--update`) so the
+  lock only gains your new component's fixtures on top of main's `sha`; rebase
+  on `main` first if the branch has drifted.
+- If the lock conflicts on merge, never hand-merge it — it's generated. Take
+  main's version (`git checkout origin/main -- apps/docs/parity/upstream.lock.json`)
+  then re-run `sync.ts` once on the merged tree and re-add.
+- New ported component: add it to `parity/components.ts`, sync (plain, at
+  main's pin — see above), port until green.
 
 ## Dev Loop
 

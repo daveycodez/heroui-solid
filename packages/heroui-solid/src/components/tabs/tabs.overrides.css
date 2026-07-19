@@ -1,0 +1,47 @@
+/* Kobalte stamps no data-focus-visible (React Aria does upstream) and the
+   upstream native fallback `:focus-visible:not(:focus)` never matches, so the
+   tab focus ring rides native :focus-visible instead — gated on keyboard
+   modality (utils/interaction-modality.ts; absent attribute → no-op). */
+html:not([data-heroui-modality="pointer"]) .tabs__tab:focus-visible {
+  @apply status-focused;
+}
+
+/* Overflow chevrons pop in/out — upstream only flips display (hidden ↔
+   inline-flex). Fade them instead: transition display discretely (riding
+   upstream's 150ms ease-smooth opacity transition), start faded-in from
+   opacity 0, and hold opacity 0 while hidden. The hidden-state selectors are
+   the inverse of upstream tabs.css's :has() show rules. */
+.tabs__list-container > .tabs__list-container__scroll-prev,
+.tabs__list-container > .tabs__list-container__scroll-next {
+  transition-property: opacity, display;
+  transition-behavior: allow-discrete;
+
+  @starting-style {
+    opacity: 0;
+  }
+}
+
+.tabs__list-container:not(
+    :has(
+      > :is(
+          [data-left-scroll="true"],
+          [data-left-right-scroll="true"],
+          [data-top-scroll="true"],
+          [data-top-bottom-scroll="true"]
+        )
+    )
+  )
+  > .tabs__list-container__scroll-prev,
+.tabs__list-container:not(
+    :has(
+      > :is(
+          [data-right-scroll="true"],
+          [data-left-right-scroll="true"],
+          [data-bottom-scroll="true"],
+          [data-top-bottom-scroll="true"]
+        )
+    )
+  )
+  > .tabs__list-container__scroll-next {
+  @apply opacity-0;
+}

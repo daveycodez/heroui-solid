@@ -54,6 +54,20 @@ const PLACEMENT =
 const canonicalizePlacement = (t: string): string =>
   PLACEMENT.test(t) ? t.replace(" ", "-") : t
 
+// The framework name and its state primitive are a mechanical adaptation every
+// port shares: upstream prose says "React" / "React.useState" / "useState"
+// where the Solid port says "Solid" / "createSignal". Collapse both vocabularies
+// to neutral tokens so this prose compares 1:1 (order matters — the dotted form
+// must resolve before the bare `useState`).
+const canonicalizeFramework = (t: string): string =>
+  t
+    .replace(/React\.useState/g, "STATE")
+    .replace(/\buseState\b/g, "STATE")
+    .replace(/\bcreateSignal\b/g, "STATE")
+    .replace(/\b(React|Solid)\b/g, "FW")
+    .replace(/data-\[(entering|expanded)\]/g, "data-[open]")
+    .replace(/data-\[(exiting|closed)\]/g, "data-[close]")
+
 export interface DemoShape {
   uiImports: Set<string>
   components: Set<string>
@@ -79,7 +93,9 @@ export function analyzeDemo(source: string): DemoShape {
   const frameworkNamespaces = new Set<string>()
 
   const addText = (raw: string): void => {
-    const t = canonicalizePlacement(raw.replace(/\s+/g, " ").trim())
+    const t = canonicalizeFramework(
+      canonicalizePlacement(raw.replace(/\s+/g, " ").trim())
+    )
     if (t) text.add(t)
   }
 
@@ -182,7 +198,10 @@ export function analyzeDemo(source: string): DemoShape {
     }
     if (ts.isJsxAttribute(node)) {
       const name = node.name.getText()
-      if (name === "style") return
+      // `key` is React's list-reconciliation prop; Solid keys via `<For>`, so
+      // every mapped demo drops it — its value (often a template literal) is
+      // mechanics, not content.
+      if (name === "style" || name === "key") return
       if (name === "class" || name === "className") {
         // Literal class strings are the Tailwind↔style adaptation surface;
         // expressions (`class={buttonVariants({ variant: "secondary" })}`)

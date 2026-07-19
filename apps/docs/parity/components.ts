@@ -53,6 +53,13 @@ const RENDER_PROPS_SECTION = (heading: string): SectionSkip => ({
 
 export const components: PortedComponent[] = [
   { slug: "autocomplete", demosDir: "autocomplete" },
+  {
+    slug: "accordion",
+    demosDir: "accordion",
+    skipDemos: [RENDER_PROP, AS_ELEMENT]
+  },
+  { slug: "alert", demosDir: "alert" },
+  { slug: "alert-dialog", demosDir: "alert-dialog" },
   { slug: "avatar", demosDir: "avatar" },
   {
     slug: "combo-box",
@@ -146,9 +153,15 @@ export const components: PortedComponent[] = [
     ],
     skipSections: [RENDER_PROPS_SECTION("RenderProps")]
   },
+  { slug: "scroll-shadow", demosDir: "scroll-shadow" },
   { slug: "separator", demosDir: "separator", skipDemos: [RENDER_PROP] },
   { slug: "spinner", demosDir: "spinner" },
   { slug: "surface", demosDir: "surface" },
+  {
+    slug: "tabs",
+    demosDir: "tabs",
+    skipDemos: [RENDER_PROP, AS_ELEMENT]
+  },
   { slug: "text-area", demosDir: "textarea" },
   {
     slug: "text-field",

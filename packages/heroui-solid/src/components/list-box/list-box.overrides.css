@@ -24,8 +24,10 @@ html:not([data-heroui-modality="pointer"]) .list-box-item:focus-visible {
    The svg carries the undrawn 66 as a presentation attribute, so bridge the
    drawn 44 on the selected item here (Kobalte stamps aria-selected="true"). The
    250ms stroke-dashoffset transition comes from @heroui/styles. */
-.list-box-item[aria-selected="true"] [data-slot="list-box-item-indicator--checkmark"],
-.list-box-item[data-selected="true"] [data-slot="list-box-item-indicator--checkmark"] {
+.list-box-item[aria-selected="true"]
+[data-slot="list-box-item-indicator--checkmark"],
+.list-box-item[data-selected="true"]
+  [data-slot="list-box-item-indicator--checkmark"] {
   stroke-dashoffset: 44;
 }
 
