@@ -5,12 +5,15 @@ import {
   type ComponentProps,
   createContext,
   createMemo,
+  createSignal,
   mergeProps,
+  onMount,
   splitProps,
   useContext,
   type ValidComponent
 } from "solid-js"
 import { dataAttr } from "../../utils/assertion"
+import { parseCSSTime } from "../../utils/css"
 
 /* -------------------------------------------------------------------------------------------------
  * Tooltip Context
@@ -27,9 +30,35 @@ const TooltipContext = createContext<TooltipContextValue>({})
 type TooltipRootProps = ComponentProps<typeof Tooltip>
 
 const TooltipRoot = (props: TooltipRootProps) => {
+  const [local, rest] = splitProps(props, ["openDelay", "closeDelay"])
+
+  // Global delay config: default open/close delays come from the
+  // `--tooltip-delay`/`--tooltip-close-delay` CSS variables (the @heroui/styles
+  // theme ships 1500ms/500ms). Kobalte's delay is a JS timer, not a CSS one, so
+  // the variable is read here and fed to `openDelay`/`closeDelay`; an explicit
+  // prop wins over the variable.
+  const [cssOpenDelay, setCssOpenDelay] = createSignal<number>()
+  const [cssCloseDelay, setCssCloseDelay] = createSignal<number>()
+
+  onMount(() => {
+    const styles = getComputedStyle(document.documentElement)
+    setCssOpenDelay(parseCSSTime(styles.getPropertyValue("--tooltip-delay")))
+    setCssCloseDelay(
+      parseCSSTime(styles.getPropertyValue("--tooltip-close-delay"))
+    )
+  })
+
   const merged = mergeProps(
     { placement: "top" } satisfies TooltipRootProps,
-    props
+    rest,
+    {
+      get openDelay() {
+        return local.openDelay ?? cssOpenDelay()
+      },
+      get closeDelay() {
+        return local.closeDelay ?? cssCloseDelay()
+      }
+    }
   )
 
   const slots = createMemo(() => tooltipVariants())
