@@ -37,6 +37,7 @@ import {
   useContext,
   type ValidComponent
 } from "solid-js"
+import { dataAttr } from "../../utils/assertion"
 import {
   CollectionDeferContext,
   renderDeferred
@@ -298,10 +299,10 @@ const ComboBoxRoot = <T extends ValidComponent = "div">(
       name={local.name}
       // HeroUI CSS matches explicit data-*="true" values; Kobalte stamps empty
       // strings, so re-stamp here (rest spreads after Kobalte's dataset).
-      data-invalid={local.isInvalid ? "true" : undefined}
-      data-required={local.isRequired ? "true" : undefined}
-      data-disabled={local.isDisabled ? "true" : undefined}
-      data-readonly={local.isReadOnly ? "true" : undefined}
+      data-invalid={dataAttr(local.isInvalid)}
+      data-required={dataAttr(local.isRequired)}
+      data-disabled={dataAttr(local.isDisabled)}
+      data-readonly={dataAttr(local.isReadOnly)}
       {...rest}
     >
       <TextFieldContext.Provider value={{ variant: local.variant }}>
@@ -437,7 +438,7 @@ const ComboBoxTrigger = <T extends ValidComponent = "button">(
       data-slot="combo-box-trigger"
       // Kobalte stamps data-expanded/data-closed; the trigger's chevron rotation
       // keys off data-open, so bridge it here (rest spreads after the dataset).
-      data-open={comboboxContext.isOpen() ? "true" : undefined}
+      data-open={dataAttr(comboboxContext.isOpen())}
       {...rest}
     >
       <Show

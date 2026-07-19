@@ -3,14 +3,14 @@ import { Avatar } from "heroui-solid"
 export function Basic() {
   return (
     <div class="flex items-center gap-4">
-      <Avatar>
+      <Avatar fallbackDelay={600}>
         <Avatar.Image
           alt="John Doe"
           src="https://img.heroui.chat/image/avatar?w=400&h=400&u=3"
         />
         <Avatar.Fallback>JD</Avatar.Fallback>
       </Avatar>
-      <Avatar>
+      <Avatar fallbackDelay={600}>
         <Avatar.Image
           alt="Blue"
           src="https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/blue.jpg"

@@ -41,7 +41,7 @@ export function Group() {
       <div class="flex -space-x-2">
         <For each={users.slice(0, 4)}>
           {(user) => (
-            <Avatar class="ring-2 ring-background">
+            <Avatar class="ring-2 ring-background" fallbackDelay={600}>
               <Avatar.Image alt={user.name} src={user.image} />
               <Avatar.Fallback>
                 {user.name
@@ -58,7 +58,7 @@ export function Group() {
       <div class="flex -space-x-2">
         <For each={users.slice(0, 3)}>
           {(user) => (
-            <Avatar class="ring-2 ring-background">
+            <Avatar class="ring-2 ring-background" fallbackDelay={600}>
               <Avatar.Image alt={user.name} src={user.image} />
               <Avatar.Fallback>
                 {user.name

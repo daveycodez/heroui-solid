@@ -12,6 +12,7 @@ import {
   useContext,
   type ValidComponent
 } from "solid-js"
+import { dataAttr } from "../../utils/assertion"
 
 import {
   createLongPressHandlers,
@@ -307,8 +308,8 @@ const ButtonRoot = <T extends ValidComponent = "button">(
       // After the spread so consumers can't desync state-derived attributes;
       // mergeProps skips undefined, so consumer values apply while off.
       disabled={local.isDisabled ?? group.isDisabled}
-      data-pending={local.isPending ? "true" : undefined}
-      aria-disabled={local.isPending ? "true" : undefined}
+      data-pending={dataAttr(local.isPending)}
+      aria-disabled={dataAttr(local.isPending)}
     />
   )
 }

@@ -6,6 +6,7 @@ import {
   splitProps,
   type ValidComponent
 } from "solid-js"
+import { dataAttr } from "../../utils/assertion"
 
 /* -------------------------------------------------------------------------------------------------
  * TextField Context
@@ -47,7 +48,7 @@ const TextFieldRoot = <T extends ValidComponent = "div">(
       // HeroUI CSS matches explicit data-*="true" values while Kobalte stamps
       // empty strings; Kobalte spreads leftover props after its own dataset, so
       // these re-stamps win. Descendant-level attrs bridge in overrides CSS.
-      data-invalid={p.validationState === "invalid" ? "true" : undefined}
+      data-invalid={dataAttr(p.validationState === "invalid")}
       data-required={p.required}
       data-disabled={p.disabled}
       data-readonly={p.readOnly}

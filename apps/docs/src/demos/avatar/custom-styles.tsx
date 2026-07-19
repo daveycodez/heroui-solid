@@ -4,7 +4,7 @@ export function CustomStyles() {
   return (
     <div class="flex items-center gap-4">
       {/* Custom size with Tailwind classes */}
-      <Avatar class="size-16">
+      <Avatar class="size-16" fallbackDelay={600}>
         <Avatar.Image
           alt="Extra Large"
           src="https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/blue.jpg"
@@ -13,7 +13,7 @@ export function CustomStyles() {
       </Avatar>
 
       {/* Square avatar */}
-      <Avatar class="rounded-lg">
+      <Avatar class="rounded-lg" fallbackDelay={600}>
         <Avatar.Image
           alt="Square Avatar"
           src="https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/purple.jpg"
@@ -22,7 +22,10 @@ export function CustomStyles() {
       </Avatar>
 
       {/* Gradient border */}
-      <Avatar class="bg-gradient-to-tr from-pink-500 to-yellow-500 p-0.5">
+      <Avatar
+        class="bg-gradient-to-tr from-pink-500 to-yellow-500 p-0.5"
+        fallbackDelay={600}
+      >
         <div class="size-full rounded-full bg-background p-0.5">
           <Avatar.Image
             alt="Gradient Border"
@@ -35,7 +38,7 @@ export function CustomStyles() {
 
       {/* Status indicator */}
       <div class="relative">
-        <Avatar>
+        <Avatar fallbackDelay={600}>
           <Avatar.Image
             alt="Online User"
             src="https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/orange.jpg"

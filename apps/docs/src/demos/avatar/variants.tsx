@@ -53,6 +53,7 @@ export function Variants() {
                 <div class="flex w-20 shrink-0 items-center justify-center">
                   <Avatar
                     color={color}
+                    fallbackDelay={variant.type === "img" ? 600 : undefined}
                     variant={variant.type.includes("soft") ? "soft" : undefined}
                   >
                     <Show

@@ -22,7 +22,7 @@ describe("FieldError (thin skin)", () => {
     ))
     const error = bySlot(container)
     expect(error).not.toBeNull()
-    expect(error?.getAttribute("data-visible")).toBe("")
+    expect(error?.getAttribute("data-visible")).toBe("true")
     expect(error?.textContent).toBe("Required")
     expect(classSet(error?.className ?? "")).toEqual(
       new Set(["field-error", "extra"])
@@ -46,7 +46,7 @@ describe("FieldError (thin skin)", () => {
         <FieldErrorRoot forceMount>Required</FieldErrorRoot>
       </TextFieldRoot>
     ))
-    expect(bySlot(container)?.getAttribute("data-visible")).toBe("")
+    expect(bySlot(container)?.getAttribute("data-visible")).toBe("true")
   })
 
   it("throws when rendered outside a field (pass-through to Kobalte)", () => {

@@ -18,6 +18,7 @@ import {
   splitProps,
   useContext
 } from "solid-js"
+import { dataAttr } from "../../utils/assertion"
 
 import { useCollectionDefer } from "../../utils/collection-defer"
 import { CloseButtonRoot } from "../close-button/close-button"
@@ -199,11 +200,11 @@ const SearchFieldRootInner = (props: SearchFieldRootProps) => {
       required={local.isRequired}
       // HeroUI CSS matches explicit data-*="true" values; Kobalte stamps empty
       // strings, so re-stamp here (rest spreads after Kobalte's dataset).
-      data-invalid={local.isInvalid ? "true" : undefined}
-      data-required={local.isRequired ? "true" : undefined}
-      data-disabled={local.isDisabled ? "true" : undefined}
-      data-readonly={local.isReadOnly ? "true" : undefined}
-      data-empty={value() === "" ? "true" : undefined}
+      data-invalid={dataAttr(local.isInvalid)}
+      data-required={dataAttr(local.isRequired)}
+      data-disabled={dataAttr(local.isDisabled)}
+      data-readonly={dataAttr(local.isReadOnly)}
+      data-empty={dataAttr(value() === "")}
       {...rest}
     >
       <SearchFieldContext.Provider value={context}>
@@ -228,8 +229,8 @@ const SearchFieldGroup = (props: SearchFieldGroupProps) => {
       data-slot="search-field-group"
       // React Aria's Group stamps these; Kobalte does not (the div is not a
       // form-control root), so bridge them from the field state.
-      data-invalid={ctx.isInvalid() ? "true" : undefined}
-      data-disabled={ctx.isDisabled() ? "true" : undefined}
+      data-invalid={dataAttr(ctx.isInvalid())}
+      data-disabled={dataAttr(ctx.isDisabled())}
       {...rest}
     >
       {local.children}

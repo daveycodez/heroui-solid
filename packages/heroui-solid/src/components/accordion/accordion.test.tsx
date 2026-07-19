@@ -93,15 +93,17 @@ describe("Accordion (thin skin)", () => {
     ).toBe(true)
   })
 
-  it("stamps data-hide-separator on the root only when hideSeparator is set", () => {
+  it("stamps data-hide-separator on each item only when hideSeparator is set", () => {
     const off = renderAccordion()
     expect(
-      bySlot(off.container, "accordion").getAttribute("data-hide-separator")
+      bySlot(off.container, "accordion-item").getAttribute(
+        "data-hide-separator"
+      )
     ).toBeNull()
 
     const on = renderAccordion({ hideSeparator: true })
     expect(
-      bySlot(on.container, "accordion").getAttribute("data-hide-separator")
+      bySlot(on.container, "accordion-item").getAttribute("data-hide-separator")
     ).toBe("true")
   })
 

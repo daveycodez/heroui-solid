@@ -2,6 +2,7 @@ import { cn, fieldErrorVariants } from "@heroui/styles"
 import { useFormControlContext } from "@kobalte/core"
 import { ErrorMessage } from "@kobalte/core/text-field"
 import { type ComponentProps, splitProps, type ValidComponent } from "solid-js"
+import { dataAttr } from "../../utils/assertion"
 
 /* -------------------------------------------------------------------------------------------------
  * Field Error Root
@@ -21,9 +22,7 @@ const FieldErrorRoot = <T extends ValidComponent = "div">(
 
   return (
     <ErrorMessage
-      data-visible={
-        formControl.validationState() === "invalid" ? "" : undefined
-      }
+      data-visible={dataAttr(formControl.validationState() === "invalid")}
       class={cn(fieldErrorVariants(), local.class)}
       data-slot="field-error"
       {...rest}

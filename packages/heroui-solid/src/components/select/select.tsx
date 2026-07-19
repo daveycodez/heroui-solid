@@ -36,6 +36,7 @@ import {
   useContext,
   type ValidComponent
 } from "solid-js"
+import { dataAttr } from "../../utils/assertion"
 import {
   CollectionDeferContext,
   renderDeferred
@@ -224,9 +225,9 @@ const SelectRoot = <T extends ValidComponent = "div">(
       required={local.isRequired}
       // HeroUI CSS matches explicit data-*="true" values; Kobalte stamps empty
       // strings, so re-stamp here (rest spreads after Kobalte's dataset).
-      data-invalid={local.isInvalid ? "true" : undefined}
-      data-required={local.isRequired ? "true" : undefined}
-      data-disabled={local.isDisabled ? "true" : undefined}
+      data-invalid={dataAttr(local.isInvalid)}
+      data-required={dataAttr(local.isRequired)}
+      data-disabled={dataAttr(local.isDisabled)}
       {...rest}
     >
       <SelectContext.Provider
@@ -382,7 +383,7 @@ const SelectIndicator = (props: SelectIndicatorProps) => {
       fallback={
         <IconChevronDown
           class={cn(context.slots?.indicator(), local.class)}
-          data-open={selectContext.isOpen() ? "true" : undefined}
+          data-open={dataAttr(selectContext.isOpen())}
           data-slot="select-default-indicator"
           {...rest}
         />
@@ -390,7 +391,7 @@ const SelectIndicator = (props: SelectIndicatorProps) => {
     >
       <span
         class={cn(context.slots?.indicator(), local.class)}
-        data-open={selectContext.isOpen() ? "true" : undefined}
+        data-open={dataAttr(selectContext.isOpen())}
         data-slot="select-indicator"
         {...(rest as unknown as ComponentProps<"span">)}
       >

@@ -4,6 +4,7 @@ import {
   cn
 } from "@heroui/styles"
 import { createContext, type JSX, splitProps, useContext } from "solid-js"
+import { dataAttr } from "../../utils/assertion"
 
 import type { ButtonRootProps } from "../button/button"
 
@@ -69,7 +70,7 @@ const ButtonGroupRoot = (props: ButtonGroupRootProps) => {
         role="group"
         class={cn(slots().base(), local.class)}
         data-slot="button-group"
-        aria-disabled={local.isDisabled ? "true" : undefined}
+        aria-disabled={dataAttr(local.isDisabled)}
         {...rest}
       >
         {local.children}

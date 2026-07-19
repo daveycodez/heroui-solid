@@ -22,6 +22,7 @@ import {
   useContext,
   type ValidComponent
 } from "solid-js"
+import { dataAttr } from "../../utils/assertion"
 
 import { setupInteractionModality } from "../../utils/interaction-modality"
 import { ScrollShadow } from "../scroll-shadow"
@@ -398,8 +399,8 @@ const Tab = <T extends ValidComponent = "button">(
         class={cn(context.slots?.tab(), local.class)}
         // Kobalte stamps data-selected/data-disabled as empty strings; HeroUI
         // CSS (and the custom-styles demo's data-[selected=true]) match "true".
-        data-disabled={local.isDisabled ? "true" : undefined}
-        data-selected={isSelected() ? "true" : undefined}
+        data-disabled={dataAttr(local.isDisabled)}
+        data-selected={dataAttr(isSelected())}
         data-slot="tabs-tab"
         disabled={local.isDisabled}
         ref={local.ref}

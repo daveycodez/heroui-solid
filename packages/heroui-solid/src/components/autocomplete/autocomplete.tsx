@@ -37,6 +37,7 @@ import {
   useContext,
   type ValidComponent
 } from "solid-js"
+import { dataAttr } from "../../utils/assertion"
 import {
   CollectionDeferContext,
   isDeferredNode,
@@ -600,9 +601,9 @@ const AutocompleteRoot = <T extends ValidComponent = "div">(
       required={local.isRequired}
       // HeroUI CSS matches explicit data-*="true" values; Kobalte stamps empty
       // strings, so re-stamp here (rest spreads after Kobalte's dataset).
-      data-invalid={local.isInvalid ? "true" : undefined}
-      data-required={local.isRequired ? "true" : undefined}
-      data-disabled={local.isDisabled ? "true" : undefined}
+      data-invalid={dataAttr(local.isInvalid)}
+      data-required={dataAttr(local.isRequired)}
+      data-disabled={dataAttr(local.isDisabled)}
       {...rest}
     >
       <AutocompleteContext.Provider value={context}>
@@ -819,7 +820,7 @@ const AutocompleteClearButton = (props: AutocompleteClearButtonProps) => {
       aria-label="Clear selection"
       class={cn(context.slots?.clearButton(), local.class)}
       data-slot="autocomplete-clear-button"
-      data-empty={isEmpty() ? "true" : undefined}
+      data-empty={dataAttr(isEmpty())}
       // Hidden (opacity-0 pointer-events-none) with no selection, so drop it
       // from the tab order until there's something to clear.
       tabindex={isEmpty() ? -1 : undefined}
@@ -873,7 +874,7 @@ const AutocompleteIndicator = (props: AutocompleteIndicatorProps) => {
         // decorative only.
         <IconChevronDown
           class={cn(context.slots?.indicator(), local.class)}
-          data-open={selectContext.isOpen() ? "true" : undefined}
+          data-open={dataAttr(selectContext.isOpen())}
           data-slot="autocomplete-default-indicator"
           {...rest}
         />
@@ -883,7 +884,7 @@ const AutocompleteIndicator = (props: AutocompleteIndicatorProps) => {
         cloneElement of the provided icon. */}
       <span
         class={cn(context.slots?.indicator(), local.class)}
-        data-open={selectContext.isOpen() ? "true" : undefined}
+        data-open={dataAttr(selectContext.isOpen())}
         data-slot="autocomplete-indicator"
         {...(rest as unknown as ComponentProps<"span">)}
       >

@@ -12,6 +12,7 @@ import {
   splitProps,
   useContext
 } from "solid-js"
+import { dataAttr } from "../../utils/assertion"
 
 import {
   type TagKey,
@@ -106,9 +107,9 @@ const TagRoot = (props: TagRootProps) => {
       role="row"
       tabindex={group.tabStopKey() === key() ? 0 : -1}
       aria-selected={group.selectionMode() !== "none" ? selected() : undefined}
-      aria-disabled={disabled() ? "true" : undefined}
-      data-selected={selected() ? "true" : undefined}
-      data-disabled={disabled() ? "true" : undefined}
+      aria-disabled={dataAttr(disabled())}
+      data-selected={dataAttr(selected())}
+      data-disabled={dataAttr(disabled())}
       onClick={() => {
         if (!disabled() && group.selectionMode() !== "none") group.toggle(key())
       }}

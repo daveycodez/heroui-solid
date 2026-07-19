@@ -151,6 +151,27 @@ and docs* — not as the API or behavior to mirror.
   [/* behavior keys */])` — the tv function exposes its config at runtime.
   Never hardcode a variant key list.
 - **Class composition**: `class={cn(xVariants(variantProps), local.class)}`.
+- **Compound slots flow through a context — child parts never call
+  `xVariants()` fresh.** When a component has satellites that compute their
+  classes from a multi-slot tv (`xVariants().item()`, `.icon()`, …), the Root
+  resolves the slots ONCE from its variant props and shares them via an
+  `XContext` (`type XContextValue = { slots?: ReturnType<typeof xVariants> }`),
+  exactly as upstream does (Accordion, Kbd, Link, Avatar all use this). The
+  Root: `const slots = createMemo(() => xVariants(variantProps))`, wraps the
+  Kobalte primitive (which renders the children) in
+  `<XContext.Provider value={{ get slots() { return slots() } }}>`, and applies
+  `slots().base()` itself. Each satellite does `const ctx = useContext(XContext)`
+  and `class={cn(ctx.slots?.item(), local.class)}` — never `xVariants().item()`,
+  which silently uses default variants and drops any root-level variant that
+  maps to that slot. This holds even when today's tv config only varies `base`
+  (Accordion `surface`, Kbd `variant`): reusing `@heroui/styles` at runtime
+  means a future bump could add a variant that touches a child slot, and the
+  context is what makes it propagate. The Provider is SSR-safe for always-mounted
+  compound content (not portalled) — Avatar/Accordion pass the ssr-test — but a
+  part inside a closed Select popover must still defer per the collection rules
+  below, not read slots eagerly. (Cross-*component* variant sharing — e.g.
+  TextField pushing `variant` into the separate Input/TextArea — uses the same
+  context mechanism; see `TextFieldContext`.)
 - **Presentational parts still get `as`.** A component with no Kobalte primitive
   (Spinner, Kbd, Surface) is still polymorphic if upstream declares it so —
   upstream stamps `DOMRenderProps<E>` + renders via `dom.<tag>`, which is the
@@ -210,7 +231,15 @@ and docs* — not as the API or behavior to mirror.
   as `"true"` on the root — HeroUI CSS matches explicit values while Kobalte
   stamps empty strings, and props spread after Kobalte's dataset, so the
   re-stamp wins (see textfield.tsx); descendant-level Kobalte attrs are
-  bridged in overrides CSS instead (see input.overrides.css). A satellite that
+  bridged in overrides CSS instead (see input.overrides.css).
+  **Stamp every boolean state attribute with `dataAttr()`** (`import { dataAttr }
+  from "../../utils/assertion"`, the verbatim upstream helper) — `dataAttr(cond)`
+  is `cond ? "true" : undefined`, so `false`/`undefined` render *absent*, never
+  `data-x="false"`. Do NOT pass a bare boolean (`data-x={cond}`): Solid renders
+  `false` as the literal string `"false"`, which trips HeroUI's presence-based
+  selectors (`[data-disabled]` in combo-box.css, `.menu-item/.list-box-item[data-invalid]`
+  overrides, the `data-visible:` variant) and lights the style up when the state
+  is off. A satellite that
   is polymorphic upstream (Label, Description) stays polymorphic across *both*
   dual-render branches: in-field it spreads `as` onto the Kobalte primitive
   (which owns any element-specific guard — Label only stamps `for` when it

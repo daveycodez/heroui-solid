@@ -14,6 +14,7 @@ import {
   useContext,
   type ValidComponent
 } from "solid-js"
+import { dataAttr } from "../../utils/assertion"
 
 /* -------------------------------------------------------------------------------------------------
  * Selection (React Aria's Selection model, managed locally over Kobalte items)
@@ -180,7 +181,7 @@ const MenuItemRoot = <T extends ValidComponent = "div">(
               : undefined
         }
         aria-checked={selectionMode() !== "none" ? isSelected() : undefined}
-        data-selected={isSelected() ? "true" : undefined}
+        data-selected={dataAttr(isSelected())}
         data-selection-mode={
           selectionMode() !== "none" ? selectionMode() : undefined
         }

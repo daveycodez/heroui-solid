@@ -1,7 +1,25 @@
 import { type AccordionVariants, accordionVariants, cn } from "@heroui/styles"
 import { Accordion } from "@kobalte/core/accordion"
-import { type ComponentProps, splitProps, type ValidComponent } from "solid-js"
+import {
+  type ComponentProps,
+  createContext,
+  createMemo,
+  splitProps,
+  useContext,
+  type ValidComponent
+} from "solid-js"
+import { dataAttr } from "../../utils/assertion"
 import { IconChevronDown } from "../icons"
+
+/* -------------------------------------------------------------------------------------------------
+ * Accordion Context
+ * -----------------------------------------------------------------------------------------------*/
+type AccordionContextValue = {
+  slots?: ReturnType<typeof accordionVariants>
+  hideSeparator?: boolean
+}
+
+const AccordionContext = createContext<AccordionContextValue>({})
 
 /* -------------------------------------------------------------------------------------------------
  * Accordion Root
@@ -21,14 +39,25 @@ const AccordionRoot = <T extends ValidComponent = "div">(
     accordionVariants.variantKeys,
     ["class", "hideSeparator"]
   )
+  const slots = createMemo(() => accordionVariants(variantProps))
 
   return (
-    <Accordion
-      class={cn(accordionVariants(variantProps).base(), local.class)}
-      data-slot="accordion"
-      data-hide-separator={local.hideSeparator ? "true" : undefined}
-      {...rest}
-    />
+    <AccordionContext.Provider
+      value={{
+        get slots() {
+          return slots()
+        },
+        get hideSeparator() {
+          return local.hideSeparator
+        }
+      }}
+    >
+      <Accordion
+        class={cn(slots().base(), local.class)}
+        data-slot="accordion"
+        {...rest}
+      />
+    </AccordionContext.Provider>
   )
 }
 
@@ -43,10 +72,12 @@ const AccordionItem = <T extends ValidComponent = "div">(
   props: AccordionItemProps<T>
 ) => {
   const [local, rest] = splitProps(props as AccordionItemProps, ["class"])
+  const context = useContext(AccordionContext)
   return (
     <Accordion.Item
-      class={cn(accordionVariants().item(), local.class)}
+      class={cn(context.slots?.item(), local.class)}
       data-slot="accordion-item"
+      data-hide-separator={dataAttr(context.hideSeparator)}
       {...rest}
     />
   )
@@ -59,10 +90,11 @@ interface AccordionIndicatorProps extends ComponentProps<"span"> {}
 
 const AccordionIndicator = (props: AccordionIndicatorProps) => {
   const [local, rest] = splitProps(props, ["class", "children"])
+  const context = useContext(AccordionContext)
 
   return (
     <span
-      class={cn(accordionVariants().indicator(), local.class)}
+      class={cn(context.slots?.indicator(), local.class)}
       data-slot="accordion-indicator"
       {...rest}
     >
@@ -82,9 +114,10 @@ const AccordionHeader = <T extends ValidComponent = "h3">(
   props: AccordionHeaderProps<T>
 ) => {
   const [local, rest] = splitProps(props as AccordionHeaderProps, ["class"])
+  const context = useContext(AccordionContext)
   return (
     <Accordion.Header
-      class={cn(accordionVariants().heading(), local.class)}
+      class={cn(context.slots?.heading(), local.class)}
       data-slot="accordion-heading"
       {...rest}
     />
@@ -101,9 +134,10 @@ const AccordionTrigger = <T extends ValidComponent = "button">(
   props: AccordionTriggerProps<T>
 ) => {
   const [local, rest] = splitProps(props as AccordionTriggerProps, ["class"])
+  const context = useContext(AccordionContext)
   return (
     <Accordion.Trigger
-      class={cn(accordionVariants().trigger(), local.class)}
+      class={cn(context.slots?.trigger(), local.class)}
       data-slot="accordion-trigger"
       {...rest}
     />
@@ -125,6 +159,7 @@ const AccordionContent = <T extends ValidComponent = "div">(
     "style",
     "children"
   ])
+  const context = useContext(AccordionContext)
   // The panel is the element whose height animates, so it stays padding-free —
   // padding on an animated-height element reflows and jitters on collapse.
   // Body padding lives on an inner wrapper (upstream's panel > body > bodyInner
@@ -133,14 +168,14 @@ const AccordionContent = <T extends ValidComponent = "div">(
   // the padding/text styling; Kobalte keeps the panel (it owns the height var).
   return (
     <Accordion.Content
-      class={accordionVariants().panel()}
+      class={context.slots?.panel()}
       data-slot="accordion-panel"
       {...rest}
     >
       <div
         class={cn(
-          accordionVariants().body(),
-          accordionVariants().bodyInner(),
+          context.slots?.body(),
+          context.slots?.bodyInner(),
           local.class
         )}
         style={local.style}
