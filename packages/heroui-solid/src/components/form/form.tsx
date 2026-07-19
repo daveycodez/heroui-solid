@@ -3,9 +3,11 @@ import type { ComponentProps } from "solid-js"
 /* -------------------------------------------------------------------------------------------------
  * Form Root
  * -----------------------------------------------------------------------------------------------*/
-// Upstream wraps react-aria-components' Form (native validation propagation via
-// React Aria context). The Solid port renders a plain <form>; our fields drive
-// their own `isInvalid`, so there is no cross-field validation context to carry.
+// Upstream is a thin wrapper over react-aria-components' Form, whose value is a
+// FormValidationContext (the `validationErrors` map — server errors propagate to
+// descendant fields by name) plus a validationBehavior default. Kobalte has no
+// Form primitive and our fields self-validate, so we render a plain <form> and
+// don't port that RAC layer (see the Form docs' Validation section).
 interface FormRootProps extends ComponentProps<"form"> {}
 
 const FormRoot = (props: FormRootProps) => {
