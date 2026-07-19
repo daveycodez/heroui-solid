@@ -35,9 +35,43 @@ When generating commit messages, always use the Conventional Commits format:
 
 ## Component Porting Conventions (packages/heroui-solid)
 
-Mirror the official HeroUI React source as closely as possible, adapting only
-what Solid requires. Fetch the source before porting (heroui-react MCP
-`get_component_source_code`, or the `v3` branch of heroui-inc/heroui on GitHub).
+**Kobalte-first thin skin.** Ported components are a thin UI skin over Kobalte:
+pass the Kobalte primitive — and its prop API — straight through, layer
+`@heroui/styles` theming on top, and add *only* the extras that are specific to
+HeroUI and have no Kobalte equivalent. Behavior, state, accessibility, focus
+management, collections, and performance are Kobalte's job — we do not
+reimplement them, and we do **not** port HeroUI React's React-Aria-derived prop
+surface or logic. The goal is that most components are near pass-through: a
+Kobalte re-export plus theming, with little to no logic of our own. Fetch the
+upstream React source (heroui-react MCP `get_component_source_code`, or the `v3`
+branch of heroui-inc/heroui on GitHub) as a reference for *theming, variants,
+and docs* — not as the API or behavior to mirror.
+
+- **Expose Kobalte's prop names verbatim.** The pass-through base is Kobalte's
+  own API (`open`/`onOpenChange`, `value`/`onChange`, `disabled`, `required`…).
+  Don't rename them to HeroUI's (`isOpen`, `isDisabled`), don't add a HeroUI
+  prop that only re-wraps a Kobalte prop, and don't reimplement RAC behavior
+  HeroUI layered on top. `splitProps` peels off the variant/theming keys (plus
+  any genuine HeroUI add-on); everything else spreads onto the Kobalte primitive
+  untouched. When a component has no behavioral needs beyond Kobalte, prefer a
+  direct re-export over a wrapper.
+- **HeroUI-specific add-ons only.** The only things layered on top of the
+  pass-through are what HeroUI provides and Kobalte doesn't: `@heroui/styles`
+  variant/theming props, slot classes, the CSS-state bridges below, and
+  HeroUI-only visual features. If a capability is really RAC's rather than
+  HeroUI's, it already lives in Kobalte — don't re-add it. When unsure whether
+  something is a HeroUI add-on or RAC behavior, treat it as Kobalte's and pass
+  through.
+- **Compound structure follows Kobalte's surface** where the pass-through
+  exposes it — mirror the Kobalte primitive's parts, not HeroUI React's, when
+  the two diverge. (Packaging conventions like the `index.ts` compound layout
+  below are unaffected.)
+- **Parity tension is a known, deferred open item.** The docs-parity apparatus
+  still grades demos/pages against upstream HeroUI React (see Docs Parity), and
+  a Kobalte-verbatim API can diverge from an upstream demo that relies on
+  HeroUI's prop names. Do **not** reshape a component's API back toward React to
+  satisfy parity — flag the conflict on the component and leave it; the parity
+  direction is being decided separately.
 
 - **Port dependencies first, recursively.** Before porting component X, fetch
   X's upstream demos and enumerate every `@heroui/react` component they import
@@ -93,11 +127,13 @@ what Solid requires. Fetch the source before porting (heroui-react MCP
   [/* behavior keys */])` — the tv function exposes its config at runtime.
   Never hardcode a variant key list.
 - **Class composition**: `class={cn(xVariants(variantProps), local.class)}`.
-- **Behavior**: Kobalte primitives where they add value (our React Aria
-  equivalent); `callHandler` from `@kobalte/utils` when intercepting handlers.
-  Standard adaptations: `onClick` for `onPress`, Kobalte `as` for React's
-  `render` prop, `class` for `className`, `createSignal` for `useState`,
-  `splitProps` instead of destructuring (destructuring kills reactivity).
+- **Behavior is Kobalte's, always** — not "where it adds value". Reach for the
+  Kobalte primitive by default and let it own the behavior; `callHandler` from
+  `@kobalte/utils` only when a HeroUI add-on genuinely must intercept a handler.
+  Solid adaptations still apply wherever we do touch the surface: Kobalte `as`
+  for React's `render` prop, `class` for `className`, `createSignal` for
+  `useState`, `splitProps` instead of destructuring (destructuring kills
+  reactivity).
 - **Skip what isn't ported yet** (e.g. `BUTTON_GROUP_CHILD` until ButtonGroup
   exists) and React-only machinery (`dom.span`, `composeTwRenderProps`).
 - **Don't mirror upstream a11y bugs.** Upstream's icons (icons.tsx on the
