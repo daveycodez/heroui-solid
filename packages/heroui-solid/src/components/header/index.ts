@@ -1,22 +1,15 @@
-import type { ComponentProps } from "solid-js"
-
-import { HeaderRoot } from "./header"
+import { HeaderRoot, type HeaderRootProps } from "./header"
 
 /* -------------------------------------------------------------------------------------------------
- * Compound Component
+ * Component
  * -----------------------------------------------------------------------------------------------*/
 export const Header = HeaderRoot
 
 export type Header = {
-  Props: ComponentProps<typeof HeaderRoot>
+  Props: HeaderRootProps
 }
 
 /* -------------------------------------------------------------------------------------------------
  * Variants
  * -----------------------------------------------------------------------------------------------*/
 export { headerVariants } from "@heroui/styles"
-export type { HeaderRootProps, HeaderRootProps as HeaderProps } from "./header"
-/* -------------------------------------------------------------------------------------------------
- * Named Component
- * -----------------------------------------------------------------------------------------------*/
-export { HeaderRoot } from "./header"
