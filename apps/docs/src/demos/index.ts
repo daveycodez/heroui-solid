@@ -122,6 +122,7 @@ import { WithSectionLevelSelection as DropdownWithSectionLevelSelection } from "
 import { WithSections as DropdownWithSections } from "./dropdown/with-sections"
 import { WithSingleSelection as DropdownWithSingleSelection } from "./dropdown/with-single-selection"
 import { WithSubmenus as DropdownWithSubmenus } from "./dropdown/with-submenus"
+import { ErrorMessageBasic } from "./error-message/basic"
 import { Basic as FieldErrorBasic } from "./field-error/basic"
 import { Basic as FormBasic } from "./form/basic"
 import { Basic as InputBasic } from "./input/basic"
@@ -361,6 +362,7 @@ export const demos: Record<string, Component> = {
   "dropdown-controlled": DropdownControlled,
   "dropdown-controlled-open-state": DropdownControlledOpenState,
   "dropdown-custom-trigger": DropdownCustomTrigger,
+  "error-message-basic": ErrorMessageBasic,
   "field-error-basic": FieldErrorBasic,
   "form-basic": FormBasic,
   "input-basic": InputBasic,

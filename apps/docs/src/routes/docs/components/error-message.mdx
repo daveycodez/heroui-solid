@@ -1,0 +1,127 @@
+---
+title: ErrorMessage
+---
+
+# ErrorMessage
+
+A low-level error message component for displaying errors.
+
+## Import
+
+```tsx
+import { ErrorMessage } from "heroui-solid";
+```
+
+## Usage
+
+`ErrorMessage` is a low-level component that renders a `<span slot="errorMessage">`. It's designed for displaying error messages in **non-form components** such as `TagGroup`, `Calendar`, and other collection-based components.
+
+<ComponentPreview name="error-message-basic" />
+
+```tsx file=../../../demos/error-message/basic.tsx title=""
+
+```
+
+### Anatomy
+
+```tsx
+import { TagGroup, Tag, Label, Description, ErrorMessage } from "heroui-solid";
+
+<TagGroup>
+  <Label />
+  <TagGroup.List>
+    <Tag />
+  </TagGroup.List>
+  <Description />
+  <ErrorMessage />
+</TagGroup>
+```
+
+## Related Components
+
+- **TagGroup**: Focusable list of tags with selection and removal support
+- **FieldError**: Validation error messages for form fields
+- **Description**: Helper text for form controls
+
+## When to Use
+
+`ErrorMessage` is **not tied to forms**. It's a generic error display component for non-form contexts.
+
+- **Recommended for** non-form components (e.g., `TagGroup`, `Calendar`, collection components)
+- **For form fields**, we recommend using [`FieldError`](/docs/components/field-error) instead, which reads the field's validation state from Kobalte's form control and reveals itself automatically.
+
+## ErrorMessage vs FieldError
+
+| Component      | Use Case                  | Form Integration | Example Components               |
+| -------------- | ------------------------- | ---------------- | -------------------------------- |
+| `ErrorMessage` | Non-form components       | No               | `TagGroup`, `Calendar`           |
+| `FieldError`   | Form fields (recommended) | Yes              | `TextField`, `Select`            |
+
+For form validation, we recommend using `FieldError` — it keys off Kobalte's `FormControlContext` and only renders while the field is invalid. See the [FieldError documentation](/docs/components/field-error) and the [Form guide](/docs/components/form) for examples and best practices.
+
+## API Reference
+
+### ErrorMessage Props
+
+| Prop       | Type             | Default  | Description                                             |
+| ---------- | ---------------- | -------- | ------------------------------------------------------- |
+| `class`    | `string`         | -        | Additional CSS classes                                  |
+| `children` | `JSX.Element`    | -        | The error message content                               |
+| `as`       | `ValidComponent` | `"span"` | Overrides the default DOM element (Kobalte polymorphic) |
+
+**Note**: `ErrorMessage` renders a `<span slot="errorMessage">`. It can be targeted using the `[slot=errorMessage]` CSS selector.
+
+## Differences from HeroUI React
+
+- Use `class` instead of `className`.
+- Polymorphism uses Kobalte's `as` prop instead of React Aria's `Text` component / `render` prop.
+- Purely presentational — it does not read any form validation state. For automatic, field-driven errors use [`FieldError`](/docs/components/field-error).
+
+## Accessibility
+
+The ErrorMessage component enhances accessibility by:
+
+- Using semantic HTML that screen readers can identify
+- Providing the `slot="errorMessage"` attribute for integration with field controls
+- Supporting proper text contrast ratios for error states
+- Following WAI-ARIA best practices for error messaging
+
+## Styling
+
+### Passing Tailwind CSS classes
+
+```tsx
+import { ErrorMessage } from "heroui-solid";
+
+function CustomErrorMessage() {
+  return (
+    <ErrorMessage class="text-sm font-bold">
+      Custom styled error message
+    </ErrorMessage>
+  );
+}
+```
+
+### Customizing the component classes
+
+To customize the ErrorMessage component classes, you can use the `@layer components` directive.
+
+```css
+@layer components {
+  .error-message {
+    @apply text-sm font-medium text-red-600;
+  }
+}
+```
+
+HeroUI follows the [BEM](https://getbem.com/) methodology to ensure component variants and states are reusable and easy to customize.
+
+### CSS Classes
+
+#### Base Classes
+
+- `.error-message` - Base error message styles with danger color and text truncation
+
+#### Slot Classes
+
+- `[slot="errorMessage"]` - ErrorMessage slot styles for field-control integration
