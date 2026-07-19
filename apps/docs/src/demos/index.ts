@@ -1,14 +1,4 @@
 import type { Component } from "solid-js"
-import { Basic as AccordionBasic } from "./accordion/basic"
-import { Controlled as AccordionControlled } from "./accordion/controlled"
-import { CustomElement as AccordionCustomElement } from "./accordion/custom-element"
-import { CustomIndicator as AccordionCustomIndicator } from "./accordion/custom-indicator"
-import { CustomStyles as AccordionCustomStyles } from "./accordion/custom-styles"
-import { Disabled as AccordionDisabled } from "./accordion/disabled"
-import { FAQ as AccordionFAQ } from "./accordion/faq"
-import { Multiple as AccordionMultiple } from "./accordion/multiple"
-import { Surface as AccordionSurface } from "./accordion/surface"
-import { WithoutSeparator as AccordionWithoutSeparator } from "./accordion/without-separator"
 import { Basic as AlertBasic } from "./alert/basic"
 import { BackdropVariants as AlertDialogBackdropVariants } from "./alert-dialog/backdrop-variants"
 import { CloseMethods as AlertDialogCloseMethods } from "./alert-dialog/close-methods"
@@ -274,16 +264,6 @@ export const demos: Record<string, Component> = {
   "autocomplete-location-search": AutocompleteLocationSearch,
   "autocomplete-tag-group-selection": AutocompleteTagGroupSelection,
   "autocomplete-email-recipients": AutocompleteEmailRecipients,
-  "accordion-basic": AccordionBasic,
-  "accordion-controlled": AccordionControlled,
-  "accordion-custom-element": AccordionCustomElement,
-  "accordion-custom-indicator": AccordionCustomIndicator,
-  "accordion-custom-styles": AccordionCustomStyles,
-  "accordion-disabled": AccordionDisabled,
-  "accordion-faq": AccordionFAQ,
-  "accordion-multiple": AccordionMultiple,
-  "accordion-surface": AccordionSurface,
-  "accordion-without-separator": AccordionWithoutSeparator,
   "alert-basic": AlertBasic,
   "alert-dialog-default": AlertDialogDefault,
   "alert-dialog-statuses": AlertDialogStatuses,
