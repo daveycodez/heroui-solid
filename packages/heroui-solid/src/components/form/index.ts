@@ -1,21 +1,10 @@
-import type { ComponentProps } from "solid-js"
-
-import { FormRoot } from "./form"
+import { FormRoot, type FormRootProps } from "./form"
 
 /* -------------------------------------------------------------------------------------------------
- * Compound Component
+ * Component
  * -----------------------------------------------------------------------------------------------*/
-export const Form = Object.assign(FormRoot, {
-  Root: FormRoot
-})
+export const Form = FormRoot
 
 export type Form = {
-  Props: ComponentProps<typeof FormRoot>
-  RootProps: ComponentProps<typeof FormRoot>
+  Props: FormRootProps
 }
-
-export type { FormRootProps, FormRootProps as FormProps } from "./form"
-/* -------------------------------------------------------------------------------------------------
- * Named Component
- * -----------------------------------------------------------------------------------------------*/
-export { FormRoot }
