@@ -402,6 +402,27 @@ and docs* — not as the API or behavior to mirror.
   names repeat across components, so `index.ts` aliases on import
   (`import { Variants as CardVariants } from "./card/variants"`). Demos with
   no upstream counterpart follow the same conventions.
+- **Upstream's "Custom Render Function" demo becomes our "Custom Element"
+  demo.** Upstream ships a `custom-render-function.tsx` (export
+  `CustomRenderFunction`) showing React's `render` prop; we don't have `render`
+  — polymorphism is Kobalte's `as`. Port it as `custom-element.tsx` (key
+  `<component>-custom-element`, matching Link/Button/Accordion/Tabs) as a
+  *close* port: keep upstream's exact markup and visual output, and swap the
+  `render` prop for `as` on the **same part** upstream rendered.
+  `render={(props) => <div {...props} data-custom="foo" />}` re-renders the
+  default element while injecting an extra prop — port it as `as="div"` (the
+  polymorphism) **plus the injected prop passed directly** on the part:
+  `<Tooltip.Content as="div" data-custom="foo">`. Our parts spread their rest
+  props onto the rendered element, so the attribute lands on the DOM node with
+  no callback — preserve that injection (it's the point of the demo), don't drop
+  it. Avoid the callback form of `as` (`as={(props) => …}`) here: it fights
+  polymorphic `as`-inference (an untyped param pins the generic to the default
+  tag and won't typecheck), and it's unnecessary when a direct prop does the
+  same thing. Don't restructure the demo to override a *different* element than
+  upstream did. The docs section is `### Custom Element` with the standard blurb
+  ("HeroUI React overrides the rendered element with a `render` prop. This port
+  uses Kobalte's polymorphic `as` prop instead — …") linking the Polymorphism
+  guide; note the render→`as` swap in `## Differences from HeroUI React` too.
 - **Docs page section order: API Reference → Rendered Elements → Differences
   (last).** Every component page's `## API Reference` lists *every* prop the
   component accepts — our HeroUI additions, the Kobalte primitive's own option

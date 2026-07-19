@@ -19,3 +19,255 @@ import { Tooltip } from "heroui-solid";
 ```tsx file=../../../demos/tooltip/basic.tsx title=""
 
 ```
+
+### Anatomy
+
+Import the Tooltip component and access all parts using dot notation. The
+content is portalled, so it is wrapped in `Tooltip.Portal`.
+
+```tsx
+import { Tooltip, Button } from "heroui-solid";
+
+export default () => (
+  <Tooltip>
+    <Tooltip.Trigger as={Button}>Hover for tooltip</Tooltip.Trigger>
+    <Tooltip.Portal>
+      <Tooltip.Content>
+        <Tooltip.Arrow />
+        Helpful information about this element
+      </Tooltip.Content>
+    </Tooltip.Portal>
+  </Tooltip>
+);
+```
+
+### With Arrow
+
+Render `Tooltip.Arrow` inside `Tooltip.Content` to show the arrow — Kobalte
+adds the arrow spacing automatically. Adjust the distance from the trigger with
+the `gutter` prop on the root.
+
+<ComponentPreview name="tooltip-with-arrow" />
+
+```tsx file=../../../demos/tooltip/with-arrow.tsx title=""
+
+```
+
+### Placement
+
+Set `placement` on the `Tooltip` root (a Kobalte Popper option). It accepts the
+four sides plus their `-start`/`-end` variants.
+
+<ComponentPreview name="tooltip-placement" />
+
+```tsx file=../../../demos/tooltip/placement.tsx title=""
+
+```
+
+### Custom Triggers
+
+Any element can be a trigger. Non-interactive content (an `Avatar`, a `Chip`, an
+icon) can be nested directly inside `Tooltip.Trigger`.
+
+<ComponentPreview name="tooltip-custom-trigger" />
+
+```tsx file=../../../demos/tooltip/custom-trigger.tsx title=""
+
+```
+
+### Custom Element
+
+HeroUI React overrides the rendered element with a `render` prop. This port uses
+Kobalte's polymorphic `as` prop instead — pass the element (or component) to
+render as:
+
+<ComponentPreview name="tooltip-custom-element" />
+
+```tsx file=../../../demos/tooltip/custom-element.tsx title=""
+
+```
+
+## Related Components
+
+- **Button**: Allows a user to perform an action
+- **Popover**: Displays content in context with a trigger (not ported yet)
+
+## Styling
+
+### Global Delay Configuration
+
+You can set default show and hide delays for all Tooltip components in your
+application by defining CSS variables:
+
+```css
+/* In your global CSS file */
+:root {
+  --tooltip-delay: 1500ms;
+  --tooltip-close-delay: 500ms;
+}
+
+/* You can also set different values for light/dark themes */
+.light,
+[data-theme="light"] {
+  --tooltip-delay: 1200ms;
+}
+
+.dark,
+[data-theme="dark"] {
+  --tooltip-close-delay: 300ms;
+}
+```
+
+Values accept CSS time units such as `ms` and `s`. These global settings are
+overridden by the `openDelay` and `closeDelay` props when specified on
+individual tooltips.
+
+### Passing Tailwind CSS classes
+
+```tsx
+import { Tooltip, Button } from "heroui-solid";
+
+function CustomTooltip() {
+  return (
+    <Tooltip>
+      <Tooltip.Trigger as={Button}>Hover me</Tooltip.Trigger>
+      <Tooltip.Portal>
+        <Tooltip.Content class="bg-accent text-accent-foreground">
+          Custom styled tooltip
+        </Tooltip.Content>
+      </Tooltip.Portal>
+    </Tooltip>
+  );
+}
+```
+
+### Customizing the component classes
+
+To customize the Tooltip component classes, you can use the `@layer components`
+directive.
+[Learn more](https://tailwindcss.com/docs/adding-custom-styles#adding-component-classes).
+
+```css
+@layer components {
+  .tooltip {
+    @apply rounded-xl shadow-lg;
+  }
+
+  .tooltip__trigger {
+    @apply cursor-help;
+  }
+}
+```
+
+HeroUI follows the [BEM](https://getbem.com/) methodology to ensure component variants and states are reusable and easy to customize.
+
+### CSS Classes
+
+The Tooltip component uses these CSS classes ([View source styles](https://github.com/heroui-inc/heroui/blob/v3/packages/styles/components/tooltip.css)):
+
+#### Base Classes
+
+- `.tooltip` - Base tooltip styles with animations
+- `.tooltip__trigger` - Trigger element styles
+
+### Interactive States
+
+Animations key off the data attributes bridged from Kobalte's lifecycle:
+
+- **Entering**: `[data-entering]` - Applied while the tooltip appears
+- **Exiting**: `[data-exiting]` - Applied while the tooltip disappears
+- **Placement**: `[data-placement="*"]` - Applied based on tooltip position
+
+## API Reference
+
+### Tooltip Props
+
+| Prop                 | Type                      | Default | Description                                                   |
+| -------------------- | ------------------------- | ------- | ------------------------------------------------------------ |
+| `open`               | `boolean`                 | -       | The controlled open state                                    |
+| `defaultOpen`        | `boolean`                 | -       | The initial open state (uncontrolled)                        |
+| `onOpenChange`       | `(open: boolean) => void` | -       | Handler called when the open state changes                   |
+| `disabled`           | `boolean`                 | `false` | Whether the tooltip is disabled                              |
+| `triggerOnFocusOnly` | `boolean`                 | `false` | Open only on focus, not hover                                |
+| `openDelay`          | `number`                  | `1500`  | Delay in ms before the tooltip opens (defaults from `--tooltip-delay`) |
+| `closeDelay`         | `number`                  | `500`   | Delay in ms before the tooltip closes (defaults from `--tooltip-close-delay`) |
+| `placement`          | `Placement`               | `"top"` | Placement (side plus `-start`/`-end` variants)               |
+| `gutter`             | `number`                  | `0`     | Distance in px between the trigger and the content           |
+| `shift`              | `number`                  | `0`     | Offset along the trigger, in px                              |
+| `forceMount`         | `boolean`                 | `false` | Force mounting the content (e.g. for animation control)      |
+| `children`           | `JSX.Element`             | -       | The trigger, portal, and content                             |
+
+*Plus Kobalte Popper positioning props (`flip`, `slide`, `overlap`, `arrowPadding`, …).*
+
+### Tooltip.Trigger Props
+
+| Prop       | Type             | Default    | Description                                           |
+| ---------- | ---------------- | ---------- | ---------------------------------------------------- |
+| `as`       | `ValidComponent` | `"button"` | Overrides the rendered element (Kobalte polymorphic) |
+| `class`    | `string`         | -          | Additional CSS classes                               |
+| `children` | `JSX.Element`    | -          | Element that triggers the tooltip                    |
+
+*Plus standard `<button>` attributes.*
+
+### Tooltip.Portal Props
+
+| Prop       | Type          | Default | Description                    |
+| ---------- | ------------- | ------- | ------------------------------ |
+| `mount`    | `Node`        | `body`  | Where the content is portalled |
+| `children` | `JSX.Element` | -       | The `Tooltip.Content`          |
+
+### Tooltip.Content Props
+
+| Prop                   | Type                             | Default | Description                                          |
+| ---------------------- | -------------------------------- | ------- | ---------------------------------------------------- |
+| `as`                   | `ValidComponent`                 | `"div"` | Overrides the rendered element (Kobalte polymorphic) |
+| `onEscapeKeyDown`      | `(event: KeyboardEvent) => void` | -       | Handler called when the escape key is pressed        |
+| `onPointerDownOutside` | `(event: PointerEvent) => void`  | -       | Handler called on a pointer down outside the content |
+| `class`                | `string`                         | -       | Additional CSS classes                               |
+| `children`             | `JSX.Element`                    | -       | Content to display in the tooltip                    |
+
+*Plus standard `<div>` attributes.*
+
+### Tooltip.Arrow Props
+
+| Prop       | Type             | Default | Description                                          |
+| ---------- | ---------------- | ------- | ---------------------------------------------------- |
+| `as`       | `ValidComponent` | `"div"` | Overrides the rendered element (Kobalte polymorphic) |
+| `size`     | `number`         | `30`    | The size of the arrow, in px                         |
+| `class`    | `string`         | -       | Additional CSS classes                               |
+| `children` | `JSX.Element`    | -       | Custom arrow element                                 |
+
+*Plus standard `<div>` attributes.*
+
+## Rendered Elements
+
+`Tooltip.Trigger`, `Tooltip.Content`, and `Tooltip.Arrow` are polymorphic — pass
+`as` to override the element. The `Tooltip` root and `Tooltip.Portal` render no
+element of their own.
+
+| Component         | Default Element |
+| ----------------- | --------------- |
+| `Tooltip.Trigger` | `<button>`      |
+| `Tooltip.Content` | `<div>`         |
+| `Tooltip.Arrow`   | `<div>`         |
+
+## Differences from HeroUI React
+
+- The trigger is a real Kobalte `<button>` (polymorphic via `as`), not React
+  Aria's `<div role="button">` wrapper. Render the trigger *as* your control
+  (`<Tooltip.Trigger as={Button}>`) instead of nesting a `<Button>` inside it,
+  and wrap the trigger explicitly in `Tooltip.Trigger` rather than relying on the
+  first child of `Tooltip` being the trigger.
+- Content is portalled through an explicit `Tooltip.Portal`.
+- `placement` and offset (`gutter`) live on the `Tooltip` root (Kobalte Popper
+  options), not on `Tooltip.Content`. The default placement is `"top"` to match
+  HeroUI, though Kobalte's own default is `"bottom"`.
+- There is no `showArrow` prop — render `Tooltip.Arrow` inside `Tooltip.Content`
+  to show the arrow.
+- Trigger behavior uses Kobalte's `triggerOnFocusOnly` (a boolean) rather than
+  `trigger="hover" | "focus"`, and the delay props are `openDelay`/`closeDelay`
+  rather than `delay`/`closeDelay`. The `--tooltip-delay` /
+  `--tooltip-close-delay` global CSS-variable config is supported (defaults
+  1500ms/500ms from the theme).
+- Polymorphism uses Kobalte's `as` prop instead of React's `render` prop, and
+  disabling is `disabled` rather than `isDisabled`.

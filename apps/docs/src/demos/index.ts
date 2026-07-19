@@ -197,6 +197,10 @@ import { Validation as TextFieldValidation } from "./textfield/validation"
 import { WithDescription as TextFieldWithDescription } from "./textfield/with-description"
 import { WithError as TextFieldWithError } from "./textfield/with-error"
 import { TooltipBasic } from "./tooltip/basic"
+import { TooltipCustomElement } from "./tooltip/custom-element"
+import { TooltipCustomTrigger } from "./tooltip/custom-trigger"
+import { TooltipPlacement } from "./tooltip/placement"
+import { TooltipWithArrow } from "./tooltip/with-arrow"
 
 // Registry for <ComponentPreview name="..." /> in MDX pages. Follows the
 // official HeroUI docs structure (apps/docs/src/demos/<component>/<demo>.tsx,
@@ -399,5 +403,9 @@ export const demos: Record<string, Component> = {
   "tag-group-with-prefix": TagGroupWithPrefix,
   "tag-group-with-remove-button": TagGroupWithRemoveButton,
   "tag-group-with-error-message": TagGroupWithErrorMessage,
-  "tooltip-basic": TooltipBasic
+  "tooltip-basic": TooltipBasic,
+  "tooltip-with-arrow": TooltipWithArrow,
+  "tooltip-placement": TooltipPlacement,
+  "tooltip-custom-trigger": TooltipCustomTrigger,
+  "tooltip-custom-element": TooltipCustomElement
 }
