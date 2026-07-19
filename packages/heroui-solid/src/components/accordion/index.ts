@@ -30,7 +30,7 @@ export type Accordion = {
   HeaderProps: AccordionHeaderProps
   ItemProps: AccordionItemProps
   TriggerProps: AccordionTriggerProps
-  Indicator: AccordionIndicatorProps
+  IndicatorProps: AccordionIndicatorProps
 }
 
 /* -------------------------------------------------------------------------------------------------
