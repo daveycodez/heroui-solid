@@ -13,8 +13,8 @@ const SpinnerPrimitive = (props: SpinnerPrimitiveProps) => {
 
   return (
     <svg
-      data-slot="spinner-icon"
       aria-hidden="true"
+      data-slot="spinner-icon"
       viewBox="0 0 24 24"
       {...props}
     >
@@ -60,12 +60,7 @@ const SpinnerPrimitive = (props: SpinnerPrimitiveProps) => {
 /* -------------------------------------------------------------------------------------------------
  * Spinner Root
  * -----------------------------------------------------------------------------------------------*/
-interface SpinnerRootProps extends ComponentProps<"span"> {
-  /** Spinner color. */
-  color?: SpinnerVariants["color"]
-  /** Spinner size. */
-  size?: SpinnerVariants["size"]
-}
+type SpinnerRootProps = ComponentProps<"span"> & SpinnerVariants
 
 const SpinnerRoot = (props: SpinnerRootProps) => {
   const [variantProps, local, rest] = splitProps(
@@ -74,13 +69,16 @@ const SpinnerRoot = (props: SpinnerRootProps) => {
     ["class"]
   )
 
+  // Upstream stamps aria-label on the aria-hidden svg — a name erased from the
+  // a11y tree (see AGENTS.md, a11y bugs). We put role="status" + aria-label on
+  // the root live region so the loading state is announced, svg stays decorative.
   return (
     <span
-      data-slot="spinner"
       aria-label="Loading"
+      class={cn(spinnerVariants(variantProps), local.class)}
+      data-slot="spinner"
       role="status"
       {...rest}
-      class={cn(spinnerVariants(variantProps), local.class)}
     >
       <SpinnerPrimitive />
     </span>
