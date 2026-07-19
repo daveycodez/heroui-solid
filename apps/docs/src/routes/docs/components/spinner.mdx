@@ -36,6 +36,19 @@ import { Spinner } from "heroui-solid";
 
 ```
 
+## Accessibility
+
+The Spinner root is a `role="status"` live region labeled `Loading`, so assistive
+technology announces the pending state when it appears; the animated SVG itself is
+`aria-hidden` (decorative). Localize or replace the announcement by passing your own
+`aria-label`:
+
+```tsx
+import { Spinner } from "heroui-solid";
+
+export default () => <Spinner aria-label="Chargement en cours" />;
+```
+
 ## Styling
 
 ### Passing Tailwind CSS classes
