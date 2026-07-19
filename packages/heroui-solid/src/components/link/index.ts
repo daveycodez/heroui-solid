@@ -1,6 +1,9 @@
-import type { ComponentProps } from "solid-js"
-
-import { LinkIcon, LinkRoot } from "./link"
+import {
+  LinkIcon,
+  type LinkIconProps,
+  LinkRoot,
+  type LinkRootProps
+} from "./link"
 
 /* -------------------------------------------------------------------------------------------------
  * Compound Component
@@ -11,22 +14,12 @@ export const Link = Object.assign(LinkRoot, {
 })
 
 export type Link = {
-  Props: ComponentProps<typeof LinkRoot>
-  RootProps: ComponentProps<typeof LinkRoot>
-  IconProps: ComponentProps<typeof LinkIcon>
+  Props: LinkRootProps
+  IconProps: LinkIconProps
 }
 
-export type { LinkVariants } from "@heroui/styles"
 /* -------------------------------------------------------------------------------------------------
  * Variants
  * -----------------------------------------------------------------------------------------------*/
+// Link has no variants; only the styling fn is re-exported (no LinkVariants type).
 export { linkVariants } from "@heroui/styles"
-export type {
-  LinkIconProps,
-  LinkRootProps,
-  LinkRootProps as LinkProps
-} from "./link"
-/* -------------------------------------------------------------------------------------------------
- * Named Component
- * -----------------------------------------------------------------------------------------------*/
-export { LinkIcon, LinkRoot }

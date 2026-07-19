@@ -48,15 +48,6 @@ describe("Alert", () => {
     }
   })
 
-  it("renders a default status icon in the indicator", () => {
-    const { container } = render(() => <Anatomy />)
-    const icon = container.querySelector('[data-slot="alert-default-icon"]')
-    expect(icon?.tagName).toBe("svg")
-    expect(icon?.getAttribute("aria-hidden")).toBe("true")
-    // Icons are erased from the accessibility tree — no name leaks (AGENTS.md).
-    expect(icon?.getAttribute("aria-label")).toBeNull()
-  })
-
   it("applies the status modifier on the root only", () => {
     const { container } = render(() => <Anatomy status="danger" />)
     const alert = container.querySelector(

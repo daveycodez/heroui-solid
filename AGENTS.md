@@ -108,17 +108,30 @@ and docs* — not as the API or behavior to mirror.
 - **File structure mirrors upstream**: `XRoot` naming, internal `XPrimitive`
   components, the same section banner comments where upstream has them,
   trailing `export {XRoot}` / `export type {XRootProps}`.
+- **Import the Kobalte primitive under its own name** — `import { Link } from
+  "@kobalte/core/link"`, `import { Accordion } from "@kobalte/core/accordion"`.
+  Our wrapper is `XRoot` (and satellites are suffixed: `XItem`, `XIcon`), so the
+  bare Kobalte name never clashes — don't alias it to `XPrimitive`. The compound
+  `export const X` lives in `index.ts`, a different module, so it doesn't clash
+  either.
 - **Match upstream comment density** — which is near zero. No prop JSDoc
   unless the upstream file has it; no narrative prose. Necessary workaround
   notes stay inline, kept tight, when they're specific to that component.
   AGENTS.md carries the full story only for concerns that can affect other
   components (e.g. the single-read children rule), with a one-liner in the
   code pointing at it.
-- **index.ts uses the official compound layout**:
-  `export const X = Object.assign(XRoot, { Root: XRoot })`, a merged
-  `export type X = { Props: ComponentProps<typeof XRoot>; RootProps: ... }`
-  (`ComponentProps` from solid-js), named `XRoot` export,
-  `XRootProps as XProps` alias, and variants re-exported from `@heroui/styles`.
+- **index.ts exports ONLY the compound** — nothing else is public. The compound
+  `export const X = Object.assign(XRoot, { Root: XRoot, /* satellites */ })`, a
+  merged `export type X = { Props: XRootProps; /* SatelliteProps */ }` built
+  from the component file's exported prop types
+  (not `ComponentProps<typeof XRoot>`), and the variants re-exported from
+  `@heroui/styles`. Re-export the tv fn (`xVariants`) always; re-export the
+  `XVariants` type only when the component actually has variants — skip it when
+  the tv config is slots-only (see link). No named `XRoot`/satellite re-exports
+  and no `XRootProps as XProps` alias: the compound plus variants is the whole
+  package surface for the component. The named `XRoot`/`XRootProps` exports live
+  on the component `.tsx` file (above) for the index to import — they just
+  aren't re-exported onward.
 - **Reuse `@heroui/styles` at runtime — never duplicate styling knowledge**:
   the tv functions (`buttonVariants`), `cn`, and the `XVariants` types are the
   exact code the React implementation uses. No local `*.styles.ts` modules, no
@@ -144,11 +157,20 @@ and docs* — not as the API or behavior to mirror.
 - **Skip what isn't ported yet** (e.g. `BUTTON_GROUP_CHILD` until ButtonGroup
   exists) and React-only machinery (`dom.span`, `composeTwRenderProps`).
 - **Don't mirror upstream a11y bugs.** Upstream's icons (icons.tsx on the
-  `v3` branch) stamp `aria-label` on `aria-hidden="true"` svgs — a name on an
-  element erased from the accessibility tree. Ported icons drop the
-  `aria-label` and keep `aria-hidden` + `role="presentation"` (see
-  ExternalLinkIcon in link.tsx). Same rule for future upstream a11y defects:
-  fix here, note the deviation, consider reporting upstream.
+  `v3` branch) stamp `aria-label` on svgs that are *also* `aria-hidden="true"`
+  + `role="presentation"` — the name is on an element erased from the
+  accessibility tree, so it never surfaces. Keep the useful part, not the
+  hiding: ported icons **keep the default `aria-label`** (overridable via the
+  props spread) and set **`role="img"`** so the name is actually exposed, and
+  **drop `aria-hidden` + `role="presentation"`**. Best practice for a
+  meaningful svg is a labeled `role="img"`; the whole upstream icons.tsx is
+  ported this way in `src/components/icons.tsx`, the shared icon source. A
+  decorative placement — an icon inside an already-labeled control (a button, a
+  link), where the label would just pollute the control's accessible name —
+  opts back out by passing `aria-hidden="true"` through the spread at the call
+  site (see the Accordion indicator's default chevron and Link's default arrow).
+  Same approach for future upstream a11y defects: fix here, note the deviation,
+  consider reporting upstream.
 - **Form controls provide `FieldContext`** (`src/utils/field-context.tsx`,
   value `true`): the field satellites (Label, Description, FieldError, Input,
   TextArea) render the Kobalte form-control primitive when the marker is

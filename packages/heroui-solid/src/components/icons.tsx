@@ -2,15 +2,155 @@ import type { ComponentProps } from "solid-js"
 
 type IconProps = ComponentProps<"svg">
 
-// Upstream stamps aria-label on these aria-hidden svgs (an a11y defect — a name
-// on an element removed from the accessibility tree); dropped here, keeping
-// aria-hidden + role="presentation" (see AGENTS.md, ExternalLinkIcon).
-const InfoIcon = (props: IconProps) => (
+// Ported from upstream icons.tsx (v3 branch). Icons default to a labeled,
+// role="img" svg — the aria-label is overridable via the props spread. We drop
+// upstream's aria-hidden/role="presentation", which erased that label from the
+// accessibility tree (a name on a hidden node never surfaces). Decorative
+// placements inside a labeled control (button, link) pass aria-hidden through
+// the spread to opt out (see AGENTS.md, a11y bugs; accordion indicator, link).
+
+const IconChevronDown = (props: IconProps) => (
   <svg
-    aria-hidden="true"
+    aria-label="Chevron down icon"
     fill="none"
     height={16}
-    role="presentation"
+    role="img"
+    viewBox="0 0 16 16"
+    width={16}
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      clip-rule="evenodd"
+      d="M2.97 5.47a.75.75 0 0 1 1.06 0L8 9.44l3.97-3.97a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 0 1 0-1.06"
+      fill="currentColor"
+      fill-rule="evenodd"
+    />
+  </svg>
+)
+
+const IconChevronUp = (props: IconProps) => (
+  <svg
+    aria-label="Chevron up icon"
+    fill="none"
+    height={16}
+    role="img"
+    viewBox="0 0 16 16"
+    width={16}
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      clip-rule="evenodd"
+      d="M13.03 10.53a.75.75 0 0 1-1.06 0L8 6.56l-3.97 3.97a.75.75 0 0 1-1.06-1.06l4.5-4.5a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 0 1 0 1.06"
+      fill="currentColor"
+      fill-rule="evenodd"
+    />
+  </svg>
+)
+
+const IconChevronLeft = (props: IconProps) => (
+  <svg
+    aria-label="Chevron left icon"
+    fill="none"
+    height={16}
+    role="img"
+    viewBox="0 0 16 16"
+    width={16}
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      clip-rule="evenodd"
+      d="M10.53 2.97a.75.75 0 0 1 0 1.06L6.56 8l3.97 3.97a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 0 1 1.06 0"
+      fill="currentColor"
+      fill-rule="evenodd"
+    />
+  </svg>
+)
+
+const IconChevronRight = (props: IconProps) => (
+  <svg
+    aria-label="Chevron right icon"
+    fill="none"
+    height={16}
+    role="img"
+    viewBox="0 0 16 16"
+    width={16}
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      clip-rule="evenodd"
+      d="M5.47 2.97a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 1 1-1.06-1.06L9.44 8 5.47 4.03a.75.75 0 0 1 0-1.06Z"
+      fill="currentColor"
+      fill-rule="evenodd"
+    />
+  </svg>
+)
+
+const ExternalLinkIcon = (props: IconProps) => (
+  <svg
+    aria-label="External link icon"
+    fill="none"
+    height={9}
+    role="img"
+    viewBox="0 0 7 7"
+    width={9}
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M1.20592 6.84333L0.379822 6.01723L4.52594 1.8672H1.37819L1.38601 0.731812H6.48742V5.83714H5.34421L5.35203 2.6933L1.20592 6.84333Z"
+      fill="currentColor"
+    />
+  </svg>
+)
+
+const CircleDashedIcon = (props: IconProps) => (
+  <svg
+    aria-label="Circle dashed icon"
+    fill="none"
+    height={16}
+    role="img"
+    viewBox="0 0 16 16"
+    width={16}
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M6.906 1.085a7.047 7.047 0 0 1 2.188 0 .75.75 0 0 1-.232 1.482 5.546 5.546 0 0 0-1.724 0 .75.75 0 0 1-.232-1.482ZM4.933 2.502a.75.75 0 0 1-.166 1.048c-.466.34-.878.75-1.217 1.217a.75.75 0 0 1-1.213-.882 7.036 7.036 0 0 1 1.548-1.548.75.75 0 0 1 1.048.165Zm6.135 0a.75.75 0 0 1 1.047-.165 7.037 7.037 0 0 1 1.548 1.548.75.75 0 0 1-1.213.882 5.533 5.533 0 0 0-1.217-1.217.75.75 0 0 1-.165-1.048ZM1.943 6.28a.75.75 0 0 1 .624.857 5.546 5.546 0 0 0 0 1.724.75.75 0 0 1-1.482.232 7.047 7.047 0 0 1 0-2.188.75.75 0 0 1 .858-.625Zm12.114 0a.75.75 0 0 1 .858.625 7.048 7.048 0 0 1 0 2.188.75.75 0 1 1-1.482-.232 5.54 5.54 0 0 0 0-1.724.75.75 0 0 1 .624-.857ZM2.502 11.068a.75.75 0 0 1 1.048.165c.34.466.75.878 1.217 1.217a.75.75 0 0 1-.882 1.213 7.037 7.037 0 0 1-1.548-1.548.75.75 0 0 1 .165-1.047Zm10.996 0a.75.75 0 0 1 .165 1.047 7.037 7.037 0 0 1-1.548 1.548.75.75 0 0 1-.883-1.213 5.53 5.53 0 0 0 1.218-1.217.75.75 0 0 1 1.048-.165Zm-7.217 2.99a.75.75 0 0 1 .857-.625 5.54 5.54 0 0 0 1.724 0 .75.75 0 0 1 .232 1.482 7.048 7.048 0 0 1-2.188 0 .75.75 0 0 1-.625-.857Z"
+      fill="currentColor"
+    />
+  </svg>
+)
+
+const CloseIcon = (props: IconProps) => (
+  <svg
+    aria-label="Close icon"
+    fill="none"
+    height={16}
+    role="img"
+    viewBox="0 0 16 16"
+    width={16}
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      clip-rule="evenodd"
+      d="M3.47 3.47a.75.75 0 0 1 1.06 0L8 6.94l3.47-3.47a.75.75 0 1 1 1.06 1.06L9.06 8l3.47 3.47a.75.75 0 1 1-1.06 1.06L8 9.06l-3.47 3.47a.75.75 0 0 1-1.06-1.06L6.94 8 3.47 4.53a.75.75 0 0 1 0-1.06Z"
+      fill="currentColor"
+      fill-rule="evenodd"
+    />
+  </svg>
+)
+
+const InfoIcon = (props: IconProps) => (
+  <svg
+    aria-label="Info icon"
+    fill="none"
+    height={16}
+    role="img"
     viewBox="0 0 16 16"
     width={16}
     xmlns="http://www.w3.org/2000/svg"
@@ -27,10 +167,10 @@ const InfoIcon = (props: IconProps) => (
 
 const WarningIcon = (props: IconProps) => (
   <svg
-    aria-hidden="true"
+    aria-label="Warning icon"
     fill="none"
     height={16}
-    role="presentation"
+    role="img"
     viewBox="0 0 16 16"
     width={16}
     xmlns="http://www.w3.org/2000/svg"
@@ -47,10 +187,10 @@ const WarningIcon = (props: IconProps) => (
 
 const DangerIcon = (props: IconProps) => (
   <svg
-    aria-hidden="true"
+    aria-label="Danger icon"
     fill="none"
     height={16}
-    role="presentation"
+    role="img"
     viewBox="0 0 16 16"
     width={16}
     xmlns="http://www.w3.org/2000/svg"
@@ -67,10 +207,10 @@ const DangerIcon = (props: IconProps) => (
 
 const SuccessIcon = (props: IconProps) => (
   <svg
-    aria-hidden="true"
+    aria-label="Success icon"
     fill="none"
     height={16}
-    role="presentation"
+    role="img"
     viewBox="0 0 16 16"
     width={16}
     xmlns="http://www.w3.org/2000/svg"
@@ -85,5 +225,101 @@ const SuccessIcon = (props: IconProps) => (
   </svg>
 )
 
+const IconMinus = (props: IconProps) => (
+  <svg
+    aria-label="Minus icon"
+    fill="none"
+    height={16}
+    role="img"
+    viewBox="0 0 16 16"
+    width={16}
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      clip-rule="evenodd"
+      d="M1.75 8a.75.75 0 0 1 .75-.75h11a.75.75 0 0 1 0 1.5h-11A.75.75 0 0 1 1.75 8"
+      fill="currentColor"
+      fill-rule="evenodd"
+    />
+  </svg>
+)
+
+const IconPlus = (props: IconProps) => (
+  <svg
+    aria-label="Plus icon"
+    fill="none"
+    height={16}
+    role="img"
+    viewBox="0 0 16 16"
+    width={16}
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      clip-rule="evenodd"
+      d="M8 1.75a.75.75 0 0 1 .75.75v4.75h4.75a.75.75 0 0 1 0 1.5H8.75v4.75a.75.75 0 0 1-1.5 0V8.75H2.5a.75.75 0 0 1 0-1.5h4.75V2.5A.75.75 0 0 1 8 1.75"
+      fill="currentColor"
+      fill-rule="evenodd"
+    />
+  </svg>
+)
+
+const IconSearch = (props: IconProps) => (
+  <svg
+    aria-label="Search icon"
+    fill="none"
+    height={16}
+    role="img"
+    viewBox="0 0 16 16"
+    width={16}
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      clip-rule="evenodd"
+      d="M11.5 7a4.5 4.5 0 1 1-9 0a4.5 4.5 0 0 1 9 0m-.82 4.74a6 6 0 1 1 1.06-1.06l2.79 2.79a.75.75 0 1 1-1.06 1.06z"
+      fill="currentColor"
+      fill-rule="evenodd"
+    />
+  </svg>
+)
+
+const IconCalendar = (props: IconProps) => (
+  <svg
+    aria-label="Calendar icon"
+    fill="none"
+    height="1em"
+    role="img"
+    viewBox="0 0 13 14"
+    width="1em"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      clip-rule="evenodd"
+      d="M3.75 4.5A.75.75 0 0 1 3 3.75v-.748a1.5 1.5 0 0 0-1.5 1.5v1h10v-1a1.5 1.5 0 0 0-1.5-1.5v.75a.75.75 0 1 1-1.5 0v-.75h-4v.747a.75.75 0 0 1-.75.75ZM8.5 1.501h-4V.75a.75.75 0 0 0-1.5 0v.752a3 3 0 0 0-3 3v6a3 3 0 0 0 3 3h7a3 3 0 0 0 3-3v-6a3 3 0 0 0-3-3v-.75a.75.75 0 0 0-1.5 0v.75Zm-7 5.5v3.5a1.5 1.5 0 0 0 1.5 1.5h7a1.5 1.5 0 0 0 1.5-1.5v-3.5h-10Z"
+      fill="currentColor"
+      fill-rule="evenodd"
+    />
+  </svg>
+)
+
 export type { IconProps }
-export { DangerIcon, InfoIcon, SuccessIcon, WarningIcon }
+export {
+  CircleDashedIcon,
+  CloseIcon,
+  DangerIcon,
+  ExternalLinkIcon,
+  IconCalendar,
+  IconChevronDown,
+  IconChevronLeft,
+  IconChevronRight,
+  IconChevronUp,
+  IconMinus,
+  IconPlus,
+  IconSearch,
+  InfoIcon,
+  SuccessIcon,
+  WarningIcon
+}

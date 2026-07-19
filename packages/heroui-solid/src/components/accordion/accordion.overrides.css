@@ -2,6 +2,17 @@
   @apply -rotate-180;
 }
 
+/* Kobalte stamps no data-focus-visible (React Aria does upstream) and the
+   upstream native fallback `:focus-visible:not(:focus)` never matches, so the
+   trigger focus ring rides native :focus-visible instead. No modality gate: the
+   trigger is a plain <button> that only takes focus from a real click or the
+   keyboard, and browsers already withhold :focus-visible on a mouse click — so
+   this rings on keyboard focus only, exactly like a lone Button. (The gate is
+   only for triggers Kobalte refocuses programmatically, e.g. Select/Menu.) */
+.accordion__trigger:focus-visible {
+  @apply status-focused;
+}
+
 /* hideSeparator is a HeroUI-only visual prop with no Kobalte equivalent. The
    Root stamps data-hide-separator; this hides every item's separator line via
    CSS cascade (upstream instead keys off each item's own attribute — we key off

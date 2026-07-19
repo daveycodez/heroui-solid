@@ -42,8 +42,11 @@ const renderAccordion = (
     </AccordionRoot>
   ))
 
-const bySlot = (root: HTMLElement, slot: string) =>
-  root.querySelector(`[data-slot="${slot}"]`)
+const bySlot = (root: HTMLElement, slot: string) => {
+  const el = root.querySelector(`[data-slot="${slot}"]`)
+  if (!el) throw new Error(`no element with data-slot="${slot}"`)
+  return el
+}
 
 describe("Accordion (thin skin)", () => {
   it("stamps each part with its slot class and data-slot", () => {
@@ -60,17 +63,16 @@ describe("Accordion (thin skin)", () => {
 
     for (const [slot, cls] of cases) {
       const el = bySlot(container, slot)
-      expect(el, slot).not.toBeNull()
-      expect(classSet(el!.className).has(cls), `${slot} → .${cls}`).toBe(true)
+      expect(classSet(el.className).has(cls), `${slot} → .${cls}`).toBe(true)
     }
   })
 
   it("merges the caller's class after the slot class", () => {
     const { container } = renderAccordion()
-    expect(classSet(bySlot(container, "accordion-item")!.className)).toEqual(
+    expect(classSet(bySlot(container, "accordion-item").className)).toEqual(
       new Set(["accordion__item", "item-custom"])
     )
-    expect(classSet(bySlot(container, "accordion-trigger")!.className)).toEqual(
+    expect(classSet(bySlot(container, "accordion-trigger").className)).toEqual(
       new Set(["accordion__trigger", "trigger-custom"])
     )
   })
@@ -78,14 +80,14 @@ describe("Accordion (thin skin)", () => {
   it("adds the surface modifier to the base only for variant=surface", () => {
     const plain = renderAccordion()
     expect(
-      classSet(bySlot(plain.container, "accordion")!.className).has(
+      classSet(bySlot(plain.container, "accordion").className).has(
         "accordion--surface"
       )
     ).toBe(false)
 
     const surface = renderAccordion({ variant: "surface" })
     expect(
-      classSet(bySlot(surface.container, "accordion")!.className).has(
+      classSet(bySlot(surface.container, "accordion").className).has(
         "accordion--surface"
       )
     ).toBe(true)
@@ -94,19 +96,19 @@ describe("Accordion (thin skin)", () => {
   it("stamps data-hide-separator on the root only when hideSeparator is set", () => {
     const off = renderAccordion()
     expect(
-      bySlot(off.container, "accordion")!.getAttribute("data-hide-separator")
+      bySlot(off.container, "accordion").getAttribute("data-hide-separator")
     ).toBeNull()
 
     const on = renderAccordion({ hideSeparator: true })
     expect(
-      bySlot(on.container, "accordion")!.getAttribute("data-hide-separator")
+      bySlot(on.container, "accordion").getAttribute("data-hide-separator")
     ).toBe("true")
   })
 
   it("renders a default chevron when the Indicator has no children", () => {
     const { container } = renderAccordion()
     expect(
-      bySlot(container, "accordion-indicator")!.querySelector("svg")
+      bySlot(container, "accordion-indicator").querySelector("svg")
     ).not.toBeNull()
   })
 
@@ -114,7 +116,7 @@ describe("Accordion (thin skin)", () => {
     const { container } = renderAccordion({
       indicator: <span data-testid="custom-indicator">+</span>
     })
-    const indicator = bySlot(container, "accordion-indicator")!
+    const indicator = bySlot(container, "accordion-indicator")
     expect(
       indicator.querySelector('[data-testid="custom-indicator"]')
     ).not.toBeNull()

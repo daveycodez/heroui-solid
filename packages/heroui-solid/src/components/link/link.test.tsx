@@ -5,7 +5,11 @@ import { describe, expect, it } from "vitest"
 import { classSet } from "../../test/utils"
 import { LinkIcon, LinkRoot } from "./link"
 
-describe("Link", () => {
+// The behavior (navigation, disabled, aria) is Kobalte's and is not retested
+// here. These guard only the thin skin we own: slot classes, data-slot hooks,
+// class merging, and the default external-link Icon.
+
+describe("Link (thin skin)", () => {
   it("renders an anchor with slot classes and href", () => {
     const { container } = render(() => (
       <LinkRoot class="custom" href="https://example.com">
@@ -52,9 +56,9 @@ describe("Link", () => {
     )
   })
 
-  it("disables interaction via isDisabled", () => {
+  it("disables interaction via disabled", () => {
     const { container } = render(() => (
-      <LinkRoot href="#" isDisabled>
+      <LinkRoot disabled href="#">
         Disabled
       </LinkRoot>
     ))
