@@ -41,6 +41,16 @@ uses React's `onChange`, which fires per keystroke — Solid's `onChange` fires 
 
 ```
 
+### Auto Resize
+
+Pass `autoResize` to grow the textarea to fit its content as you type, with no inner scrollbar. This is a Kobalte extra not present in HeroUI React, and it works on a standalone TextArea as well as inside a TextField.
+
+<ComponentPreview name="textarea-auto-resize" />
+
+```tsx file=../../../demos/textarea/auto-resize.tsx title=""
+
+```
+
 ### Full Width
 
 <ComponentPreview name="textarea-full-width" />
@@ -150,8 +160,8 @@ TextArea accepts all standard HTML `<textarea>` attributes plus the following:
 | `rows`          | `number`                   | -           | Number of visible text lines.                                                                                                                                      |
 | `fullWidth`     | `boolean`                  | `false`     | Whether the textarea should take full width of its container                                                                                                       |
 | `variant`       | `"primary" \| "secondary"` | `"primary"` | Visual variant of the component. `primary` is the default style with shadow. `secondary` is a lower emphasis variant without shadow, suitable for use in surfaces. |
-| `autoResize`    | `boolean`                  | `false`     | Grow the textarea to fit its content (Kobalte, only inside a TextField)                                                                                            |
-| `submitOnEnter` | `boolean`                  | `false`     | Submit the enclosing form on Enter (Kobalte, only inside a TextField)                                                                                              |
+| `autoResize`    | `boolean`                  | `false`     | Grow the textarea to fit its content (Kobalte extra, not present upstream)                                                                                         |
+| `submitOnEnter` | `boolean`                  | `false`     | Submit the enclosing form on Enter without Shift (Kobalte extra, not present upstream)                                                                             |
 
 > For validation props like `isInvalid` and `isRequired`, use **[TextField](/docs/components/text-field)** with TextArea as a child component.
 
@@ -160,5 +170,5 @@ TextArea accepts all standard HTML `<textarea>` attributes plus the following:
 - Use `class` instead of `className` and `for` instead of `htmlFor` on labels.
 - Control standalone textareas with `onInput` (per keystroke); Solid's `onChange`
   fires on blur. Inside a TextField, use the field's `onChange(value)` instead.
-- `autoResize` and `submitOnEnter` are Kobalte extras not present upstream; they
-  only apply when the TextArea is inside a TextField.
+- `autoResize` and `submitOnEnter` are Kobalte extras not present upstream. They
+  work on a standalone TextArea as well as inside a TextField.

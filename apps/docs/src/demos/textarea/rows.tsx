@@ -6,6 +6,7 @@ export function Rows() {
       <div class="flex flex-col gap-2">
         <Label for="textarea-rows-3">Short feedback</Label>
         <TextArea
+          aria-label="Short feedback"
           id="textarea-rows-3"
           placeholder="This week's highlights..."
           rows={3}
@@ -14,6 +15,7 @@ export function Rows() {
       <div class="flex flex-col gap-2">
         <Label for="textarea-rows-6">Detailed notes</Label>
         <TextArea
+          aria-label="Detailed notes"
           id="textarea-rows-6"
           placeholder="Write out the full meeting notes..."
           rows={6}

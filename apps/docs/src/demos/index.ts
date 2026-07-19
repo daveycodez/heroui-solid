@@ -215,6 +215,7 @@ import { TagGroupVariants } from "./tag-group/variants"
 import { TagGroupWithErrorMessage } from "./tag-group/with-error-message"
 import { TagGroupWithPrefix } from "./tag-group/with-prefix"
 import { TagGroupWithRemoveButton } from "./tag-group/with-remove-button"
+import { AutoResize as TextAreaAutoResize } from "./textarea/auto-resize"
 import { Basic as TextAreaBasic } from "./textarea/basic"
 import { Controlled as TextAreaControlled } from "./textarea/controlled"
 import { FullWidth as TextAreaFullWidth } from "./textarea/full-width"
@@ -438,6 +439,7 @@ export const demos: Record<string, Component> = {
   "textarea-basic": TextAreaBasic,
   "textarea-controlled": TextAreaControlled,
   "textarea-rows": TextAreaRows,
+  "textarea-auto-resize": TextAreaAutoResize,
   "textarea-full-width": TextAreaFullWidth,
   "textarea-variants": TextAreaVariants,
   "textarea-on-surface": TextAreaOnSurface,
