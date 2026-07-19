@@ -1,7 +1,7 @@
 import { type AccordionVariants, accordionVariants, cn } from "@heroui/styles"
 import { Accordion } from "@kobalte/core/accordion"
 import { ChevronDown } from "gravity-icons-solid"
-import { type ComponentProps, splitProps, type ValidComponent } from "solid-js"
+import { type ComponentProps, splitProps } from "solid-js"
 
 /* -------------------------------------------------------------------------------------------------
  * Accordion Root
@@ -44,7 +44,7 @@ const AccordionItem = (props: AccordionItemProps) => {
 /* -------------------------------------------------------------------------------------------------
  * AccordionIndicator
  * -----------------------------------------------------------------------------------------------*/
-interface AccordionIndicatorProps extends ComponentProps<ValidComponent> {}
+interface AccordionIndicatorProps extends ComponentProps<"span"> {}
 
 const AccordionIndicator = (props: AccordionIndicatorProps) => {
   const [local, rest] = splitProps(props, ["class", "children"])
@@ -55,7 +55,7 @@ const AccordionIndicator = (props: AccordionIndicatorProps) => {
       data-slot="accordion-indicator"
       {...rest}
     >
-      {local.children ? local.children : <ChevronDown />}
+      {local.children ?? <ChevronDown />}
     </span>
   )
 }
