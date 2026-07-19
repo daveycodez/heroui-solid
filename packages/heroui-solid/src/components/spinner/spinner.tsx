@@ -66,12 +66,13 @@ const SpinnerPrimitive = (props: SpinnerPrimitiveProps) => {
 /* -------------------------------------------------------------------------------------------------
  * Spinner Root
  * -----------------------------------------------------------------------------------------------*/
-interface SpinnerRootProps extends SpinnerVariants {
-  class?: string
-}
+type SpinnerRootProps<T extends ValidComponent = "span"> = PolymorphicProps<
+  T,
+  SpinnerVariants
+>
 
 const SpinnerRoot = <T extends ValidComponent = "span">(
-  props: PolymorphicProps<T, SpinnerRootProps>
+  props: SpinnerRootProps<T>
 ) => {
   const [variantProps, local, rest] = splitProps(
     props as SpinnerRootProps,

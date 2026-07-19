@@ -120,9 +120,13 @@ and docs* — not as the API or behavior to mirror.
   AGENTS.md carries the full story only for concerns that can affect other
   components (e.g. the single-read children rule), with a one-liner in the
   code pointing at it.
-- **index.ts exports ONLY the compound** — nothing else is public. The compound
-  `export const X = Object.assign(XRoot, { Root: XRoot, /* satellites */ })`, a
-  merged `export type X = { Props: XRootProps; /* SatelliteProps */ }` built
+- **index.ts exports ONLY the compound** — nothing else is public. `X` *is*
+  `X.Root`, so **never add a `Root:` key** and **don't `Object.assign` at all
+  when the component has no satellites** — a root-only component is just
+  `export const X = XRoot` (see spinner, surface, close-button). With satellites
+  it's `export const X = Object.assign(XRoot, { /* satellites, no Root */ })`
+  (see accordion, link, kbd). Then a merged
+  `export type X = { Props: XRootProps; /* SatelliteProps */ }` built
   from the component file's exported prop types
   (not `ComponentProps<typeof XRoot>`), and the variants re-exported from
   `@heroui/styles`. Re-export the tv fn (`xVariants`) always; re-export the
@@ -152,13 +156,20 @@ and docs* — not as the API or behavior to mirror.
   upstream stamps `DOMRenderProps<E>` + renders via `dom.<tag>`, which is the
   React-side element override. Match it with Kobalte's own polymorphism, exactly
   as Kobalte's primitives do: `import { Polymorphic, type PolymorphicProps } from
-  "@kobalte/core/polymorphic"`, type the part `PolymorphicProps<T, XPartProps>`
-  (`XPartProps` an interface of the *own* props — variants, `class`, `children`,
-  `keyValue`…, since `PolymorphicProps` doesn't auto-list `class`/`children`),
-  `<T extends ValidComponent = "<defaultTag>">`, and render `<Polymorphic
-  as="<defaultTag>" … {...rest} />`. Do NOT reach for `ComponentProps<typeof
-  Polymorphic<T>>` — it drops the intrinsic element attrs. Every upstream-
-  polymorphic part gets this (Kbd does it on Root, Abbr, and Content).
+  "@kobalte/core/polymorphic"`, and make the part's prop type itself
+  `type XPartProps<T extends ValidComponent = "<defaultTag>"> =
+  PolymorphicProps<T, OwnProps>` — the same shape accordion uses, just with the
+  generic `Polymorphic` instead of a named Kobalte primitive. `OwnProps` is
+  *only* the component's own additions (`XVariants`, a HeroUI extra like
+  `{ keyValue: KbdKey }`, or `{}`); **do NOT hand-list `class`/`children`** —
+  `PolymorphicProps<T, OwnProps>` is `OverrideProps<ComponentProps<T>, OwnProps &
+  { as? }>`, so it already carries every intrinsic attr. (This is why
+  `ComponentProps<typeof Polymorphic<T>>` is wrong — that's the *component's*
+  props, `{ as? }` only, and drops the element attrs.) The component is
+  `<T extends ValidComponent = "<defaultTag>">(props: XPartProps<T>)`, splits via
+  `props as XPartProps`, and renders `<Polymorphic as="<defaultTag>" … {...rest}
+  />`. Every upstream-polymorphic part gets this (Kbd does it on Root, Abbr, and
+  Content).
 - **Behavior is Kobalte's, always** — not "where it adds value". Reach for the
   Kobalte primitive by default and let it own the behavior; `callHandler` from
   `@kobalte/utils` only when a HeroUI add-on genuinely must intercept a handler.

@@ -1,11 +1,9 @@
 import { SpinnerRoot, type SpinnerRootProps } from "./spinner"
 
 /* -------------------------------------------------------------------------------------------------
- * Compound Component
+ * Component
  * -----------------------------------------------------------------------------------------------*/
-export const Spinner = Object.assign(SpinnerRoot, {
-  Root: SpinnerRoot
-})
+export const Spinner = SpinnerRoot
 
 export type Spinner = {
   Props: SpinnerRootProps

@@ -1,20 +1,17 @@
-import type { ComponentProps } from "solid-js"
-
 import {
   SurfaceContext,
   type SurfaceContextValue,
-  SurfaceRoot
+  SurfaceRoot,
+  type SurfaceRootProps
 } from "./surface"
 
 /* -------------------------------------------------------------------------------------------------
- * Compound Component
+ * Component
  * -----------------------------------------------------------------------------------------------*/
-export const Surface = Object.assign(SurfaceRoot, {
-  Root: SurfaceRoot
-})
+export const Surface = SurfaceRoot
 
 export type Surface = {
-  Props: ComponentProps<typeof SurfaceRoot>
+  Props: SurfaceRootProps
 }
 
 /* -------------------------------------------------------------------------------------------------

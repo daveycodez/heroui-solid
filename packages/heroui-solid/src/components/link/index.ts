@@ -9,7 +9,6 @@ import {
  * Compound Component
  * -----------------------------------------------------------------------------------------------*/
 export const Link = Object.assign(LinkRoot, {
-  Root: LinkRoot,
   Icon: LinkIcon
 })
 

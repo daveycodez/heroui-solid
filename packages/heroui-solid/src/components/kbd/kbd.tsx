@@ -1,20 +1,18 @@
 import { cn, type KbdVariants, kbdVariants } from "@heroui/styles"
 import { Polymorphic, type PolymorphicProps } from "@kobalte/core/polymorphic"
-import { type JSX, splitProps, type ValidComponent } from "solid-js"
+import { splitProps, type ValidComponent } from "solid-js"
 
 import { type KbdKey, kbdKeysLabelMap, kbdKeysMap } from "./kbd.constants"
 
 /* -------------------------------------------------------------------------------------------------
  * Kbd Root
  * -----------------------------------------------------------------------------------------------*/
-interface KbdRootProps extends KbdVariants {
-  class?: string
-  children?: JSX.Element
-}
+type KbdRootProps<T extends ValidComponent = "kbd"> = PolymorphicProps<
+  T,
+  KbdVariants
+>
 
-const KbdRoot = <T extends ValidComponent = "kbd">(
-  props: PolymorphicProps<T, KbdRootProps>
-) => {
+const KbdRoot = <T extends ValidComponent = "kbd">(props: KbdRootProps<T>) => {
   const [variantProps, local, rest] = splitProps(
     props as KbdRootProps,
     kbdVariants.variantKeys,
@@ -33,14 +31,12 @@ const KbdRoot = <T extends ValidComponent = "kbd">(
 /* -------------------------------------------------------------------------------------------------
  * Kbd Abbr
  * -----------------------------------------------------------------------------------------------*/
-interface KbdAbbrProps {
-  class?: string
-  keyValue: KbdKey
-}
+type KbdAbbrProps<T extends ValidComponent = "abbr"> = PolymorphicProps<
+  T,
+  { keyValue: KbdKey }
+>
 
-const KbdAbbr = <T extends ValidComponent = "abbr">(
-  props: PolymorphicProps<T, KbdAbbrProps>
-) => {
+const KbdAbbr = <T extends ValidComponent = "abbr">(props: KbdAbbrProps<T>) => {
   const [local, rest] = splitProps(props as KbdAbbrProps, ["class", "keyValue"])
 
   return (
@@ -58,13 +54,10 @@ const KbdAbbr = <T extends ValidComponent = "abbr">(
 /* -------------------------------------------------------------------------------------------------
  * Kbd Content
  * -----------------------------------------------------------------------------------------------*/
-interface KbdContentProps {
-  class?: string
-  children?: JSX.Element
-}
+type KbdContentProps<T extends ValidComponent = "span"> = PolymorphicProps<T>
 
 const KbdContent = <T extends ValidComponent = "span">(
-  props: PolymorphicProps<T, KbdContentProps>
+  props: KbdContentProps<T>
 ) => {
   const [local, rest] = splitProps(props as KbdContentProps, ["class"])
 

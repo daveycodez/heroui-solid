@@ -1,11 +1,6 @@
 import { cn, type SurfaceVariants, surfaceVariants } from "@heroui/styles"
 import { Polymorphic, type PolymorphicProps } from "@kobalte/core/polymorphic"
-import {
-  createContext,
-  type JSX,
-  splitProps,
-  type ValidComponent
-} from "solid-js"
+import { createContext, splitProps, type ValidComponent } from "solid-js"
 
 /* ------------------------------------------------------------------------------------------------
  * Surface Context
@@ -22,13 +17,13 @@ const SurfaceContext = createContext<SurfaceContextValue>({})
 /* ------------------------------------------------------------------------------------------------
  * Surface Root
  * --------------------------------------------------------------------------------------------- */
-interface SurfaceRootProps extends SurfaceVariants {
-  class?: string
-  children?: JSX.Element
-}
+type SurfaceRootProps<T extends ValidComponent = "div"> = PolymorphicProps<
+  T,
+  SurfaceVariants
+>
 
 const SurfaceRoot = <T extends ValidComponent = "div">(
-  props: PolymorphicProps<T, SurfaceRootProps>
+  props: SurfaceRootProps<T>
 ) => {
   const [variantProps, local, rest] = splitProps(
     props as SurfaceRootProps,

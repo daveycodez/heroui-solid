@@ -1,11 +1,9 @@
 import { CloseButtonRoot, type CloseButtonRootProps } from "./close-button"
 
 /* -------------------------------------------------------------------------------------------------
- * Compound Component
+ * Component
  * -----------------------------------------------------------------------------------------------*/
-export const CloseButton = Object.assign(CloseButtonRoot, {
-  Root: CloseButtonRoot
-})
+export const CloseButton = CloseButtonRoot
 
 export type CloseButton = {
   Props: CloseButtonRootProps

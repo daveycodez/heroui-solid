@@ -11,7 +11,6 @@ import {
  * Compound Component
  * -----------------------------------------------------------------------------------------------*/
 export const Kbd = Object.assign(KbdRoot, {
-  Root: KbdRoot,
   Abbr: KbdAbbr,
   Content: KbdContent
 })
