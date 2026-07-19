@@ -148,24 +148,6 @@ const checkPage = async (path) => {
         errors.push(`demo "${name}" lost its content after hydration`)
       }
     }
-    // Virtualized listboxes render an (empty) tall scroll box until the
-    // virtualizer windows rows into it; a section-level child count can't see
-    // that, so assert the rows actually appear (catches a blank virtualizer).
-    const virtualizedRowCounts = await page
-      .evaluate(() =>
-        [...document.querySelectorAll('[data-slot="list-box"]')]
-          .filter((lb) => /virtual/i.test(lb.getAttribute("aria-label") ?? ""))
-          .map(
-            (lb) => lb.querySelectorAll('[data-slot="list-box-item"]').length
-          )
-      )
-      .catch(() => [])
-    if (virtualizedRowCounts.length === 0) {
-      errors.push("no virtualized listbox found on /ssr-test")
-    }
-    if (virtualizedRowCounts.some((n) => n === 0)) {
-      errors.push("a virtualized listbox rendered no rows (blank virtualizer)")
-    }
   }
 
   await page.close()

@@ -24,27 +24,6 @@ import { Placements as AlertDialogPlacements } from "./alert-dialog/placements"
 import { Sizes as AlertDialogSizes } from "./alert-dialog/sizes"
 import { Statuses as AlertDialogStatuses } from "./alert-dialog/statuses"
 import { WithCloseButton as AlertDialogWithCloseButton } from "./alert-dialog/with-close-button"
-import { AllowsEmptyCollection as AutocompleteAllowsEmptyCollection } from "./autocomplete/allows-empty-collection"
-import { AsynchronousFiltering as AutocompleteAsynchronousFiltering } from "./autocomplete/asynchronous-filtering"
-import { Controlled as AutocompleteControlled } from "./autocomplete/controlled"
-import { ControlledOpenState as AutocompleteControlledOpenState } from "./autocomplete/controlled-open-state"
-import { CustomIndicator as AutocompleteCustomIndicator } from "./autocomplete/custom-indicator"
-import { Default as AutocompleteDefault } from "./autocomplete/default"
-import { Disabled as AutocompleteDisabled } from "./autocomplete/disabled"
-import { EmailRecipients as AutocompleteEmailRecipients } from "./autocomplete/email-recipients"
-import { FullWidth as AutocompleteFullWidth } from "./autocomplete/full-width"
-import { LocationSearch as AutocompleteLocationSearch } from "./autocomplete/location-search"
-import { MultipleSelect as AutocompleteMultipleSelect } from "./autocomplete/multiple-select"
-import { Required as AutocompleteRequired } from "./autocomplete/required"
-import { SingleSelect as AutocompleteSingleSelect } from "./autocomplete/single-select"
-import { TagGroupSelection as AutocompleteTagGroupSelection } from "./autocomplete/tag-group-selection"
-import { UserSelection as AutocompleteUserSelection } from "./autocomplete/user-selection"
-import { UserSelectionMultiple as AutocompleteUserSelectionMultiple } from "./autocomplete/user-selection-multiple"
-import { Variants as AutocompleteVariants } from "./autocomplete/variants"
-import { Virtualization as AutocompleteVirtualization } from "./autocomplete/virtualization"
-import { WithDescription as AutocompleteWithDescription } from "./autocomplete/with-description"
-import { WithDisabledOptions as AutocompleteWithDisabledOptions } from "./autocomplete/with-disabled-options"
-import { WithSections as AutocompleteWithSections } from "./autocomplete/with-sections"
 import { Basic as AvatarBasic } from "./avatar/basic"
 import { Colors as AvatarColors } from "./avatar/colors"
 import { CustomStyles as AvatarCustomStyles } from "./avatar/custom-styles"
@@ -89,22 +68,6 @@ import { Default as CloseButtonDefault } from "./close-button/default"
 import { Interactive as CloseButtonInteractive } from "./close-button/interactive"
 import { Variants as CloseButtonVariants } from "./close-button/variants"
 import { WithCustomIcon as CloseButtonWithCustomIcon } from "./close-button/with-custom-icon"
-import { AllowsCustomValue as ComboBoxAllowsCustomValue } from "./combo-box/allows-custom-value"
-import { Controlled as ComboBoxControlled } from "./combo-box/controlled"
-import { ControlledInputValue as ComboBoxControlledInputValue } from "./combo-box/controlled-input-value"
-import { CustomFiltering as ComboBoxCustomFiltering } from "./combo-box/custom-filtering"
-import { CustomIndicator as ComboBoxCustomIndicator } from "./combo-box/custom-indicator"
-import { CustomValue as ComboBoxCustomValue } from "./combo-box/custom-value"
-import { Default as ComboBoxDefault } from "./combo-box/default"
-import { DefaultSelectedKey as ComboBoxDefaultSelectedKey } from "./combo-box/default-selected-key"
-import { Disabled as ComboBoxDisabled } from "./combo-box/disabled"
-import { FullWidth as ComboBoxFullWidth } from "./combo-box/full-width"
-import { MenuTrigger as ComboBoxMenuTrigger } from "./combo-box/menu-trigger"
-import { OnSurface as ComboBoxOnSurface } from "./combo-box/on-surface"
-import { Required as ComboBoxRequired } from "./combo-box/required"
-import { WithDescription as ComboBoxWithDescription } from "./combo-box/with-description"
-import { WithDisabledOptions as ComboBoxWithDisabledOptions } from "./combo-box/with-disabled-options"
-import { WithSections as ComboBoxWithSections } from "./combo-box/with-sections"
 import { Basic as DescriptionBasic } from "./description/basic"
 import { Controlled as DropdownControlled } from "./dropdown/controlled"
 import { ControlledOpenState as DropdownControlledOpenState } from "./dropdown/controlled-open-state"
@@ -150,7 +113,6 @@ import { CustomCheckIcon as ListBoxCustomCheckIcon } from "./list-box/custom-che
 import { Default as ListBoxDefault } from "./list-box/default"
 import { MultiSelect as ListBoxMultiSelect } from "./list-box/multi-select"
 import { ScrollbarModes as ListBoxScrollbarModes } from "./list-box/scrollbar-modes"
-import { Virtualization as ListBoxVirtualization } from "./list-box/virtualization"
 import { WithDisabledItems as ListBoxWithDisabledItems } from "./list-box/with-disabled-items"
 import { WithSections as ListBoxWithSections } from "./list-box/with-sections"
 import { CustomSize as ScrollShadowCustomSize } from "./scroll-shadow/custom-size"
@@ -239,43 +201,6 @@ import { WithError as TextFieldWithError } from "./textfield/with-error"
 // official HeroUI docs structure (apps/docs/src/demos/<component>/<demo>.tsx,
 // referenced by "<component>-<demo>" name).
 export const demos: Record<string, Component> = {
-  "autocomplete-single-select": AutocompleteSingleSelect,
-  "autocomplete-default": AutocompleteDefault,
-  "combo-box-default": ComboBoxDefault,
-  "combo-box-with-description": ComboBoxWithDescription,
-  "combo-box-with-sections": ComboBoxWithSections,
-  "combo-box-with-disabled-options": ComboBoxWithDisabledOptions,
-  "combo-box-custom-indicator": ComboBoxCustomIndicator,
-  "combo-box-required": ComboBoxRequired,
-  "combo-box-custom-value": ComboBoxCustomValue,
-  "combo-box-controlled": ComboBoxControlled,
-  "combo-box-controlled-input-value": ComboBoxControlledInputValue,
-  "combo-box-custom-filtering": ComboBoxCustomFiltering,
-  "combo-box-allows-custom-value": ComboBoxAllowsCustomValue,
-  "combo-box-disabled": ComboBoxDisabled,
-  "combo-box-default-selected-key": ComboBoxDefaultSelectedKey,
-  "combo-box-full-width": ComboBoxFullWidth,
-  "combo-box-on-surface": ComboBoxOnSurface,
-  "combo-box-menu-trigger": ComboBoxMenuTrigger,
-  "autocomplete-with-description": AutocompleteWithDescription,
-  "autocomplete-multiple-select": AutocompleteMultipleSelect,
-  "autocomplete-with-sections": AutocompleteWithSections,
-  "autocomplete-with-disabled-options": AutocompleteWithDisabledOptions,
-  "autocomplete-allows-empty-collection": AutocompleteAllowsEmptyCollection,
-  "autocomplete-custom-indicator": AutocompleteCustomIndicator,
-  "autocomplete-required": AutocompleteRequired,
-  "autocomplete-full-width": AutocompleteFullWidth,
-  "autocomplete-variants": AutocompleteVariants,
-  "autocomplete-controlled": AutocompleteControlled,
-  "autocomplete-controlled-open-state": AutocompleteControlledOpenState,
-  "autocomplete-asynchronous-filtering": AutocompleteAsynchronousFiltering,
-  "autocomplete-virtualization": AutocompleteVirtualization,
-  "autocomplete-disabled": AutocompleteDisabled,
-  "autocomplete-user-selection": AutocompleteUserSelection,
-  "autocomplete-user-selection-multiple": AutocompleteUserSelectionMultiple,
-  "autocomplete-location-search": AutocompleteLocationSearch,
-  "autocomplete-tag-group-selection": AutocompleteTagGroupSelection,
-  "autocomplete-email-recipients": AutocompleteEmailRecipients,
   "accordion-basic": AccordionBasic,
   "accordion-controlled": AccordionControlled,
   "accordion-custom-element": AccordionCustomElement,
@@ -392,7 +317,6 @@ export const demos: Record<string, Component> = {
   "list-box-custom-check-icon": ListBoxCustomCheckIcon,
   "list-box-controlled": ListBoxControlled,
   "list-box-scrollbar-modes": ListBoxScrollbarModes,
-  "list-box-virtualization": ListBoxVirtualization,
   "select-default": SelectDefault,
   "select-multiple-select": SelectMultipleSelect,
   "select-with-disabled-options": SelectWithDisabledOptions,

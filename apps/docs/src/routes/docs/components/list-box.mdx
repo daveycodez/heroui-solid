@@ -92,16 +92,6 @@ export default () => (
 
 ```
 
-### Virtualization
-
-ListBox supports virtualization through `Virtualizer`, enabling efficient rendering of large datasets by displaying only the rows visible within the viewport. It wraps the ListBox and windows the collection with [@tanstack/solid-virtual](https://tanstack.com/virtual) over Kobalte's virtualized listbox.
-
-<ComponentPreview name="list-box-virtualization" />
-
-```tsx file=../../../demos/list-box/virtualization.tsx title=""
-
-```
-
 ## Styling
 
 ### Passing Tailwind CSS classes
@@ -326,7 +316,6 @@ The ListBox component implements the ARIA listbox pattern and provides:
   protocol can't defer the section header).
 - `ListBox.ItemIndicator` takes plain children instead of a render function — it only
   mounts while its item is selected (pass `forceMount` to keep it in the DOM).
-- Virtualization (`Virtualizer` / `ListLayout`) is not ported.
 - Selection is reported as Kobalte's `Set<string>` instead of React Aria's
   `Selection` (`"all" | Set<Key>`), and keys are strings.
 - The React `render` prop is replaced by Kobalte's `as` prop.
