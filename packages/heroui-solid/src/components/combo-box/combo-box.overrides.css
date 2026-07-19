@@ -7,6 +7,16 @@
   @apply opacity-70;
 }
 
+/* heroui sizes only the default indicator ([data-slot=combo-box-trigger-default-icon]
+   → size-4) and, unlike its other icon-bearing components (.button,
+   .close-button, .tag all mark the icon flex-shrink: 0), never stops the
+   trigger's icon from shrinking. In the flex trigger a custom indicator (e.g. a
+   size-3 trigger holding a 16px icon) is a shrinkable flex item and collapses on
+   its main axis. Match heroui's icon convention so the indicator keeps its size. */
+.combo-box__trigger svg {
+  flex-shrink: 0;
+}
+
 /* Upstream pins the popover to the trigger width via --trigger-width and its
    transform origin via origin-(--trigger-anchor-point) (both React Aria vars).
    Kobalte exposes the anchor width as --kb-popper-anchor-width and the origin

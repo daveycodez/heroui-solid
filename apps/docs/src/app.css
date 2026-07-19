@@ -25,12 +25,15 @@
 /* @heroui/styles sizes its icons against Tailwind v4's preflight, which leaves
    `svg { max-width }` unset. SolidBase's reset additionally caps every svg at
    `max-width: 100%`; inside heroui's flex icon containers that lack an explicit
-   width/`flex-shrink: 0` (e.g. Alert.Indicator), the 100% resolves against the
-   flex-shrunk container and squishes the icon on its main axis (12.94px instead
-   of 16px). Real consumers on Tailwind v4 don't hit this — restore the unset
-   value for heroui component icons so the docs match. Unlayered → beats the
-   `solidbase` layer. */
-[data-slot$="-icon"] {
+   width/`flex-shrink: 0` (e.g. Alert.Indicator, or a custom ComboBox.Trigger
+   icon in a `size-3` button), the 100% resolves against the flex-shrunk
+   container and squishes the icon on its main axis (12.94px instead of 16px).
+   Real consumers on Tailwind v4 don't hit this. Restore the unset value for
+   both heroui's own slotted icons and any custom icon nested inside a heroui
+   slot (custom icons carry no `data-slot`), so the docs match. Unlayered →
+   beats the `solidbase` layer. */
+[data-slot$="-icon"],
+[data-slot] svg {
   max-width: none;
 }
 
