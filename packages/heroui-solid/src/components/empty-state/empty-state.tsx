@@ -1,27 +1,34 @@
 import { cn, emptyStateVariants } from "@heroui/styles"
-import { type ComponentProps, splitProps } from "solid-js"
+import { Polymorphic, type PolymorphicProps } from "@kobalte/core/polymorphic"
+import { splitProps, type ValidComponent } from "solid-js"
 
 /* -------------------------------------------------------------------------------------------------
  * EmptyState Root
  * -----------------------------------------------------------------------------------------------*/
-interface EmptyStateRootProps extends ComponentProps<"div"> {}
+type EmptyStateRootProps<T extends ValidComponent = "div"> = PolymorphicProps<T>
 
-const EmptyStateRoot = (props: EmptyStateRootProps) => {
-  const [local, rest] = splitProps(props, ["class", "children"])
+const EmptyStateRoot = <T extends ValidComponent = "div">(
+  props: EmptyStateRootProps<T>
+) => {
+  const [local, rest] = splitProps(props as EmptyStateRootProps, [
+    "class",
+    "children"
+  ])
 
   return (
-    <div
+    <Polymorphic
+      as="div"
       class={cn(emptyStateVariants(), local.class)}
       data-slot="empty-state"
       {...rest}
     >
-      {local.children ?? "No results found"}
-    </div>
+      {local.children || "No results found"}
+    </Polymorphic>
   )
 }
 
-export type { EmptyStateRootProps }
 /* -------------------------------------------------------------------------------------------------
  * Exports
  * -----------------------------------------------------------------------------------------------*/
+export type { EmptyStateRootProps }
 export { EmptyStateRoot }

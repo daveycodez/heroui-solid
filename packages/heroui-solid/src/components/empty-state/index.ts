@@ -1,28 +1,15 @@
-import type { ComponentProps } from "solid-js"
-
-import { EmptyStateRoot } from "./empty-state"
+import { EmptyStateRoot, type EmptyStateRootProps } from "./empty-state"
 
 /* -------------------------------------------------------------------------------------------------
- * Compound Component
+ * Component
  * -----------------------------------------------------------------------------------------------*/
-export const EmptyState = Object.assign(EmptyStateRoot, {
-  Root: EmptyStateRoot
-})
+export const EmptyState = EmptyStateRoot
 
 export type EmptyState = {
-  Props: ComponentProps<typeof EmptyStateRoot>
-  RootProps: ComponentProps<typeof EmptyStateRoot>
+  Props: EmptyStateRootProps
 }
 
 /* -------------------------------------------------------------------------------------------------
  * Variants
  * -----------------------------------------------------------------------------------------------*/
 export { emptyStateVariants } from "@heroui/styles"
-export type {
-  EmptyStateRootProps,
-  EmptyStateRootProps as EmptyStateProps
-} from "./empty-state"
-/* -------------------------------------------------------------------------------------------------
- * Named Component
- * -----------------------------------------------------------------------------------------------*/
-export { EmptyStateRoot } from "./empty-state"
