@@ -89,5 +89,3 @@ export const ScrollShadowRoot = (props: ScrollShadowRootProps) => {
     </div>
   )
 }
-
-ScrollShadowRoot.displayName = "HeroUI.ScrollShadow"
