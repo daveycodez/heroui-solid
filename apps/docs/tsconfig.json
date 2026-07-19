@@ -18,11 +18,5 @@
       "heroui-solid": ["../../packages/heroui-solid/src/index.tsx"]
     }
   },
-  "exclude": [
-    "node_modules",
-    ".output",
-    ".vinxi",
-    ".solidbase",
-    "parity/fixtures"
-  ]
+  "exclude": ["node_modules", ".output", ".vinxi", ".solidbase"]
 }

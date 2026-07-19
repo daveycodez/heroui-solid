@@ -13,9 +13,7 @@
       "!**/.output",
       "!**/.vinxi",
       "!**/.nx",
-      "!**/.solidbase",
-      "!apps/docs/parity/fixtures",
-      "!apps/docs/parity/deviations"
+      "!**/.solidbase"
     ]
   },
   "formatter": {

@@ -268,7 +268,11 @@ export default defineConfig(({ command }) => ({
       // and sidesteps solid-refresh entirely. CSS overrides fall through to
       // normal HMR (no reload).
       handleHotUpdate({ file, server }) {
-        if (packageSrc && file.startsWith(packageSrc) && /\.[cm]?tsx?$/.test(file)) {
+        if (
+          packageSrc &&
+          file.startsWith(packageSrc) &&
+          /\.[cm]?tsx?$/.test(file)
+        ) {
           server.ws.send({ type: "full-reload" })
           return []
         }
@@ -285,9 +289,7 @@ export default defineConfig(({ command }) => ({
         const fileMeta = /(?:^|\s)file=(?:"([^"]+)"|(\S+))/g
         for (const line of code.split("\n")) {
           if (!line.startsWith("```")) continue
-          fileMeta.lastIndex = 0
-          let match: RegExpExecArray | null
-          while ((match = fileMeta.exec(line))) {
+          for (const match of line.matchAll(fileMeta)) {
             const filePath = (match[1] ?? match[2] ?? "").split("#")[0]
             if (!filePath) continue
             const resolved = await this.resolve(filePath, id)

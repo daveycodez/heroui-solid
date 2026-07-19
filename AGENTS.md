@@ -66,37 +66,29 @@ and docs* — not as the API or behavior to mirror.
   exposes it — mirror the Kobalte primitive's parts, not HeroUI React's, when
   the two diverge. (Packaging conventions like the `index.ts` compound layout
   below are unaffected.)
-- **Parity tension is a known, deferred open item.** The docs-parity apparatus
-  still grades demos/pages against upstream HeroUI React (see Docs Parity), and
-  a Kobalte-verbatim API can diverge from an upstream demo that relies on
-  HeroUI's prop names. Do **not** reshape a component's API back toward React to
-  satisfy parity — flag the conflict on the component and leave it; the parity
-  direction is being decided separately.
 
 - **Port dependencies first, recursively.** Before porting component X, fetch
   X's upstream demos and enumerate every `@heroui/react` component they import
   or use in JSX (compound members included). Port any that are missing —
   applying this same rule to *their* demos — before X, so X's demos and docs
-  page can mirror upstream exactly. Never substitute or drop a dependency to
-  make a demo "work".
+  page can follow upstream (content-wise, adapted to the Kobalte API). Never
+  substitute or drop a dependency to make a demo "work".
 - **A dependency gets the FULL port, never a minimal stub.** Pulling in
   component Y because X (or a demo) needs it means porting Y *completely*, to
   the same bar as any first-class port — not just enough of Y to render the
-  one demo. Full means: the component + compound members, its
-  `parity/components.ts` entry, `sync.ts` to pin its upstream fixtures, its
-  docs page mirroring upstream, *all* of its upstream demos, and unit tests —
-  driven to green (`bun nx test docs`, `ssr-test`, Biome). A dependency you
-  only half-port silently drops Y's own demos, page, and parity guard, and
-  the gap is invisible until someone audits it. If finishing Y's full port is
-  genuinely out of scope for the current change, stop and ask — do not land a
-  stub. The one exception is a dependency that is itself React-impossible in
-  Solid, which follows the `skipDemos` reasoned-skip path.
+  one demo. Full means: the component + compound members, its docs page
+  (following upstream's content, adapted to the Kobalte API), *all* of its
+  upstream demos, and unit tests — driven to green (`bun nx test heroui-solid`,
+  `ssr-test`, Biome). A dependency you only half-port silently drops Y's own
+  demos and page, and the gap is invisible until someone audits it. If
+  finishing Y's full port is genuinely out of scope for the current change,
+  stop and ask — do not land a stub. The one exception is a demo that is itself
+  React-impossible in Solid — skip it with a note on the docs page.
 - **Icons: always use `gravity-icons-solid`** (the Solid port of
   `@gravity-ui/icons`, same icon names) when the icon exists there. Fall back
-  to `unplugin-icons` only for icons gravity-icons-solid doesn't have. Icons
-  are exempt from parity comparison (icon-package imports and their JSX
-  elements are skipped in `parity/analyze.ts`), so upstream's iconify usage
-  can map to whichever icon source fits.
+  to `unplugin-icons` only for icons gravity-icons-solid doesn't have.
+  Upstream's icon package doesn't need to be matched — its iconify usage can
+  map to whichever icon source fits.
 
 - **File structure mirrors upstream**: `XRoot` naming, internal `XPrimitive`
   components, the same section banner comments where upstream has them,
@@ -122,7 +114,7 @@ and docs* — not as the API or behavior to mirror.
   types all come from it at runtime, so bumps must be deliberate: update the
   peer + dev pins in packages/heroui-solid and the dependency in apps/docs
   (a consumer like any other — the exact peer requirement makes a mismatched
-  bump fail at install), re-run tests, and re-check docs parity.
+  bump fail at install), then re-run tests.
 - **Variant keys are dynamic**: `splitProps(props, xVariants.variantKeys,
   [/* behavior keys */])` — the tv function exposes its config at runtime.
   Never hardcode a variant key list.
@@ -423,45 +415,6 @@ and docs* — not as the API or behavior to mirror.
   wording (re-target the pattern).
 - The docs `build` nx target keys its cache on `DOCS_BASE_PATH` (nx.json
   `inputs`), so based and un-based builds don't cross-restore.
-
-## Docs Parity Tests (apps/docs/parity)
-
-- `bun nx test docs` guards the mirror-upstream conventions above with
-  deterministic pass/fail checks against upstream fixtures pinned in
-  `parity/upstream.lock.json` — there is no acceptance baseline or override.
-  Invariants (registry keys ↔ demo files ↔ `<ComponentPreview>` names, empty
-  `file=` include under each preview); demos must match upstream's
-  UI-framework imports, used components (compound members included), and
-  text content; pages must match upstream's title, description, section
-  headings, and previews. Structure/styling adaptations are invisible to
-  the comparison by construction. Full docs in `apps/docs/parity/README.md`.
-- A parity failure names the exact missing/extra imports, components, text,
-  sections, or previews — fix the demo/page to match upstream. If a
-  difference is a mechanical adaptation every port shares (a package mapping,
-  a styling-only attribute), teach `parity/analyze.ts`; never special-case
-  one component.
-- **Strict manifest**: a missing upstream demo is a porting TODO and stays
-  red until ported. The only excuse is a reasoned `skipDemos` entry in
-  `parity/components.ts`, reserved for React-impossible demos
-  (`custom-render-function`, virtualization…); stale skips fail too.
-- **Never run `sync.ts --update` on a feature branch unless explicitly told
-  to.** `--update` re-pins `upstream.lock.json` to whatever upstream `v3` HEAD
-  is at that moment — a whole-workspace decision, not something a
-  single-component PR should carry. Two branches that both `--update` capture
-  different upstream commits, so the lock's top-level `sha` diverges and the
-  file *always* conflicts on merge (independent of which components each added,
-  and unresolvable except by regenerating). Whole-workspace HEAD bumps belong
-  to the scheduled `docs-parity.yml` workflow (which runs `sync.ts --check`,
-  files an issue when upstream's tracked files move, and opens a dedicated bump
-  PR) — keep them out of component PRs. On a feature branch, sync at **main's
-  existing pin** (plain `bun apps/docs/parity/sync.ts`, no `--update`) so the
-  lock only gains your new component's fixtures on top of main's `sha`; rebase
-  on `main` first if the branch has drifted.
-- If the lock conflicts on merge, never hand-merge it — it's generated. Take
-  main's version (`git checkout origin/main -- apps/docs/parity/upstream.lock.json`)
-  then re-run `sync.ts` once on the merged tree and re-add.
-- New ported component: add it to `parity/components.ts`, sync (plain, at
-  main's pin — see above), port until green.
 
 ## Dev Loop
 
