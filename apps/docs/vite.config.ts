@@ -24,6 +24,12 @@ const base = process.env.DOCS_BASE_PATH
   ? `/${process.env.DOCS_BASE_PATH.replace(/^\/|\/$/g, "")}/`
   : "/"
 
+// heroui-solid source dir (aliased into the docs graph in dev); edits here
+// full-reload the page instead of hot-swapping. See the docs-dev-hmr plugin.
+const packageSrc = fileURLToPath(
+  new URL("../../packages/heroui-solid/src/", import.meta.url)
+)
+
 export default defineConfig(({ command }) => ({
   base,
   css: {
@@ -63,16 +69,14 @@ export default defineConfig(({ command }) => ({
     }
   },
   resolve: {
+    // Dev: resolve heroui-solid to its TS source so it compiles inside the
+    // docs app's own vite graph — instant, no package build or watch process.
+    // Exact match only; heroui-solid/styles still resolves via package
+    // exports. Production builds use dist, like published consumers.
     alias:
       command === "serve"
         ? [
             {
-              // Dev only: resolve heroui-solid to its TypeScript source so
-              // component edits HMR instantly without a package build.
-              // Exact match — subpath imports like heroui-solid/styles
-              // resolve through package exports (the styles are shipped as
-              // source, so they HMR too). Production builds use dist JS,
-              // same as published consumers.
               find: /^heroui-solid$/,
               replacement: fileURLToPath(
                 new URL(
@@ -82,7 +86,11 @@ export default defineConfig(({ command }) => ({
               )
             }
           ]
-        : []
+        : [],
+    // One Solid instance across the boundary — bun's isolated linker would
+    // otherwise give the app and the package their own copies, breaking
+    // reactivity/context.
+    dedupe: ["solid-js"]
   },
   plugins: [
     tailwindcss(),
@@ -248,6 +256,23 @@ export default defineConfig(({ command }) => ({
       }
     },
     {
+      name: "docs-dev-hmr",
+      apply: "serve",
+      enforce: "pre",
+      // Editing heroui-solid source (aliased into this graph) must FULL-RELOAD
+      // the page, not hot-swap it. solid-refresh can't hot-replace the
+      // package's Object.assign compound components across the module boundary
+      // — a partial HMR feeds a half-swapped module in and crashes
+      // (`Cannot read properties of undefined (reading 'name')`). Returning []
+      // suppresses the module update; the manual full-reload is instant here
+      // and sidesteps solid-refresh entirely. CSS overrides fall through to
+      // normal HMR (no reload).
+      handleHotUpdate({ file, server }) {
+        if (packageSrc && file.startsWith(packageSrc) && /\.[cm]?tsx?$/.test(file)) {
+          server.ws.send({ type: "full-reload" })
+          return []
+        }
+      },
       // HMR for ```tsx file=… code imports. solidbase's remarkImportCodeFile
       // fs.readFileSync's the demo at MDX-compile time and inlines it, but
       // never tells vite the .mdx depends on that demo — so editing a demo
@@ -255,9 +280,6 @@ export default defineConfig(({ command }) => ({
       // either, since the .mdx output can hash-match). Resolve each file=
       // import while the .mdx transforms and addWatchFile it, so a demo edit
       // invalidates the .mdx, re-runs the remark read, and HMRs the snippet.
-      name: "docs-code-import-hmr",
-      apply: "serve",
-      enforce: "pre",
       async transform(code, id) {
         if (!id.includes(".mdx")) return
         const fileMeta = /(?:^|\s)file=(?:"([^"]+)"|(\S+))/g

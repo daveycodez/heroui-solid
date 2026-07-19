@@ -465,11 +465,30 @@ and docs* — not as the API or behavior to mirror.
 
 ## Dev Loop
 
-- `nx dev docs`: the docs vite config aliases `heroui-solid` to the package
-  **source** in dev, so component edits HMR instantly — no package build or
-  restart. The one-shot `^build` at startup only provides `.d.ts` for editor
-  types. Package CSS (the overrides) ships as source and flows through the
-  docs' own Tailwind pass, so those edits HMR too — no CSS build exists.
+- **`nx dev docs` is the whole docs dev loop** — no package build, watcher, or
+  `dist`. The docs vite config aliases `heroui-solid` → its **source**
+  (`src/index.tsx`, serve only) so the package compiles inside the docs app's
+  own vite graph, and the docs tsconfig `paths` points there too, so runtime
+  and editor types are both instant (a new/renamed export shows up with no
+  rebuild). `resolve.dedupe: ["solid-js"]` keeps one Solid instance across the
+  boundary (bun's isolated linker would otherwise give each side its own copy).
+- **Editing package `.tsx` full-reloads the page; it does NOT hot-swap.** The
+  `docs-dev-hmr` plugin's `handleHotUpdate` returns `[]` + sends a
+  `full-reload` for any change under `packages/heroui-solid/src/**/*.tsx`. This
+  is deliberate and load-bearing: solid-refresh can't hot-replace the package's
+  `Object.assign` compound components across the module boundary — a
+  fine-grained HMR feeds a half-swapped module in and crashes with
+  `Cannot read properties of undefined (reading 'name')` (systemic: 34/38
+  components use the compound). A full reload sidesteps solid-refresh entirely
+  and is ~instant for a docs page. Verified with a headless playwright probe
+  (edit source → clean reload, no crash). Demo edits and CSS overrides are
+  **not** matched by the reload rule, so they still hot-HMR: package CSS
+  (`heroui-solid/styles` → `src/styles` via package exports) flows through the
+  docs' own Tailwind pass, no CSS build.
+- `optimizeDeps.include: ["heroui-solid"]` does **not** work — vite refuses to
+  pre-bundle a linked workspace ESM package (`Cannot optimize dependency`), so
+  the "pre-bundle → vite full-reloads on dep change" trick isn't available;
+  the `handleHotUpdate` above is why we don't need it.
 - External projects consuming via `bun link` read `dist/` for JS — run
   `nx dev heroui-solid` (vite bundle + tsc jsx/dts watchers) for that
   workflow; styles resolve from `src` directly, no build step.
