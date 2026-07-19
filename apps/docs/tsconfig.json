@@ -14,7 +14,8 @@
     "types": ["vite/client", "unplugin-icons/types/solid"],
     "isolatedModules": true,
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["./src/*"],
+      "heroui-solid": ["../../packages/heroui-solid/src/index.tsx"]
     }
   },
   "exclude": [

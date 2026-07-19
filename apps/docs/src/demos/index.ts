@@ -1,4 +1,6 @@
 import type { Component } from "solid-js"
+import { Basic as AccordionBasic } from "./accordion/basic"
+import { Surface as AccordionSurface } from "./accordion/surface"
 import { Basic as AlertBasic } from "./alert/basic"
 import { BackdropVariants as AlertDialogBackdropVariants } from "./alert-dialog/backdrop-variants"
 import { CloseMethods as AlertDialogCloseMethods } from "./alert-dialog/close-methods"
@@ -264,6 +266,8 @@ export const demos: Record<string, Component> = {
   "autocomplete-location-search": AutocompleteLocationSearch,
   "autocomplete-tag-group-selection": AutocompleteTagGroupSelection,
   "autocomplete-email-recipients": AutocompleteEmailRecipients,
+  "accordion-basic": AccordionBasic,
+  "accordion-surface": AccordionSurface,
   "alert-basic": AlertBasic,
   "alert-dialog-default": AlertDialogDefault,
   "alert-dialog-statuses": AlertDialogStatuses,

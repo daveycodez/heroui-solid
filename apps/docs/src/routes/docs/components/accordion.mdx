@@ -4,4 +4,45 @@ title: Accordion
 
 # Accordion
 
-Hello world
+A collapsible content panel for organizing information in a compact space
+
+## Import
+
+```tsx
+import { Accordion } from "heroui-solid";
+```
+
+### Usage
+
+<ComponentPreview name="accordion-basic" />
+
+```tsx file=../../../demos/accordion/basic.tsx title=""
+
+```
+
+### Anatomy
+
+Import the Accordion component and access all parts using dot notation.zz
+
+```tsx
+import { Accordion } from "heroui-solid";
+
+export default () => (
+  <Accordion>
+    <Accordion.Item>
+      <Accordion.Header>
+        <Accordion.Trigger />
+      </Accordion.Header>
+      <Accordion.Content />
+    </Accordion.Item>
+  </Accordion>
+);
+```
+
+### Surface
+
+<ComponentPreview name="accordion-surface" />
+
+```tsx file=../../../demos/accordion/surface.tsx title=""
+
+```

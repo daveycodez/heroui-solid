@@ -1,8 +1,37 @@
-/* Kobalte stamps no data-focus-visible (React Aria does upstream) and the
-   upstream native fallback `:focus-visible:not(:focus)` never matches, so the
-   trigger focus ring rides native :focus-visible instead — gated on keyboard
-   modality (utils/interaction-modality.ts; on pages with no tracker the
-   attribute is absent and the gate is a no-op). */
-/* html:not([data-heroui-modality="pointer"]) .accordion__trigger:focus-visible {
-  @apply status-focused;
-} */
+.accordion__trigger[aria-expanded="true"] .accordion__indicator {
+  @apply -rotate-180;
+}
+
+/* HeroUI's panel animates height via a JS-measured --disclosure-panel-height
+   var (React port); we dropped that JS, so drive the height animation off
+   Kobalte's own measured --kb-accordion-content-height + data-expanded/
+   data-closed state instead. Kobalte's collapsible is built for this — it
+   toggles animation-name around its measurement pass to (re)trigger these. */
+.accordion__panel[data-expanded] {
+  opacity: 1;
+  animation: slideDown 200ms var(--ease-out-quad);
+  @apply motion-reduce:animate-none;
+}
+
+.accordion__panel[data-closed] {
+  animation: slideUp 200ms var(--ease-out-quad);
+  @apply motion-reduce:animate-none;
+}
+
+@keyframes slideDown {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--kb-accordion-content-height);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    height: var(--kb-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}

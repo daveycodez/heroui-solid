@@ -3,6 +3,8 @@ import {
   type AccordionContentProps,
   AccordionHeader,
   type AccordionHeaderProps,
+  AccordionIndicator,
+  type AccordionIndicatorProps,
   AccordionItem,
   type AccordionItemProps,
   AccordionRoot,
@@ -18,7 +20,8 @@ export const Accordion = Object.assign(AccordionRoot, {
   Content: AccordionContent,
   Header: AccordionHeader,
   Item: AccordionItem,
-  Trigger: AccordionTrigger
+  Trigger: AccordionTrigger,
+  Indicator: AccordionIndicator
 })
 
 export type Accordion = {
@@ -27,6 +30,7 @@ export type Accordion = {
   HeaderProps: AccordionHeaderProps
   ItemProps: AccordionItemProps
   TriggerProps: AccordionTriggerProps
+  Indicator: AccordionIndicatorProps
 }
 
 /* -------------------------------------------------------------------------------------------------

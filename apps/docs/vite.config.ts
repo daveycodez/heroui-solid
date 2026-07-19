@@ -247,6 +247,33 @@ export default defineConfig(({ command }) => ({
         server.watcher.on("unlink", onFile)
       }
     },
+    {
+      // HMR for ```tsx file=… code imports. solidbase's remarkImportCodeFile
+      // fs.readFileSync's the demo at MDX-compile time and inlines it, but
+      // never tells vite the .mdx depends on that demo — so editing a demo
+      // leaves the printed snippet stale (a restart doesn't reliably fix it
+      // either, since the .mdx output can hash-match). Resolve each file=
+      // import while the .mdx transforms and addWatchFile it, so a demo edit
+      // invalidates the .mdx, re-runs the remark read, and HMRs the snippet.
+      name: "docs-code-import-hmr",
+      apply: "serve",
+      enforce: "pre",
+      async transform(code, id) {
+        if (!id.includes(".mdx")) return
+        const fileMeta = /(?:^|\s)file=(?:"([^"]+)"|(\S+))/g
+        for (const line of code.split("\n")) {
+          if (!line.startsWith("```")) continue
+          fileMeta.lastIndex = 0
+          let match: RegExpExecArray | null
+          while ((match = fileMeta.exec(line))) {
+            const filePath = (match[1] ?? match[2] ?? "").split("#")[0]
+            if (!filePath) continue
+            const resolved = await this.resolve(filePath, id)
+            if (resolved) this.addWatchFile(resolved.id)
+          }
+        }
+      }
+    },
     solidbase.plugin(solidbaseConfig),
     solidStart(solidbase.startConfig()),
     // Nitro only for build/prerender — never dev. Its v3-beta vite plugin
