@@ -64,8 +64,8 @@ const InputRoot = (props: InputRootProps) => {
   )
 }
 
-export type { InputRootProps }
 /* -------------------------------------------------------------------------------------------------
  * Exports
  * -----------------------------------------------------------------------------------------------*/
+export type { InputRootProps }
 export { InputRoot }

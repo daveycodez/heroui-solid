@@ -55,8 +55,8 @@ const TextAreaRoot = (props: TextAreaRootProps) => {
   )
 }
 
-export type { TextAreaRootProps }
 /* -------------------------------------------------------------------------------------------------
  * Exports
  * -----------------------------------------------------------------------------------------------*/
+export type { TextAreaRootProps }
 export { TextAreaRoot }

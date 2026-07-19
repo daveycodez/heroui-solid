@@ -37,5 +37,8 @@ const FieldErrorRoot = <T extends ValidComponent = "div">(
   ) : null
 }
 
+/* -------------------------------------------------------------------------------------------------
+ * Exports
+ * -----------------------------------------------------------------------------------------------*/
 export type { FieldErrorRootProps }
 export { FieldErrorRoot }

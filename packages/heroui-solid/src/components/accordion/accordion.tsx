@@ -151,6 +151,9 @@ const AccordionContent = <T extends ValidComponent = "div">(
   )
 }
 
+/* -------------------------------------------------------------------------------------------------
+ * Exports
+ * -----------------------------------------------------------------------------------------------*/
 export type {
   AccordionContentProps,
   AccordionHeaderProps,

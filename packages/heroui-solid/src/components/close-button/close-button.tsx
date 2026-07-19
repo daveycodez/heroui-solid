@@ -65,5 +65,8 @@ const CloseButtonRoot = <T extends ValidComponent = "button">(
   )
 }
 
+/* -------------------------------------------------------------------------------------------------
+ * Exports
+ * -----------------------------------------------------------------------------------------------*/
 export type { CloseButtonRootProps }
 export { CloseButtonRoot }

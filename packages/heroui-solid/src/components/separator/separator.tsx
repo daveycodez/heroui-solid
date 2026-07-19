@@ -41,5 +41,8 @@ const SeparatorRoot = <T extends ValidComponent = "hr">(
   return (useCollectionDefer(render) ?? render()) as unknown as JSX.Element
 }
 
+/* -------------------------------------------------------------------------------------------------
+ * Exports
+ * -----------------------------------------------------------------------------------------------*/
 export type { SeparatorRootProps }
 export { SeparatorRoot }

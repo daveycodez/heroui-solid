@@ -70,5 +70,8 @@ const KbdContent = <T extends ValidComponent = "span">(
   )
 }
 
+/* -------------------------------------------------------------------------------------------------
+ * Exports
+ * -----------------------------------------------------------------------------------------------*/
 export type { KbdAbbrProps, KbdContentProps, KbdRootProps }
 export { KbdAbbr, KbdContent, KbdRoot }

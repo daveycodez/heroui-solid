@@ -24,5 +24,8 @@ const ErrorMessageRoot = <T extends ValidComponent = "span">(
   )
 }
 
+/* -------------------------------------------------------------------------------------------------
+ * Exports
+ * -----------------------------------------------------------------------------------------------*/
 export type { ErrorMessageRootProps }
 export { ErrorMessageRoot }

@@ -49,5 +49,8 @@ const SurfaceRoot = <T extends ValidComponent = "div">(
   )
 }
 
+/* -------------------------------------------------------------------------------------------------
+ * Exports
+ * -----------------------------------------------------------------------------------------------*/
 export type { SurfaceContextValue, SurfaceRootProps }
 export { SurfaceContext, SurfaceRoot }

@@ -34,5 +34,8 @@ const DescriptionRoot = <T extends ValidComponent = "div">(
   )
 }
 
+/* -------------------------------------------------------------------------------------------------
+ * Exports
+ * -----------------------------------------------------------------------------------------------*/
 export type { DescriptionRootProps }
 export { DescriptionRoot }
