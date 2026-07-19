@@ -256,6 +256,16 @@ export default function NativeLink() {
 }
 ```
 
+### Rendered Elements
+
+Every part is polymorphic — pass `as` to override its element. (`Link.Icon`
+renders a fixed `<span>` and does not accept `as`.)
+
+| Component    | Default Element |
+| ------------ | --------------- |
+| `Link`       | `<a>`           |
+| `Link.Icon`  | `<span>`        |
+
 ## Differences from HeroUI React
 
 - Use `class` instead of `className`; the element type is overridden with Kobalte's
@@ -267,13 +277,3 @@ export default function NativeLink() {
   than React Aria's `data-hovered` / `data-pressed` attributes — visuals are identical.
 - The routing example uses TanStack Router instead of Next.js — with SolidStart's own
   router, native `<a>` interception means `Link` needs no adapter at all.
-
-### Rendered Elements
-
-Every part is polymorphic — pass `as` to override its element. (`Link.Icon`
-renders a fixed `<span>` and does not accept `as`.)
-
-| Component    | Default Element |
-| ------------ | --------------- |
-| `Link`       | `<a>`           |
-| `Link.Icon`  | `<span>`        |

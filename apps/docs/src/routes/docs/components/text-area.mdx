@@ -164,6 +164,12 @@ Override the shared `.textarea` class once with Tailwind's `@layer components`.
 
 > For validation props like `isInvalid` and `isRequired`, use **[TextField](/docs/components/text-field)** with TextArea as a child component.
 
+### Rendered Elements
+
+| Component    | Default Element |
+| ------------ | --------------- |
+| `TextArea` | `<textarea>`    |
+
 ## Differences from HeroUI React
 
 - Use `class` instead of `className` and `for` instead of `htmlFor` on labels.
@@ -171,9 +177,3 @@ Override the shared `.textarea` class once with Tailwind's `@layer components`.
   fires on blur. Inside a TextField, use the field's `onChange(value)` instead.
 - `autoResize` and `submitOnEnter` are Kobalte extras not present upstream. They
   work on a standalone TextArea as well as inside a TextField.
-
-### Rendered Elements
-
-| Component    | Default Element |
-| ------------ | --------------- |
-| `TextArea` | `<textarea>`    |

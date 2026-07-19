@@ -269,6 +269,20 @@ plain `<span>` (not polymorphic, so no `as`).
 
 *Plus standard `<span>` attributes.*
 
+### Rendered Elements
+
+Every part except `Accordion.Indicator` is polymorphic — pass `as` to override
+its element.
+
+| Component              | Default Element |
+| ---------------------- | --------------- |
+| `Accordion`            | `<div>`         |
+| `Accordion.Item`       | `<div>`         |
+| `Accordion.Header`     | `<h3>`          |
+| `Accordion.Trigger`    | `<button>`      |
+| `Accordion.Content`    | `<div>`         |
+| `Accordion.Indicator`  | `<span>`        |
+
 ## Differences from HeroUI React
 
 - Expanded state uses Kobalte's `value`/`defaultValue`/`onChange` (arrays of
@@ -286,17 +300,3 @@ plain `<span>` (not polymorphic, so no `as`).
 - Polymorphism uses Kobalte's `as` prop instead of React's `render` prop.
 - `Accordion.Indicator` renders a default chevron and rotates via CSS; pass
   children to customize the icon.
-
-### Rendered Elements
-
-Every part except `Accordion.Indicator` is polymorphic — pass `as` to override
-its element.
-
-| Component              | Default Element |
-| ---------------------- | --------------- |
-| `Accordion`            | `<div>`         |
-| `Accordion.Item`       | `<div>`         |
-| `Accordion.Header`     | `<h3>`          |
-| `Accordion.Trigger`    | `<button>`      |
-| `Accordion.Content`    | `<div>`         |
-| `Accordion.Indicator`  | `<span>`        |

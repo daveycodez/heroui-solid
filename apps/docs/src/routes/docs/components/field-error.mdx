@@ -124,14 +124,6 @@ function EmailField() {
 
 *Plus standard `<div>` attributes.*
 
-## Differences from HeroUI React
-
-- Use `class` instead of `className`.
-- No render-prop `children` — there is no React Aria `ValidationResult`; drive the
-  message content from your own state (see the Usage example).
-- Renders only inside a field (`TextField` for now); standalone usage renders nothing,
-  matching upstream behavior.
-
 ### Rendered Elements
 
 Every part is polymorphic — pass `as` to override its element.
@@ -139,3 +131,11 @@ Every part is polymorphic — pass `as` to override its element.
 | Component      | Default Element |
 | -------------- | --------------- |
 | `FieldError` | `<div>`         |
+
+## Differences from HeroUI React
+
+- Use `class` instead of `className`.
+- No render-prop `children` — there is no React Aria `ValidationResult`; drive the
+  message content from your own state (see the Usage example).
+- Renders only inside a field (`TextField` for now); standalone usage renders nothing,
+  matching upstream behavior.

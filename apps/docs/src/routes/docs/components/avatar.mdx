@@ -67,6 +67,25 @@ export default () => (
 
 ```
 
+### Avoid flash during loading
+
+By default, `Avatar.Fallback` shows whenever the image hasn't loaded — while it is
+still loading as well as on error. To avoid this flash, set `fallbackDelay` (in
+milliseconds) on the `Avatar` root: it postpones the fallback so it only appears for
+users on slower connections, not on every load.
+
+```tsx
+import { Avatar } from "heroui-solid";
+
+<Avatar fallbackDelay={600}>
+  <Avatar.Image
+    alt="Nicole Steeves"
+    src="https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/blue.jpg"
+  />
+  <Avatar.Fallback>NS</Avatar.Fallback>
+</Avatar>;
+```
+
 ### Avatar Group
 
 <ComponentPreview name="avatar-group" />
@@ -186,6 +205,16 @@ fallback renders.
 
 *Plus standard `<span>` attributes.*
 
+### Rendered Elements
+
+Every part is polymorphic — pass `as` to override its element.
+
+| Component | Default Element |
+| --------- | --------------- |
+| `Avatar` | `<span>` |
+| `Avatar.Image` | `<img>` |
+| `Avatar.Fallback` | `<span>` |
+
 ## Differences from HeroUI React
 
 - Built on Kobalte's Image primitive instead of Radix Avatar — same
@@ -196,13 +225,3 @@ fallback renders.
   pass straight through to `Avatar.Image`; Kobalte doesn't run Radix's
   preloader, but the element receives them once mounted.
 - The React `render` prop is replaced by Kobalte's `as` prop.
-
-### Rendered Elements
-
-Every part is polymorphic — pass `as` to override its element.
-
-| Component | Default Element |
-| --------- | --------------- |
-| `Avatar` | `<span>` |
-| `Avatar.Image` | `<img>` |
-| `Avatar.Fallback` | `<span>` |

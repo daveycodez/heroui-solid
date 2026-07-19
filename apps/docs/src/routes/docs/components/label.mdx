@@ -106,14 +106,6 @@ This prevents duplicate asterisks when using group components with required fiel
 <Input id="password" />
 ```
 
-## Differences from HeroUI React
-
-- Use `for` (Solid's native attribute) instead of `htmlFor`, and `class` instead of
-  `className`.
-- Inside a TextField the label renders through Kobalte and receives its `for`
-  automatically; the required asterisk comes from the field's `data-required="true"`
-  attribute rather than a prop.
-
 ### Rendered Elements
 
 Every part is polymorphic — pass `as` to override its element.
@@ -121,3 +113,11 @@ Every part is polymorphic — pass `as` to override its element.
 | Component | Default Element |
 | --------- | --------------- |
 | `Label` | `<label>`       |
+
+## Differences from HeroUI React
+
+- Use `for` (Solid's native attribute) instead of `htmlFor`, and `class` instead of
+  `className`.
+- Inside a TextField the label renders through Kobalte and receives its `for`
+  automatically; the required asterisk comes from the field's `data-required="true"`
+  attribute rather than a prop.

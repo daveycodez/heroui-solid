@@ -134,13 +134,6 @@ function MyComponent() {
 }
 ```
 
-## Differences from HeroUI React
-
-- Use `class` instead of `className`; the element type is overridden with Kobalte's
-  polymorphic `as` prop instead of React's `render` prop.
-- Read `surface.variant` off the context object inside JSX (a getter keeps it
-  reactive) instead of destructuring it.
-
 ### Rendered Elements
 
 Every part is polymorphic — pass `as` to override its element.
@@ -148,3 +141,10 @@ Every part is polymorphic — pass `as` to override its element.
 | Component   | Default Element |
 | ----------- | --------------- |
 | `Surface` | `<div>`         |
+
+## Differences from HeroUI React
+
+- Use `class` instead of `className`; the element type is overridden with Kobalte's
+  polymorphic `as` prop instead of React's `render` prop.
+- Read `surface.variant` off the context object inside JSX (a getter keeps it
+  reactive) instead of destructuring it.

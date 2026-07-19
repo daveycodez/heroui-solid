@@ -229,6 +229,14 @@ TextField works with these separate components that should be imported and used 
 - **Description** - Helper text component from `heroui-solid`
 - **FieldError** - Validation error message from `heroui-solid`
 
+### Rendered Elements
+
+Every part is polymorphic — pass `as` to override its element.
+
+| Component | Default Element |
+| --------- | --------------- |
+| `TextField` | `<div>` |
+
 ## Differences from HeroUI React
 
 - State props use Kobalte's names, not React Aria's: `disabled`, `readOnly`, `required`,
@@ -241,11 +249,3 @@ TextField works with these separate components that should be imported and used 
 - No `validate`/`validationBehavior`/`validationErrors` props — drive `validationState`
   yourself (see the Validation example) or use a form library.
 - `autoFocus` belongs on the `Input` element.
-
-### Rendered Elements
-
-Every part is polymorphic — pass `as` to override its element.
-
-| Component | Default Element |
-| --------- | --------------- |
-| `TextField` | `<div>` |
