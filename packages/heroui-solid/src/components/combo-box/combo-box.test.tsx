@@ -137,6 +137,31 @@ describe("ComboBox", () => {
     expect(input.value).toBe("Dog")
   })
 
+  it("shows all options when re-opened with a selection, not just the selected label", () => {
+    const { container } = render(() => <Anatomy defaultSelectedKey="dog" />)
+
+    const input = container.querySelector(
+      "[data-slot=input]"
+    ) as HTMLInputElement
+    // The selection is written into the input as its label.
+    expect(input.value).toBe("Dog")
+
+    const trigger = container.querySelector(
+      "[data-slot=combo-box-trigger]"
+    ) as HTMLElement
+    fireEvent.pointerDown(trigger, { button: 0, pointerType: "mouse" })
+    fireEvent.click(trigger)
+
+    // Upstream shows the full collection on open (Kobalte would otherwise filter
+    // by the input's "Dog" label and show only that option).
+    const items = document.querySelectorAll("[data-slot=list-box-item]")
+    expect([...items].map((el) => el.textContent)).toEqual([
+      "Cat",
+      "Dog",
+      "Kangaroo"
+    ])
+  })
+
   it("marks disabled options via disabledKeys", () => {
     const { container } = render(() => (
       <ComboBoxRoot disabledKeys={["dog"]}>

@@ -151,6 +151,40 @@ const ComboBoxRoot = <T extends ValidComponent = "div">(
   // Options are item and section descriptors registered by the enclosing
   // ListBox; sections group their items via Kobalte's `optionGroupChildren`.
   const [options, setOptions] = createSignal<ListBoxOption[]>([])
+
+  // Controlled open state. Kobalte's "focus" triggerMode re-opens the menu
+  // whenever the input receives focus — including the focus it *programmatically*
+  // restores to the input after a selection (combobox-base resetInputValue) or
+  // after an outside dismissal (its focus scope). React Aria's menuTrigger
+  // "focus" only opens on genuine user focus, so upstream stays closed in both
+  // cases; Kobalte instead flickers closed→open→closed on select and reopens on
+  // click-outside. We veto the focus-driven re-open that fires in the same tick
+  // as a close, while a real user focus (never same-tick as a close) still opens.
+  const [open, setOpen] = createSignal(false)
+  // React Aria shows every option when the menu opens and only narrows once the
+  // user edits the input; Kobalte's combobox instead filters by the current
+  // input on every open, so a re-opened combobox shows only its selected label.
+  // Track "show all" ourselves: true whenever the menu opens, false as soon as
+  // the input text changes (typing, or the programmatic reset on selection —
+  // harmless there since the menu is closing and the next open re-arms it).
+  const [showAll, setShowAll] = createSignal(true)
+  let vetoFocusReopen = false
+  const handleOpenChange = (isOpen: boolean, triggerMode?: string) => {
+    if (!isOpen) {
+      setOpen(false)
+      vetoFocusReopen = true
+      queueMicrotask(() => {
+        vetoFocusReopen = false
+      })
+      return
+    }
+    if (vetoFocusReopen && triggerMode === "focus") return
+    // A focus/manual open shows the full collection; an "input" open is the user
+    // typing, which must keep the just-applied filter (onInputChange already
+    // cleared showAll and fires before this open).
+    if (triggerMode !== "input") setShowAll(true)
+    setOpen(true)
+  }
   const [placement, setPlacement] =
     createSignal<ComboBoxPopoverPlacement>("bottom")
   const [mounted, setMounted] = createSignal(false)
@@ -174,14 +208,17 @@ const ComboBoxRoot = <T extends ValidComponent = "div">(
   const toValue = (key: Key | null | undefined) =>
     key == null ? key : toOption(key)
 
-  // Kobalte's defaultFilter passes the option object; upstream's predicate
-  // takes the text value, so unwrap to `textValue` before delegating.
-  const filter = createMemo(() => {
-    const fn = local.defaultFilter
-    if (!fn) return undefined
-    return (option: ListBoxItemDescriptor, inputValue: string) =>
-      fn(option.textValue, inputValue)
-  })
+  const containsFilter = (textValue: string, inputValue: string) =>
+    textValue.toLowerCase().includes(inputValue.toLowerCase())
+
+  // Kobalte's defaultFilter passes the option object; upstream's predicate takes
+  // the text value, so unwrap to `textValue` before delegating.
+  const filter = (option: ListBoxItemDescriptor, inputValue: string) => {
+    if (showAll() || !inputValue) return true
+    return local.defaultFilter
+      ? local.defaultFilter(option.textValue, inputValue)
+      : containsFilter(option.textValue, inputValue)
+  }
 
   // Any Separator(s) the ListBox placed before this item (deferral markers,
   // realized now the popover is open), then the item — mirrors sectionComponent.
@@ -236,13 +273,18 @@ const ComboBoxRoot = <T extends ValidComponent = "div">(
       onChange={(option: ListBoxItemDescriptor | null) =>
         local.onSelectionChange?.(option?.id ?? null)
       }
-      onInputChange={local.onInputChange}
+      onInputChange={(value: string) => {
+        setShowAll(false)
+        local.onInputChange?.(value)
+      }}
       // Upstream `allowsCustomValue` ≈ Kobalte's `noResetInputOnBlur`: a typed
       // value with no matching option is kept on blur instead of being cleared.
       noResetInputOnBlur={local.allowsCustomValue}
       allowsEmptyCollection={local.allowsEmptyCollection}
       triggerMode={local.menuTrigger ?? "focus"}
-      defaultFilter={filter()}
+      open={open()}
+      onOpenChange={handleOpenChange}
+      defaultFilter={filter}
       placement={placement()}
       // Kobalte defaults sameWidth: true (pins the popover to the trigger's
       // exact width); upstream only enforces a min-width, so long labels widen
@@ -476,6 +518,12 @@ const ComboBoxPopover = <T extends ValidComponent = "div">(
           data-placement={
             resolvedSide() ?? (local.placement ?? "bottom").split("-")[0]
           }
+          // Kobalte's focus scope refocuses the input on every close; with
+          // triggerMode "focus" that refires the open, so clicking outside can
+          // never keep the popover closed. React Aria never restores focus to
+          // the input on close — suppress it here (selection refocuses the
+          // input directly; Escape leaves the already-focused input untouched).
+          onCloseAutoFocus={(e) => e.preventDefault()}
           {...rest}
         >
           <PreventScroll />
