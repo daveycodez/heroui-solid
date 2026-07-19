@@ -1,19 +1,24 @@
 import { cn, type SeparatorVariants, separatorVariants } from "@heroui/styles"
-import type { PolymorphicProps } from "@kobalte/core/polymorphic"
-import { Root as SeparatorPrimitive } from "@kobalte/core/separator"
-import { type JSX, splitProps, type ValidComponent } from "solid-js"
+import { Separator } from "@kobalte/core/separator"
+import {
+  type ComponentProps,
+  type JSX,
+  splitProps,
+  type ValidComponent
+} from "solid-js"
 
 import { useCollectionDefer } from "../../utils/collection-defer"
 
 /* -------------------------------------------------------------------------------------------------
  * Separator Root
  * -----------------------------------------------------------------------------------------------*/
-interface SeparatorRootProps extends SeparatorVariants {
-  class?: string
-}
+type SeparatorRootProps<T extends ValidComponent = "hr"> = ComponentProps<
+  typeof Separator<T>
+> &
+  SeparatorVariants
 
 const SeparatorRoot = <T extends ValidComponent = "hr">(
-  props: PolymorphicProps<T, SeparatorRootProps>
+  props: SeparatorRootProps<T>
 ) => {
   const [variantProps, local, rest] = splitProps(
     props as SeparatorRootProps,
@@ -24,7 +29,7 @@ const SeparatorRoot = <T extends ValidComponent = "hr">(
   // Upstream also inherits orientation from React Aria's slotted
   // SeparatorContext (Toolbar); no Kobalte equivalent until Toolbar is ported.
   const render = () => (
-    <SeparatorPrimitive
+    <Separator
       class={cn(separatorVariants(variantProps), local.class)}
       data-slot="separator"
       orientation={variantProps.orientation}
@@ -37,7 +42,4 @@ const SeparatorRoot = <T extends ValidComponent = "hr">(
 }
 
 export type { SeparatorRootProps }
-/* -------------------------------------------------------------------------------------------------
- * Exports
- * -----------------------------------------------------------------------------------------------*/
 export { SeparatorRoot }

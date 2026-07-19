@@ -1,29 +1,16 @@
-import type { ComponentProps } from "solid-js"
-
-import { SeparatorRoot } from "./separator"
+import { SeparatorRoot, type SeparatorRootProps } from "./separator"
 
 /* -------------------------------------------------------------------------------------------------
- * Compound Component
+ * Component
  * -----------------------------------------------------------------------------------------------*/
-export const Separator = Object.assign(SeparatorRoot, {
-  Root: SeparatorRoot
-})
+export const Separator = SeparatorRoot
 
 export type Separator = {
-  Props: ComponentProps<typeof SeparatorRoot>
-  RootProps: ComponentProps<typeof SeparatorRoot>
+  Props: SeparatorRootProps
 }
 
-export type { SeparatorVariants } from "@heroui/styles"
 /* -------------------------------------------------------------------------------------------------
  * Variants
  * -----------------------------------------------------------------------------------------------*/
+export type { SeparatorVariants } from "@heroui/styles"
 export { separatorVariants } from "@heroui/styles"
-export type {
-  SeparatorRootProps,
-  SeparatorRootProps as SeparatorProps
-} from "./separator"
-/* -------------------------------------------------------------------------------------------------
- * Named Component
- * -----------------------------------------------------------------------------------------------*/
-export { SeparatorRoot } from "./separator"
