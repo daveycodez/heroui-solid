@@ -366,6 +366,28 @@ and docs* — not as the API or behavior to mirror.
   names repeat across components, so `index.ts` aliases on import
   (`import { Variants as CardVariants } from "./card/variants"`). Demos with
   no upstream counterpart follow the same conventions.
+- **Docs page section order: API Reference → Rendered Elements → Differences
+  (last).** Every component page's `## API Reference` lists *every* prop the
+  component accepts — our HeroUI additions, the Kobalte primitive's own option
+  props that pass through, AND the polymorphic `as` prop (with the part's default
+  element) on every part that renders via `Polymorphic`/a Kobalte primitive.
+  Omit `as` only for parts that render a fixed element with no polymorphism (a
+  plain `<form>`, a native standalone `<textarea>` fallback, a plain-`<span>`
+  satellite like `Accordion.Indicator`/`Link.Icon`). Ground the `as` default and
+  the part list in the component source (the `<T extends ValidComponent = "X">`
+  default), and the forwarded prop *names* in the pinned `@kobalte/core` types —
+  NOT upstream's React (RAC) prop surface, which diverges (RAC's `isDisabled`
+  etc. are Kobalte's `disabled`/`validationState`/…). Don't enumerate intrinsic
+  HTML attributes row-by-row; close each part's table with a single
+  `*Plus standard \`<tag>\` attributes.*` line. Then every page carries a
+  standalone top-level `## Rendered Elements` section — a
+  `| Component | Default Element |` table, one row per compound part (public
+  names: `Avatar.Image`, `Accordion.Trigger`) → its default tag — placed AFTER
+  `## API Reference` and BEFORE `## Differences from HeroUI React`, which is
+  ALWAYS the final section. The `as` prop itself is explained once in the
+  Getting Started → Polymorphism guide (`docs/polymorphism.mdx`, registered in
+  the Overview sidebar in `solidbase.config.ts`) — link to it rather than
+  re-explaining polymorphism per page.
 - **Component usage examples import the demo source — never inline it.** The
   ```` ```tsx ```` block under each `<ComponentPreview />` must be
   ```` ```tsx file=../../../demos/<component>/<demo>.tsx title="" ```` with an
