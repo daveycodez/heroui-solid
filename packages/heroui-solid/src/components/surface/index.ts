@@ -1,6 +1,10 @@
 import type { ComponentProps } from "solid-js"
 
-import { SurfaceRoot } from "./surface"
+import {
+  SurfaceContext,
+  type SurfaceContextValue,
+  SurfaceRoot
+} from "./surface"
 
 /* -------------------------------------------------------------------------------------------------
  * Compound Component
@@ -11,20 +15,16 @@ export const Surface = Object.assign(SurfaceRoot, {
 
 export type Surface = {
   Props: ComponentProps<typeof SurfaceRoot>
-  RootProps: ComponentProps<typeof SurfaceRoot>
 }
 
-export type { SurfaceVariants } from "@heroui/styles"
 /* -------------------------------------------------------------------------------------------------
  * Variants
  * -----------------------------------------------------------------------------------------------*/
+export type { SurfaceVariants } from "@heroui/styles"
 export { surfaceVariants } from "@heroui/styles"
-export type {
-  SurfaceContextValue,
-  SurfaceRootProps,
-  SurfaceRootProps as SurfaceProps
-} from "./surface"
+export type { SurfaceContextValue }
 /* -------------------------------------------------------------------------------------------------
- * Named Component
+ * Surface Context
  * -----------------------------------------------------------------------------------------------*/
-export { SurfaceContext, SurfaceRoot } from "./surface"
+// Public: consumed by Card and provided by overlays to signal on-surface content.
+export { SurfaceContext }

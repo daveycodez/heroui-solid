@@ -10,6 +10,9 @@ import {
 /* ------------------------------------------------------------------------------------------------
  * Surface Context
  * --------------------------------------------------------------------------------------------- */
+// Cross-component "on a surface" signal: Card reads it for contrast; overlays
+// (Dropdown, Select, Combo-box, Autocomplete) and Alert provide it for their
+// content. Mirrors upstream's SurfaceContext.
 type SurfaceContextValue = {
   variant?: SurfaceVariants["variant"]
 }
@@ -52,7 +55,4 @@ const SurfaceRoot = <T extends ValidComponent = "div">(
 }
 
 export type { SurfaceContextValue, SurfaceRootProps }
-/* ------------------------------------------------------------------------------------------------
- * Exports
- * --------------------------------------------------------------------------------------------- */
 export { SurfaceContext, SurfaceRoot }
