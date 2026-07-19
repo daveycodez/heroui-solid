@@ -249,22 +249,39 @@ export default defineConfig(({ command }) => ({
     },
     solidbase.plugin(solidbaseConfig),
     solidStart(solidbase.startConfig()),
-    nitro({
-      // TODO: switch to `preset: "static"` once the nitro vite plugin supports
-      // it (as of 3.0.260610-beta it still builds the server env and fails).
-      // Until then, deploy .output/public — it's a complete static site.
-      baseURL: base,
-      prerender: {
-        crawlLinks: true,
-        // Explicit routes replace the crawler's default "/" start point, so
-        // it must be listed alongside the search index (which is fetched,
-        // never linked, and thus undiscoverable by crawling).
-        routes: ["/", "/api/search"],
-        // Nitro defaults this off: a route that 404s/throws is logged, its
-        // file omitted, and the build still exits 0 — CI would deploy a
-        // partial site.
-        failOnError: true
-      }
-    })
+    // Nitro only for build/prerender — never dev. Its v3-beta vite plugin
+    // installs a FetchableDevEnvironment (out-of-process dev worker) for the
+    // `ssr` environment; solid-start's dev server sees `dispatchFetch` on it
+    // and hands SSR to that worker (dev-server.js). The worker compiles the
+    // SSR graph lazily on first request and only waits a hardcoded ~3.1s
+    // (5-try backoff in dev-worker.mjs) before answering `503 Vite environment
+    // "ssr" is unavailable` — the full-screen cold-start/restart error a
+    // refresh clears. Omitting nitro in `serve` leaves the plain Vite runnable
+    // `ssr` env, so solid-start's own middleware drives SSR via
+    // `runner.import("./src/entry-server.tsx")`, which awaits the import fully
+    // (slow first load at worst, never a 503). Build still needs nitro for the
+    // server bundle + prerender.
+    ...(command === "serve"
+      ? []
+      : [
+          nitro({
+            // TODO: switch to `preset: "static"` once the nitro vite plugin
+            // supports it (as of 3.0.260610-beta it still builds the server env
+            // and fails). Until then, deploy .output/public — it's a complete
+            // static site.
+            baseURL: base,
+            prerender: {
+              crawlLinks: true,
+              // Explicit routes replace the crawler's default "/" start point,
+              // so it must be listed alongside the search index (which is
+              // fetched, never linked, and thus undiscoverable by crawling).
+              routes: ["/", "/api/search"],
+              // Nitro defaults this off: a route that 404s/throws is logged,
+              // its file omitted, and the build still exits 0 — CI would deploy
+              // a partial site.
+              failOnError: true
+            }
+          })
+        ])
   ]
 }))
