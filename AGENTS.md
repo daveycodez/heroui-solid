@@ -210,7 +210,13 @@ and docs* — not as the API or behavior to mirror.
   as `"true"` on the root — HeroUI CSS matches explicit values while Kobalte
   stamps empty strings, and props spread after Kobalte's dataset, so the
   re-stamp wins (see textfield.tsx); descendant-level Kobalte attrs are
-  bridged in overrides CSS instead (see input.overrides.css).
+  bridged in overrides CSS instead (see input.overrides.css). A satellite that
+  is polymorphic upstream (Label, Description) stays polymorphic across *both*
+  dual-render branches: in-field it spreads `as` onto the Kobalte primitive
+  (which owns any element-specific guard — Label only stamps `for` when it
+  really renders a `<label>`); standalone it renders `<Polymorphic as="…">`
+  with no re-created guard — a caller who overrides `as` (label styling on a
+  `<span>`, say) owns the consequences.
 - **Scroll-lock overlays with `PreventScroll`, never Kobalte's `preventScroll`.**
   Kobalte's lock (solid-prevent-scroll) sets `overflow: hidden` on `body`;
   when the scroll offset lives on `html` (the browser default), body becomes

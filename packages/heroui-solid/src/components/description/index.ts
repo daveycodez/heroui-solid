@@ -1,29 +1,15 @@
-import type { ComponentProps } from "solid-js"
-
-import { DescriptionRoot } from "./description"
+import { DescriptionRoot, type DescriptionRootProps } from "./description"
 
 /* -------------------------------------------------------------------------------------------------
- * Compound Component
+ * Component
  * -----------------------------------------------------------------------------------------------*/
-export const Description = Object.assign(DescriptionRoot, {
-  Root: DescriptionRoot
-})
+export const Description = DescriptionRoot
 
 export type Description = {
-  Props: ComponentProps<typeof DescriptionRoot>
-  RootProps: ComponentProps<typeof DescriptionRoot>
+  Props: DescriptionRootProps
 }
 
-export type { DescriptionVariants } from "@heroui/styles"
 /* -------------------------------------------------------------------------------------------------
  * Variants
  * -----------------------------------------------------------------------------------------------*/
 export { descriptionVariants } from "@heroui/styles"
-export type {
-  DescriptionRootProps,
-  DescriptionRootProps as DescriptionProps
-} from "./description"
-/* -------------------------------------------------------------------------------------------------
- * Named Component
- * -----------------------------------------------------------------------------------------------*/
-export { DescriptionRoot }

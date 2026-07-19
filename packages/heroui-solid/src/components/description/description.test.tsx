@@ -16,4 +16,11 @@ describe("Description", () => {
       new Set(["description", "custom"])
     )
   })
+
+  it("is polymorphic via as", () => {
+    const { getByText } = render(() => (
+      <DescriptionRoot as="p">Helper text</DescriptionRoot>
+    ))
+    expect((getByText("Helper text") as HTMLElement).tagName).toBe("P")
+  })
 })

@@ -1,36 +1,33 @@
-import {
-  cn,
-  type DescriptionVariants,
-  descriptionVariants
-} from "@heroui/styles"
+import { cn, descriptionVariants } from "@heroui/styles"
 import { FormControlContext } from "@kobalte/core"
+import { Polymorphic, type PolymorphicProps } from "@kobalte/core/polymorphic"
 import { Description as DescriptionPrimitive } from "@kobalte/core/text-field"
-import { type ComponentProps, splitProps, useContext } from "solid-js"
+import { splitProps, useContext, type ValidComponent } from "solid-js"
 
 /* -------------------------------------------------------------------------------------------------
  * Description Root
  * -----------------------------------------------------------------------------------------------*/
-interface DescriptionRootProps
-  extends ComponentProps<"div">,
-    DescriptionVariants {}
+type DescriptionRootProps<T extends ValidComponent = "div"> =
+  PolymorphicProps<T>
 
-const DescriptionRoot = (props: DescriptionRootProps) => {
-  const [variantProps, local, rest] = splitProps(
-    props,
-    descriptionVariants.variantKeys,
-    ["class"]
-  )
+const DescriptionRoot = <T extends ValidComponent = "div">(
+  props: DescriptionRootProps<T>
+) => {
+  const [local, rest] = splitProps(props as DescriptionRootProps, ["class"])
   const formControl = useContext(FormControlContext)
 
+  // Inside a form control, Kobalte's Description wires the aria-describedby id;
+  // standalone it would throw, so render a plain (polymorphic) element instead.
   return formControl ? (
     <DescriptionPrimitive
-      class={cn(descriptionVariants(variantProps), local.class)}
+      class={cn(descriptionVariants(), local.class)}
       data-slot="description"
       {...rest}
     />
   ) : (
-    <div
-      class={cn(descriptionVariants(variantProps), local.class)}
+    <Polymorphic
+      as="div"
+      class={cn(descriptionVariants(), local.class)}
       data-slot="description"
       {...rest}
     />
@@ -38,7 +35,4 @@ const DescriptionRoot = (props: DescriptionRootProps) => {
 }
 
 export type { DescriptionRootProps }
-/* -------------------------------------------------------------------------------------------------
- * Exports
- * -----------------------------------------------------------------------------------------------*/
 export { DescriptionRoot }

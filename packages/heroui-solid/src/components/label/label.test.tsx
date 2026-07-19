@@ -29,4 +29,9 @@ describe("Label", () => {
       new Set(["label", "label--required", "label--disabled", "label--invalid"])
     )
   })
+
+  it("is polymorphic via as (label styling on another element)", () => {
+    const { getByText } = render(() => <LabelRoot as="span">Email</LabelRoot>)
+    expect((getByText("Email") as HTMLElement).tagName).toBe("SPAN")
+  })
 })
