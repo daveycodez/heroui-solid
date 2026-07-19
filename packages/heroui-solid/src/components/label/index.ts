@@ -1,26 +1,16 @@
-import type { ComponentProps } from "solid-js"
-
-import { LabelRoot } from "./label"
+import { LabelRoot, type LabelRootProps } from "./label"
 
 /* -------------------------------------------------------------------------------------------------
- * Compound Component
+ * Component
  * -----------------------------------------------------------------------------------------------*/
-export const Label = Object.assign(LabelRoot, {
-  Root: LabelRoot
-})
+export const Label = LabelRoot
 
 export type Label = {
-  Props: ComponentProps<typeof LabelRoot>
-  RootProps: ComponentProps<typeof LabelRoot>
+  Props: LabelRootProps
 }
 
-export type { LabelVariants } from "@heroui/styles"
 /* -------------------------------------------------------------------------------------------------
  * Variants
  * -----------------------------------------------------------------------------------------------*/
+export type { LabelVariants } from "@heroui/styles"
 export { labelVariants } from "@heroui/styles"
-export type { LabelRootProps, LabelRootProps as LabelProps } from "./label"
-/* -------------------------------------------------------------------------------------------------
- * Named Component
- * -----------------------------------------------------------------------------------------------*/
-export { LabelRoot }
