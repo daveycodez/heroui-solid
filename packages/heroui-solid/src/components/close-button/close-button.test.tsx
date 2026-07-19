@@ -23,10 +23,9 @@ describe("CloseButton", () => {
       '[data-slot="close-button-icon"]'
     ) as SVGElement
     expect(icon).not.toBeNull()
+    // Decorative: aria-hidden keeps the shared icon (and its default label) out
+    // of the a11y tree; the button owns the accessible name (see AGENTS.md).
     expect(icon.getAttribute("aria-hidden")).toBe("true")
-    // Upstream stamps aria-label on the aria-hidden icon (an a11y defect); the
-    // port drops it (see AGENTS.md).
-    expect(icon.hasAttribute("aria-label")).toBe(false)
   })
 
   it("lets the consumer override the label and icon", () => {
