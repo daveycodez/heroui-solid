@@ -158,14 +158,29 @@ Chips support combining variant and color classes (e.g., `.chip--secondary.chip-
 | Prop       | Type                                                        | Default       | Description                            |
 | ---------- | ----------------------------------------------------------- | ------------- | -------------------------------------- |
 | `children` | `JSX.Element`                                               | -             | Content to display inside the chip     |
-| `class`    | `string`                                                    | -             | Additional CSS classes for the root element |
 | `color`    | `"default" \| "accent" \| "success" \| "warning" \| "danger"` | `"default"`   | Color variant of the chip              |
 | `variant`  | `"primary" \| "secondary" \| "tertiary" \| "soft"`          | `"secondary"` | Visual style variant                   |
 | `size`     | `"sm" \| "md" \| "lg"`                                       | `"md"`        | Size of the chip                       |
+| `as`       | `ValidComponent`                                            | `"span"`      | Overrides the rendered element (Kobalte polymorphic). |
+| `class`    | `string`                                                    | -             | Additional CSS classes for the root element |
+
+*Plus standard `<span>` attributes.*
 
 ### Chip.Label Props
 
-| Prop       | Type          | Default | Description                            |
-| ---------- | ------------- | ------- | -------------------------------------- |
-| `children` | `JSX.Element` | -       | Label text content                     |
-| `class`    | `string`      | -       | Additional CSS classes for the label slot |
+| Prop       | Type             | Default  | Description                            |
+| ---------- | ---------------- | -------- | -------------------------------------- |
+| `children` | `JSX.Element`    | -        | Label text content                     |
+| `as`       | `ValidComponent` | `"span"` | Overrides the rendered element (Kobalte polymorphic). |
+| `class`    | `string`         | -        | Additional CSS classes for the label slot |
+
+*Plus standard `<span>` attributes.*
+
+## Rendered Elements
+
+Every part is polymorphic — pass `as` to override its element.
+
+| Component     | Default Element |
+| ------------- | --------------- |
+| `Chip`       | `<span>`        |
+| `Chip.Label` | `<span>`        |

@@ -23,6 +23,16 @@ describe("Chip", () => {
     expect(classSet(label.className)).toEqual(new Set(["chip__label"]))
   })
 
+  it("wraps numeric children in a label", () => {
+    const { container } = render(() => <ChipRoot>{5}</ChipRoot>)
+
+    const label = container.querySelector(
+      '[data-slot="chip-label"]'
+    ) as HTMLElement
+    expect(label).not.toBeNull()
+    expect(label.textContent).toBe("5")
+  })
+
   it("applies color, size, and variant modifiers", () => {
     const { container } = render(() => (
       <ChipRoot color="success" size="lg" variant="primary">
@@ -61,5 +71,18 @@ describe("Chip", () => {
       '[data-slot="chip-label"]'
     ) as HTMLElement
     expect(label.classList.contains("custom-label")).toBe(true)
+  })
+
+  it("is polymorphic via as", () => {
+    const { container } = render(() => (
+      <ChipRoot as="div">
+        <ChipLabel as="p">Text</ChipLabel>
+      </ChipRoot>
+    ))
+
+    expect(container.querySelector('[data-slot="chip"]')?.tagName).toBe("DIV")
+    expect(container.querySelector('[data-slot="chip-label"]')?.tagName).toBe(
+      "P"
+    )
   })
 })

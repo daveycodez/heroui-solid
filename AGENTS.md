@@ -323,18 +323,25 @@ and docs* — not as the API or behavior to mirror.
   keys ("Hydration Mismatch", then "template is not a function" cascades).
   Capture to a local first, or forward via a single-read `get children()` in
   `mergeProps` (see button.tsx).
-- **No component-level `children()` helper for conditionally rendered content.**
-  Server memos evaluate eagerly at creation while client memos stay lazy, so a
-  `children(() => props.children)` created during component setup resolves the
-  children during SSR even when the branch that would insert them never renders
-  (e.g. an unselected `ListBox.ItemIndicator` with a custom icon). The
-  server-side creation consumes hydration context ids the client never
-  consumes — every later element desyncs and hydration crashes with
-  `getNextElement()` / "template is not a function" (no "Hydration Mismatch"
-  line first). Fix: evaluate children only inside the conditionally rendered
-  position, with a single read (IIFE child in list-box.tsx
-  ListBoxItemIndicator). Helpers created and *always* read in render (Select's
-  indicator) are fine — both sides evaluate consistently.
+- **`children()` is the right helper for resolving/inspecting children — but
+  read it only where the children actually render.** Solid recommends the
+  `children()` helper for exactly the "interact with child content in a library
+  component" case (it resolves and *memoizes*, so multiple reads are safe) —
+  Chip inspecting text-vs-element, Link.Icon detecting a custom icon, Select's
+  indicator all use it correctly. The one SSR caveat: `children()` is a
+  `createMemo`, and server memos evaluate **eagerly** at creation while client
+  memos stay **lazy**. So a component-level `children(() => props.children)`
+  whose result sits in a *conditionally rendered* position resolves the children
+  during SSR even when the branch that would insert them never renders (e.g. an
+  unselected `ListBox.ItemIndicator` with a custom icon). The server-side
+  creation consumes hydration context ids the client never consumes — every
+  later element desyncs and hydration crashes with `getNextElement()` /
+  "template is not a function" (no "Hydration Mismatch" line first). This
+  asymmetry is invisible for **always-rendered** children (Chip, Link.Icon):
+  both sides resolve them, ids stay in lockstep — plain-vanilla correct usage.
+  It only bites conditionally-rendered content, where the fix is to evaluate the
+  children only inside that position, with a single read (IIFE child in
+  list-box.tsx ListBoxItemIndicator) instead of a component-level helper.
 - **Never evaluate closed portal/popover content during SSR or hydration.**
   Content behind a closed Kobalte `Portal`/`Content` is not in the SSR
   payload, so any eager evaluation of it while hydrating creates DOM whose

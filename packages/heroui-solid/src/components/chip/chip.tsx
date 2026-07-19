@@ -1,10 +1,12 @@
 import { type ChipVariants, chipVariants, cn } from "@heroui/styles"
+import { Polymorphic, type PolymorphicProps } from "@kobalte/core/polymorphic"
 import {
-  type ComponentProps,
+  children,
   createContext,
   createMemo,
   splitProps,
-  useContext
+  useContext,
+  type ValidComponent
 } from "solid-js"
 
 /* -------------------------------------------------------------------------------------------------
@@ -19,19 +21,21 @@ const ChipContext = createContext<ChipContextValue>({})
 /* -------------------------------------------------------------------------------------------------
  * Chip Root
  * -----------------------------------------------------------------------------------------------*/
-interface ChipRootProps extends ComponentProps<"span"> {
-  color?: ChipVariants["color"]
-  size?: ChipVariants["size"]
-  variant?: ChipVariants["variant"]
-}
+type ChipRootProps<T extends ValidComponent = "span"> = PolymorphicProps<
+  T,
+  ChipVariants
+>
 
-const ChipRoot = (props: ChipRootProps) => {
+const ChipRoot = <T extends ValidComponent = "span">(
+  props: ChipRootProps<T>
+) => {
   const [variantProps, local, rest] = splitProps(
-    props,
+    props as ChipRootProps,
     chipVariants.variantKeys,
     ["class", "children"]
   )
   const slots = createMemo(() => chipVariants(variantProps))
+  const resolved = children(() => local.children)
 
   return (
     <ChipContext.Provider
@@ -41,17 +45,22 @@ const ChipRoot = (props: ChipRootProps) => {
         }
       }}
     >
-      <span {...rest} class={cn(slots().base(), local.class)} data-slot="chip">
+      <Polymorphic
+        as="span"
+        {...rest}
+        class={cn(slots().base(), local.class)}
+        data-slot="chip"
+      >
         {(() => {
-          // Plain-text children wrap in Chip.Label (single read — AGENTS.md).
-          const c = local.children
+          // Plain-text children wrap in Chip.Label (upstream parity).
+          const c = resolved()
           return typeof c === "string" || typeof c === "number" ? (
             <ChipLabel>{c}</ChipLabel>
           ) : (
             c
           )
         })()}
-      </span>
+      </Polymorphic>
     </ChipContext.Provider>
   )
 }
@@ -59,20 +68,21 @@ const ChipRoot = (props: ChipRootProps) => {
 /* -------------------------------------------------------------------------------------------------
  * Chip Label
  * -----------------------------------------------------------------------------------------------*/
-interface ChipLabelProps extends ComponentProps<"span"> {}
+type ChipLabelProps<T extends ValidComponent = "span"> = PolymorphicProps<T>
 
-const ChipLabel = (props: ChipLabelProps) => {
-  const [local, rest] = splitProps(props, ["class", "children"])
+const ChipLabel = <T extends ValidComponent = "span">(
+  props: ChipLabelProps<T>
+) => {
+  const [local, rest] = splitProps(props as ChipLabelProps, ["class"])
   const context = useContext(ChipContext)
 
   return (
-    <span
+    <Polymorphic
+      as="span"
       {...rest}
       class={cn(context.slots?.label(), local.class)}
       data-slot="chip-label"
-    >
-      {local.children}
-    </span>
+    />
   )
 }
 
