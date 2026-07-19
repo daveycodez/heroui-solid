@@ -1,35 +1,28 @@
-import type { ComponentProps } from "solid-js"
-
-import { AvatarFallback, AvatarImage, AvatarRoot } from "./avatar"
+import {
+  AvatarFallback,
+  type AvatarFallbackProps,
+  AvatarImage,
+  type AvatarImageProps,
+  AvatarRoot,
+  type AvatarRootProps
+} from "./avatar"
 
 /* -------------------------------------------------------------------------------------------------
  * Compound Component
  * -----------------------------------------------------------------------------------------------*/
 export const Avatar = Object.assign(AvatarRoot, {
-  Root: AvatarRoot,
   Image: AvatarImage,
   Fallback: AvatarFallback
 })
 
 export type Avatar = {
-  Props: ComponentProps<typeof AvatarRoot>
-  RootProps: ComponentProps<typeof AvatarRoot>
-  ImageProps: ComponentProps<typeof AvatarImage>
-  FallbackProps: ComponentProps<typeof AvatarFallback>
+  Props: AvatarRootProps
+  ImageProps: AvatarImageProps
+  FallbackProps: AvatarFallbackProps
 }
 
-export type { AvatarVariants } from "@heroui/styles"
 /* -------------------------------------------------------------------------------------------------
  * Variants
  * -----------------------------------------------------------------------------------------------*/
+export type { AvatarVariants } from "@heroui/styles"
 export { avatarVariants } from "@heroui/styles"
-export type {
-  AvatarFallbackProps,
-  AvatarImageProps,
-  AvatarRootProps,
-  AvatarRootProps as AvatarProps
-} from "./avatar"
-/* -------------------------------------------------------------------------------------------------
- * Named Component
- * -----------------------------------------------------------------------------------------------*/
-export { AvatarFallback, AvatarImage, AvatarRoot } from "./avatar"

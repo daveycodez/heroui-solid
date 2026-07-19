@@ -1,15 +1,9 @@
 import { type AvatarVariants, avatarVariants, cn } from "@heroui/styles"
+import { Image } from "@kobalte/core/image"
 import {
-  Fallback as ImageFallbackPrimitive,
-  Img as ImageImgPrimitive,
-  Root as ImagePrimitive
-} from "@kobalte/core/image"
-import type { PolymorphicProps } from "@kobalte/core/polymorphic"
-import {
+  type ComponentProps,
   createContext,
   createMemo,
-  createSignal,
-  type JSX,
   splitProps,
   useContext,
   type ValidComponent
@@ -20,7 +14,6 @@ import {
  * --------------------------------------------------------------------------------------------- */
 type AvatarContextValue = {
   slots?: ReturnType<typeof avatarVariants>
-  setFallbackDelay?: (delayMs: number | undefined) => void
 }
 
 const AvatarContext = createContext<AvatarContextValue>({})
@@ -28,13 +21,13 @@ const AvatarContext = createContext<AvatarContextValue>({})
 /* -------------------------------------------------------------------------------------------------
  * Avatar Root
  * -----------------------------------------------------------------------------------------------*/
-interface AvatarRootProps extends AvatarVariants {
-  class?: string
-  children?: JSX.Element
-}
+type AvatarRootProps<T extends ValidComponent = "span"> = ComponentProps<
+  typeof Image<T>
+> &
+  AvatarVariants
 
 const AvatarRoot = <T extends ValidComponent = "span">(
-  props: PolymorphicProps<T, AvatarRootProps>
+  props: AvatarRootProps<T>
 ) => {
   const [variantProps, local, rest] = splitProps(
     props as AvatarRootProps,
@@ -42,24 +35,16 @@ const AvatarRoot = <T extends ValidComponent = "span">(
     ["class"]
   )
   const slots = createMemo(() => avatarVariants(variantProps))
-  // Upstream's Radix API takes delayMs on the Fallback; Kobalte's Image takes
-  // fallbackDelay on the root — the fallback registers its delay here.
-  const [fallbackDelay, setFallbackDelay] = createSignal<number>()
 
   return (
     <AvatarContext.Provider
       value={{
         get slots() {
           return slots()
-        },
-        setFallbackDelay
+        }
       }}
     >
-      <ImagePrimitive
-        class={cn(slots().base(), local.class)}
-        fallbackDelay={fallbackDelay()}
-        {...rest}
-      />
+      <Image class={cn(slots().base(), local.class)} {...rest} />
     </AvatarContext.Provider>
   )
 }
@@ -67,51 +52,39 @@ const AvatarRoot = <T extends ValidComponent = "span">(
 /* -------------------------------------------------------------------------------------------------
  * Avatar Image
  * -----------------------------------------------------------------------------------------------*/
-interface AvatarImageProps {
-  class?: string
-  src?: string
-  alt?: string
-}
+type AvatarImageProps<T extends ValidComponent = "img"> = ComponentProps<
+  typeof Image.Img<T>
+>
 
 const AvatarImage = <T extends ValidComponent = "img">(
-  props: PolymorphicProps<T, AvatarImageProps>
+  props: AvatarImageProps<T>
 ) => {
   const [local, rest] = splitProps(props as AvatarImageProps, ["class"])
   const context = useContext(AvatarContext)
 
-  return (
-    <ImageImgPrimitive
-      class={cn(context.slots?.image(), local.class)}
-      {...rest}
-    />
-  )
+  return <Image.Img class={cn(context.slots?.image(), local.class)} {...rest} />
 }
 
 /* -------------------------------------------------------------------------------------------------
  * Avatar Fallback
  * -----------------------------------------------------------------------------------------------*/
-interface AvatarFallbackProps {
+type AvatarFallbackProps<T extends ValidComponent = "span"> = ComponentProps<
+  typeof Image.Fallback<T>
+> & {
   color?: AvatarVariants["color"]
-  delayMs?: number
-  class?: string
-  children?: JSX.Element
 }
 
 const AvatarFallback = <T extends ValidComponent = "span">(
-  props: PolymorphicProps<T, AvatarFallbackProps>
+  props: AvatarFallbackProps<T>
 ) => {
   const [local, rest] = splitProps(props as AvatarFallbackProps, [
-    "color",
-    "delayMs",
-    "class"
+    "class",
+    "color"
   ])
   const context = useContext(AvatarContext)
-  if (local.delayMs !== undefined) {
-    context.setFallbackDelay?.(local.delayMs)
-  }
 
   return (
-    <ImageFallbackPrimitive
+    <Image.Fallback
       class={cn(context.slots?.fallback({ color: local.color }), local.class)}
       data-slot="avatar-fallback"
       {...rest}

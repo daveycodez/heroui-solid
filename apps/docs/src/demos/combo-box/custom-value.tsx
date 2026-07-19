@@ -1,7 +1,5 @@
 import {
   Avatar,
-  AvatarFallback,
-  AvatarImage,
   ComboBox,
   Description,
   Input,
@@ -67,8 +65,8 @@ export function CustomValue() {
             {(user) => (
               <ListBox.Item id={user.id} textValue={user.name}>
                 <Avatar size="sm">
-                  <AvatarImage src={user.avatarUrl} />
-                  <AvatarFallback>{user.fallback}</AvatarFallback>
+                  <Avatar.Image src={user.avatarUrl} />
+                  <Avatar.Fallback>{user.fallback}</Avatar.Fallback>
                 </Avatar>
                 <div class="flex flex-col">
                   <Label>{user.name}</Label>

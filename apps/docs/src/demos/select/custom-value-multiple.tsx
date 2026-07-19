@@ -1,13 +1,4 @@
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-  Chip,
-  Description,
-  Label,
-  ListBox,
-  Select
-} from "heroui-solid"
+import { Avatar, Chip, Description, Label, ListBox, Select } from "heroui-solid"
 import { For } from "solid-js"
 
 const users = [
@@ -85,8 +76,10 @@ export function CustomValueMultiple() {
                   return (
                     <Chip variant="soft">
                       <Avatar class="size-4" size="sm">
-                        <AvatarImage src={selectedItem.avatarUrl} />
-                        <AvatarFallback>{selectedItem.fallback}</AvatarFallback>
+                        <Avatar.Image src={selectedItem.avatarUrl} />
+                        <Avatar.Fallback>
+                          {selectedItem.fallback}
+                        </Avatar.Fallback>
                       </Avatar>
                       <Chip.Label>{selectedItem.name}</Chip.Label>
                     </Chip>
@@ -104,8 +97,8 @@ export function CustomValueMultiple() {
             {(user) => (
               <ListBox.Item id={user.id} textValue={user.name}>
                 <Avatar size="sm">
-                  <AvatarImage src={user.avatarUrl} />
-                  <AvatarFallback>{user.fallback}</AvatarFallback>
+                  <Avatar.Image src={user.avatarUrl} />
+                  <Avatar.Fallback>{user.fallback}</Avatar.Fallback>
                 </Avatar>
                 <div class="flex flex-col">
                   <Label>{user.name}</Label>

@@ -1,8 +1,6 @@
 import {
   Autocomplete,
   Avatar,
-  AvatarFallback,
-  AvatarImage,
   Description,
   EmptyState,
   Label,
@@ -92,8 +90,8 @@ export function UserSelection() {
             return (
               <div class="flex items-center gap-2">
                 <Avatar class="size-4" size="sm">
-                  <AvatarImage src={selectedItem.avatarUrl} />
-                  <AvatarFallback>{selectedItem.fallback}</AvatarFallback>
+                  <Avatar.Image src={selectedItem.avatarUrl} />
+                  <Avatar.Fallback>{selectedItem.fallback}</Avatar.Fallback>
                 </Avatar>
                 <span>{selectedItem.name}</span>
               </div>
@@ -119,8 +117,8 @@ export function UserSelection() {
               {(user) => (
                 <ListBox.Item id={user.id} textValue={user.name}>
                   <Avatar size="sm">
-                    <AvatarImage src={user.avatarUrl} />
-                    <AvatarFallback>{user.fallback}</AvatarFallback>
+                    <Avatar.Image src={user.avatarUrl} />
+                    <Avatar.Fallback>{user.fallback}</Avatar.Fallback>
                   </Avatar>
                   <div class="flex flex-col">
                     <Label>{user.name}</Label>

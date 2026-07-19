@@ -5,23 +5,23 @@ export function CustomTrigger() {
   return (
     <Dropdown>
       <Dropdown.Trigger class="rounded-full">
-        <Avatar>
+        <Avatar fallbackDelay={600}>
           <Avatar.Image
             alt="Junior Garcia"
             src="https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/orange.jpg"
           />
-          <Avatar.Fallback delayMs={600}>JD</Avatar.Fallback>
+          <Avatar.Fallback>JD</Avatar.Fallback>
         </Avatar>
       </Dropdown.Trigger>
       <Dropdown.Popover>
         <div class="px-3 pt-3 pb-1">
           <div class="flex items-center gap-2">
-            <Avatar size="sm">
+            <Avatar fallbackDelay={600} size="sm">
               <Avatar.Image
                 alt="Jane"
                 src="https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/orange.jpg"
               />
-              <Avatar.Fallback delayMs={600}>JD</Avatar.Fallback>
+              <Avatar.Fallback>JD</Avatar.Fallback>
             </Avatar>
             <div class="flex flex-col gap-0">
               <p class="text-sm leading-5 font-medium">Jane Doe</p>

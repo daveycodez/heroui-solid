@@ -151,12 +151,13 @@ The Avatar component uses these CSS classes ([View source styles](https://github
 
 ### Avatar Props
 
-| Prop      | Type                                                          | Default     | Description            |
-| --------- | ------------------------------------------------------------- | ----------- | ---------------------- |
-| `size`    | `"sm" \| "md" \| "lg"`                                        | `"md"`      | Avatar size            |
-| `color`   | `"default" \| "accent" \| "success" \| "warning" \| "danger"` | `"default"` | Fallback color theme   |
-| `variant` | `"default" \| "soft"`                                         | `"default"` | Visual style variant   |
-| `class`   | `string`                                                      | -           | Additional CSS classes |
+| Prop            | Type                                                          | Default     | Description                                     |
+| --------------- | ------------------------------------------------------------- | ----------- | ----------------------------------------------- |
+| `size`          | `"sm" \| "md" \| "lg"`                                        | `"md"`      | Avatar size                                     |
+| `color`         | `"default" \| "accent" \| "success" \| "warning" \| "danger"` | `"default"` | Fallback color theme                            |
+| `variant`       | `"default" \| "soft"`                                         | `"default"` | Visual style variant                            |
+| `fallbackDelay` | `number`                                                      | -           | Delay (ms) before showing fallback (prevents flash) |
+| `class`         | `string`                                                      | -           | Additional CSS classes                          |
 
 ### Avatar.Image Props
 
@@ -171,17 +172,18 @@ fallback renders.
 
 ### Avatar.Fallback Props
 
-| Prop      | Type                                                          | Default | Description                                 |
-| --------- | ------------------------------------------------------------- | ------- | ------------------------------------------- |
-| `delayMs` | `number`                                                      | -       | Delay before showing fallback (prevents flash) |
-| `color`   | `"default" \| "accent" \| "success" \| "warning" \| "danger"` | -       | Override color from parent                  |
-| `class`   | `string`                                                      | -       | Additional CSS classes                      |
+| Prop    | Type                                                          | Default | Description                |
+| ------- | ------------------------------------------------------------- | ------- | -------------------------- |
+| `color` | `"default" \| "accent" \| "success" \| "warning" \| "danger"` | -       | Override color from parent |
+| `class` | `string`                                                      | -       | Additional CSS classes     |
 
 ## Differences from HeroUI React
 
 - Built on Kobalte's Image primitive instead of Radix Avatar — same
   loading/fallback semantics.
-- `Avatar.Image` doesn't forward `srcSet`/`sizes`/`loading`/`crossOrigin`
-  handling through a preloader the way Radix does; standard `img` attributes
-  pass through to the element once mounted.
+- The fallback delay is Kobalte's `fallbackDelay` prop on the `Avatar` root,
+  not Radix's `delayMs` on `Avatar.Fallback`.
+- Standard `img` attributes (`srcSet`, `sizes`, `loading`, `crossOrigin`, …)
+  pass straight through to `Avatar.Image`; Kobalte doesn't run Radix's
+  preloader, but the element receives them once mounted.
 - The React `render` prop is replaced by Kobalte's `as` prop.

@@ -17,12 +17,12 @@ export function Fallback() {
       </Avatar>
 
       {/* Fallback with delay */}
-      <Avatar>
+      <Avatar fallbackDelay={600}>
         <Avatar.Image
           alt="Delayed Avatar"
           src="https://invalid-url-to-show-fallback.com/image.jpg"
         />
-        <Avatar.Fallback delayMs={600}>NA</Avatar.Fallback>
+        <Avatar.Fallback>NA</Avatar.Fallback>
       </Avatar>
 
       {/* Custom styled fallback */}
