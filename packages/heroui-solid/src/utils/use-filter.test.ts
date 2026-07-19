@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest"
 import { useFilter } from "./use-filter"
 
 describe("useFilter", () => {
-  it("matches case- and accent-insensitively with the default sensitivity", () => {
+  it("matches case- and accent-insensitively with sensitivity: base", () => {
     const { contains, startsWith, endsWith } = useFilter({
       sensitivity: "base"
     })

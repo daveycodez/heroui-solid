@@ -1,5 +1,12 @@
 import { createVirtualizer } from "@tanstack/solid-virtual"
-import { type Accessor, createSignal, For, type JSX, onMount } from "solid-js"
+import {
+  type Accessor,
+  createSignal,
+  For,
+  type JSX,
+  onCleanup,
+  onMount
+} from "solid-js"
 
 // Rows the virtualizer seeds into its first window (SSR + pre-mount hydration),
 // before the scroll element can be measured. See attachScrollEl / initialRect.
@@ -62,13 +69,21 @@ export function createListVirtualizer<T>(
   //    its ResizeObserver against that detached element, which never fires —
   //    leaving the list blank until reload. Waiting for `isConnected` means the
   //    adapter measures the real height and observes a live element.
+  let attachRaf: number | undefined
   const attachScrollEl = (el: HTMLElement) => {
+    // A newer ref superseded this element — abandon the stale poll so it never
+    // reconnects and replaces the active scroll element, and so the rAF loop
+    // stops instead of retaining a detached node forever.
+    if (el !== scrollElRef) return
     if (el.isConnected) {
       setScrollEl(el)
       return
     }
-    requestAnimationFrame(() => attachScrollEl(el))
+    attachRaf = requestAnimationFrame(() => attachScrollEl(el))
   }
+  onCleanup(() => {
+    if (attachRaf !== undefined) cancelAnimationFrame(attachRaf)
+  })
   // After the first mount, a fresh scroll element can arrive (e.g. an
   // Autocomplete's listbox unmounts to show an empty state, then remounts when
   // results return). onMount fires only once, so attach directly on the ref in

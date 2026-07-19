@@ -256,7 +256,11 @@ const SearchFieldInput = (props: SearchFieldInputProps) => {
     event
   ) => {
     callHandler(event, local.onKeyDown)
-    // Virtual-focus nav (ArrowUp/Down/Home/End/Enter/Escape) runs first and
+    // Honor a consumer that consumed the key in their own onKeyDown.
+    if (event.defaultPrevented) {
+      return
+    }
+    // Virtual-focus nav (ArrowUp/Down/Home/End/Enter/Escape) runs next and
     // preventDefaults the keys it owns, so the field's own Escape/Enter
     // behavior only fires for keys the parent left alone.
     control?.onInputKeyDown?.(event)

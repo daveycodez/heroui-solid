@@ -10,10 +10,11 @@ export interface Filter {
 }
 
 // Locale-aware string matching for filtering, ported from React Aria's
-// `useFilter`. Backed by `Intl.Collator(usage: "search")`, so with the default
-// `sensitivity: "base"` it matches across case and accents (e.g. "resume"
-// matches "résumé"). Returned predicates are stable; only the collator depends
-// on `options`.
+// `useFilter`. Backed by `Intl.Collator(usage: "search")`; pass
+// `sensitivity: "base"` (as the demos do) to match across case and accents
+// (e.g. "resume" matches "résumé"). With no options the collator uses the
+// runtime's locale-dependent default sensitivity. Returned predicates are
+// stable; only the collator depends on `options`.
 export function useFilter(options?: Intl.CollatorOptions): Filter {
   const collator = createMemo(
     () => new Intl.Collator("en-US", { usage: "search", ...options })

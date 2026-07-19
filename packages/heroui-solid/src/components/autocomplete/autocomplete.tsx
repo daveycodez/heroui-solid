@@ -345,6 +345,11 @@ type AutocompleteContextValue = {
   mounted?: Accessor<boolean>
   query?: Accessor<string>
   setQuery?: (value: string) => void
+  // Reset the search text through whichever setter owns it — the consumer's
+  // controlled `onInputChange` when `Autocomplete.Filter` drives `inputValue`,
+  // else the internal query. Used by close and clear so a controlled filter
+  // doesn't retain stale text and reopen filtered.
+  resetSearch?: () => void
   setFilter?: (filter: FilterPredicate | undefined) => void
   setControlledInput?: (
     input:
@@ -507,6 +512,19 @@ const AutocompleteRoot = <T extends ValidComponent = "div">(
     )
   }
 
+  // Route search-text changes to whichever setter owns the value: the consumer's
+  // controlled `onInputChange` (set by Autocomplete.Filter) when present, else
+  // the internal query. Typing and reset (close/clear) both go through here so a
+  // controlled filter can't keep stale text.
+  const routeSearchChange = (next: string) => {
+    const controlled = controlledInput()
+    if (controlled?.onChange) {
+      controlled.onChange(next)
+    } else {
+      setQuery(next)
+    }
+  }
+
   const context: AutocompleteContextValue = {
     get slots() {
       return slots()
@@ -515,6 +533,7 @@ const AutocompleteRoot = <T extends ValidComponent = "div">(
     mounted,
     query,
     setQuery,
+    resetSearch: () => routeSearchChange(""),
     setFilter: (filter) => setFilterState({ fn: filter }),
     setControlledInput
   }
@@ -528,14 +547,7 @@ const AutocompleteRoot = <T extends ValidComponent = "div">(
   // query.
   const searchControl = {
     value: () => controlledInput()?.value() ?? query(),
-    onChange: (next: string) => {
-      const controlled = controlledInput()
-      if (controlled?.onChange) {
-        controlled.onChange(next)
-      } else {
-        setQuery(next)
-      }
-    }
+    onChange: routeSearchChange
   }
 
   return (
@@ -558,7 +570,7 @@ const AutocompleteRoot = <T extends ValidComponent = "div">(
       // (mirrors upstream), then delegate to the consumer's handler.
       onOpenChange={(isOpen: boolean) => {
         if (!isOpen) {
-          setQuery("")
+          routeSearchChange("")
         }
         local.onOpenChange?.(isOpen)
       }}
@@ -779,7 +791,7 @@ const AutocompleteClearButton = (props: AutocompleteClearButtonProps) => {
 
   const clear = () => {
     selectContext.listState().selectionManager().clearSelection()
-    context.setQuery?.("")
+    context.resetSearch?.()
   }
 
   const handleClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (
