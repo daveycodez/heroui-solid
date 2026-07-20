@@ -2,8 +2,16 @@ import { type ButtonVariants, buttonVariants, cn } from "@heroui/styles"
 import { Root as ButtonPrimitive } from "@kobalte/core/button"
 import type { PolymorphicProps } from "@kobalte/core/polymorphic"
 import { callHandler } from "@kobalte/utils"
-import { createMemo, type JSX, splitProps, type ValidComponent } from "solid-js"
+import {
+  createMemo,
+  type JSX,
+  mergeProps,
+  splitProps,
+  useContext,
+  type ValidComponent
+} from "solid-js"
 import { dataAttr } from "../../utils/assertion"
+import { ButtonGroupContext } from "../button-group/button-group"
 
 type ButtonRootProps<T extends ValidComponent = "button"> = PolymorphicProps<
   T,
@@ -13,19 +21,33 @@ type ButtonRootProps<T extends ValidComponent = "button"> = PolymorphicProps<
 const ButtonRoot = <T extends ValidComponent = "button">(
   props: ButtonRootProps<T>
 ) => {
+  const buttonGroup = useContext(ButtonGroupContext)
+
+  const buttonGroupProps = () => ({
+    variant: buttonGroup.variant?.(),
+    size: buttonGroup.size?.(),
+    fullWidth: buttonGroup.fullWidth?.(),
+    disabled: buttonGroup.disabled?.()
+  })
+
+  const merged = mergeProps(buttonGroupProps, props as ButtonRootProps)
+
+  // `disabled` stays in `rest` so it spreads onto the button as-is (already
+  // resolved against the group by mergeProps above); only the keys we need to
+  // read or transform are peeled off.
   const [variantProps, local, rest] = splitProps(
-    props as ButtonRootProps,
+    merged,
     buttonVariants.variantKeys,
-    ["isPending", "disabled", "class", "onClick"]
+    ["isPending", "class", "onClick"]
   )
 
   // Resolve the blocked state in an owned memo at render, not inside the click
   // handler: when this Button is a polymorphic child (e.g. a Dropdown trigger),
-  // `local.disabled` chains through Kobalte's memoized `get disabled`, and
+  // `merged.disabled` chains through Kobalte's memoized `get disabled`, and
   // reading it from the handler — which runs with no reactive owner — would
   // create that memo outside a root ("...will never be disposed"). The memo
   // reads the props under the component owner instead; the handler just reads it.
-  const isBlocked = createMemo(() => local.isPending || local.disabled)
+  const isBlocked = createMemo(() => local.isPending || merged.disabled)
 
   // A pending or disabled button must not activate. Our at-target `on:click`
   // runs ahead of consumer listeners, so stopImmediatePropagation silences
@@ -39,6 +61,7 @@ const ButtonRoot = <T extends ValidComponent = "button">(
       event.stopImmediatePropagation()
       return
     }
+
     callHandler(event, local.onClick)
   }
 
@@ -51,7 +74,6 @@ const ButtonRoot = <T extends ValidComponent = "button">(
       on:click={handleClick}
       {...rest}
       // After the spread so consumers can't desync state-derived attributes.
-      disabled={local.disabled}
       data-pending={dataAttr(local.isPending)}
       aria-disabled={dataAttr(local.isPending)}
     />

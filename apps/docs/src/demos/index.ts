@@ -29,6 +29,14 @@ import { Sizes } from "./button/sizes"
 import { Social } from "./button/social"
 import { Variants } from "./button/variants"
 import { WithIcons } from "./button/with-icons"
+import { Basic as ButtonGroupBasic } from "./button-group/basic"
+import { Disabled as ButtonGroupDisabled } from "./button-group/disabled"
+import { FullWidth as ButtonGroupFullWidth } from "./button-group/full-width"
+import { Orientation as ButtonGroupOrientation } from "./button-group/orientation"
+import { Sizes as ButtonGroupSizes } from "./button-group/sizes"
+import { Variants as ButtonGroupVariants } from "./button-group/variants"
+import { WithIcons as ButtonGroupWithIcons } from "./button-group/with-icons"
+import { WithoutSeparator as ButtonGroupWithoutSeparator } from "./button-group/without-separator"
 import { Default as CardDefault } from "./card/default"
 import { Horizontal as CardHorizontal } from "./card/horizontal"
 import { Variants as CardVariants } from "./card/variants"
@@ -202,6 +210,14 @@ export const demos: Record<string, Component> = {
   "button-social": Social,
   "button-custom-element": CustomElement,
   "button-custom-variants": CustomVariants,
+  "button-group-basic": ButtonGroupBasic,
+  "button-group-variants": ButtonGroupVariants,
+  "button-group-sizes": ButtonGroupSizes,
+  "button-group-orientation": ButtonGroupOrientation,
+  "button-group-with-icons": ButtonGroupWithIcons,
+  "button-group-full-width": ButtonGroupFullWidth,
+  "button-group-disabled": ButtonGroupDisabled,
+  "button-group-without-separator": ButtonGroupWithoutSeparator,
   "card-default": CardDefault,
   "card-variants": CardVariants,
   "card-horizontal": CardHorizontal,

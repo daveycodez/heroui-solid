@@ -1,0 +1,29 @@
+/* Inset focus ring for grouped buttons. heroui's button-group.css keys the
+   inset override off React Aria's `:focus-visible:not(:focus)` (a dead
+   selector) and `[data-focus-visible="true"]` (which Kobalte doesn't stamp),
+   so a grouped button would otherwise show the default offset ring — which
+   overflows onto its neighbours since group buttons sit flush. Bridge the
+   working `:focus-visible` instead (matching button.overrides.css, which is
+   ungated because native focus-visible already rings buttons correctly).
+
+   Exclude the accent (primary) variant: the focus ring color is `--accent`
+   itself (`--focus: var(--accent)`), so an *inset* ring drawn over the
+   accent-filled button is invisible. Only the primary variant fills with the
+   ring's own color, so it keeps the default offset ring (whose
+   background-colored gap keeps it visible); every other variant reads fine
+   inset. This deviates from upstream, which insets all grouped buttons. */
+.button-group .button:not(.button--primary):focus-visible {
+  --tw-ring-offset-width: 0px;
+  @apply ring-inset;
+}
+
+/* The press-scale removal (`.button-group .button:active { transform: none }`)
+   already works via the native `:active` in @heroui/styles — Kobalte doesn't
+   stamp data-pressed, but :active covers it, so no bridge is needed there.
+
+   A grouped Dropdown trigger also holds our open-state scale
+   (`.dropdown__trigger[data-expanded]`); suppress it too so a trigger inside a
+   group stays flush like every other grouped button. */
+.button-group .button[data-expanded] {
+  transform: none;
+}

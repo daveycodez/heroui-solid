@@ -179,27 +179,44 @@ and docs* — not as the API or behavior to mirror.
   [/* behavior keys */])` — the tv function exposes its config at runtime.
   Never hardcode a variant key list.
 - **Class composition**: `class={cn(xVariants(variantProps), local.class)}`.
+- **Contexts we create follow Kobalte's accessor-function shape, not a
+  value/getter object.** We already *consume* Kobalte contexts (whose fields are
+  accessor functions — `ctx.isDisabled()`, `ctx.value()`), so every context we
+  *author* must read the same way, or the package is inconsistent. Each field is
+  an `Accessor` the consumer **calls**
+  (`import { type Accessor } from "solid-js"`): `type XContextValue = { slots?:
+  Accessor<ReturnType<typeof xVariants>>; variant?: Accessor<XProps["variant"]> }`.
+  Provide values by passing a `createMemo` straight through (a memo *is* an
+  `Accessor`) and wrapping plain reactive reads in a thunk — `value={{ slots,
+  variant: () => local.variant }}` — **never** the property-getter form
+  (`value={{ get slots() { return slots() } }}`). Consumers call the accessor:
+  `ctx.slots?.()`, `ctx.variant?.()`. `ButtonGroupContext`/`ButtonGroup` is the
+  reference implementation. (Some older components — Accordion, Kbd, Link,
+  Avatar, TextField — still use the pre-convention value/getter shape and are
+  being migrated; match the accessor form for anything new or touched.)
 - **Compound slots flow through a context — child parts never call
   `xVariants()` fresh.** When a component has satellites that compute their
   classes from a multi-slot tv (`xVariants().item()`, `.icon()`, …), the Root
   resolves the slots ONCE from its variant props and shares them via an
-  `XContext` (`type XContextValue = { slots?: ReturnType<typeof xVariants> }`),
-  exactly as upstream does (Accordion, Kbd, Link, Avatar all use this). The
-  Root: `const slots = createMemo(() => xVariants(variantProps))`, wraps the
-  Kobalte primitive (which renders the children) in
-  `<XContext.Provider value={{ get slots() { return slots() } }}>`, and applies
-  `slots().base()` itself. Each satellite does `const ctx = useContext(XContext)`
-  and `class={cn(ctx.slots?.item(), local.class)}` — never `xVariants().item()`,
-  which silently uses default variants and drops any root-level variant that
-  maps to that slot. This holds even when today's tv config only varies `base`
-  (Accordion `surface`, Kbd `variant`): reusing `@heroui/styles` at runtime
-  means a future bump could add a variant that touches a child slot, and the
-  context is what makes it propagate. The Provider is SSR-safe for always-mounted
-  compound content (not portalled) — Avatar/Accordion pass the ssr-test — but a
-  part inside a closed Select popover must still defer per the collection rules
-  below, not read slots eagerly. (Cross-*component* variant sharing — e.g.
-  TextField pushing `variant` into the separate Input/TextArea — uses the same
-  context mechanism; see `TextFieldContext`.)
+  `XContext` (`type XContextValue = { slots?: Accessor<ReturnType<typeof
+  xVariants>> }`, per the accessor rule above), applying the same slot-sharing
+  structure upstream uses (Accordion, Kbd, Link, Avatar). The Root: `const slots
+  = createMemo(() => xVariants(variantProps))`, wraps the Kobalte primitive
+  (which renders the children) in `<XContext.Provider value={{ slots }}>`, and
+  applies `slots().base()` itself. Each satellite does `const ctx =
+  useContext(XContext)` and `class={cn(ctx.slots?.()?.item(), local.class)}` —
+  never `xVariants().item()`, which silently uses default variants and drops any
+  root-level variant that maps to that slot. This holds even when today's tv
+  config only varies `base` (Accordion `surface`, Kbd `variant`): reusing
+  `@heroui/styles` at runtime means a future bump could add a variant that
+  touches a child slot, and the context is what makes it propagate. The Provider
+  is SSR-safe for always-mounted compound content (not portalled) —
+  Avatar/Accordion pass the ssr-test — but a part inside a closed Select popover
+  must still defer per the collection rules below, not read slots eagerly.
+  (Cross-*component* variant sharing — e.g. ButtonGroup pushing `variant`/`size`
+  into descendant Buttons, or TextField pushing `variant` into the separate
+  Input/TextArea — uses the same accessor-context mechanism; see
+  `ButtonGroupContext`.)
 - **Presentational parts still get `as`.** A component with no Kobalte primitive
   (Spinner, Kbd, Surface) is still polymorphic if upstream declares it so —
   upstream stamps `DOMRenderProps<E>` + renders via `dom.<tag>`, which is the

@@ -4,4 +4,219 @@ title: ButtonGroup
 
 # ButtonGroup
 
-Hello World
+Group related buttons together with consistent styling and spacing.
+
+## Import
+
+```tsx
+import { ButtonGroup, Button } from "heroui-solid";
+```
+
+### Usage
+
+<ComponentPreview name="button-group-basic" />
+
+```tsx file=../../../demos/button-group/basic.tsx title=""
+
+```
+
+### Anatomy
+
+Import the ButtonGroup component and access all parts using dot notation.
+
+```tsx
+import { ButtonGroup, Button } from "heroui-solid";
+
+export default () => (
+  <ButtonGroup>
+    <Button>First</Button>
+    <Button>
+      <ButtonGroup.Separator />
+      Second
+    </Button>
+    <Button>
+      <ButtonGroup.Separator />
+      Third
+    </Button>
+  </ButtonGroup>
+);
+```
+
+**ButtonGroup** wraps multiple Button components together, applying consistent
+styling, spacing, and automatic border radius handling. It uses Solid context to
+pass `size`, `variant`, and `disabled` to child buttons.
+
+### Variants
+
+<ComponentPreview name="button-group-variants" />
+
+```tsx file=../../../demos/button-group/variants.tsx title=""
+
+```
+
+### Sizes
+
+<ComponentPreview name="button-group-sizes" />
+
+```tsx file=../../../demos/button-group/sizes.tsx title=""
+
+```
+
+### Orientation
+
+Use the `orientation` prop to arrange buttons horizontally or vertically.
+
+<ComponentPreview name="button-group-orientation" />
+
+```tsx file=../../../demos/button-group/orientation.tsx title=""
+
+```
+
+### With Icons
+
+<ComponentPreview name="button-group-with-icons" />
+
+```tsx file=../../../demos/button-group/with-icons.tsx title=""
+
+```
+
+### Full Width
+
+<ComponentPreview name="button-group-full-width" />
+
+```tsx file=../../../demos/button-group/full-width.tsx title=""
+
+```
+
+### Disabled State
+
+<ComponentPreview name="button-group-disabled" />
+
+```tsx file=../../../demos/button-group/disabled.tsx title=""
+
+```
+
+### Without Separator
+
+Simply omit the `<ButtonGroup.Separator />` component from your buttons.
+
+<ComponentPreview name="button-group-without-separator" />
+
+```tsx file=../../../demos/button-group/without-separator.tsx title=""
+
+```
+
+## Related Components
+
+- **Button**: Allows a user to perform an action
+- **Dropdown**: Context menu with actions and options
+- **Chip**: Compact elements for tags and filters
+
+## Styling
+
+### Passing Tailwind CSS classes
+
+```tsx
+import { ButtonGroup, Button } from "heroui-solid";
+
+function CustomButtonGroup() {
+  return (
+    <ButtonGroup class="gap-2">
+      <Button>First</Button>
+      <Button>
+        <ButtonGroup.Separator />
+        Second
+      </Button>
+      <Button>
+        <ButtonGroup.Separator />
+        Third
+      </Button>
+    </ButtonGroup>
+  );
+}
+```
+
+### Customizing the component classes
+
+To customize the ButtonGroup component classes, you can use the `@layer components`
+directive.
+
+```css
+@layer components {
+  .button-group {
+    @apply gap-2 rounded-lg;
+  }
+
+  .button-group__separator {
+    @apply opacity-25;
+  }
+}
+```
+
+HeroUI follows the [BEM](https://getbem.com/) methodology to ensure component
+variants and states are reusable and easy to customize.
+
+### CSS Classes
+
+The ButtonGroup component uses these CSS classes ([View source styles](https://github.com/heroui-inc/heroui/blob/v3/packages/styles/components/button-group.css)):
+
+- `.button-group` - Base button group container
+- `.button-group--horizontal` - Horizontal orientation
+- `.button-group--vertical` - Vertical orientation
+- `.button-group--full-width` - Full width modifier
+- `.button-group__separator` - Separator element between buttons
+
+The ButtonGroup component automatically applies border radius to buttons:
+
+- First button gets rounded left/start edge
+- Last button gets rounded right/end edge
+- Middle buttons have no border radius
+- Single button gets full border radius on all edges
+
+Add `<ButtonGroup.Separator />` inside each Button (except the first) to show
+dividers between buttons.
+
+## API Reference
+
+### ButtonGroup Props
+
+| Prop          | Type                                                                                          | Default        | Description                                                                              |
+| ------------- | --------------------------------------------------------------------------------------------- | -------------- | --------------------------------------------------------------------------------------- |
+| `variant`     | `"primary" \| "secondary" \| "tertiary" \| "outline" \| "ghost" \| "danger" \| "danger-soft"` | -              | Visual style variant applied to all buttons in the group                                |
+| `size`        | `"sm" \| "md" \| "lg"`                                                                         | -              | Size applied to all buttons in the group                                                |
+| `orientation` | `"horizontal" \| "vertical"`                                                                   | `"horizontal"` | The orientation of the button group                                                     |
+| `fullWidth`   | `boolean`                                                                                      | `false`        | Whether the button group should take full width of its container                        |
+| `disabled`    | `boolean`                                                                                      | `false`        | Whether all buttons in the group are disabled (Kobalte's prop; overridable per button)  |
+| `class`       | `string`                                                                                       | -              | Additional CSS classes                                                                   |
+| `children`    | `JSX.Element`                                                                                  | -              | Button components to group together                                                     |
+
+*Plus standard `<div>` attributes.*
+
+### ButtonGroup.Separator Props
+
+| Prop    | Type             | Default  | Description                                            |
+| ------- | ---------------- | -------- | ----------------------------------------------------- |
+| `as`    | `ValidComponent` | `"span"` | Overrides the rendered element (Kobalte polymorphic). |
+| `class` | `string`         | -        | Additional CSS classes                                |
+
+*Plus standard `<span>` attributes.*
+
+## Rendered Elements
+
+| Component               | Default Element |
+| ----------------------- | --------------- |
+| `ButtonGroup`           | `<div>`         |
+| `ButtonGroup.Separator` | `<span>`        |
+
+## Differences from HeroUI React
+
+- The disabled prop uses Kobalte's own name, `disabled`, not HeroUI React's
+  `isDisabled`. An individual button can still opt back in with `disabled={false}`.
+- Group props (`variant`, `size`, `fullWidth`, `disabled`) are shared through
+  Solid context, so they flow to any descendant Button — including one nested
+  inside a Dropdown trigger. HeroUI React clones only direct children, so nested
+  buttons there do not inherit the group's props.
+- The Separator uses Kobalte's polymorphic `as` prop instead of HeroUI React's
+  render prop. See the [Polymorphism guide](/docs/polymorphism).
+- The Root is a plain `<div role="group">` (mirroring React Aria's Group) and is
+  not polymorphic — there is no `as` prop on `ButtonGroup` itself.
