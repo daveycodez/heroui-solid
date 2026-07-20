@@ -2,6 +2,25 @@
   @apply status-focused;
 }
 
+/* heroui's `.button` base carries `select-none no-highlight`, but its
+   `.dropdown__trigger` base omits both — so a fast double-click on a custom
+   trigger selects it (and any avatar/text inside) like text and paints the
+   selection/tap highlight. Match the Button so triggers never text-select. */
+button.dropdown__trigger {
+  @apply select-none no-highlight;
+}
+
+/* Press-scale while open. heroui's dropdown.css keys the trigger's zoom
+   (`transform: scale(0.97)`) off `:active`/`[data-pressed]`, but Kobalte opens
+   the menu on pointerdown and moves focus into it, releasing the native
+   `:active` before the press finishes — so the zoom only flashes for a frame.
+   Kobalte stamps `data-expanded` on the trigger while the menu is open, so
+   re-key the same scale onto it to hold the press look for the menu's lifetime
+   (matching the Button's press animation). */
+.dropdown__trigger[data-expanded] {
+  transform: scale(0.97);
+}
+
 .menu-item:focus-visible {
   @apply status-focused;
 }
@@ -75,7 +94,7 @@
    @heroui/styles' dropdown.css keys its zoom/fade off React Aria's
    data-entering/data-exiting; Kobalte instead stamps data-expanded/data-closed
    and exposes the computed origin as --kb-menu-content-transform-origin, so the
-   zoom emanates from the trigger side with no data-placement needed
+   zoom emanates from the trigger side
    (kobalte.dev/docs/core/components/dropdown-menu/#origin-aware-animations).
    We re-key heroui's own animation utilities onto Kobalte's attributes and
    point heroui's `origin-(--trigger-anchor-point)` at Kobalte's origin var.
@@ -89,6 +108,31 @@
   @apply animate-in duration-150 ease-smooth fade-in-0 zoom-in-90;
 }
 
+/* Placement-specific slide — the directional glide upstream pairs with the
+   zoom so the menu grows out of the trigger instead of popping in place. Keyed
+   off the base data-placement we JS-stamp on Content/SubContent (Kobalte
+   doesn't stamp it natively). Mirrors heroui's dropdown.css mapping. */
+.dropdown__popover[data-expanded][data-placement="top"] {
+  @apply slide-in-from-bottom-1;
+}
+
+.dropdown__popover[data-expanded][data-placement="bottom"] {
+  @apply slide-in-from-top-1;
+}
+
+.dropdown__popover[data-expanded][data-placement="left"] {
+  @apply slide-in-from-right-1;
+}
+
+.dropdown__popover[data-expanded][data-placement="right"] {
+  @apply slide-in-from-left-1;
+}
+
 .dropdown__popover[data-closed] {
   @apply animate-out duration-100 ease-smooth zoom-out-95 fade-out;
+}
+
+.dropdown__popover[data-expanded],
+.dropdown__popover[data-closed] {
+  @apply transition-[opacity,transform] will-change-[opacity,transform];
 }

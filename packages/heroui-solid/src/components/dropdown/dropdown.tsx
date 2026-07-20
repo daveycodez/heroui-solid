@@ -6,6 +6,7 @@ import {
   menuSectionVariants
 } from "@heroui/styles"
 import { DropdownMenu as DropdownMenuPrimitive } from "@kobalte/core/dropdown-menu"
+import { usePopperContext } from "@kobalte/core/popper"
 import {
   type ComponentProps,
   createContext,
@@ -115,10 +116,14 @@ const DropdownPopover = <T extends ValidComponent = "div">(
     "children"
   ])
   const context = useContext(DropdownContext)
+  const popper = usePopperContext()
   return (
     <DropdownMenuPrimitive.Content
       class={cn(context.slots?.popover(), local.class)}
       data-slot="dropdown-popover"
+      // Kobalte doesn't stamp data-placement natively; the enter animation's
+      // directional slide keys off it (see dropdown.overrides.css).
+      data-placement={popper.currentPlacement().split("-")[0]}
       {...rest}
     >
       {/* Locks <html> for the popover's lifetime (SSR-inert, renders null).
@@ -346,10 +351,14 @@ const DropdownSubContent = <T extends ValidComponent = "div">(
 ) => {
   const [local, rest] = splitProps(props as DropdownSubContentProps, ["class"])
   const context = useContext(DropdownContext)
+  const popper = usePopperContext()
   return (
     <DropdownMenuPrimitive.SubContent
       class={cn(context.slots?.popover(), local.class)}
       data-slot="dropdown-popover"
+      // Kobalte doesn't stamp data-placement natively; the enter animation's
+      // directional slide keys off it (see dropdown.overrides.css).
+      data-placement={popper.currentPlacement().split("-")[0]}
       {...rest}
     />
   )
