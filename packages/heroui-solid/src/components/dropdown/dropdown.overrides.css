@@ -6,6 +6,31 @@
   @apply status-focused;
 }
 
+/* Selection-indicator visuals. We always mount the indicator (forceMount) so
+   every selection item reserves the same inline-start gutter via heroui's
+   `.menu-item:has(.menu-item__indicator)` (ps-7) — checked and unchecked align.
+   Upstream drives the checkmark's stroke-dashoffset inline per render (66
+   hidden → 44 drawn); since our indicator is always mounted, we key that offset
+   off the item's checked state in css instead. @heroui/styles already supplies
+   the `transition: stroke-dashoffset` under the checked item, so the checkmark
+   animates its draw on select and snaps back on deselect (matching upstream).
+   The dot's scale/opacity is fully handled by @heroui/styles. */
+[data-slot="menu-item-indicator--checkmark"] {
+  stroke-dashoffset: 66;
+}
+
+.menu-item[aria-checked="true"] [data-slot="menu-item-indicator--checkmark"] {
+  stroke-dashoffset: 44;
+}
+
+/* Custom indicator children (anything that isn't the built-in checkmark/dot)
+   have no self-hiding animation of their own, so mirror upstream's isSelected
+   render-prop: reveal them only when the item is checked. */
+.menu-item:not([aria-checked="true"]) .menu-item__indicator
+  > :not([data-slot^="menu-item-indicator--"]) {
+  @apply opacity-0;
+}
+
 .dropdown__popover:focus-visible {
   @apply status-focused;
 }

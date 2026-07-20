@@ -19,6 +19,10 @@ import {
 import { PreventScroll } from "../../utils/prevent-scroll"
 import { Button } from "../button"
 import { Header } from "../header"
+import {
+  MenuItemIndicator,
+  type MenuItemIndicatorProps
+} from "./menu-item-indicator"
 
 /* -------------------------------------------------------------------------------------------------
  * Dropdown Context
@@ -181,23 +185,11 @@ const DropdownItem = <T extends ValidComponent = "div">(
 /* -------------------------------------------------------------------------------------------------
  * Dropdown Item Indicator
  * -----------------------------------------------------------------------------------------------*/
+// The selection indicator (built-in animated checkmark/dot, always mounted for
+// alignment — see menu-item-indicator.tsx).
+const DropdownItemIndicator = MenuItemIndicator
 type DropdownItemIndicatorProps<T extends ValidComponent = "div"> =
-  ComponentProps<typeof DropdownMenuPrimitive.ItemIndicator<T>>
-
-const DropdownItemIndicator = <T extends ValidComponent = "div">(
-  props: DropdownItemIndicatorProps<T>
-) => {
-  const [local, rest] = splitProps(props as DropdownItemIndicatorProps, [
-    "class"
-  ])
-  return (
-    <DropdownMenuPrimitive.ItemIndicator
-      class={cn(menuItemVariants().indicator(), local.class)}
-      data-slot="menu-item-indicator"
-      {...rest}
-    />
-  )
-}
+  MenuItemIndicatorProps<T>
 
 /* -------------------------------------------------------------------------------------------------
  * Dropdown Group

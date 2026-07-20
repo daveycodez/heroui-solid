@@ -46,12 +46,14 @@ describe("Tooltip", () => {
     expect(content.querySelector("[data-slot=overlay-arrow]")).not.toBeNull()
   })
 
-  it("bridges the RAC animation attributes onto open content", () => {
+  it("stamps Kobalte's animation state and a base placement on open content", () => {
     render(() => <Anatomy open />)
     const content = document.querySelector("[data-slot=tooltip]") as HTMLElement
-    // Open content is entering, never exiting, and carries a base placement.
-    expect(content.getAttribute("data-entering")).toBe("true")
-    expect(content.getAttribute("data-exiting")).toBeNull()
+    // Enter/exit animations are CSS-only, keyed off Kobalte's data-expanded/
+    // data-closed. Open content is expanded, never closed, and carries a base
+    // placement (JS-bridged for the arrow rotation).
+    expect(content.hasAttribute("data-expanded")).toBe(true)
+    expect(content.hasAttribute("data-closed")).toBe(false)
     expect(["top", "bottom", "left", "right"]).toContain(
       content.getAttribute("data-placement")
     )

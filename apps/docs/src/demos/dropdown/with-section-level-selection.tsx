@@ -1,4 +1,3 @@
-import { Check } from "gravity-icons-solid"
 import { Dropdown, Kbd, Label, Separator } from "heroui-solid"
 import { createSignal, For } from "solid-js"
 
@@ -70,9 +69,7 @@ export function WithSectionLevelSelection() {
                     checked={textStyles().has(id)}
                     onChange={(checked) => toggleStyle(id, checked)}
                   >
-                    <Dropdown.ItemIndicator>
-                      <Check class="size-4" />
-                    </Dropdown.ItemIndicator>
+                    <Dropdown.ItemIndicator />
                     <Label class="capitalize">{id}</Label>
                     <Kbd class="ms-auto" variant="light">
                       <Kbd.Abbr keyValue="command" />
@@ -92,9 +89,7 @@ export function WithSectionLevelSelection() {
                 <For each={alignments}>
                   {([id, key]) => (
                     <Dropdown.RadioItem value={id}>
-                      <Dropdown.ItemIndicator>
-                        <Check class="size-4" />
-                      </Dropdown.ItemIndicator>
+                      <Dropdown.ItemIndicator />
                       <Label class="capitalize">{id}</Label>
                       <Kbd class="ms-auto" variant="light">
                         <Kbd.Abbr keyValue="alt" />

@@ -304,12 +304,18 @@ components — HeroUI has no dropdown-specific label part. They stamp the
 
 ### Dropdown.ItemIndicator Props
 
-| Prop         | Type             | Default | Description                                            |
-| ------------ | ---------------- | ------- | ------------------------------------------------------ |
-| `as`         | `ValidComponent` | `"div"` | Overrides the rendered element (Kobalte polymorphic)   |
-| `forceMount` | `boolean`        | `false` | Render even when the item is not checked               |
-| `class`      | `string`         | -       | Additional CSS classes                                 |
-| `children`   | `JSX.Element`    | -       | Indicator content (rendered when the item is checked)  |
+The selection indicator. It is always mounted (so every selection item reserves
+the same inline-start gutter and lines up, checked or not) and renders a
+built-in animated checkmark by default — pass `type="dot"` for the dot, or your
+own `children` to replace it (custom children are shown only when the item is
+selected).
+
+| Prop       | Type                    | Default       | Description                                                       |
+| ---------- | ----------------------- | ------------- | ---------------------------------------------------------------- |
+| `as`       | `ValidComponent`        | `"div"`       | Overrides the rendered element (Kobalte polymorphic)             |
+| `type`     | `"checkmark" \| "dot"`  | `"checkmark"` | Which built-in indicator to render when no `children` are given  |
+| `class`    | `string`                | -             | Additional CSS classes                                           |
+| `children` | `JSX.Element`           | -             | Custom indicator content, replacing the built-in (shown when selected) |
 
 ### Dropdown.CheckboxItem Props
 

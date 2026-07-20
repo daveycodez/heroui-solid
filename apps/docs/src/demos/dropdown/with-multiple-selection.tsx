@@ -1,4 +1,3 @@
-import { Check } from "gravity-icons-solid"
 import { Dropdown, Label } from "heroui-solid"
 import { createSignal, For } from "solid-js"
 
@@ -35,9 +34,7 @@ export function WithMultipleSelection() {
                     checked={selected().has(fruit)}
                     onChange={(checked) => toggle(fruit, checked)}
                   >
-                    <Dropdown.ItemIndicator>
-                      <Check class="size-4" />
-                    </Dropdown.ItemIndicator>
+                    <Dropdown.ItemIndicator />
                     <Label class="capitalize">{fruit}</Label>
                   </Dropdown.CheckboxItem>
                 )}

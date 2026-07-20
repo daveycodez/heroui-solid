@@ -1,4 +1,3 @@
-import { Check } from "gravity-icons-solid"
 import { Dropdown, Label } from "heroui-solid"
 import { createSignal } from "solid-js"
 
@@ -17,34 +16,24 @@ export function WithSingleSelection() {
               <Dropdown.Group>
                 <Dropdown.GroupLabel>Select a fruit</Dropdown.GroupLabel>
                 <Dropdown.RadioItem value="apple">
-                  <Dropdown.ItemIndicator>
-                    <Check class="size-4" />
-                  </Dropdown.ItemIndicator>
+                  <Dropdown.ItemIndicator />
                   <Label>Apple</Label>
                 </Dropdown.RadioItem>
                 <Dropdown.RadioItem value="banana">
-                  <Dropdown.ItemIndicator>
-                    <Check class="size-4" />
-                  </Dropdown.ItemIndicator>
+                  <Dropdown.ItemIndicator />
                   <Label>Banana</Label>
                 </Dropdown.RadioItem>
                 <Dropdown.RadioItem value="cherry">
-                  <Dropdown.ItemIndicator>
-                    <Check class="size-4" />
-                  </Dropdown.ItemIndicator>
+                  <Dropdown.ItemIndicator />
                   <Label>Cherry</Label>
                 </Dropdown.RadioItem>
               </Dropdown.Group>
               <Dropdown.RadioItem value="orange">
-                <Dropdown.ItemIndicator>
-                  <Check class="size-4" />
-                </Dropdown.ItemIndicator>
+                <Dropdown.ItemIndicator />
                 <Label>Orange</Label>
               </Dropdown.RadioItem>
               <Dropdown.RadioItem value="pear">
-                <Dropdown.ItemIndicator>
-                  <Check class="size-4" />
-                </Dropdown.ItemIndicator>
+                <Dropdown.ItemIndicator />
                 <Label>Pear</Label>
               </Dropdown.RadioItem>
             </Dropdown.RadioGroup>
