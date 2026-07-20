@@ -201,6 +201,7 @@ import { TooltipCustomElement } from "./tooltip/custom-element"
 import { TooltipCustomTrigger } from "./tooltip/custom-trigger"
 import { TooltipPlacement } from "./tooltip/placement"
 import { TooltipWithArrow } from "./tooltip/with-arrow"
+import { TooltipWithoutPortal } from "./tooltip/without-portal"
 
 // Registry for <ComponentPreview name="..." /> in MDX pages. Follows the
 // official HeroUI docs structure (apps/docs/src/demos/<component>/<demo>.tsx,
@@ -407,5 +408,6 @@ export const demos: Record<string, Component> = {
   "tooltip-with-arrow": TooltipWithArrow,
   "tooltip-placement": TooltipPlacement,
   "tooltip-custom-trigger": TooltipCustomTrigger,
-  "tooltip-custom-element": TooltipCustomElement
+  "tooltip-custom-element": TooltipCustomElement,
+  "tooltip-without-portal": TooltipWithoutPortal
 }

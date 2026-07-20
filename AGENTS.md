@@ -66,6 +66,17 @@ and docs* — not as the API or behavior to mirror.
   exposes it — mirror the Kobalte primitive's parts, not HeroUI React's, when
   the two diverge. (Packaging conventions like the `index.ts` compound layout
   below are unaffected.)
+- **Keep Kobalte's `Portal` as an optional pass-through part** (overlay
+  components — Tooltip, Popover, Dropdown, Select…). Even though upstream HeroUI
+  has no Portal (it portals inside Content), don't fold Kobalte's Portal into
+  Content and don't graft a `mount`/`disablePortal` prop onto Content to
+  simulate it — that modifies the pass-through. Export `X.Portal` as a thin
+  Kobalte re-export and let the consumer compose `<X.Portal>` around
+  `<X.Content>` when they want portalling (the `mount` target rides on the
+  Portal, for free), or omit it to render inline. Portalling is the robust
+  overlay default (escapes ancestor `overflow`/stacking) so the standard
+  demos/anatomy keep the wrapper; add a short "Without Portal" demo + docs note
+  showing it's optional and why (a `z-index` alone can't escape clipping).
 - **Demos (and docs) express ONLY our public API — never upstream's internals.**
   A ported demo uses our compound parts and their props and nothing else:
   content goes straight into the part (`<Accordion.Content>{item.content}</…>`),

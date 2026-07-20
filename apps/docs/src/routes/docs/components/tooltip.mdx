@@ -41,6 +41,20 @@ export default () => (
 );
 ```
 
+### Without Portal
+
+`Tooltip.Portal` is optional. It relocates the content to the document `body`,
+so the tooltip escapes any ancestor `overflow: hidden` and stacking contexts —
+the robust default for overlays, and what every example above uses. Omit it to
+render the content inline (positioned relative to the trigger); this is lighter,
+but the tooltip can then be clipped by a scrolling or transformed ancestor.
+
+<ComponentPreview name="tooltip-without-portal" />
+
+```tsx file=../../../demos/tooltip/without-portal.tsx title=""
+
+```
+
 ### With Arrow
 
 Render `Tooltip.Arrow` inside `Tooltip.Content` to show the arrow — Kobalte
@@ -258,7 +272,8 @@ element of their own.
   (`<Tooltip.Trigger as={Button}>`) instead of nesting a `<Button>` inside it,
   and wrap the trigger explicitly in `Tooltip.Trigger` rather than relying on the
   first child of `Tooltip` being the trigger.
-- Content is portalled through an explicit `Tooltip.Portal`.
+- Content is portalled through an explicit (optional) `Tooltip.Portal` — omit it
+  to render the content inline.
 - `placement` and offset (`gutter`) live on the `Tooltip` root (Kobalte Popper
   options), not on `Tooltip.Content`. The default placement is `"top"` to match
   HeroUI, though Kobalte's own default is `"bottom"`.
