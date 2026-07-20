@@ -53,7 +53,19 @@ const config: SolidBaseConfig<DefaultThemeConfig> = {
           collapsed: false,
           base: "docs/components",
           items: createDefaultThemeFilesystemSidebar(
-            relativeToCwd("./src/routes/docs/components")
+            relativeToCwd("./src/routes/docs/components"),
+            {
+              // Default sort compares raw filePaths byte-for-byte, so `-`
+              // (0x2D) beats `.` (0x2E) and `input-group.mdx` sorts before
+              // `input.mdx`. Sort by display title instead (index pages first,
+              // matching upstream), so the visible order is truly alphabetical.
+              sort: (a, b) => {
+                const aIndex = a.filePath.endsWith("/index.mdx")
+                const bIndex = b.filePath.endsWith("/index.mdx")
+                if (aIndex !== bIndex) return aIndex ? -1 : 1
+                return a.title.localeCompare(b.title)
+              }
+            }
           )
         }
       ]

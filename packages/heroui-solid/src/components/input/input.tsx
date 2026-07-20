@@ -8,6 +8,7 @@ import {
   useContext
 } from "solid-js"
 
+import { InputGroupContext } from "../input-group/input-group"
 import { TextFieldContext } from "../textfield"
 
 type InputPrimitiveProps = ComponentProps<typeof InputPrimitive>
@@ -25,6 +26,7 @@ const InputRoot = (props: InputRootProps) => {
   )
   const formControl = useContext(FormControlContext)
   const textFieldContext = useContext(TextFieldContext)
+  const inputGroup = useContext(InputGroupContext)
 
   // Use variant from context if not explicitly provided
   const resolvedVariants = mergeProps(variantProps, {
@@ -33,18 +35,22 @@ const InputRoot = (props: InputRootProps) => {
     }
   })
 
+  // Inside an InputGroup, adopt the group's input slot + data-slot instead of the
+  // standalone `.input` base — the group shell owns the border/background.
+  const className = () =>
+    inputGroup.slots
+      ? cn(inputGroup.slots.input(), local.class)
+      : cn(inputVariants(resolvedVariants), local.class)
+  const slot = () => (inputGroup.slots ? "input-group-input" : "input")
+
   return formControl ? (
     <InputPrimitive
-      class={cn(inputVariants(resolvedVariants), local.class)}
-      data-slot="input"
+      class={className()}
+      data-slot={slot()}
       {...(rest as InputPrimitiveProps)}
     />
   ) : (
-    <input
-      class={cn(inputVariants(resolvedVariants), local.class)}
-      data-slot="input"
-      {...rest}
-    />
+    <input class={className()} data-slot={slot()} {...rest} />
   )
 }
 

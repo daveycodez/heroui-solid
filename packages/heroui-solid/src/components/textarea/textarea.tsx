@@ -12,6 +12,7 @@ import {
   useContext
 } from "solid-js"
 
+import { InputGroupContext } from "../input-group/input-group"
 import { TextFieldContext } from "../textfield"
 
 /* -------------------------------------------------------------------------------------------------
@@ -50,6 +51,7 @@ const TextAreaRoot = (props: TextAreaRootProps) => {
   )
   const formControl = useContext(FormControlContext)
   const textFieldContext = useContext(TextFieldContext)
+  const inputGroup = useContext(InputGroupContext)
 
   // Use variant from context if not explicitly provided
   const resolvedVariants = mergeProps(variantProps, {
@@ -58,13 +60,21 @@ const TextAreaRoot = (props: TextAreaRootProps) => {
     }
   })
 
+  // Inside an InputGroup, adopt the group's input slot + data-slot instead of the
+  // standalone `.textarea` base — the group shell owns the border/background.
+  const className = () =>
+    inputGroup.slots
+      ? cn(inputGroup.slots.input(), local.class)
+      : cn(textAreaVariants(resolvedVariants), local.class)
+  const slot = () => (inputGroup.slots ? "input-group-textarea" : "textarea")
+
   // Kobalte's TextArea consumes autoResize/submitOnEnter itself, so they ride
   // through the spread here.
   if (formControl) {
     return (
       <TextArea
-        class={cn(textAreaVariants(resolvedVariants), local.class)}
-        data-slot="textarea"
+        class={className()}
+        data-slot={slot()}
         {...(rest as ComponentProps<typeof TextArea>)}
       />
     )
@@ -131,8 +141,8 @@ const TextAreaRoot = (props: TextAreaRootProps) => {
       ref={mergeRefs((el) => {
         ref = el
       }, extras.ref)}
-      class={cn(textAreaVariants(resolvedVariants), local.class)}
-      data-slot="textarea"
+      class={className()}
+      data-slot={slot()}
       aria-multiline={extras.submitOnEnter ? "false" : undefined}
       onInput={onInput}
       onKeyPress={onKeyPress}

@@ -50,6 +50,26 @@ import { FullWidth as InputFullWidth } from "./input/full-width"
 import { OnSurface as InputOnSurface } from "./input/on-surface"
 import { Types as InputTypes } from "./input/types"
 import { Variants as InputVariants } from "./input/variants"
+import { Default as InputGroupDefault } from "./input-group/default"
+import { Disabled as InputGroupDisabled } from "./input-group/disabled"
+import { FullWidth as InputGroupFullWidth } from "./input-group/full-width"
+import { Invalid as InputGroupInvalid } from "./input-group/invalid"
+import { OnSurface as InputGroupOnSurface } from "./input-group/on-surface"
+import { PasswordWithToggle as InputGroupPasswordWithToggle } from "./input-group/password-with-toggle"
+import { Required as InputGroupRequired } from "./input-group/required"
+import { Variants as InputGroupVariants } from "./input-group/variants"
+import { WithBadgeSuffix as InputGroupWithBadgeSuffix } from "./input-group/with-badge-suffix"
+import { WithCopySuffix as InputGroupWithCopySuffix } from "./input-group/with-copy-suffix"
+import { WithIconPrefixAndCopySuffix as InputGroupWithIconPrefixAndCopySuffix } from "./input-group/with-icon-prefix-and-copy-suffix"
+import { WithIconPrefixAndTextSuffix as InputGroupWithIconPrefixAndTextSuffix } from "./input-group/with-icon-prefix-and-text-suffix"
+import { WithKeyboardShortcut as InputGroupWithKeyboardShortcut } from "./input-group/with-keyboard-shortcut"
+import { WithLoadingSuffix as InputGroupWithLoadingSuffix } from "./input-group/with-loading-suffix"
+import { WithPrefixAndSuffix as InputGroupWithPrefixAndSuffix } from "./input-group/with-prefix-and-suffix"
+import { WithPrefixIcon as InputGroupWithPrefixIcon } from "./input-group/with-prefix-icon"
+import { WithSuffixIcon as InputGroupWithSuffixIcon } from "./input-group/with-suffix-icon"
+import { WithTextPrefix as InputGroupWithTextPrefix } from "./input-group/with-text-prefix"
+import { WithTextSuffix as InputGroupWithTextSuffix } from "./input-group/with-text-suffix"
+import { WithTextArea as InputGroupWithTextArea } from "./input-group/with-textarea"
 import { Basic as KbdBasic } from "./kbd/basic"
 import { InlineUsage as KbdInlineUsage } from "./kbd/inline"
 import { InstructionalText as KbdInstructionalText } from "./kbd/instructional"
@@ -193,6 +213,28 @@ export const demos: Record<string, Component> = {
   "input-full-width": InputFullWidth,
   "input-variants": InputVariants,
   "input-on-surface": InputOnSurface,
+  "input-group-default": InputGroupDefault,
+  "input-group-with-prefix-icon": InputGroupWithPrefixIcon,
+  "input-group-with-suffix-icon": InputGroupWithSuffixIcon,
+  "input-group-with-prefix-and-suffix": InputGroupWithPrefixAndSuffix,
+  "input-group-with-text-prefix": InputGroupWithTextPrefix,
+  "input-group-with-text-suffix": InputGroupWithTextSuffix,
+  "input-group-with-icon-prefix-and-text-suffix":
+    InputGroupWithIconPrefixAndTextSuffix,
+  "input-group-with-copy-suffix": InputGroupWithCopySuffix,
+  "input-group-with-icon-prefix-and-copy-suffix":
+    InputGroupWithIconPrefixAndCopySuffix,
+  "input-group-password-with-toggle": InputGroupPasswordWithToggle,
+  "input-group-with-loading-suffix": InputGroupWithLoadingSuffix,
+  "input-group-with-keyboard-shortcut": InputGroupWithKeyboardShortcut,
+  "input-group-with-badge-suffix": InputGroupWithBadgeSuffix,
+  "input-group-required": InputGroupRequired,
+  "input-group-invalid": InputGroupInvalid,
+  "input-group-disabled": InputGroupDisabled,
+  "input-group-full-width": InputGroupFullWidth,
+  "input-group-variants": InputGroupVariants,
+  "input-group-on-surface": InputGroupOnSurface,
+  "input-group-with-textarea": InputGroupWithTextArea,
   "kbd-basic": KbdBasic,
   "kbd-navigation": KbdNavigationKeys,
   "kbd-inline": KbdInlineUsage,
