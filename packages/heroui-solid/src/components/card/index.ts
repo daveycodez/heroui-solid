@@ -1,19 +1,22 @@
-import type { ComponentProps } from "solid-js"
-
 import {
   CardContent,
+  type CardContentProps,
   CardDescription,
+  type CardDescriptionProps,
   CardFooter,
+  type CardFooterProps,
   CardHeader,
+  type CardHeaderProps,
   CardRoot,
-  CardTitle
+  type CardRootProps,
+  CardTitle,
+  type CardTitleProps
 } from "./card"
 
 /* -------------------------------------------------------------------------------------------------
  * Compound Component
  * -----------------------------------------------------------------------------------------------*/
 export const Card = Object.assign(CardRoot, {
-  Root: CardRoot,
   Header: CardHeader,
   Title: CardTitle,
   Description: CardDescription,
@@ -22,37 +25,16 @@ export const Card = Object.assign(CardRoot, {
 })
 
 export type Card = {
-  Props: ComponentProps<typeof CardRoot>
-  RootProps: ComponentProps<typeof CardRoot>
-  HeaderProps: ComponentProps<typeof CardHeader>
-  TitleProps: ComponentProps<typeof CardTitle>
-  DescriptionProps: ComponentProps<typeof CardDescription>
-  ContentProps: ComponentProps<typeof CardContent>
-  FooterProps: ComponentProps<typeof CardFooter>
+  Props: CardRootProps
+  HeaderProps: CardHeaderProps
+  TitleProps: CardTitleProps
+  DescriptionProps: CardDescriptionProps
+  ContentProps: CardContentProps
+  FooterProps: CardFooterProps
 }
 
-export type { CardVariants } from "@heroui/styles"
 /* -------------------------------------------------------------------------------------------------
  * Variants
  * -----------------------------------------------------------------------------------------------*/
+export type { CardVariants } from "@heroui/styles"
 export { cardVariants } from "@heroui/styles"
-export type {
-  CardContentProps,
-  CardDescriptionProps,
-  CardFooterProps,
-  CardHeaderProps,
-  CardRootProps,
-  CardRootProps as CardProps,
-  CardTitleProps
-} from "./card"
-/* -------------------------------------------------------------------------------------------------
- * Named Component
- * -----------------------------------------------------------------------------------------------*/
-export {
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardRoot,
-  CardTitle
-}

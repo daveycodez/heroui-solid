@@ -163,54 +163,82 @@ Card uses [BEM](https://getbem.com/) naming for predictable styling ([View sourc
 
 ## API Reference
 
-### Card
+### Card Props
 
-| Prop       | Type                                                      | Default     | Description                                              |
-| ---------- | --------------------------------------------------------- | ----------- | -------------------------------------------------------- |
-| `variant`  | `"transparent" \| "default" \| "secondary" \| "tertiary"` | `"default"` | Semantic variant indicating prominence level             |
-| `class`    | `string`                                                   | -           | Additional CSS classes                                   |
-| `children` | `JSX.Element`                                              | -           | Card content                                             |
-| `as`       | `ValidComponent`                                           | `"div"`     | Overrides the default DOM element (Kobalte polymorphic)  |
+| Prop       | Type                                                      | Default     | Description                                            |
+| ---------- | --------------------------------------------------------- | ----------- | ----------------------------------------------------- |
+| `variant`  | `"transparent" \| "default" \| "secondary" \| "tertiary"` | `"default"` | Semantic variant indicating prominence level          |
+| `as`       | `ValidComponent`                                          | `"div"`     | Overrides the rendered element (Kobalte polymorphic). |
+| `class`    | `string`                                                  | -           | Additional CSS classes                                |
+| `children` | `JSX.Element`                                             | -           | Card content                                          |
 
-### Card.Header
+*Plus standard `<div>` attributes.*
 
-| Prop       | Type            | Default | Description            |
-| ---------- | --------------- | ------- | ---------------------- |
-| `class`    | `string`        | -       | Additional CSS classes |
-| `children` | `JSX.Element`   | -       | Header content         |
+### Card.Header Props
 
-### Card.Title
+| Prop       | Type             | Default | Description                                            |
+| ---------- | ---------------- | ------- | ----------------------------------------------------- |
+| `as`       | `ValidComponent` | `"div"` | Overrides the rendered element (Kobalte polymorphic). |
+| `class`    | `string`         | -       | Additional CSS classes                                |
+| `children` | `JSX.Element`    | -       | Header content                                        |
 
-| Prop       | Type            | Default | Description                     |
-| ---------- | --------------- | ------- | ------------------------------- |
-| `class`    | `string`        | -       | Additional CSS classes          |
-| `children` | `JSX.Element`   | -       | Title content (renders as `h3`) |
+*Plus standard `<div>` attributes.*
 
-### Card.Description
+### Card.Title Props
 
-| Prop       | Type            | Default | Description                          |
-| ---------- | --------------- | ------- | ------------------------------------ |
-| `class`    | `string`        | -       | Additional CSS classes               |
-| `children` | `JSX.Element`   | -       | Description content (renders as `p`) |
+| Prop       | Type             | Default | Description                                            |
+| ---------- | ---------------- | ------- | ----------------------------------------------------- |
+| `as`       | `ValidComponent` | `"h3"`  | Overrides the rendered element (Kobalte polymorphic). |
+| `class`    | `string`         | -       | Additional CSS classes                                |
+| `children` | `JSX.Element`    | -       | Title content                                         |
 
-### Card.Content
+*Plus standard `<h3>` attributes.*
 
-| Prop       | Type            | Default | Description            |
-| ---------- | --------------- | ------- | ---------------------- |
-| `class`    | `string`        | -       | Additional CSS classes |
-| `children` | `JSX.Element`   | -       | Main content           |
+### Card.Description Props
 
-### Card.Footer
+| Prop       | Type             | Default | Description                                            |
+| ---------- | ---------------- | ------- | ----------------------------------------------------- |
+| `as`       | `ValidComponent` | `"p"`   | Overrides the rendered element (Kobalte polymorphic). |
+| `class`    | `string`         | -       | Additional CSS classes                                |
+| `children` | `JSX.Element`    | -       | Description content                                   |
 
-| Prop       | Type            | Default | Description            |
-| ---------- | --------------- | ------- | ---------------------- |
-| `class`    | `string`        | -       | Additional CSS classes |
-| `children` | `JSX.Element`   | -       | Footer content         |
+*Plus standard `<p>` attributes.*
+
+### Card.Content Props
+
+| Prop       | Type             | Default | Description                                            |
+| ---------- | ---------------- | ------- | ----------------------------------------------------- |
+| `as`       | `ValidComponent` | `"div"` | Overrides the rendered element (Kobalte polymorphic). |
+| `class`    | `string`         | -       | Additional CSS classes                                |
+| `children` | `JSX.Element`    | -       | Main content                                          |
+
+*Plus standard `<div>` attributes.*
+
+### Card.Footer Props
+
+| Prop       | Type             | Default | Description                                            |
+| ---------- | ---------------- | ------- | ----------------------------------------------------- |
+| `as`       | `ValidComponent` | `"div"` | Overrides the rendered element (Kobalte polymorphic). |
+| `class`    | `string`         | -       | Additional CSS classes                                |
+| `children` | `JSX.Element`    | -       | Footer content                                        |
+
+*Plus standard `<div>` attributes.*
+
+## Rendered Elements
+
+Every part is polymorphic — pass `as` to override its element.
+
+| Component          | Default Element |
+| ------------------ | --------------- |
+| `Card`             | `<div>`         |
+| `Card.Header`      | `<div>`         |
+| `Card.Title`       | `<h3>`          |
+| `Card.Description` | `<p>`           |
+| `Card.Content`     | `<div>`         |
+| `Card.Footer`      | `<div>`         |
 
 ## Differences from HeroUI React
 
 - Use `class` instead of `className`; the element type is overridden with Kobalte's
   polymorphic `as` prop instead of React's `render` prop.
-- The "With Avatar" and "With Images" examples from the official docs are omitted —
-  they rely on `Avatar` and `CloseButton`, which aren't ported yet.
 - All parts accept `as` for custom elements (e.g. `<Card.Title as="h2">`).

@@ -3,7 +3,7 @@ import { Polymorphic, type PolymorphicProps } from "@kobalte/core/polymorphic"
 import {
   createContext,
   createMemo,
-  type JSX,
+  Show,
   splitProps,
   useContext,
   type ValidComponent
@@ -14,7 +14,7 @@ import { SurfaceContext } from "../surface/surface"
 /* -------------------------------------------------------------------------------------------------
  * Card Context
  * -----------------------------------------------------------------------------------------------*/
-interface CardContextValue {
+type CardContextValue = {
   slots?: ReturnType<typeof cardVariants>
 }
 
@@ -23,21 +23,34 @@ const CardContext = createContext<CardContextValue>({})
 /* -------------------------------------------------------------------------------------------------
  * Card Root
  * -----------------------------------------------------------------------------------------------*/
-interface CardRootProps extends CardVariants {
-  children?: JSX.Element
-  class?: string
-}
+type CardRootProps<T extends ValidComponent = "div"> = PolymorphicProps<
+  T,
+  CardVariants
+>
 
 const CardRoot = <T extends ValidComponent = "div">(
-  props: PolymorphicProps<T, CardRootProps>
+  props: CardRootProps<T>
 ) => {
   const [variantProps, local, rest] = splitProps(
     props as CardRootProps,
     cardVariants.variantKeys,
     ["class"]
   )
-  const outerSurface = useContext(SurfaceContext)
   const slots = createMemo(() => cardVariants(variantProps))
+
+  // Upstream reuses a single `content` element across both branches. In Solid,
+  // context resolves by owner at creation, so the body must be *created inside*
+  // the providers below (a hoisted element would read an empty CardContext) — a
+  // local component does that. Only the active Show branch instantiates it, so
+  // children stay a single read.
+  const CardBody = () => (
+    <Polymorphic
+      as="div"
+      class={cn(slots().base(), local.class)}
+      data-slot="card"
+      {...rest}
+    />
+  )
 
   return (
     <CardContext.Provider
@@ -47,24 +60,23 @@ const CardRoot = <T extends ValidComponent = "div">(
         }
       }}
     >
-      {/* Allows inner components to apply "on-surface" colors for proper contrast */}
-      <SurfaceContext.Provider
-        value={{
-          get variant() {
-            // Transparent cards establish no surface (upstream skips the provider there).
-            return variantProps.variant === "transparent"
-              ? outerSurface.variant
-              : (variantProps.variant ?? "default")
-          }
-        }}
+      {/* Transparent cards establish no surface: upstream renders content bare so
+          inner parts inherit the ancestor surface; others provide their variant
+          so inner components pick "on-surface" colors for proper contrast. */}
+      <Show
+        when={variantProps.variant !== "transparent"}
+        fallback={<CardBody />}
       >
-        <Polymorphic
-          as="div"
-          class={cn(slots().base(), local.class)}
-          data-slot="card"
-          {...rest}
-        />
-      </SurfaceContext.Provider>
+        <SurfaceContext.Provider
+          value={{
+            get variant() {
+              return variantProps.variant ?? "default"
+            }
+          }}
+        >
+          <CardBody />
+        </SurfaceContext.Provider>
+      </Show>
     </CardContext.Provider>
   )
 }
@@ -72,13 +84,10 @@ const CardRoot = <T extends ValidComponent = "div">(
 /* -------------------------------------------------------------------------------------------------
  * Card Header
  * -----------------------------------------------------------------------------------------------*/
-interface CardHeaderProps {
-  children?: JSX.Element
-  class?: string
-}
+type CardHeaderProps<T extends ValidComponent = "div"> = PolymorphicProps<T>
 
 const CardHeader = <T extends ValidComponent = "div">(
-  props: PolymorphicProps<T, CardHeaderProps>
+  props: CardHeaderProps<T>
 ) => {
   const [local, rest] = splitProps(props as CardHeaderProps, ["class"])
   const context = useContext(CardContext)
@@ -96,13 +105,10 @@ const CardHeader = <T extends ValidComponent = "div">(
 /* -------------------------------------------------------------------------------------------------
  * Card Title
  * -----------------------------------------------------------------------------------------------*/
-interface CardTitleProps {
-  children?: JSX.Element
-  class?: string
-}
+type CardTitleProps<T extends ValidComponent = "h3"> = PolymorphicProps<T>
 
 const CardTitle = <T extends ValidComponent = "h3">(
-  props: PolymorphicProps<T, CardTitleProps>
+  props: CardTitleProps<T>
 ) => {
   const [local, rest] = splitProps(props as CardTitleProps, ["class"])
   const context = useContext(CardContext)
@@ -120,13 +126,10 @@ const CardTitle = <T extends ValidComponent = "h3">(
 /* -------------------------------------------------------------------------------------------------
  * Card Description
  * -----------------------------------------------------------------------------------------------*/
-interface CardDescriptionProps {
-  children?: JSX.Element
-  class?: string
-}
+type CardDescriptionProps<T extends ValidComponent = "p"> = PolymorphicProps<T>
 
 const CardDescription = <T extends ValidComponent = "p">(
-  props: PolymorphicProps<T, CardDescriptionProps>
+  props: CardDescriptionProps<T>
 ) => {
   const [local, rest] = splitProps(props as CardDescriptionProps, ["class"])
   const context = useContext(CardContext)
@@ -144,13 +147,10 @@ const CardDescription = <T extends ValidComponent = "p">(
 /* -------------------------------------------------------------------------------------------------
  * Card Content
  * -----------------------------------------------------------------------------------------------*/
-interface CardContentProps {
-  children?: JSX.Element
-  class?: string
-}
+type CardContentProps<T extends ValidComponent = "div"> = PolymorphicProps<T>
 
 const CardContent = <T extends ValidComponent = "div">(
-  props: PolymorphicProps<T, CardContentProps>
+  props: CardContentProps<T>
 ) => {
   const [local, rest] = splitProps(props as CardContentProps, ["class"])
   const context = useContext(CardContext)
@@ -168,13 +168,10 @@ const CardContent = <T extends ValidComponent = "div">(
 /* -------------------------------------------------------------------------------------------------
  * Card Footer
  * -----------------------------------------------------------------------------------------------*/
-interface CardFooterProps {
-  children?: JSX.Element
-  class?: string
-}
+type CardFooterProps<T extends ValidComponent = "div"> = PolymorphicProps<T>
 
 const CardFooter = <T extends ValidComponent = "div">(
-  props: PolymorphicProps<T, CardFooterProps>
+  props: CardFooterProps<T>
 ) => {
   const [local, rest] = splitProps(props as CardFooterProps, ["class"])
   const context = useContext(CardContext)
@@ -189,6 +186,9 @@ const CardFooter = <T extends ValidComponent = "div">(
   )
 }
 
+/* -------------------------------------------------------------------------------------------------
+ * Exports
+ * -----------------------------------------------------------------------------------------------*/
 export type {
   CardContentProps,
   CardDescriptionProps,
@@ -197,9 +197,6 @@ export type {
   CardRootProps,
   CardTitleProps
 }
-/* -------------------------------------------------------------------------------------------------
- * Exports
- * -----------------------------------------------------------------------------------------------*/
 export {
   CardContent,
   CardDescription,
