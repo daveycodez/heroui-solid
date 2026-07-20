@@ -244,26 +244,24 @@ Animations key off the data attributes bridged from Kobalte's lifecycle:
 
 ### Tooltip.Arrow Props
 
-| Prop       | Type             | Default | Description                                          |
-| ---------- | ---------------- | ------- | ---------------------------------------------------- |
-| `as`       | `ValidComponent` | `"div"` | Overrides the rendered element (Kobalte polymorphic) |
-| `size`     | `number`         | `30`    | The size of the arrow, in px                         |
-| `class`    | `string`         | -       | Additional CSS classes                               |
-| `children` | `JSX.Element`    | -       | Custom arrow element                                 |
+`Tooltip.Arrow` renders HeroUI's arrow `<svg>`, positioned automatically by
+Kobalte. It accepts only `size`.
 
-*Plus standard `<div>` attributes.*
+| Prop   | Type     | Default | Description                  |
+| ------ | -------- | ------- | ---------------------------- |
+| `size` | `number` | `12`    | The size of the arrow, in px |
 
 ## Rendered Elements
 
-`Tooltip.Trigger`, `Tooltip.Content`, and `Tooltip.Arrow` are polymorphic — pass
-`as` to override the element. The `Tooltip` root and `Tooltip.Portal` render no
-element of their own.
+`Tooltip.Trigger` and `Tooltip.Content` are polymorphic — pass `as` to override
+the element. `Tooltip.Arrow` renders a fixed `<svg>`, and the `Tooltip` root and
+`Tooltip.Portal` render no element of their own.
 
 | Component         | Default Element |
 | ----------------- | --------------- |
 | `Tooltip.Trigger` | `<button>`      |
 | `Tooltip.Content` | `<div>`         |
-| `Tooltip.Arrow`   | `<div>`         |
+| `Tooltip.Arrow`   | `<svg>`         |
 
 ## Differences from HeroUI React
 

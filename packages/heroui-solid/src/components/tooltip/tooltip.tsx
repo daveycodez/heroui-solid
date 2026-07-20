@@ -142,21 +142,32 @@ const TooltipContent = <T extends ValidComponent = "div">(
 /* -------------------------------------------------------------------------------------------------
  * Tooltip Arrow
  * -----------------------------------------------------------------------------------------------*/
-type TooltipArrowProps<T extends ValidComponent = "div"> = ComponentProps<
-  typeof Tooltip.Arrow<T>
->
+type TooltipArrowProps = { size?: number }
 
-const TooltipArrow = <T extends ValidComponent = "div">(
-  props: TooltipArrowProps<T>
-) => {
-  // Kobalte's arrow defaults to 30px; HeroUI's is 12px. The arrow size also
-  // drives the trigger gap (Kobalte adds size/2), so this matches upstream's
-  // ~6px arrow offset too.
-  const merged = mergeProps({ size: 12 }, props as TooltipArrowProps)
-  const [local, rest] = splitProps(merged, ["class"])
+const TooltipArrow = (props: TooltipArrowProps) => {
+  const popper = usePopperContext()
 
+  // HeroUI's exact arrow (12x12) — Kobalte's own arrow is a different, wider
+  // shape and can't be reshaped via `size`. We render our own svg and hand it
+  // to Kobalte's popper for positioning; @heroui/styles' `[data-slot=overlay-arrow]`
+  // CSS paints and rotates it per placement.
+  // CAUTION: this couples to `usePopperContext().setArrowRef` (Kobalte flags it
+  // "API will most probably change") and to Kobalte assigning `left/top/[dir]`
+  // inline styles on this element — re-verify arrow positioning after any
+  // @kobalte/core bump. See AGENTS.md (arrowed overlays).
   return (
-    <Tooltip.Arrow class={local.class} data-slot="tooltip-arrow" {...rest} />
+    <svg
+      ref={popper.setArrowRef as unknown as (el: SVGSVGElement) => void}
+      aria-hidden="true"
+      data-slot="overlay-arrow"
+      fill="none"
+      height={props.size ?? 12}
+      width={props.size ?? 12}
+      viewBox="0 0 12 12"
+      style={{ position: "absolute" }}
+    >
+      <path d="M0 0C5.48483 8 6.5 8 12 0Z" />
+    </svg>
   )
 }
 

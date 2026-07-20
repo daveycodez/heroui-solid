@@ -77,6 +77,23 @@ and docs* — not as the API or behavior to mirror.
   overlay default (escapes ancestor `overflow`/stacking) so the standard
   demos/anatomy keep the wrapper; add a short "Without Portal" demo + docs note
   showing it's optional and why (a `z-index` alone can't escape clipping).
+- **Arrowed overlays render HeroUI's own arrow svg, not Kobalte's.** Kobalte's
+  `PopperArrow` hardcodes a wide/shallow arrow whose shape can't be changed
+  (`size` only scales it, `as` only swaps the wrapper — the inner svg path is
+  fixed), so it never matches HeroUI's pointier arrow. Instead render HeroUI's
+  exact svg (Tooltip: `viewBox="0 0 12 12"`, `d="M0 0C5.48483 8 6.5 8 12 0Z"`,
+  `data-slot="overlay-arrow"`, `aria-hidden`, `position:absolute`, `size`-only
+  prop defaulting to HeroUI's px) and hand it to Kobalte's popper for
+  positioning via `usePopperContext().setArrowRef` (cast the ref —
+  `setArrowRef` is typed for `HTMLElement`). `@heroui/styles`'
+  `[data-slot="overlay-arrow"]` CSS then paints (fill/stroke) and rotates it per
+  the `data-placement` we stamp on Content — no JS for that. **This is the one
+  place we step outside "behavior is Kobalte's":** it couples to `setArrowRef`
+  (Kobalte flags it "API will most probably change") and to Kobalte assigning
+  `left/top/[dir]` inline styles on the arrow element. Keep the caution comment
+  and **re-verify arrow positioning across all placements after any
+  `@kobalte/core` bump** — the ssr-test doesn't hover, so it won't catch a
+  misaligned arrow.
 - **Demos (and docs) express ONLY our public API — never upstream's internals.**
   A ported demo uses our compound parts and their props and nothing else:
   content goes straight into the part (`<Accordion.Content>{item.content}</…>`),

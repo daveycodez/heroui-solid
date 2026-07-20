@@ -43,7 +43,7 @@ describe("Tooltip", () => {
     expect(content).not.toBeNull()
     expect(content.classList.contains("tooltip")).toBe(true)
     expect(content.textContent).toContain("Tooltip text")
-    expect(content.querySelector("[data-slot=tooltip-arrow]")).not.toBeNull()
+    expect(content.querySelector("[data-slot=overlay-arrow]")).not.toBeNull()
   })
 
   it("bridges the RAC animation attributes onto open content", () => {
