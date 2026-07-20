@@ -15,24 +15,23 @@ export function CustomTrigger() {
       </Dropdown.Trigger>
       <Dropdown.Portal>
         <Dropdown.Popover>
-          <Dropdown.Menu>
-            <div class="px-3 pt-3 pb-1">
-              <div class="flex items-center gap-2">
-                <Avatar size="sm">
-                  <Avatar.Image
-                    alt="Jane"
-                    src="https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/orange.jpg"
-                  />
-                  <Avatar.Fallback>JD</Avatar.Fallback>
-                </Avatar>
-                <div class="flex flex-col gap-0">
-                  <p class="text-sm leading-5 font-medium">Jane Doe</p>
-                  <p class="text-xs leading-none text-muted">
-                    jane@example.com
-                  </p>
-                </div>
+          <div class="px-3 pt-3 pb-1">
+            <div class="flex items-center gap-2">
+              <Avatar size="sm">
+                <Avatar.Image
+                  alt="Jane"
+                  src="https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/avatars/orange.jpg"
+                />
+                <Avatar.Fallback>JD</Avatar.Fallback>
+              </Avatar>
+              <div class="flex flex-col gap-0">
+                <p class="text-sm leading-5 font-medium">Jane Doe</p>
+                <p class="text-xs leading-none text-muted">jane@example.com</p>
               </div>
             </div>
+          </div>
+
+          <Dropdown.Menu>
             <Dropdown.Item textValue="Dashboard">
               <Label>Dashboard</Label>
             </Dropdown.Item>
