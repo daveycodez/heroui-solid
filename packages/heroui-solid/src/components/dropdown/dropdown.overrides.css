@@ -24,3 +24,25 @@
 .dropdown__popover {
   max-height: var(--kb-popper-content-available-height);
 }
+
+/* Origin-aware enter/exit animations, the Kobalte way — no lifecycle JS.
+   @heroui/styles' dropdown.css keys its zoom/fade off React Aria's
+   data-entering/data-exiting; Kobalte instead stamps data-expanded/data-closed
+   and exposes the computed origin as --kb-menu-content-transform-origin, so the
+   zoom emanates from the trigger side with no data-placement needed
+   (kobalte.dev/docs/core/components/dropdown-menu/#origin-aware-animations).
+   We re-key heroui's own animation utilities onto Kobalte's attributes and
+   point heroui's `origin-(--trigger-anchor-point)` at Kobalte's origin var.
+   Kobalte keeps the content mounted while the exit animation runs. Applies to
+   Content and SubContent (both carry .dropdown__popover). */
+.dropdown__popover {
+  --trigger-anchor-point: var(--kb-menu-content-transform-origin);
+}
+
+.dropdown__popover[data-expanded] {
+  @apply animate-in duration-150 ease-smooth fade-in-0 zoom-in-90;
+}
+
+.dropdown__popover[data-closed] {
+  @apply animate-out duration-100 ease-smooth zoom-out-95 fade-out;
+}

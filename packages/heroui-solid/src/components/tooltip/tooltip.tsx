@@ -1,6 +1,6 @@
 import { cn, tooltipVariants } from "@heroui/styles"
 import { usePopperContext } from "@kobalte/core/popper"
-import { Tooltip, useTooltipContext } from "@kobalte/core/tooltip"
+import { Tooltip } from "@kobalte/core/tooltip"
 import {
   type ComponentProps,
   createContext,
@@ -12,7 +12,6 @@ import {
   useContext,
   type ValidComponent
 } from "solid-js"
-import { dataAttr } from "../../utils/assertion"
 import { parseCSSTime } from "../../utils/css"
 
 /* -------------------------------------------------------------------------------------------------
@@ -119,19 +118,17 @@ const TooltipContent = <T extends ValidComponent = "div">(
 ) => {
   const [local, rest] = splitProps(props as TooltipContentProps, ["class"])
   const context = useContext(TooltipContext)
-  const tooltip = useTooltipContext()
   const popper = usePopperContext()
 
-  // Bridge Kobalte's open/present lifecycle + placement to the RAC data
-  // attributes @heroui/styles' tooltip animations key off, so upstream's
-  // entering/exiting/placement CSS applies verbatim.
+  // Enter/exit animations are CSS-only, keyed off Kobalte's own
+  // data-expanded/data-closed + --kb-tooltip-content-transform-origin (see
+  // tooltip.overrides.css). Placement stays JS-bridged: heroui's arrow rotates
+  // on data-placement, which Kobalte doesn't stamp natively.
   return (
     <Tooltip.Content
       class={cn(context.slots?.base(), local.class)}
       data-slot="tooltip"
       data-placement={popper.currentPlacement().split("-")[0]}
-      data-entering={dataAttr(tooltip.isOpen())}
-      data-exiting={dataAttr(tooltip.contentPresent() && !tooltip.isOpen())}
       {...rest}
     />
   )

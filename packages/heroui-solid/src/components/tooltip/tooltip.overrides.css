@@ -1,10 +1,21 @@
 /*
- * Enter/exit + placement animations ship in @heroui/styles' tooltip.css, keyed
- * off `data-entering`/`data-exiting`/`data-placement` — bridged onto the content
- * in tooltip.tsx. Upstream's zoom origin reads `--trigger-anchor-point` (a RAC
- * var); map it to Kobalte's own transform-origin so the zoom emanates from the
- * trigger anchor instead of the element center.
+ * Origin-aware enter/exit animations, the Kobalte way — no lifecycle JS.
+ * @heroui/styles' tooltip.css keys its zoom/fade off React Aria's
+ * data-entering/data-exiting; Kobalte instead stamps data-expanded/data-closed
+ * and exposes the computed origin as --kb-tooltip-content-transform-origin, so
+ * the zoom emanates from the trigger side with no data-placement needed. We
+ * re-key heroui's own animation utilities onto Kobalte's attributes and point
+ * heroui's `origin-(--trigger-anchor-point)` at Kobalte's origin var. (data-
+ * placement is still stamped in tooltip.tsx, but only for the arrow rotation.)
  */
 .tooltip {
   --trigger-anchor-point: var(--kb-tooltip-content-transform-origin);
+}
+
+.tooltip[data-expanded] {
+  @apply animate-in duration-150 ease-smooth fade-in-0 zoom-in-90;
+}
+
+.tooltip[data-closed] {
+  @apply animate-out duration-100 ease-smooth zoom-out-95 fade-out;
 }
