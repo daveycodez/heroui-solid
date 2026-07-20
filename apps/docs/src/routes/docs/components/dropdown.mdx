@@ -102,8 +102,8 @@ selected — supply your own icon to replace the default checkmark.
 ### With Multiple Selection
 
 Multiple selection uses `Dropdown.CheckboxItem` (controlled with
-`checked`/`onChange`). Set `closeOnSelect={false}` to keep the menu open while
-toggling.
+`checked`/`onChange`). It keeps the menu open while toggling by default
+(`closeOnSelect` defaults to `false`); pass `closeOnSelect` to close on toggle.
 
 <ComponentPreview name="dropdown-with-multiple-selection" />
 
@@ -321,7 +321,7 @@ components — HeroUI has no dropdown-specific label part. They stamp the
 | `defaultChecked` | `boolean`                    | -           | The initial checked state (uncontrolled)          |
 | `onChange`       | `(checked: boolean) => void` | -           | Handler called when the checked state changes     |
 | `disabled`       | `boolean`                    | `false`     | Whether the item is disabled                      |
-| `closeOnSelect`  | `boolean`                    | `true`      | Whether the menu closes when the item is toggled  |
+| `closeOnSelect`  | `boolean`                    | `false`     | Whether the menu closes when the item is toggled  |
 
 *Plus standard `<div>` attributes.*
 

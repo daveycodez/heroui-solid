@@ -68,7 +68,6 @@ export function WithSectionLevelSelection() {
                 {([id, key]) => (
                   <Dropdown.CheckboxItem
                     checked={textStyles().has(id)}
-                    closeOnSelect={false}
                     onChange={(checked) => toggleStyle(id, checked)}
                   >
                     <Dropdown.ItemIndicator>

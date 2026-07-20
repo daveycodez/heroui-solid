@@ -33,7 +33,6 @@ export function WithMultipleSelection() {
                 {(fruit) => (
                   <Dropdown.CheckboxItem
                     checked={selected().has(fruit)}
-                    closeOnSelect={false}
                     onChange={(checked) => toggle(fruit, checked)}
                   >
                     <Dropdown.ItemIndicator>

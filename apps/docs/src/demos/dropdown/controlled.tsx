@@ -38,7 +38,6 @@ export function Controlled() {
                 {(style) => (
                   <Dropdown.CheckboxItem
                     checked={selected().has(style)}
-                    closeOnSelect={false}
                     onChange={(checked) => toggle(style, checked)}
                   >
                     <Label class="capitalize">{style}</Label>
