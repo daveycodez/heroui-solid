@@ -88,13 +88,6 @@ import { LinkIconPlacement } from "./link/icon-placement"
 import { LinkUnderlineAndOffset } from "./link/underline-and-offset"
 import { LinkUnderlineOffset } from "./link/underline-offset"
 import { LinkUnderlineVariants } from "./link/underline-variants"
-import { Controlled as ListBoxControlled } from "./list-box/controlled"
-import { CustomCheckIcon as ListBoxCustomCheckIcon } from "./list-box/custom-check-icon"
-import { Default as ListBoxDefault } from "./list-box/default"
-import { MultiSelect as ListBoxMultiSelect } from "./list-box/multi-select"
-import { ScrollbarModes as ListBoxScrollbarModes } from "./list-box/scrollbar-modes"
-import { WithDisabledItems as ListBoxWithDisabledItems } from "./list-box/with-disabled-items"
-import { WithSections as ListBoxWithSections } from "./list-box/with-sections"
 import { CustomSize as ScrollShadowCustomSize } from "./scroll-shadow/custom-size"
 import { Default as ScrollShadowDefault } from "./scroll-shadow/default"
 import { HideScrollBar as ScrollShadowHideScrollBar } from "./scroll-shadow/hide-scroll-bar"
@@ -115,22 +108,6 @@ import { Variants as SearchFieldVariants } from "./search-field/variants"
 import { WithDescription as SearchFieldWithDescription } from "./search-field/with-description"
 import { WithKeyboardShortcut as SearchFieldWithKeyboardShortcut } from "./search-field/with-keyboard-shortcut"
 import { WithValidation as SearchFieldWithValidation } from "./search-field/with-validation"
-import { Controlled as SelectControlled } from "./select/controlled"
-import { ControlledMultiple as SelectControlledMultiple } from "./select/controlled-multiple"
-import { ControlledOpenState as SelectControlledOpenState } from "./select/controlled-open-state"
-import { CustomIndicator as SelectCustomIndicator } from "./select/custom-indicator"
-import { CustomValue as SelectCustomValue } from "./select/custom-value"
-import { CustomValueMultiple as SelectCustomValueMultiple } from "./select/custom-value-multiple"
-import { Default as SelectDefault } from "./select/default"
-import { Disabled as SelectDisabled } from "./select/disabled"
-import { FullWidth as SelectFullWidth } from "./select/full-width"
-import { MultipleSelect as SelectMultipleSelect } from "./select/multiple-select"
-import { OnSurface as SelectOnSurface } from "./select/on-surface"
-import { Required as SelectRequired } from "./select/required"
-import { Variants as SelectVariants } from "./select/variants"
-import { WithDescription as SelectWithDescription } from "./select/with-description"
-import { WithDisabledOptions as SelectWithDisabledOptions } from "./select/with-disabled-options"
-import { WithSections as SelectWithSections } from "./select/with-sections"
 import { Basic as SeparatorBasic } from "./separator/basic"
 import { ManualVariantOverride as SeparatorManualVariantOverride } from "./separator/manual-variant-override"
 import { Variants as SeparatorVariants } from "./separator/variants"
@@ -271,29 +248,6 @@ export const demos: Record<string, Component> = {
   "link-underline-offset": LinkUnderlineOffset,
   "link-underline-variants": LinkUnderlineVariants,
   "link-custom-element": LinkCustomElement,
-  "list-box-default": ListBoxDefault,
-  "list-box-with-sections": ListBoxWithSections,
-  "list-box-multi-select": ListBoxMultiSelect,
-  "list-box-with-disabled-items": ListBoxWithDisabledItems,
-  "list-box-custom-check-icon": ListBoxCustomCheckIcon,
-  "list-box-controlled": ListBoxControlled,
-  "list-box-scrollbar-modes": ListBoxScrollbarModes,
-  "select-default": SelectDefault,
-  "select-multiple-select": SelectMultipleSelect,
-  "select-with-disabled-options": SelectWithDisabledOptions,
-  "select-custom-indicator": SelectCustomIndicator,
-  "select-controlled": SelectControlled,
-  "select-variants": SelectVariants,
-  "select-full-width": SelectFullWidth,
-  "select-on-surface": SelectOnSurface,
-  "select-disabled": SelectDisabled,
-  "select-controlled-multiple": SelectControlledMultiple,
-  "select-controlled-open-state": SelectControlledOpenState,
-  "select-custom-value": SelectCustomValue,
-  "select-custom-value-multiple": SelectCustomValueMultiple,
-  "select-required": SelectRequired,
-  "select-with-description": SelectWithDescription,
-  "select-with-sections": SelectWithSections,
   "scroll-shadow-default": ScrollShadowDefault,
   "scroll-shadow-orientation": ScrollShadowOrientation,
   "scroll-shadow-hide-scroll-bar": ScrollShadowHideScrollBar,

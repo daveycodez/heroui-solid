@@ -7,9 +7,6 @@
 @import "../components/close-button/close-button.overrides.css" layer(overrides);
 @import "../components/input/input.overrides.css" layer(overrides);
 @import "../components/link/link.overrides.css" layer(overrides);
-@import "../components/menu-item/menu-item.overrides.css" layer(overrides);
-@import "../components/list-box/list-box.overrides.css" layer(overrides);
-@import "../components/select/select.overrides.css" layer(overrides);
 @import "../components/tabs/tabs.overrides.css" layer(overrides);
 @import "../components/tooltip/tooltip.overrides.css" layer(overrides);
 @import "../components/textarea/textarea.overrides.css" layer(overrides);
