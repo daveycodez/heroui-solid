@@ -80,7 +80,9 @@ export default () => (
 
 Single selection uses Kobalte's `Dropdown.RadioGroup` + `Dropdown.RadioItem`
 (controlled with `value`/`onChange`). Put a `Dropdown.ItemIndicator` inside each
-item to show the checkmark when it is selected.
+item to show the checkmark when it is selected. `Dropdown.RadioItem` keeps the
+menu open on select by default (`closeOnSelect` defaults to `false`); pass
+`closeOnSelect` to close it once a choice is made.
 
 <ComponentPreview name="dropdown-with-single-selection" />
 
@@ -347,7 +349,7 @@ selected).
 | `value`         | `string`                | -           | The value of this radio item (required)           |
 | `variant`       | `"default" \| "danger"` | `"default"` | Visual variant of the item                        |
 | `disabled`      | `boolean`               | `false`     | Whether the item is disabled                      |
-| `closeOnSelect` | `boolean`               | `true`      | Whether the menu closes when the item is selected |
+| `closeOnSelect` | `boolean`               | `false`     | Whether the menu closes when the item is selected |
 
 *Plus standard `<div>` attributes.*
 

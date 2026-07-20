@@ -6,6 +6,16 @@
   @apply status-focused;
 }
 
+/* Disabled items. heroui's menu-item.css keys `status-disabled` (dim +
+   pointer-events:none + cursor) off the explicit `[data-disabled="true"]`;
+   Kobalte stamps the presence form `data-disabled=""`, so heroui's rule never
+   matches and disabled items stay lit and pointer-interactive (Kobalte still
+   blocks onSelect, but nothing else). Bridge the presence form. Covers Item,
+   CheckboxItem and RadioItem — all carry `.menu-item`. */
+.menu-item[data-disabled] {
+  @apply status-disabled;
+}
+
 /* Selection-indicator visuals. We always mount the indicator (forceMount) so
    every selection item reserves the same inline-start gutter via heroui's
    `.menu-item:has(.menu-item__indicator)` (ps-7) — checked and unchecked align.
@@ -48,6 +58,17 @@
    scroll container (popover) and the clipping menu on separate elements. */
 .dropdown__popover {
   max-height: var(--kb-popper-content-available-height);
+}
+
+/* Overlay layering. heroui layers overlays at z-index 50 (modal/drawer/dialog
+   backdrops); its dropdown.css omits it because React Aria's Popover sets the
+   layer itself. Without one the portalled menu (positioned by Kobalte's popper)
+   renders beneath app chrome that establishes a stacking context — e.g. a
+   sticky header (the docs header is z-index 50). Kobalte copies the content's
+   computed z-index onto the popper positioner, so stamping it here propagates.
+   Applies to Content and SubContent (both carry .dropdown__popover). */
+.dropdown__popover {
+  z-index: 50;
 }
 
 /* Origin-aware enter/exit animations, the Kobalte way — no lifecycle JS.

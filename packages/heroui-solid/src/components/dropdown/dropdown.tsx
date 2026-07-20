@@ -282,14 +282,8 @@ type DropdownRadioItemProps<T extends ValidComponent = "div"> = ComponentProps<
 const DropdownRadioItem = <T extends ValidComponent = "div">(
   props: DropdownRadioItemProps<T>
 ) => {
-  // Kobalte defaults RadioItem's closeOnSelect to false; for single-select we
-  // prefer closing on selection (HeroUI behavior). An explicit prop still wins.
-  const merged = mergeProps(
-    { closeOnSelect: true },
-    props as DropdownRadioItemProps
-  )
   const [variantProps, local, rest] = splitProps(
-    merged,
+    props as DropdownRadioItemProps,
     menuItemVariants.variantKeys,
     ["class"]
   )

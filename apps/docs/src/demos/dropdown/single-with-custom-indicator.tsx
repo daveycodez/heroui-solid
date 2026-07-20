@@ -33,32 +33,32 @@ export function SingleWithCustomIndicator() {
             <Dropdown.RadioGroup value={selected()} onChange={setSelected}>
               <Dropdown.Group>
                 <Dropdown.GroupLabel>Select a fruit</Dropdown.GroupLabel>
-                <Dropdown.RadioItem value="apple">
+                <Dropdown.RadioItem closeOnSelect value="apple">
                   <Dropdown.ItemIndicator>
                     <CustomCheckmarkIcon />
                   </Dropdown.ItemIndicator>
                   <Label>Apple</Label>
                 </Dropdown.RadioItem>
-                <Dropdown.RadioItem value="banana">
+                <Dropdown.RadioItem closeOnSelect value="banana">
                   <Dropdown.ItemIndicator>
                     <CustomCheckmarkIcon />
                   </Dropdown.ItemIndicator>
                   <Label>Banana</Label>
                 </Dropdown.RadioItem>
-                <Dropdown.RadioItem value="cherry">
+                <Dropdown.RadioItem closeOnSelect value="cherry">
                   <Dropdown.ItemIndicator>
                     <CustomCheckmarkIcon />
                   </Dropdown.ItemIndicator>
                   <Label>Cherry</Label>
                 </Dropdown.RadioItem>
               </Dropdown.Group>
-              <Dropdown.RadioItem value="orange">
+              <Dropdown.RadioItem closeOnSelect value="orange">
                 <Dropdown.ItemIndicator>
                   <CustomCheckmarkIcon />
                 </Dropdown.ItemIndicator>
                 <Label>Orange</Label>
               </Dropdown.RadioItem>
-              <Dropdown.RadioItem value="pear">
+              <Dropdown.RadioItem closeOnSelect value="pear">
                 <Dropdown.ItemIndicator>
                   <CustomCheckmarkIcon />
                 </Dropdown.ItemIndicator>
