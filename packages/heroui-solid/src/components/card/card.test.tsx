@@ -1,8 +1,10 @@
 // @vitest-environment jsdom
 
 import { render } from "@solidjs/testing-library"
+import { useContext } from "solid-js"
 import { describe, expect, it } from "vitest"
 import { classSet } from "../../test/utils"
+import { SurfaceContext } from "../surface/surface"
 import {
   CardContent,
   CardDescription,
@@ -11,6 +13,12 @@ import {
   CardRoot,
   CardTitle
 } from "./card"
+
+// Card is a thin skin over a surface. These guard only what we own: the slot
+// classes/data-slots flowed through CardContext, root-only variant modifiers,
+// class merging, the polymorphic `as`, and the SurfaceContext it provides —
+// including a transparent card inheriting the ancestor surface instead of
+// establishing its own.
 
 const Anatomy = (props: {
   variant?: "default" | "secondary" | "tertiary" | "transparent"
@@ -25,7 +33,7 @@ const Anatomy = (props: {
   </CardRoot>
 )
 
-describe("Card", () => {
+describe("Card (thin skin)", () => {
   it("renders the full anatomy with slot classes and data-slots", () => {
     const { container } = render(() => <Anatomy />)
     const card = container.querySelector("[data-slot=card]") as HTMLElement
@@ -84,5 +92,35 @@ describe("Card", () => {
     expect(
       (container.querySelector("[data-slot=card-title]") as HTMLElement).tagName
     ).toBe("H2")
+  })
+
+  it("provides its variant to descendants via SurfaceContext", () => {
+    let seen: string | undefined
+    const Probe = () => {
+      seen = useContext(SurfaceContext).variant
+      return null
+    }
+    render(() => (
+      <CardRoot variant="secondary">
+        <Probe />
+      </CardRoot>
+    ))
+    expect(seen).toBe("secondary")
+  })
+
+  it("lets a transparent card inherit the ancestor surface", () => {
+    let seen: string | undefined
+    const Probe = () => {
+      seen = useContext(SurfaceContext).variant
+      return null
+    }
+    render(() => (
+      <SurfaceContext.Provider value={{ variant: "tertiary" }}>
+        <CardRoot variant="transparent">
+          <Probe />
+        </CardRoot>
+      </SurfaceContext.Provider>
+    ))
+    expect(seen).toBe("tertiary")
   })
 })
