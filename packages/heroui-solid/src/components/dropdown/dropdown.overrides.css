@@ -1,0 +1,7 @@
+.dropdown__trigger:focus-visible:not(:focus) {
+  @apply status-focused;
+}
+
+.menu-item:focus-visible {
+  @apply status-focused;
+}

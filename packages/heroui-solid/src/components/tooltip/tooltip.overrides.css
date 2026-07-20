@@ -8,15 +8,3 @@
 .tooltip {
   --trigger-anchor-point: var(--kb-tooltip-content-transform-origin);
 }
-
-/*
- * Upstream's `.tooltip__trigger` (`display: inline-block`) targets a wrapper
- * <div> that WRAPS the trigger child. Kobalte's trigger IS the interactive
- * element (`Tooltip.Trigger as={Button}`), so that `inline-block` lands on the
- * Button itself and clobbers its own `inline-flex` — collapsing the flex
- * centering (an icon-only trigger's glyph slides to the top-left). Restore
- * flex when the trigger is itself a flex control.
- */
-.tooltip__trigger.button {
-  @apply inline-flex;
-}

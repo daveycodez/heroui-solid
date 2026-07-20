@@ -15,7 +15,7 @@ import { withBase } from "./base"
 const tiles: Array<{ title: string; demo: Component }> = [
   { title: "Card", demo: demos["card-default"] },
   { title: "Button", demo: demos["button-variants"] },
-  { title: "Select", demo: demos["select-default"] },
+  { title: "Dropdown", demo: demos["dropdown-default"] },
   { title: "Text Field", demo: demos["textfield-basic"] },
   { title: "Spinner", demo: demos["spinner-colors"] }
 ]

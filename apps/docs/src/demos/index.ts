@@ -45,6 +45,21 @@ import { Interactive as CloseButtonInteractive } from "./close-button/interactiv
 import { Variants as CloseButtonVariants } from "./close-button/variants"
 import { WithCustomIcon as CloseButtonWithCustomIcon } from "./close-button/with-custom-icon"
 import { Basic as DescriptionBasic } from "./description/basic"
+import { Controlled as DropdownControlled } from "./dropdown/controlled"
+import { ControlledOpenState as DropdownControlledOpenState } from "./dropdown/controlled-open-state"
+import { CustomTrigger as DropdownCustomTrigger } from "./dropdown/custom-trigger"
+import { Default as DropdownDefault } from "./dropdown/default"
+import { SingleWithCustomIndicator as DropdownSingleWithCustomIndicator } from "./dropdown/single-with-custom-indicator"
+import { WithCustomSubmenuIndicator as DropdownWithCustomSubmenuIndicator } from "./dropdown/with-custom-submenu-indicator"
+import { WithDescriptions as DropdownWithDescriptions } from "./dropdown/with-descriptions"
+import { WithDisabledItems as DropdownWithDisabledItems } from "./dropdown/with-disabled-items"
+import { WithIcons as DropdownWithIcons } from "./dropdown/with-icons"
+import { WithKeyboardShortcuts as DropdownWithKeyboardShortcuts } from "./dropdown/with-keyboard-shortcuts"
+import { WithMultipleSelection as DropdownWithMultipleSelection } from "./dropdown/with-multiple-selection"
+import { WithSectionLevelSelection as DropdownWithSectionLevelSelection } from "./dropdown/with-section-level-selection"
+import { WithSections as DropdownWithSections } from "./dropdown/with-sections"
+import { WithSingleSelection as DropdownWithSingleSelection } from "./dropdown/with-single-selection"
+import { WithSubmenus as DropdownWithSubmenus } from "./dropdown/with-submenus"
 import { ErrorMessageBasic } from "./error-message/basic"
 import { Basic as FieldErrorBasic } from "./field-error/basic"
 import { Basic as FormBasic } from "./form/basic"
@@ -203,6 +218,21 @@ export const demos: Record<string, Component> = {
   "close-button-interactive": CloseButtonInteractive,
   "close-button-variants": CloseButtonVariants,
   "description-basic": DescriptionBasic,
+  "dropdown-default": DropdownDefault,
+  "dropdown-with-keyboard-shortcuts": DropdownWithKeyboardShortcuts,
+  "dropdown-with-icons": DropdownWithIcons,
+  "dropdown-with-descriptions": DropdownWithDescriptions,
+  "dropdown-with-sections": DropdownWithSections,
+  "dropdown-with-disabled-items": DropdownWithDisabledItems,
+  "dropdown-with-single-selection": DropdownWithSingleSelection,
+  "dropdown-single-with-custom-indicator": DropdownSingleWithCustomIndicator,
+  "dropdown-with-multiple-selection": DropdownWithMultipleSelection,
+  "dropdown-controlled": DropdownControlled,
+  "dropdown-with-section-level-selection": DropdownWithSectionLevelSelection,
+  "dropdown-with-submenus": DropdownWithSubmenus,
+  "dropdown-with-custom-submenu-indicator": DropdownWithCustomSubmenuIndicator,
+  "dropdown-controlled-open-state": DropdownControlledOpenState,
+  "dropdown-custom-trigger": DropdownCustomTrigger,
   "error-message-basic": ErrorMessageBasic,
   "field-error-basic": FieldErrorBasic,
   "form-basic": FormBasic,

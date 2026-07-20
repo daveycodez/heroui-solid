@@ -4,4 +4,405 @@ title: Dropdown
 
 # Dropdown
 
-Hello World
+A dropdown displays a list of actions or options that a user can choose
+
+## Import
+
+```tsx
+import { Dropdown } from "heroui-solid";
+```
+
+## Usage
+
+Actions are plain `Dropdown.Item`s with an `onSelect` handler. Use the
+standalone `Label` (and `Description`) components for the item text — HeroUI has
+no dropdown-specific label part.
+
+<ComponentPreview name="dropdown-default" />
+
+```tsx file=../../../demos/dropdown/default.tsx title=""
+
+```
+
+### Anatomy
+
+Import the Dropdown component and access all parts using dot notation. The menu
+is portalled, so it is wrapped in `Dropdown.Portal`.
+
+```tsx
+import { Dropdown, Label, Description, Separator } from "heroui-solid";
+
+export default () => (
+  <Dropdown>
+    <Dropdown.Trigger />
+    <Dropdown.Portal>
+      <Dropdown.Content>
+        <Dropdown.Item>
+          <Label />
+          <Description />
+        </Dropdown.Item>
+        <Separator />
+        <Dropdown.Group>
+          <Dropdown.GroupLabel />
+          <Dropdown.Item />
+        </Dropdown.Group>
+        <Dropdown.RadioGroup>
+          <Dropdown.RadioItem value="a">
+            <Dropdown.ItemIndicator />
+            <Label />
+          </Dropdown.RadioItem>
+        </Dropdown.RadioGroup>
+        <Dropdown.CheckboxItem>
+          <Dropdown.ItemIndicator />
+          <Label />
+        </Dropdown.CheckboxItem>
+        <Dropdown.Sub>
+          <Dropdown.SubTrigger>
+            <Label />
+          </Dropdown.SubTrigger>
+          <Dropdown.Portal>
+            <Dropdown.SubContent>
+              <Dropdown.Item />
+            </Dropdown.SubContent>
+          </Dropdown.Portal>
+        </Dropdown.Sub>
+      </Dropdown.Content>
+    </Dropdown.Portal>
+  </Dropdown>
+);
+```
+
+### With Single Selection
+
+Single selection uses Kobalte's `Dropdown.RadioGroup` + `Dropdown.RadioItem`
+(controlled with `value`/`onChange`). Put a `Dropdown.ItemIndicator` inside each
+item to show the checkmark when it is selected.
+
+<ComponentPreview name="dropdown-with-single-selection" />
+
+```tsx file=../../../demos/dropdown/with-single-selection.tsx title=""
+
+```
+
+### Single With Custom Indicator
+
+`Dropdown.ItemIndicator` renders whatever you pass as children when the item is
+selected — supply your own icon to replace the default checkmark.
+
+<ComponentPreview name="dropdown-single-with-custom-indicator" />
+
+```tsx file=../../../demos/dropdown/single-with-custom-indicator.tsx title=""
+
+```
+
+### With Multiple Selection
+
+Multiple selection uses `Dropdown.CheckboxItem` (controlled with
+`checked`/`onChange`). Set `closeOnSelect={false}` to keep the menu open while
+toggling.
+
+<ComponentPreview name="dropdown-with-multiple-selection" />
+
+```tsx file=../../../demos/dropdown/with-multiple-selection.tsx title=""
+
+```
+
+### With Section Level Selection
+
+Mix action items, a checkbox group, and a radio group in one menu by scoping
+each selection to its own `Dropdown.RadioGroup`/`Dropdown.CheckboxItem`s.
+
+<ComponentPreview name="dropdown-with-section-level-selection" />
+
+```tsx file=../../../demos/dropdown/with-section-level-selection.tsx title=""
+
+```
+
+### With Keyboard Shortcuts
+
+<ComponentPreview name="dropdown-with-keyboard-shortcuts" />
+
+```tsx file=../../../demos/dropdown/with-keyboard-shortcuts.tsx title=""
+
+```
+
+### With Icons
+
+<ComponentPreview name="dropdown-with-icons" />
+
+```tsx file=../../../demos/dropdown/with-icons.tsx title=""
+
+```
+
+### With Descriptions
+
+<ComponentPreview name="dropdown-with-descriptions" />
+
+```tsx file=../../../demos/dropdown/with-descriptions.tsx title=""
+
+```
+
+### With Sections
+
+Group items with `Dropdown.Group` and label each with `Dropdown.GroupLabel`,
+separated by the standalone `Separator`.
+
+<ComponentPreview name="dropdown-with-sections" />
+
+```tsx file=../../../demos/dropdown/with-sections.tsx title=""
+
+```
+
+### With Disabled Items
+
+Disable an item with the `disabled` prop (Kobalte's per-item API), instead of
+React's `disabledKeys` on the menu.
+
+<ComponentPreview name="dropdown-with-disabled-items" />
+
+```tsx file=../../../demos/dropdown/with-disabled-items.tsx title=""
+
+```
+
+### With Submenus
+
+Nest a `Dropdown.Sub` containing a `Dropdown.SubTrigger` and a portalled
+`Dropdown.SubContent`. Submenus can be nested arbitrarily deep.
+
+<ComponentPreview name="dropdown-with-submenus" />
+
+```tsx file=../../../demos/dropdown/with-submenus.tsx title=""
+
+```
+
+### With Custom Submenu Indicator
+
+There is no dedicated submenu-indicator part — place any icon inside the
+`Dropdown.SubTrigger` (e.g. right-aligned with `ms-auto`).
+
+<ComponentPreview name="dropdown-with-custom-submenu-indicator" />
+
+```tsx file=../../../demos/dropdown/with-custom-submenu-indicator.tsx title=""
+
+```
+
+### Controlled
+
+<ComponentPreview name="dropdown-controlled" />
+
+```tsx file=../../../demos/dropdown/controlled.tsx title=""
+
+```
+
+### Controlled Open State
+
+Control the menu's open state with `open`/`onOpenChange` on the `Dropdown` root.
+
+<ComponentPreview name="dropdown-controlled-open-state" />
+
+```tsx file=../../../demos/dropdown/controlled-open-state.tsx title=""
+
+```
+
+### Custom Trigger
+
+`Dropdown.Trigger` renders a `<button>`; place any content inside it (or pass
+`as` to render as another element).
+
+<ComponentPreview name="dropdown-custom-trigger" />
+
+```tsx file=../../../demos/dropdown/custom-trigger.tsx title=""
+
+```
+
+## API Reference
+
+### Dropdown Props
+
+| Prop            | Type                      | Default          | Description                                        |
+| --------------- | ------------------------- | ---------------- | -------------------------------------------------- |
+| `open`          | `boolean`                 | -                | The controlled open state of the menu              |
+| `defaultOpen`   | `boolean`                 | -                | The initial open state (uncontrolled)              |
+| `onOpenChange`  | `(open: boolean) => void` | -                | Handler called when the open state changes         |
+| `placement`     | `Placement`               | `"bottom-start"` | Placement of the menu relative to the trigger      |
+| `gutter`        | `number`                  | `8`              | Distance in px between the trigger and the content |
+| `shift`         | `number`                  | `0`              | Offset along the trigger, in px                    |
+| `modal`         | `boolean`                 | `true`           | Whether the menu is modal (traps focus/scroll)     |
+| `preventScroll` | `boolean`                 | `true`           | Whether page scroll is blocked while open          |
+| `children`      | `JSX.Element`             | -                | The trigger, portal, and content                   |
+
+*Plus Kobalte Popper positioning props (`flip`, `slide`, `overlap`, `arrowPadding`, …).*
+
+### Dropdown.Trigger Props
+
+| Prop       | Type             | Default  | Description                                                       |
+| ---------- | ---------------- | -------- | ---------------------------------------------------------------- |
+| `as`       | `ValidComponent` | `Button` | Rendered element — defaults to our `Button` (Kobalte polymorphic) |
+| `class`    | `string`         | -        | Additional CSS classes                                           |
+| `children` | `JSX.Element`    | -        | Trigger content                                                  |
+
+*Plus `Button` props (`variant`, `isIconOnly`, …) when using the default trigger, or standard `<button>` attributes.*
+
+### Dropdown.Portal Props
+
+| Prop       | Type          | Default | Description                    |
+| ---------- | ------------- | ------- | ------------------------------ |
+| `mount`    | `Node`        | `body`  | Where the content is portalled |
+| `children` | `JSX.Element` | -       | The `Dropdown.Content`         |
+
+### Dropdown.Content Props
+
+| Prop                   | Type                             | Default | Description                                          |
+| ---------------------- | -------------------------------- | ------- | ---------------------------------------------------- |
+| `as`                   | `ValidComponent`                 | `"div"` | Overrides the rendered element (Kobalte polymorphic) |
+| `onEscapeKeyDown`      | `(event: KeyboardEvent) => void` | -       | Handler called when the escape key is pressed        |
+| `onPointerDownOutside` | `(event: PointerEvent) => void`  | -       | Handler called on a pointer down outside the content |
+| `class`                | `string`                         | -       | Additional CSS classes                               |
+| `children`             | `JSX.Element`                    | -       | Menu items, groups, separators, submenus             |
+
+*Plus standard `<div>` attributes.*
+
+### Dropdown.Item Props
+
+| Prop            | Type                    | Default     | Description                                          |
+| --------------- | ----------------------- | ----------- | ---------------------------------------------------- |
+| `as`            | `ValidComponent`        | `"div"`     | Overrides the rendered element (Kobalte polymorphic) |
+| `variant`       | `"default" \| "danger"` | `"default"` | Visual variant of the item                           |
+| `onSelect`      | `() => void`            | -           | Handler called when the item is activated            |
+| `disabled`      | `boolean`               | `false`     | Whether the item is disabled                         |
+| `closeOnSelect` | `boolean`               | `true`      | Whether the menu closes when the item is activated   |
+| `textValue`     | `string`                | -           | Text used for typeahead                              |
+| `class`         | `string`                | -           | Additional CSS classes                               |
+
+*Plus standard `<div>` attributes.*
+
+### Item text — `Label` / `Description`
+
+Item text and secondary text use the standalone `Label` and `Description`
+components — HeroUI has no dropdown-specific label part. They stamp the
+`data-slot="label"`/`data-slot="description"` hooks the item styling targets.
+
+### Dropdown.ItemIndicator Props
+
+| Prop         | Type             | Default | Description                                            |
+| ------------ | ---------------- | ------- | ------------------------------------------------------ |
+| `as`         | `ValidComponent` | `"div"` | Overrides the rendered element (Kobalte polymorphic)   |
+| `forceMount` | `boolean`        | `false` | Render even when the item is not checked               |
+| `class`      | `string`         | -       | Additional CSS classes                                 |
+| `children`   | `JSX.Element`    | -       | Indicator content (rendered when the item is checked)  |
+
+### Dropdown.CheckboxItem Props
+
+| Prop             | Type                         | Default     | Description                                       |
+| ---------------- | ---------------------------- | ----------- | ------------------------------------------------- |
+| `as`             | `ValidComponent`             | `"div"`     | Overrides the rendered element                    |
+| `variant`        | `"default" \| "danger"`      | `"default"` | Visual variant of the item                        |
+| `checked`        | `boolean`                    | -           | The controlled checked state                      |
+| `defaultChecked` | `boolean`                    | -           | The initial checked state (uncontrolled)          |
+| `onChange`       | `(checked: boolean) => void` | -           | Handler called when the checked state changes     |
+| `disabled`       | `boolean`                    | `false`     | Whether the item is disabled                      |
+| `closeOnSelect`  | `boolean`                    | `true`      | Whether the menu closes when the item is toggled  |
+
+*Plus standard `<div>` attributes.*
+
+### Dropdown.RadioGroup Props
+
+| Prop           | Type                      | Default | Description                               |
+| -------------- | ------------------------- | ------- | ----------------------------------------- |
+| `value`        | `string`                  | -       | The controlled selected value             |
+| `defaultValue` | `string`                  | -       | The initial selected value (uncontrolled) |
+| `onChange`     | `(value: string) => void` | -       | Handler called when the value changes     |
+
+### Dropdown.RadioItem Props
+
+| Prop            | Type                    | Default     | Description                                       |
+| --------------- | ----------------------- | ----------- | ------------------------------------------------- |
+| `as`            | `ValidComponent`        | `"div"`     | Overrides the rendered element                    |
+| `value`         | `string`                | -           | The value of this radio item (required)           |
+| `variant`       | `"default" \| "danger"` | `"default"` | Visual variant of the item                        |
+| `disabled`      | `boolean`               | `false`     | Whether the item is disabled                      |
+| `closeOnSelect` | `boolean`               | `true`      | Whether the menu closes when the item is selected |
+
+*Plus standard `<div>` attributes.*
+
+### Dropdown.Group / Dropdown.GroupLabel Props
+
+`Dropdown.Group` groups a set of items into a section; label it with
+`Dropdown.GroupLabel`. `GroupLabel` registers its id with the group so Kobalte
+stamps `aria-labelledby` on the section (the same wiring React Aria gives
+HeroUI's `<Header>`). It renders **as** our `Header` by default, so it keeps the
+header styling — pass `as` to override.
+
+| Prop       | Type             | Default            | Description                                          |
+| ---------- | ---------------- | ------------------ | ---------------------------------------------------- |
+| `as`       | `ValidComponent` | `"div"` / `Header` | Overrides the rendered element (Group / GroupLabel)  |
+| `class`    | `string`         | -                  | Additional CSS classes                               |
+| `children` | `JSX.Element`    | -                  | The `GroupLabel` and items / label content           |
+
+Separate groups with the standalone `Separator` component.
+
+### Dropdown.Sub / Dropdown.SubTrigger / Dropdown.SubContent Props
+
+`Dropdown.Sub` accepts the same positioning props as the root (including the
+`gutter` default of `8`). `Dropdown.SubTrigger` takes the same props as
+`Dropdown.Item` (`variant`, `disabled`, `textValue`, …), and
+`Dropdown.SubContent` the same props as `Dropdown.Content`.
+
+### Dropdown.Arrow Props
+
+| Prop   | Type     | Default | Description                  |
+| ------ | -------- | ------- | ---------------------------- |
+| `size` | `number` | `30`    | The size of the arrow, in px |
+
+## Rendered Elements
+
+Every part is polymorphic — pass `as` to override the element. The `Dropdown`
+root, `Dropdown.Portal`, `Dropdown.Sub`, and `Dropdown.RadioGroup` render no
+element of their own.
+
+| Component                  | Default Element |
+| -------------------------- | --------------- |
+| `Dropdown.Trigger`         | `<button>`      |
+| `Dropdown.Content`         | `<div>`         |
+| `Dropdown.Item`            | `<div>`         |
+| `Dropdown.ItemIndicator`   | `<div>`         |
+| `Dropdown.CheckboxItem`    | `<div>`         |
+| `Dropdown.RadioItem`       | `<div>`         |
+| `Dropdown.Group`           | `<div>`         |
+| `Dropdown.GroupLabel`      | `<header>`      |
+| `Dropdown.SubTrigger`      | `<div>`         |
+| `Dropdown.SubContent`      | `<div>`         |
+
+## Differences from HeroUI React
+
+This port is a thin skin over Kobalte's `DropdownMenu`, so the API is Kobalte's,
+not HeroUI React's:
+
+- **Structure.** HeroUI React nests `Dropdown.Popover` → `Dropdown.Menu` →
+  `Dropdown.Item`. Here the popover and menu collapse into a single
+  `Dropdown.Content` (wrapped in `Dropdown.Portal`), and items go straight
+  inside it.
+- **Trigger.** `Dropdown.Trigger` renders our `Button` by default, so
+  `<Dropdown.Trigger variant="secondary">` just works — no need to nest a
+  `<Button>` as the first child of `Dropdown`. Pass `as` (e.g. `as="button"`) to
+  render a different element.
+- **Selection.** There is no `selectionMode`/`selectedKeys` on the menu. Use
+  `Dropdown.RadioGroup` + `Dropdown.RadioItem` for single selection and
+  `Dropdown.CheckboxItem` for multiple selection, each controlled with its own
+  `value`/`checked` + `onChange`.
+- **Item text.** Use the standalone `Label`/`Description` components (there is no
+  `Dropdown.Label`), placed inside the item.
+- **Sections.** Use `Dropdown.Group` + `Dropdown.GroupLabel` for the section and
+  its label, separated by the standalone `Separator` (there is no
+  `Dropdown.Separator`). `Dropdown.GroupLabel` renders as HeroUI's `Header` and,
+  like React Aria's `<Header>`, registers with the group so it auto-wires
+  `aria-labelledby`.
+- **Disabled items.** Set `disabled` per item, not `disabledKeys` on the menu.
+- **Submenu indicator.** There is no `Dropdown.SubmenuIndicator` — place any icon
+  inside `Dropdown.SubTrigger`.
+- **Item selection.** `onSelect` on `Dropdown.Item` takes no key argument (it is
+  scoped to the item); there is no menu-level `onAction`.
+- **Long-press trigger.** Kobalte has no long-press trigger, so HeroUI React's
+  "Long Press Trigger" example has no equivalent here.
+- **Styling only.** This skin applies HeroUI's variant classes; open/close
+  animations and the CSS state bridges are not wired up yet.
