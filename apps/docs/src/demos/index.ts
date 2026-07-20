@@ -101,6 +101,20 @@ import { HideScrollBar as ScrollShadowHideScrollBar } from "./scroll-shadow/hide
 import { Orientation as ScrollShadowOrientation } from "./scroll-shadow/orientation"
 import { VisibilityChange as ScrollShadowVisibilityChange } from "./scroll-shadow/visibility-change"
 import { WithCard as ScrollShadowWithCard } from "./scroll-shadow/with-card"
+import { Basic as SearchFieldBasic } from "./search-field/basic"
+import { Controlled as SearchFieldControlled } from "./search-field/controlled"
+import { CustomElement as SearchFieldCustomElement } from "./search-field/custom-element"
+import { CustomIcons as SearchFieldCustomIcons } from "./search-field/custom-icons"
+import { Disabled as SearchFieldDisabled } from "./search-field/disabled"
+import { FormExample as SearchFieldFormExample } from "./search-field/form-example"
+import { FullWidth as SearchFieldFullWidth } from "./search-field/full-width"
+import { OnSurface as SearchFieldOnSurface } from "./search-field/on-surface"
+import { Required as SearchFieldRequired } from "./search-field/required"
+import { Validation as SearchFieldValidation } from "./search-field/validation"
+import { Variants as SearchFieldVariants } from "./search-field/variants"
+import { WithDescription as SearchFieldWithDescription } from "./search-field/with-description"
+import { WithKeyboardShortcut as SearchFieldWithKeyboardShortcut } from "./search-field/with-keyboard-shortcut"
+import { WithValidation as SearchFieldWithValidation } from "./search-field/with-validation"
 import { Controlled as SelectControlled } from "./select/controlled"
 import { ControlledMultiple as SelectControlledMultiple } from "./select/controlled-multiple"
 import { ControlledOpenState as SelectControlledOpenState } from "./select/controlled-open-state"
@@ -286,6 +300,20 @@ export const demos: Record<string, Component> = {
   "scroll-shadow-custom-size": ScrollShadowCustomSize,
   "scroll-shadow-visibility-change": ScrollShadowVisibilityChange,
   "scroll-shadow-with-card": ScrollShadowWithCard,
+  "search-field-basic": SearchFieldBasic,
+  "search-field-with-description": SearchFieldWithDescription,
+  "search-field-required": SearchFieldRequired,
+  "search-field-validation": SearchFieldValidation,
+  "search-field-disabled": SearchFieldDisabled,
+  "search-field-controlled": SearchFieldControlled,
+  "search-field-with-validation": SearchFieldWithValidation,
+  "search-field-custom-icons": SearchFieldCustomIcons,
+  "search-field-custom-element": SearchFieldCustomElement,
+  "search-field-full-width": SearchFieldFullWidth,
+  "search-field-variants": SearchFieldVariants,
+  "search-field-on-surface": SearchFieldOnSurface,
+  "search-field-form-example": SearchFieldFormExample,
+  "search-field-with-keyboard-shortcut": SearchFieldWithKeyboardShortcut,
   "separator-basic": SeparatorBasic,
   "separator-vertical": SeparatorVertical,
   "separator-with-content": SeparatorWithContent,

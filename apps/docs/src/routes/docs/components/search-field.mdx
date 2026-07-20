@@ -4,4 +4,318 @@ title: SearchField
 
 # SearchField
 
-Hello World
+Search input field with a clear button and search icon.
+
+## Import
+
+```tsx
+import { SearchField } from "heroui-solid";
+```
+
+### Usage
+
+<ComponentPreview name="search-field-basic" />
+
+```tsx file=../../../demos/search-field/basic.tsx title=""
+
+```
+
+### Anatomy
+
+```tsx
+import { SearchField, Label, Description, FieldError } from "heroui-solid";
+
+export default () => (
+  <SearchField>
+    <Label />
+    <SearchField.Group>
+      <SearchField.SearchIcon />
+      <SearchField.Input />
+      <SearchField.ClearButton />
+    </SearchField.Group>
+    <Description />
+    <FieldError />
+  </SearchField>
+);
+```
+
+> **SearchField** lets users enter and clear a search query. It includes a search
+> icon and a clear button that empties the field (also cleared with the `Escape`
+> key). Kobalte has no SearchField primitive, so this is built on Kobalte's
+> **[TextField](/docs/components/text-field)** with the search behavior layered on top.
+
+### With Description
+
+<ComponentPreview name="search-field-with-description" />
+
+```tsx file=../../../demos/search-field/with-description.tsx title=""
+
+```
+
+### Required Field
+
+<ComponentPreview name="search-field-required" />
+
+```tsx file=../../../demos/search-field/required.tsx title=""
+
+```
+
+### Validation
+
+Set `validationState="invalid"` together with `FieldError` to surface validation messages.
+
+<ComponentPreview name="search-field-validation" />
+
+```tsx file=../../../demos/search-field/validation.tsx title=""
+
+```
+
+### Disabled State
+
+<ComponentPreview name="search-field-disabled" />
+
+```tsx file=../../../demos/search-field/disabled.tsx title=""
+
+```
+
+### Controlled
+
+Control the value to synchronize with other components or perform custom formatting.
+
+<ComponentPreview name="search-field-controlled" />
+
+```tsx file=../../../demos/search-field/controlled.tsx title=""
+
+```
+
+### With Validation
+
+Implement custom validation logic with controlled values.
+
+<ComponentPreview name="search-field-with-validation" />
+
+```tsx file=../../../demos/search-field/with-validation.tsx title=""
+
+```
+
+### Custom Icons
+
+Customize the search icon and clear button icons by passing children.
+
+<ComponentPreview name="search-field-custom-icons" />
+
+```tsx file=../../../demos/search-field/custom-icons.tsx title=""
+
+```
+
+### Custom Element
+
+HeroUI React overrides the rendered element with a `render` prop. This port uses
+Kobalte's polymorphic `as` prop instead — see the [Polymorphism](/docs/getting-started/polymorphism)
+guide. The injected prop is passed directly on the same part.
+
+<ComponentPreview name="search-field-custom-element" />
+
+```tsx file=../../../demos/search-field/custom-element.tsx title=""
+
+```
+
+### Full Width
+
+<ComponentPreview name="search-field-full-width" />
+
+```tsx file=../../../demos/search-field/full-width.tsx title=""
+
+```
+
+### Variants
+
+The SearchField component supports two visual variants:
+
+- **`primary`** (default) - Standard styling with shadow, suitable for most use cases
+- **`secondary`** - Lower emphasis variant without shadow, suitable for use in Surface components
+
+<ComponentPreview name="search-field-variants" />
+
+```tsx file=../../../demos/search-field/variants.tsx title=""
+
+```
+
+### In Surface
+
+When used inside a [Surface](/docs/components/surface) component, use `variant="secondary"` to apply the lower emphasis variant suitable for surface backgrounds.
+
+<ComponentPreview name="search-field-on-surface" />
+
+```tsx file=../../../demos/search-field/on-surface.tsx title=""
+
+```
+
+### Form Example
+
+Complete form integration with validation and submission handling.
+
+<ComponentPreview name="search-field-form-example" />
+
+```tsx file=../../../demos/search-field/form-example.tsx title=""
+
+```
+
+### With Keyboard Shortcut
+
+Add keyboard shortcuts to quickly focus the search field.
+
+<ComponentPreview name="search-field-with-keyboard-shortcut" />
+
+```tsx file=../../../demos/search-field/with-keyboard-shortcut.tsx title=""
+
+```
+
+## Related Components
+
+- **Label**: Accessible label for form controls
+- **Description**: Helper text for form fields
+- **FieldError**: Inline validation messages for form fields
+- **CloseButton**: Powers the clear button
+
+## Styling
+
+### Passing Tailwind CSS classes
+
+```tsx
+import { SearchField, Label } from "heroui-solid";
+
+function CustomSearchField() {
+  return (
+    <SearchField class="gap-2">
+      <Label class="text-sm font-semibold">Search</Label>
+      <SearchField.Group class="rounded-xl border-2">
+        <SearchField.SearchIcon class="text-blue-500" />
+        <SearchField.Input class="text-center font-bold" />
+        <SearchField.ClearButton class="text-red-500" />
+      </SearchField.Group>
+    </SearchField>
+  );
+}
+```
+
+### CSS Classes
+
+- `.search-field` – Root container with minimal styling (`flex flex-col gap-1`)
+- `.search-field__group` – Container for the search icon, input, and clear button, with border and background
+- `.search-field__input` – The search input field
+- `.search-field__search-icon` – The search icon displayed on the left
+- `.search-field__clear-button` – Button to clear the search field
+- `.search-field--primary` – Primary variant with shadow (default)
+- `.search-field--secondary` – Secondary variant without shadow, suitable for use in surfaces
+
+### Interactive States
+
+SearchField manages these data attributes based on its state:
+
+- **Focus Within**: styled via native `:focus-within` on the group — no attribute needed.
+- **Hover**: styled via native `:hover:not(:focus-within)` on the group — no attribute needed.
+- **Invalid**: `[data-invalid="true"]` - On the root and group when `validationState="invalid"`.
+- **Disabled**: `[data-disabled="true"]` - On the group when `disabled` is set.
+- **Empty**: `[data-empty="true"]` - On the root when the field is empty (hides the clear button).
+
+## API Reference
+
+### SearchField Props
+
+SearchField is built on Kobalte's [TextField](https://kobalte.dev/docs/core/components/text-field) primitive.
+
+| Prop              | Type                       | Default     | Description                                                    |
+| ----------------- | -------------------------- | ----------- | -------------------------------------------------------------- |
+| `variant`         | `"primary" \| "secondary"` | `"primary"` | Visual variant (`secondary` is lower emphasis, for surfaces)   |
+| `fullWidth`       | `boolean`                  | `false`     | Whether the field takes full width of its container            |
+| `value`           | `string`                   | -           | Current value (controlled)                                     |
+| `defaultValue`    | `string`                   | -           | Default value (uncontrolled)                                   |
+| `onChange`        | `(value: string) => void`  | -           | Handler called when the value changes                          |
+| `onSubmit`        | `(value: string) => void`  | -           | Handler called on `Enter` (suppresses the default form submit) |
+| `onClear`         | `() => void`               | -           | Handler called when the field is cleared                       |
+| `name`            | `string`                   | -           | Name for HTML form submission                                  |
+| `validationState` | `"valid" \| "invalid"`     | -           | Whether the field displays its valid/invalid styling           |
+| `required`        | `boolean`                  | `false`     | Whether user input is required                                 |
+| `disabled`        | `boolean`                  | `false`     | Whether the field is disabled                                  |
+| `readOnly`        | `boolean`                  | `false`     | Whether the field is read-only                                 |
+| `as`              | `ValidComponent`           | `"div"`     | Overrides the rendered element (Kobalte polymorphic)           |
+| `class`           | `string`                   | -           | Additional CSS classes                                         |
+
+*Plus standard `<div>` attributes (including `aria-label`, `aria-labelledby`, `aria-describedby`).*
+
+### SearchField.Group Props
+
+| Prop       | Type          | Default | Description                                            |
+| ---------- | ------------- | ------- | ------------------------------------------------------ |
+| `children` | `JSX.Element` | -       | The SearchIcon, Input, and ClearButton                 |
+| `class`    | `string`      | -       | CSS classes for styling                                |
+
+*Plus standard `<div>` attributes.*
+
+### SearchField.Input Props
+
+Renders Kobalte's text-field Input wired to the field. `type` defaults to `"search"`.
+
+| Prop          | Type     | Default    | Description                     |
+| ------------- | -------- | ---------- | ------------------------------- |
+| `placeholder` | `string` | -          | Placeholder text                |
+| `type`        | `string` | `"search"` | Input type                      |
+| `class`       | `string` | -          | CSS classes for styling         |
+
+*Plus standard `<input>` attributes.*
+
+### SearchField.SearchIcon Props
+
+| Prop       | Type          | Default          | Description                                    |
+| ---------- | ------------- | ---------------- | ---------------------------------------------- |
+| `children` | `JSX.Element` | `<IconSearch />` | Custom icon element. Defaults to search icon.  |
+| `class`    | `string`      | -                | CSS classes for styling                        |
+
+*Plus standard `<span>` attributes.*
+
+### SearchField.ClearButton Props
+
+Renders a [CloseButton](/docs/components/close-button); clicking it (or pressing `Escape`) clears the field.
+
+| Prop       | Type          | Default                | Description                          |
+| ---------- | ------------- | ---------------------- | ------------------------------------ |
+| `children` | `JSX.Element` | `<CloseIcon />`        | Icon content for the clear button    |
+| `class`    | `string`      | -                      | CSS classes for styling              |
+
+*Plus standard `<button>` attributes.*
+
+### Composition Components
+
+- **SearchField** - Root container (`SearchField` is `SearchField.Root`)
+- **SearchField.Group** - Container for the search icon, input, and clear button
+- **SearchField.Input** - The search input field
+- **SearchField.SearchIcon** - The search icon displayed on the left
+- **SearchField.ClearButton** - Button to clear the field
+
+Compose standalone **[Label](/docs/components/label)**, **[Description](/docs/components/description)**, and **[FieldError](/docs/components/field-error)** as children.
+
+## Rendered Elements
+
+| Component                 | Default Element |
+| ------------------------- | --------------- |
+| `SearchField`             | `<div>`         |
+| `SearchField.Group`       | `<div>`         |
+| `SearchField.Input`       | `<input>`       |
+| `SearchField.SearchIcon`  | `<span>`        |
+| `SearchField.ClearButton` | `<button>`      |
+
+## Differences from HeroUI React
+
+- Kobalte has no SearchField primitive, so this is built on Kobalte's TextField
+  with the search behavior (clear button, `Escape`-to-clear, `Enter`-to-submit,
+  `type="search"`) layered on top — the React Aria behavior, ported minimally.
+- State props use Kobalte's names: `disabled`, `readOnly`, `required`, and
+  `validationState="invalid"` (instead of `isDisabled`, `isReadOnly`,
+  `isRequired`, and `isInvalid`). `onChange` receives the string value.
+- Polymorphism uses Kobalte's `as` prop instead of React Aria's `render` prop
+  (see the Custom Element example).
+- No `validate`/`validationBehavior`/`validationErrors` props — drive
+  `validationState` yourself (see the With Validation example) or use a form.
+- The clear button is a [CloseButton](/docs/components/close-button), so it uses
+  `onClick`/`disabled` instead of React Aria's `onPress`/`isDisabled`.
