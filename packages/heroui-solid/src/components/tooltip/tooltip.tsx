@@ -49,7 +49,9 @@ const TooltipRoot = (props: TooltipRootProps) => {
   })
 
   const merged = mergeProps(
-    { placement: "top" } satisfies TooltipRootProps,
+    // Nudge the trigger gap to match HeroUI, which sits ~1px further out than
+    // Kobalte's 0 gutter (Kobalte adds the arrow allowance on top of this).
+    { gutter: 2, placement: "top" } satisfies TooltipRootProps,
     rest,
     {
       get openDelay() {
@@ -147,7 +149,11 @@ type TooltipArrowProps<T extends ValidComponent = "div"> = ComponentProps<
 const TooltipArrow = <T extends ValidComponent = "div">(
   props: TooltipArrowProps<T>
 ) => {
-  const [local, rest] = splitProps(props as TooltipArrowProps, ["class"])
+  // Kobalte's arrow defaults to 30px; HeroUI's is 12px. The arrow size also
+  // drives the trigger gap (Kobalte adds size/2), so this matches upstream's
+  // ~6px arrow offset too.
+  const merged = mergeProps({ size: 12 }, props as TooltipArrowProps)
+  const [local, rest] = splitProps(merged, ["class"])
 
   return (
     <Tooltip.Arrow class={local.class} data-slot="tooltip-arrow" {...rest} />
