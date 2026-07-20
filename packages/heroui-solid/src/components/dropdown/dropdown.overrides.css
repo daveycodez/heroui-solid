@@ -1,7 +1,26 @@
-.dropdown__trigger:focus-visible:not(:focus) {
+.dropdown__trigger:focus-visible {
   @apply status-focused;
 }
 
 .menu-item:focus-visible {
   @apply status-focused;
+}
+
+.dropdown__popover:focus-visible {
+  @apply status-focused;
+}
+
+/* @heroui/styles' .dropdown__popover has overflow-y-auto but no max-height —
+   upstream relies on React Aria setting an inline maxHeight from measured
+   available space. Kobalte's popper `size` middleware exposes that space as
+   --kb-popper-content-available-height instead, so cap the popover to it so a
+   tall menu scrolls instead of running off-screen. Applies to Content and
+   SubContent (both carry .dropdown__popover).
+
+   overflow-y: auto is re-asserted because our Content carries BOTH the popover
+   and menu slot classes, and .dropdown__menu's `overflow-clip` (defined later
+   in @heroui/styles) otherwise wins and blocks the scroll. Upstream keeps the
+   scroll container (popover) and the clipping menu on separate elements. */
+.dropdown__popover {
+  max-height: var(--kb-popper-content-available-height);
 }

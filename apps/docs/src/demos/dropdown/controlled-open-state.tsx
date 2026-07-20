@@ -14,20 +14,22 @@ export function ControlledOpenState() {
           Actions
         </Dropdown.Trigger>
         <Dropdown.Portal>
-          <Dropdown.Content>
-            <Dropdown.Item textValue="New file">
-              <Label>New file</Label>
-            </Dropdown.Item>
-            <Dropdown.Item textValue="Open file">
-              <Label>Open file</Label>
-            </Dropdown.Item>
-            <Dropdown.Item textValue="Save file">
-              <Label>Save file</Label>
-            </Dropdown.Item>
-            <Dropdown.Item textValue="Delete file" variant="danger">
-              <Label>Delete file</Label>
-            </Dropdown.Item>
-          </Dropdown.Content>
+          <Dropdown.Popover>
+            <Dropdown.Menu>
+              <Dropdown.Item textValue="New file">
+                <Label>New file</Label>
+              </Dropdown.Item>
+              <Dropdown.Item textValue="Open file">
+                <Label>Open file</Label>
+              </Dropdown.Item>
+              <Dropdown.Item textValue="Save file">
+                <Label>Save file</Label>
+              </Dropdown.Item>
+              <Dropdown.Item textValue="Delete file" variant="danger">
+                <Label>Delete file</Label>
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown.Popover>
         </Dropdown.Portal>
       </Dropdown>
     </div>

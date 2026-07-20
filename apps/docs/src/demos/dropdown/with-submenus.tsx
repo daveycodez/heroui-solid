@@ -24,52 +24,58 @@ export function WithSubmenus() {
         Share
       </Dropdown.Trigger>
       <Dropdown.Portal>
-        <Dropdown.Content>
-          <Dropdown.Item textValue="Copy Link">
-            <Label>Copy Link</Label>
-          </Dropdown.Item>
-          <Dropdown.Item textValue="Facebook">
-            <Label>Facebook</Label>
-          </Dropdown.Item>
-          <Dropdown.Item textValue="Twitter">
-            <Label>X / Twitter</Label>
-          </Dropdown.Item>
-          <Dropdown.Sub>
-            <Dropdown.SubTrigger textValue="Other">
-              <Label>Other</Label>
-              <ChevronRight />
-            </Dropdown.SubTrigger>
-            <Dropdown.Portal>
-              <Dropdown.SubContent>
-                <Dropdown.Item textValue="WhatsApp">
-                  <Label>WhatsApp</Label>
-                </Dropdown.Item>
-                <Dropdown.Item textValue="Telegram">
-                  <Label>Telegram</Label>
-                </Dropdown.Item>
-                <Dropdown.Item textValue="Discord">
-                  <Label>Discord</Label>
-                </Dropdown.Item>
-                <Dropdown.Sub>
-                  <Dropdown.SubTrigger textValue="Email">
-                    <Label>Email</Label>
-                    <ChevronRight />
-                  </Dropdown.SubTrigger>
-                  <Dropdown.Portal>
-                    <Dropdown.SubContent>
-                      <Dropdown.Item textValue="Work email">
-                        <Label>Work email</Label>
-                      </Dropdown.Item>
-                      <Dropdown.Item textValue="Personal email">
-                        <Label>Personal email</Label>
-                      </Dropdown.Item>
-                    </Dropdown.SubContent>
-                  </Dropdown.Portal>
-                </Dropdown.Sub>
-              </Dropdown.SubContent>
-            </Dropdown.Portal>
-          </Dropdown.Sub>
-        </Dropdown.Content>
+        <Dropdown.Popover>
+          <Dropdown.Menu>
+            <Dropdown.Item textValue="Copy Link">
+              <Label>Copy Link</Label>
+            </Dropdown.Item>
+            <Dropdown.Item textValue="Facebook">
+              <Label>Facebook</Label>
+            </Dropdown.Item>
+            <Dropdown.Item textValue="Twitter">
+              <Label>X / Twitter</Label>
+            </Dropdown.Item>
+            <Dropdown.Sub>
+              <Dropdown.SubTrigger textValue="Other">
+                <Label>Other</Label>
+                <ChevronRight />
+              </Dropdown.SubTrigger>
+              <Dropdown.Portal>
+                <Dropdown.SubContent>
+                  <Dropdown.Menu>
+                    <Dropdown.Item textValue="WhatsApp">
+                      <Label>WhatsApp</Label>
+                    </Dropdown.Item>
+                    <Dropdown.Item textValue="Telegram">
+                      <Label>Telegram</Label>
+                    </Dropdown.Item>
+                    <Dropdown.Item textValue="Discord">
+                      <Label>Discord</Label>
+                    </Dropdown.Item>
+                    <Dropdown.Sub>
+                      <Dropdown.SubTrigger textValue="Email">
+                        <Label>Email</Label>
+                        <ChevronRight />
+                      </Dropdown.SubTrigger>
+                      <Dropdown.Portal>
+                        <Dropdown.SubContent>
+                          <Dropdown.Menu>
+                            <Dropdown.Item textValue="Work email">
+                              <Label>Work email</Label>
+                            </Dropdown.Item>
+                            <Dropdown.Item textValue="Personal email">
+                              <Label>Personal email</Label>
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown.SubContent>
+                      </Dropdown.Portal>
+                    </Dropdown.Sub>
+                  </Dropdown.Menu>
+                </Dropdown.SubContent>
+              </Dropdown.Portal>
+            </Dropdown.Sub>
+          </Dropdown.Menu>
+        </Dropdown.Popover>
       </Dropdown.Portal>
     </Dropdown>
   )

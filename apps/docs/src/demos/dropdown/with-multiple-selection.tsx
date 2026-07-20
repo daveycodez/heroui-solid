@@ -25,25 +25,27 @@ export function WithMultipleSelection() {
         Preferred Fruits
       </Dropdown.Trigger>
       <Dropdown.Portal>
-        <Dropdown.Content class="min-w-[256px]">
-          <Dropdown.Group>
-            <Dropdown.GroupLabel>Select a fruit</Dropdown.GroupLabel>
-            <For each={FRUITS}>
-              {(fruit) => (
-                <Dropdown.CheckboxItem
-                  checked={selected().has(fruit)}
-                  closeOnSelect={false}
-                  onChange={(checked) => toggle(fruit, checked)}
-                >
-                  <Dropdown.ItemIndicator>
-                    <Check class="size-4" />
-                  </Dropdown.ItemIndicator>
-                  <Label class="capitalize">{fruit}</Label>
-                </Dropdown.CheckboxItem>
-              )}
-            </For>
-          </Dropdown.Group>
-        </Dropdown.Content>
+        <Dropdown.Popover class="min-w-[256px]">
+          <Dropdown.Menu>
+            <Dropdown.Group>
+              <Dropdown.GroupLabel>Select a fruit</Dropdown.GroupLabel>
+              <For each={FRUITS}>
+                {(fruit) => (
+                  <Dropdown.CheckboxItem
+                    checked={selected().has(fruit)}
+                    closeOnSelect={false}
+                    onChange={(checked) => toggle(fruit, checked)}
+                  >
+                    <Dropdown.ItemIndicator>
+                      <Check class="size-4" />
+                    </Dropdown.ItemIndicator>
+                    <Label class="capitalize">{fruit}</Label>
+                  </Dropdown.CheckboxItem>
+                )}
+              </For>
+            </Dropdown.Group>
+          </Dropdown.Menu>
+        </Dropdown.Popover>
       </Dropdown.Portal>
     </Dropdown>
   )

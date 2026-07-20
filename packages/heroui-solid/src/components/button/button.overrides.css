@@ -1,5 +1,5 @@
 .button:focus-visible {
-  @apply status-focused;
+  @apply focus-visible:status-focused;
 }
 
 /* Fix for all trigger buttons */

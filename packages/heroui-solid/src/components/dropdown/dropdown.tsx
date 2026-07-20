@@ -5,7 +5,7 @@ import {
   menuItemVariants,
   menuSectionVariants
 } from "@heroui/styles"
-import { DropdownMenu } from "@kobalte/core/dropdown-menu"
+import { DropdownMenu as DropdownMenuPrimitive } from "@kobalte/core/dropdown-menu"
 import {
   type ComponentProps,
   createContext,
@@ -30,7 +30,7 @@ const DropdownContext = createContext<DropdownContextValue>({})
 /* -------------------------------------------------------------------------------------------------
  * Dropdown Root
  * -----------------------------------------------------------------------------------------------*/
-type DropdownRootProps = ComponentProps<typeof DropdownMenu>
+type DropdownRootProps = ComponentProps<typeof DropdownMenuPrimitive>
 
 const DropdownRoot = (props: DropdownRootProps) => {
   const merged = mergeProps({ gutter: 8 }, props)
@@ -44,7 +44,7 @@ const DropdownRoot = (props: DropdownRootProps) => {
         }
       }}
     >
-      <DropdownMenu {...merged} />
+      <DropdownMenuPrimitive {...merged} />
     </DropdownContext.Provider>
   )
 }
@@ -53,7 +53,7 @@ const DropdownRoot = (props: DropdownRootProps) => {
  * Dropdown Trigger
  * -----------------------------------------------------------------------------------------------*/
 type DropdownTriggerProps<T extends ValidComponent = typeof Button> =
-  ComponentProps<typeof DropdownMenu.Trigger<T>>
+  ComponentProps<typeof DropdownMenuPrimitive.Trigger<T>>
 
 const DropdownTrigger = <T extends ValidComponent = typeof Button>(
   props: DropdownTriggerProps<T>
@@ -64,7 +64,7 @@ const DropdownTrigger = <T extends ValidComponent = typeof Button>(
   const merged = mergeProps({ as: Button }, props as DropdownTriggerProps)
   const [local, rest] = splitProps(merged, ["class"])
   return (
-    <DropdownMenu.Trigger
+    <DropdownMenuPrimitive.Trigger
       class={cn(context.slots?.trigger(), local.class)}
       data-slot="dropdown-trigger"
       {...rest}
@@ -75,26 +75,50 @@ const DropdownTrigger = <T extends ValidComponent = typeof Button>(
 /* -------------------------------------------------------------------------------------------------
  * Dropdown Portal
  * -----------------------------------------------------------------------------------------------*/
-const DropdownPortal = DropdownMenu.Portal
+const DropdownPortal = DropdownMenuPrimitive.Portal
 
 /* -------------------------------------------------------------------------------------------------
- * Dropdown Content
+ * Dropdown Popover
  * -----------------------------------------------------------------------------------------------*/
-type DropdownContentProps<T extends ValidComponent = "div"> = ComponentProps<
-  typeof DropdownMenu.Content<T>
+// The scroll container. Kobalte's Content is the role="menu" positioned element;
+// we style it as the popover (max-height/overflow live here — see overrides) and
+// let the inner Dropdown.Menu hold the padded item list, mirroring upstream's
+// separate Popover > Menu so item focus rings aren't clipped by the scroll edge.
+type DropdownPopoverProps<T extends ValidComponent = "div"> = ComponentProps<
+  typeof DropdownMenuPrimitive.Content<T>
 >
 
-const DropdownContent = <T extends ValidComponent = "div">(
-  props: DropdownContentProps<T>
+const DropdownPopover = <T extends ValidComponent = "div">(
+  props: DropdownPopoverProps<T>
 ) => {
-  const [local, rest] = splitProps(props as DropdownContentProps, ["class"])
+  const [local, rest] = splitProps(props as DropdownPopoverProps, ["class"])
   const context = useContext(DropdownContext)
   return (
-    <DropdownMenu.Content
-      class={cn(context.slots?.popover(), context.slots?.menu(), local.class)}
+    <DropdownMenuPrimitive.Content
+      class={cn(context.slots?.popover(), local.class)}
       data-slot="dropdown-popover"
       {...rest}
-      tabIndex={-1}
+    />
+  )
+}
+
+/* -------------------------------------------------------------------------------------------------
+ * Dropdown Menu
+ * -----------------------------------------------------------------------------------------------*/
+// The padded item list inside a Popover/SubContent. Not a Kobalte primitive —
+// role="menu" already lives on the Kobalte Content above, so this stays
+// presentational (role="presentation") to keep the menu -> menuitem ownership.
+interface DropdownMenuProps extends ComponentProps<"div"> {}
+
+const DropdownMenu = (props: DropdownMenuProps) => {
+  const [local, rest] = splitProps(props, ["class"])
+  const context = useContext(DropdownContext)
+  return (
+    <div
+      class={cn(context.slots?.menu(), local.class)}
+      data-slot="dropdown-menu"
+      role="presentation"
+      {...rest}
     />
   )
 }
@@ -102,13 +126,13 @@ const DropdownContent = <T extends ValidComponent = "div">(
 /* -------------------------------------------------------------------------------------------------
  * Dropdown Arrow
  * -----------------------------------------------------------------------------------------------*/
-const DropdownArrow = DropdownMenu.Arrow
+const DropdownArrow = DropdownMenuPrimitive.Arrow
 
 /* -------------------------------------------------------------------------------------------------
  * Dropdown Item
  * -----------------------------------------------------------------------------------------------*/
 type DropdownItemProps<T extends ValidComponent = "div"> = ComponentProps<
-  typeof DropdownMenu.Item<T>
+  typeof DropdownMenuPrimitive.Item<T>
 > &
   MenuItemVariants
 
@@ -121,7 +145,7 @@ const DropdownItem = <T extends ValidComponent = "div">(
     ["class"]
   )
   return (
-    <DropdownMenu.Item
+    <DropdownMenuPrimitive.Item
       class={cn(menuItemVariants(variantProps).item(), local.class)}
       data-slot="menu-item"
       {...rest}
@@ -133,7 +157,7 @@ const DropdownItem = <T extends ValidComponent = "div">(
  * Dropdown Item Indicator
  * -----------------------------------------------------------------------------------------------*/
 type DropdownItemIndicatorProps<T extends ValidComponent = "div"> =
-  ComponentProps<typeof DropdownMenu.ItemIndicator<T>>
+  ComponentProps<typeof DropdownMenuPrimitive.ItemIndicator<T>>
 
 const DropdownItemIndicator = <T extends ValidComponent = "div">(
   props: DropdownItemIndicatorProps<T>
@@ -142,7 +166,7 @@ const DropdownItemIndicator = <T extends ValidComponent = "div">(
     "class"
   ])
   return (
-    <DropdownMenu.ItemIndicator
+    <DropdownMenuPrimitive.ItemIndicator
       class={cn(menuItemVariants().indicator(), local.class)}
       data-slot="menu-item-indicator"
       {...rest}
@@ -154,7 +178,7 @@ const DropdownItemIndicator = <T extends ValidComponent = "div">(
  * Dropdown Group
  * -----------------------------------------------------------------------------------------------*/
 type DropdownGroupProps<T extends ValidComponent = "div"> = ComponentProps<
-  typeof DropdownMenu.Group<T>
+  typeof DropdownMenuPrimitive.Group<T>
 >
 
 const DropdownGroup = <T extends ValidComponent = "div">(
@@ -162,7 +186,7 @@ const DropdownGroup = <T extends ValidComponent = "div">(
 ) => {
   const [local, rest] = splitProps(props as DropdownGroupProps, ["class"])
   return (
-    <DropdownMenu.Group
+    <DropdownMenuPrimitive.Group
       class={cn(menuSectionVariants(), local.class)}
       data-slot="menu-section"
       {...rest}
@@ -178,7 +202,7 @@ const DropdownGroup = <T extends ValidComponent = "div">(
 // (the same wiring React Aria gives HeroUI's <Header>). Default to rendering as
 // our Header so it keeps the header styling; an explicit `as` still wins.
 type DropdownGroupLabelProps<T extends ValidComponent = typeof Header> =
-  ComponentProps<typeof DropdownMenu.GroupLabel<T>>
+  ComponentProps<typeof DropdownMenuPrimitive.GroupLabel<T>>
 
 const DropdownGroupLabel = <T extends ValidComponent = typeof Header>(
   props: DropdownGroupLabelProps<T>
@@ -188,7 +212,7 @@ const DropdownGroupLabel = <T extends ValidComponent = typeof Header>(
     ["class", "as"]
   )
   return (
-    <DropdownMenu.GroupLabel
+    <DropdownMenuPrimitive.GroupLabel
       as={(local.as ?? Header) as ValidComponent}
       class={local.class}
       {...rest}
@@ -199,13 +223,14 @@ const DropdownGroupLabel = <T extends ValidComponent = typeof Header>(
 /* -------------------------------------------------------------------------------------------------
  * Dropdown Icon
  * -----------------------------------------------------------------------------------------------*/
-const DropdownIcon = DropdownMenu.Icon
+const DropdownIcon = DropdownMenuPrimitive.Icon
 
 /* -------------------------------------------------------------------------------------------------
  * Dropdown Checkbox Item
  * -----------------------------------------------------------------------------------------------*/
 type DropdownCheckboxItemProps<T extends ValidComponent = "div"> =
-  ComponentProps<typeof DropdownMenu.CheckboxItem<T>> & MenuItemVariants
+  ComponentProps<typeof DropdownMenuPrimitive.CheckboxItem<T>> &
+    MenuItemVariants
 
 const DropdownCheckboxItem = <T extends ValidComponent = "div">(
   props: DropdownCheckboxItemProps<T>
@@ -216,7 +241,7 @@ const DropdownCheckboxItem = <T extends ValidComponent = "div">(
     ["class"]
   )
   return (
-    <DropdownMenu.CheckboxItem
+    <DropdownMenuPrimitive.CheckboxItem
       class={cn(menuItemVariants(variantProps).item(), local.class)}
       data-slot="menu-item"
       {...rest}
@@ -227,13 +252,13 @@ const DropdownCheckboxItem = <T extends ValidComponent = "div">(
 /* -------------------------------------------------------------------------------------------------
  * Dropdown Radio Group
  * -----------------------------------------------------------------------------------------------*/
-const DropdownRadioGroup = DropdownMenu.RadioGroup
+const DropdownRadioGroup = DropdownMenuPrimitive.RadioGroup
 
 /* -------------------------------------------------------------------------------------------------
  * Dropdown Radio Item
  * -----------------------------------------------------------------------------------------------*/
 type DropdownRadioItemProps<T extends ValidComponent = "div"> = ComponentProps<
-  typeof DropdownMenu.RadioItem<T>
+  typeof DropdownMenuPrimitive.RadioItem<T>
 > &
   MenuItemVariants
 
@@ -246,7 +271,7 @@ const DropdownRadioItem = <T extends ValidComponent = "div">(
     ["class"]
   )
   return (
-    <DropdownMenu.RadioItem
+    <DropdownMenuPrimitive.RadioItem
       class={cn(menuItemVariants(variantProps).item(), local.class)}
       data-slot="menu-item"
       {...rest}
@@ -257,20 +282,20 @@ const DropdownRadioItem = <T extends ValidComponent = "div">(
 /* -------------------------------------------------------------------------------------------------
  * Dropdown Sub
  * -----------------------------------------------------------------------------------------------*/
-type DropdownSubProps = ComponentProps<typeof DropdownMenu.Sub>
+type DropdownSubProps = ComponentProps<typeof DropdownMenuPrimitive.Sub>
 
 const DropdownSub = (props: DropdownSubProps) => {
   // Sub is a separate Kobalte primitive, so it doesn't inherit the root's
   // gutter default — apply the same 8px default here.
   const merged = mergeProps({ gutter: 8 }, props)
-  return <DropdownMenu.Sub {...merged} />
+  return <DropdownMenuPrimitive.Sub {...merged} />
 }
 
 /* -------------------------------------------------------------------------------------------------
  * Dropdown Sub Trigger
  * -----------------------------------------------------------------------------------------------*/
 type DropdownSubTriggerProps<T extends ValidComponent = "div"> = ComponentProps<
-  typeof DropdownMenu.SubTrigger<T>
+  typeof DropdownMenuPrimitive.SubTrigger<T>
 > &
   MenuItemVariants
 
@@ -283,7 +308,7 @@ const DropdownSubTrigger = <T extends ValidComponent = "div">(
     ["class"]
   )
   return (
-    <DropdownMenu.SubTrigger
+    <DropdownMenuPrimitive.SubTrigger
       class={cn(menuItemVariants(variantProps).item(), local.class)}
       data-slot="menu-item"
       data-has-submenu="true"
@@ -296,7 +321,7 @@ const DropdownSubTrigger = <T extends ValidComponent = "div">(
  * Dropdown Sub Content
  * -----------------------------------------------------------------------------------------------*/
 type DropdownSubContentProps<T extends ValidComponent = "div"> = ComponentProps<
-  typeof DropdownMenu.SubContent<T>
+  typeof DropdownMenuPrimitive.SubContent<T>
 >
 
 const DropdownSubContent = <T extends ValidComponent = "div">(
@@ -305,8 +330,8 @@ const DropdownSubContent = <T extends ValidComponent = "div">(
   const [local, rest] = splitProps(props as DropdownSubContentProps, ["class"])
   const context = useContext(DropdownContext)
   return (
-    <DropdownMenu.SubContent
-      class={cn(context.slots?.popover(), context.slots?.menu(), local.class)}
+    <DropdownMenuPrimitive.SubContent
+      class={cn(context.slots?.popover(), local.class)}
       data-slot="dropdown-popover"
       {...rest}
     />
@@ -318,11 +343,12 @@ const DropdownSubContent = <T extends ValidComponent = "div">(
  * -----------------------------------------------------------------------------------------------*/
 export type {
   DropdownCheckboxItemProps,
-  DropdownContentProps,
   DropdownGroupLabelProps,
   DropdownGroupProps,
   DropdownItemIndicatorProps,
   DropdownItemProps,
+  DropdownMenuProps,
+  DropdownPopoverProps,
   DropdownRadioItemProps,
   DropdownRootProps,
   DropdownSubContentProps,
@@ -334,12 +360,13 @@ export type {
 export {
   DropdownArrow,
   DropdownCheckboxItem,
-  DropdownContent,
   DropdownGroup,
   DropdownGroupLabel,
   DropdownIcon,
   DropdownItem,
   DropdownItemIndicator,
+  DropdownMenu,
+  DropdownPopover,
   DropdownPortal,
   DropdownRadioGroup,
   DropdownRadioItem,

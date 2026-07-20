@@ -36,37 +36,41 @@ export default () => (
   <Dropdown>
     <Dropdown.Trigger />
     <Dropdown.Portal>
-      <Dropdown.Content>
-        <Dropdown.Item>
-          <Label />
-          <Description />
-        </Dropdown.Item>
-        <Separator />
-        <Dropdown.Group>
-          <Dropdown.GroupLabel />
-          <Dropdown.Item />
-        </Dropdown.Group>
-        <Dropdown.RadioGroup>
-          <Dropdown.RadioItem value="a">
+      <Dropdown.Popover>
+        <Dropdown.Menu>
+          <Dropdown.Item>
+            <Label />
+            <Description />
+          </Dropdown.Item>
+          <Separator />
+          <Dropdown.Group>
+            <Dropdown.GroupLabel />
+            <Dropdown.Item />
+          </Dropdown.Group>
+          <Dropdown.RadioGroup>
+            <Dropdown.RadioItem value="a">
+              <Dropdown.ItemIndicator />
+              <Label />
+            </Dropdown.RadioItem>
+          </Dropdown.RadioGroup>
+          <Dropdown.CheckboxItem>
             <Dropdown.ItemIndicator />
             <Label />
-          </Dropdown.RadioItem>
-        </Dropdown.RadioGroup>
-        <Dropdown.CheckboxItem>
-          <Dropdown.ItemIndicator />
-          <Label />
-        </Dropdown.CheckboxItem>
-        <Dropdown.Sub>
-          <Dropdown.SubTrigger>
-            <Label />
-          </Dropdown.SubTrigger>
-          <Dropdown.Portal>
-            <Dropdown.SubContent>
-              <Dropdown.Item />
-            </Dropdown.SubContent>
-          </Dropdown.Portal>
-        </Dropdown.Sub>
-      </Dropdown.Content>
+          </Dropdown.CheckboxItem>
+          <Dropdown.Sub>
+            <Dropdown.SubTrigger>
+              <Label />
+            </Dropdown.SubTrigger>
+            <Dropdown.Portal>
+              <Dropdown.SubContent>
+                <Dropdown.Menu>
+                  <Dropdown.Item />
+                </Dropdown.Menu>
+              </Dropdown.SubContent>
+            </Dropdown.Portal>
+          </Dropdown.Sub>
+        </Dropdown.Menu>
+      </Dropdown.Popover>
     </Dropdown.Portal>
   </Dropdown>
 );
@@ -167,7 +171,8 @@ React's `disabledKeys` on the menu.
 ### With Submenus
 
 Nest a `Dropdown.Sub` containing a `Dropdown.SubTrigger` and a portalled
-`Dropdown.SubContent`. Submenus can be nested arbitrarily deep.
+`Dropdown.SubContent` (which wraps its own `Dropdown.Menu`). Submenus can be
+nested arbitrarily deep.
 
 <ComponentPreview name="dropdown-with-submenus" />
 
@@ -248,9 +253,12 @@ Control the menu's open state with `open`/`onOpenChange` on the `Dropdown` root.
 | Prop       | Type          | Default | Description                    |
 | ---------- | ------------- | ------- | ------------------------------ |
 | `mount`    | `Node`        | `body`  | Where the content is portalled |
-| `children` | `JSX.Element` | -       | The `Dropdown.Content`         |
+| `children` | `JSX.Element` | -       | The `Dropdown.Popover`         |
 
-### Dropdown.Content Props
+### Dropdown.Popover Props
+
+The scroll container — the popover styling (max-height, overflow, background,
+shadow) lives here. It wraps a `Dropdown.Menu`.
 
 | Prop                   | Type                             | Default | Description                                          |
 | ---------------------- | -------------------------------- | ------- | ---------------------------------------------------- |
@@ -258,7 +266,19 @@ Control the menu's open state with `open`/`onOpenChange` on the `Dropdown` root.
 | `onEscapeKeyDown`      | `(event: KeyboardEvent) => void` | -       | Handler called when the escape key is pressed        |
 | `onPointerDownOutside` | `(event: PointerEvent) => void`  | -       | Handler called on a pointer down outside the content |
 | `class`                | `string`                         | -       | Additional CSS classes                               |
-| `children`             | `JSX.Element`                    | -       | Menu items, groups, separators, submenus             |
+| `children`             | `JSX.Element`                    | -       | The `Dropdown.Menu`                                  |
+
+*Plus standard `<div>` attributes.*
+
+### Dropdown.Menu Props
+
+The padded item list inside a `Dropdown.Popover` (or `Dropdown.SubContent`).
+Items, groups, separators and submenus go here.
+
+| Prop       | Type          | Default | Description                              |
+| ---------- | ------------- | ------- | ---------------------------------------- |
+| `class`    | `string`      | -       | Additional CSS classes                   |
+| `children` | `JSX.Element` | -       | Menu items, groups, separators, submenus |
 
 *Plus standard `<div>` attributes.*
 
@@ -346,7 +366,8 @@ Separate groups with the standalone `Separator` component.
 `Dropdown.Sub` accepts the same positioning props as the root (including the
 `gutter` default of `8`). `Dropdown.SubTrigger` takes the same props as
 `Dropdown.Item` (`variant`, `disabled`, `textValue`, …), and
-`Dropdown.SubContent` the same props as `Dropdown.Content`.
+`Dropdown.SubContent` the same props as `Dropdown.Popover` — it also wraps a
+`Dropdown.Menu`.
 
 ### Dropdown.Arrow Props
 
@@ -363,7 +384,8 @@ element of their own.
 | Component                  | Default Element |
 | -------------------------- | --------------- |
 | `Dropdown.Trigger`         | `<button>`      |
-| `Dropdown.Content`         | `<div>`         |
+| `Dropdown.Popover`         | `<div>`         |
+| `Dropdown.Menu`            | `<div>`         |
 | `Dropdown.Item`            | `<div>`         |
 | `Dropdown.ItemIndicator`   | `<div>`         |
 | `Dropdown.CheckboxItem`    | `<div>`         |
@@ -378,10 +400,11 @@ element of their own.
 This port is a thin skin over Kobalte's `DropdownMenu`, so the API is Kobalte's,
 not HeroUI React's:
 
-- **Structure.** HeroUI React nests `Dropdown.Popover` → `Dropdown.Menu` →
-  `Dropdown.Item`. Here the popover and menu collapse into a single
-  `Dropdown.Content` (wrapped in `Dropdown.Portal`), and items go straight
-  inside it.
+- **Structure.** Like HeroUI React, `Dropdown.Popover` (the scroll container)
+  wraps `Dropdown.Menu` (the padded item list) which holds the items — kept as
+  two elements so the popover can scroll while item focus rings aren't clipped.
+  The popover is wrapped in an optional `Dropdown.Portal`. (Kobalte's `role="menu"`
+  lives on the popover element; `Dropdown.Menu` stays presentational.)
 - **Trigger.** `Dropdown.Trigger` renders our `Button` by default, so
   `<Dropdown.Trigger variant="secondary">` just works — no need to nest a
   `<Button>` as the first child of `Dropdown`. Pass `as` (e.g. `as="button"`) to

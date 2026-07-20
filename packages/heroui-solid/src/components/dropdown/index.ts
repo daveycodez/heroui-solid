@@ -2,8 +2,6 @@ import {
   DropdownArrow,
   DropdownCheckboxItem,
   type DropdownCheckboxItemProps,
-  DropdownContent,
-  type DropdownContentProps,
   DropdownGroup,
   DropdownGroupLabel,
   type DropdownGroupLabelProps,
@@ -13,6 +11,10 @@ import {
   DropdownItemIndicator,
   type DropdownItemIndicatorProps,
   type DropdownItemProps,
+  DropdownMenu,
+  type DropdownMenuProps,
+  DropdownPopover,
+  type DropdownPopoverProps,
   DropdownPortal,
   DropdownRadioGroup,
   DropdownRadioItem,
@@ -34,7 +36,8 @@ import {
 export const Dropdown = Object.assign(DropdownRoot, {
   Trigger: DropdownTrigger,
   Portal: DropdownPortal,
-  Content: DropdownContent,
+  Popover: DropdownPopover,
+  Menu: DropdownMenu,
   Arrow: DropdownArrow,
   Item: DropdownItem,
   ItemIndicator: DropdownItemIndicator,
@@ -52,7 +55,8 @@ export const Dropdown = Object.assign(DropdownRoot, {
 export type Dropdown = {
   Props: DropdownRootProps
   TriggerProps: DropdownTriggerProps
-  ContentProps: DropdownContentProps
+  PopoverProps: DropdownPopoverProps
+  MenuProps: DropdownMenuProps
   ItemProps: DropdownItemProps
   ItemIndicatorProps: DropdownItemIndicatorProps
   GroupProps: DropdownGroupProps

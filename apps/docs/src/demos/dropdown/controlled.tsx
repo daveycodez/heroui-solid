@@ -32,22 +32,24 @@ export function Controlled() {
           Actions
         </Dropdown.Trigger>
         <Dropdown.Portal>
-          <Dropdown.Content>
-            <For each={STYLES}>
-              {(style) => (
-                <Dropdown.CheckboxItem
-                  checked={selected().has(style)}
-                  closeOnSelect={false}
-                  onChange={(checked) => toggle(style, checked)}
-                >
-                  <Label class="capitalize">{style}</Label>
-                  <Dropdown.ItemIndicator>
-                    <Check class="size-4" />
-                  </Dropdown.ItemIndicator>
-                </Dropdown.CheckboxItem>
-              )}
-            </For>
-          </Dropdown.Content>
+          <Dropdown.Popover>
+            <Dropdown.Menu>
+              <For each={STYLES}>
+                {(style) => (
+                  <Dropdown.CheckboxItem
+                    checked={selected().has(style)}
+                    closeOnSelect={false}
+                    onChange={(checked) => toggle(style, checked)}
+                  >
+                    <Label class="capitalize">{style}</Label>
+                    <Dropdown.ItemIndicator>
+                      <Check class="size-4" />
+                    </Dropdown.ItemIndicator>
+                  </Dropdown.CheckboxItem>
+                )}
+              </For>
+            </Dropdown.Menu>
+          </Dropdown.Popover>
         </Dropdown.Portal>
       </Dropdown>
     </div>
