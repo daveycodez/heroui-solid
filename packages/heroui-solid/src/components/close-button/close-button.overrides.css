@@ -1,0 +1,7 @@
+/* HeroUI keys the focus ring off React Aria's data-focus-visible (and a dead
+   :focus-visible:not(:focus) fallback); Kobalte's Button stamps neither, so
+   bridge the working pseudo-class. Ungated like Button — a lone close button is
+   ringed correctly by the browser on keyboard focus. */
+.close-button:focus-visible {
+  @apply status-focused;
+}

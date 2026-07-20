@@ -40,6 +40,10 @@ import { ChipStatuses } from "./chip/statuses"
 import { ChipVariants } from "./chip/variants"
 import { ChipVibrantPalette } from "./chip/vibrant-palette"
 import { ChipWithIcon } from "./chip/with-icon"
+import { Default as CloseButtonDefault } from "./close-button/default"
+import { Interactive as CloseButtonInteractive } from "./close-button/interactive"
+import { Variants as CloseButtonVariants } from "./close-button/variants"
+import { WithCustomIcon as CloseButtonWithCustomIcon } from "./close-button/with-custom-icon"
 import { Basic as DescriptionBasic } from "./description/basic"
 import { ErrorMessageBasic } from "./error-message/basic"
 import { Basic as FieldErrorBasic } from "./field-error/basic"
@@ -203,6 +207,10 @@ export const demos: Record<string, Component> = {
   "chip-with-icon": ChipWithIcon,
   "chip-statuses": ChipStatuses,
   "chip-vibrant-palette": ChipVibrantPalette,
+  "close-button-default": CloseButtonDefault,
+  "close-button-with-custom-icon": CloseButtonWithCustomIcon,
+  "close-button-interactive": CloseButtonInteractive,
+  "close-button-variants": CloseButtonVariants,
   "description-basic": DescriptionBasic,
   "error-message-basic": ErrorMessageBasic,
   "field-error-basic": FieldErrorBasic,

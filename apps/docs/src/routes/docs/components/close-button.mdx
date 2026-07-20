@@ -4,4 +4,125 @@ title: CloseButton
 
 # CloseButton
 
-Hello World
+Button component for closing dialogs, modals, or dismissing content.
+
+## Import
+
+```tsx
+import { CloseButton } from "heroui-solid";
+```
+
+### Usage
+
+<ComponentPreview name="close-button-default" />
+
+```tsx file=../../../demos/close-button/default.tsx title=""
+
+```
+
+### With Custom Icon
+
+Pass any icon as children to replace the default close icon.
+
+<ComponentPreview name="close-button-with-custom-icon" />
+
+```tsx file=../../../demos/close-button/with-custom-icon.tsx title=""
+
+```
+
+### Interactive
+
+<ComponentPreview name="close-button-interactive" />
+
+```tsx file=../../../demos/close-button/interactive.tsx title=""
+
+```
+
+### Variants
+
+<ComponentPreview name="close-button-variants" />
+
+```tsx file=../../../demos/close-button/variants.tsx title=""
+
+```
+
+## Related Components
+
+- **Alert**: Display important messages and notifications
+- **Chip**: Compact elements for tags and filters
+- **SearchField**: Uses CloseButton as its clear button
+
+## Styling
+
+### Passing Tailwind CSS classes
+
+```tsx
+import { CloseButton } from "heroui-solid";
+
+function CustomCloseButton() {
+  return <CloseButton class="text-red-600 hover:bg-red-100" />;
+}
+```
+
+### Customizing the component classes
+
+CloseButton uses CSS classes that can be customized. Override the component classes to match your design system.
+
+```css
+@layer components {
+  .close-button {
+    @apply bg-red-100 text-red-800 hover:bg-red-200;
+  }
+
+  .close-button--default {
+    @apply rounded-full border-2 border-red-300;
+  }
+}
+```
+
+### CSS Classes
+
+- `.close-button` – Base component styles
+- `.close-button--default` – Default variant
+
+### Interactive States
+
+CloseButton supports both CSS pseudo-classes and Kobalte's data attributes:
+
+- **Hover**: `:hover` or `[data-hovered]`
+- **Active/Pressed**: `:active`
+- **Focus**: `:focus-visible` (bridged to HeroUI's focus ring)
+- **Disabled**: `:disabled` or `[data-disabled]`
+
+## API Reference
+
+### CloseButton Props
+
+CloseButton is built on Kobalte's [Button](https://kobalte.dev/docs/core/components/button) primitive.
+
+| Prop       | Type             | Default         | Description                                          |
+| ---------- | ---------------- | --------------- | ---------------------------------------------------- |
+| `variant`  | `"default"`      | `"default"`     | Visual variant of the button                         |
+| `children` | `JSX.Element`    | `<CloseIcon />` | Content to display (defaults to the close icon)      |
+| `disabled` | `boolean`        | `false`         | Whether the button is disabled                       |
+| `onClick`  | `(e) => void`    | -               | Handler called when the button is activated          |
+| `as`       | `ValidComponent` | `"button"`      | Overrides the rendered element (Kobalte polymorphic) |
+| `class`    | `string`         | -               | Additional CSS classes                               |
+
+*Plus standard `<button>` attributes (including `aria-label`, which defaults to `"Close"`, and `type`, which defaults to `"button"`).*
+
+## Rendered Elements
+
+| Component     | Default Element |
+| ------------- | --------------- |
+| `CloseButton` | `<button>`      |
+
+The `as` prop is explained in the [Polymorphism](/docs/getting-started/polymorphism) guide.
+
+## Differences from HeroUI React
+
+- Built on Kobalte's Button, not React Aria's. Event/state props use Kobalte's
+  names: `onClick`/`disabled` instead of `onPress`/`isDisabled`.
+- Polymorphism uses Kobalte's `as` prop instead of React Aria's `render` prop.
+- The default icon is exposed decoratively (`aria-hidden`), since the button
+  already carries an accessible `aria-label="Close"`.
