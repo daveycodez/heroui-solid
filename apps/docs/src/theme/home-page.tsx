@@ -17,7 +17,6 @@ const tiles: Array<{ title: string; demo: Component }> = [
   { title: "Button", demo: demos["button-variants"] },
   { title: "Select", demo: demos["select-default"] },
   { title: "Text Field", demo: demos["textfield-basic"] },
-  { title: "Dropdown", demo: demos["dropdown-default"] },
   { title: "Spinner", demo: demos["spinner-colors"] }
 ]
 

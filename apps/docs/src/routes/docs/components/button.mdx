@@ -155,37 +155,6 @@ You can extend HeroUI components by wrapping them and adding your own custom var
 
 ```
 
-### Adding Ripple Effect
-
-HeroUI React adds a ripple through composition — nesting a React-only
-`<Ripple />` child (e.g. [m3-ripple](https://github.com/saltyaom/m3-ripple)).
-This Solid port ships the effect as a CSS flag instead: the `--button-ripple`
-custom property, off by default. Add the `ripple` class to enable it on a single
-button:
-
-<ComponentPreview name="button-ripple" />
-
-```tsx file=../../../demos/button/ripple.tsx title=""
-
-```
-
-Because the property inherits, you can enable ripple for **every** button by
-setting it once at the root, then opt individual buttons back out with
-`no-ripple`:
-
-```css
-:root {
-  --button-ripple: 1;
-}
-```
-
-The ripple expands from the press point and follows Material 3's touch
-heuristics: mouse and pen ripple immediately on press, keyboard activation
-ripples from the center, and a touch only ripples once it's clearly a tap or
-hold — a touch that turns into a scroll never fires it. It uses `currentColor`
-and honors `prefers-reduced-motion`; tune it with `--button-ripple-color` and
-`--button-ripple-opacity`.
-
 ### CSS Classes
 
 The Button component uses these CSS classes ([View source styles](https://github.com/heroui-inc/heroui/blob/v3/packages/styles/components/button.css)):
@@ -227,23 +196,39 @@ The button supports CSS pseudo-classes and data attributes:
 
 ### Button Props
 
-| Prop         | Type                                                                                          | Default     | Description                                                  |
-| ------------ | --------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------- |
-| `variant`    | `"primary" \| "secondary" \| "tertiary" \| "outline" \| "ghost" \| "danger" \| "danger-soft"` | `"primary"` | Visual style variant                                          |
-| `size`       | `"sm" \| "md" \| "lg"`                                                                         | `"md"`      | Size of the button                                            |
-| `fullWidth`  | `boolean`                                                                                      | `false`     | Whether the button should take full width of its container    |
-| `isDisabled` | `boolean`                                                                                      | `false`     | Whether the button is disabled                                |
-| `isPending`  | `boolean`                                                                                      | `false`     | Whether the button is in a loading state                      |
-| `isIconOnly` | `boolean`                                                                                      | `false`     | Whether the button contains only an icon                      |
-| `onClick`    | `JSX.EventHandlerUnion<HTMLElement, MouseEvent>`                                               | -           | Handler called when the button is clicked                     |
-| `children`   | `JSX.Element \| (state: { isPending: boolean }) => JSX.Element`                                     | -           | Button content or render prop                                 |
-| `as`         | `ValidComponent`                                                                               | `"button"`  | Overrides the default DOM element (Kobalte polymorphic `as`)  |
+| Prop         | Type                                                                                          | Default     | Description                                                       |
+| ------------ | --------------------------------------------------------------------------------------------- | ----------- | ---------------------------------------------------------------- |
+| `variant`    | `"primary" \| "secondary" \| "tertiary" \| "outline" \| "ghost" \| "danger" \| "danger-soft"` | `"primary"` | Visual style variant                                             |
+| `size`       | `"sm" \| "md" \| "lg"`                                                                         | `"md"`      | Size of the button                                               |
+| `fullWidth`  | `boolean`                                                                                      | `false`     | Whether the button should take full width of its container       |
+| `isIconOnly` | `boolean`                                                                                      | `false`     | Whether the button contains only an icon                         |
+| `disabled`   | `boolean`                                                                                      | `false`     | Whether the button is disabled (Kobalte's prop)                  |
+| `isPending`  | `boolean`                                                                                      | `false`     | Loading state — adds a polite live region and blocks activation  |
+| `onClick`    | `JSX.EventHandlerUnion<HTMLElement, MouseEvent>`                                               | -           | Handler called when the button is clicked                        |
+| `as`         | `ValidComponent`                                                                               | `"button"`  | Overrides the rendered element (Kobalte polymorphic).            |
+| `children`   | `JSX.Element`                                                                                  | -           | Button content                                                   |
+
+*Plus standard `<button>` attributes.*
+
+## Rendered Elements
+
+Button renders a single element — pass `as` to override it.
+
+| Component | Default Element |
+| -------- | --------------- |
+| `Button` | `<button>`      |
 
 ## Differences from HeroUI React
 
+- The disabled prop uses Kobalte's own name, `disabled`, not HeroUI React's `isDisabled`.
 - Use `onClick` (Solid's native event) instead of React Aria's `onPress`.
 - Polymorphism uses Kobalte's `as` prop instead of React's `render` prop override.
-- The render-prop `state` exposes `isPending` only (no `isPressed`/`isHovered`/`isFocused`)
-  — read fields off `state` inside JSX rather than destructuring, so updates stay reactive.
+- The loading prop keeps HeroUI React's `isPending` name; Kobalte's Button has no pending
+  state, so it's a HeroUI add-on (adds a polite aria-live region and guards activation).
+  There is no render-prop `children` — Kobalte's children are plain JSX, so drive loading
+  content from your own signal (see the Loading State demo) instead of a `(state) => …`
+  callback.
+- No built-in ripple. HeroUI React adds one through composition (a React-only `<Ripple />`
+  child); this port keeps Button thin and leaves ripple to userland.
 - Hover/press styling relies on HeroUI's native `:hover` / `:active` CSS fallbacks rather
   than React Aria's `data-hovered` / `data-pressed` attributes — visuals are identical.

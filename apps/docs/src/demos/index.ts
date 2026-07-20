@@ -10,20 +10,6 @@ import { Multiple as AccordionMultiple } from "./accordion/multiple"
 import { Surface as AccordionSurface } from "./accordion/surface"
 import { WithoutSeparator as AccordionWithoutSeparator } from "./accordion/without-separator"
 import { Basic as AlertBasic } from "./alert/basic"
-import { BackdropVariants as AlertDialogBackdropVariants } from "./alert-dialog/backdrop-variants"
-import { CloseMethods as AlertDialogCloseMethods } from "./alert-dialog/close-methods"
-import { Controlled as AlertDialogControlled } from "./alert-dialog/controlled"
-import { CustomAnimations as AlertDialogCustomAnimations } from "./alert-dialog/custom-animations"
-import { CustomBackdrop as AlertDialogCustomBackdrop } from "./alert-dialog/custom-backdrop"
-import { CustomIcon as AlertDialogCustomIcon } from "./alert-dialog/custom-icon"
-import { CustomPortal as AlertDialogCustomPortal } from "./alert-dialog/custom-portal"
-import { CustomTrigger as AlertDialogCustomTrigger } from "./alert-dialog/custom-trigger"
-import { Default as AlertDialogDefault } from "./alert-dialog/default"
-import { DismissBehavior as AlertDialogDismissBehavior } from "./alert-dialog/dismiss-behavior"
-import { Placements as AlertDialogPlacements } from "./alert-dialog/placements"
-import { Sizes as AlertDialogSizes } from "./alert-dialog/sizes"
-import { Statuses as AlertDialogStatuses } from "./alert-dialog/statuses"
-import { WithCloseButton as AlertDialogWithCloseButton } from "./alert-dialog/with-close-button"
 import { Basic as AvatarBasic } from "./avatar/basic"
 import { Colors as AvatarColors } from "./avatar/colors"
 import { CustomStyles as AvatarCustomStyles } from "./avatar/custom-styles"
@@ -39,20 +25,10 @@ import { FullWidth } from "./button/full-width"
 import { IconOnly } from "./button/icon-only"
 import { Loading } from "./button/loading"
 import { LoadingState } from "./button/loading-state"
-import { OutlineVariant } from "./button/outline-variant"
-import { Ripple as ButtonRipple } from "./button/ripple"
 import { Sizes } from "./button/sizes"
 import { Social } from "./button/social"
 import { Variants } from "./button/variants"
 import { WithIcons } from "./button/with-icons"
-import { Basic as ButtonGroupBasic } from "./button-group/basic"
-import { Disabled as ButtonGroupDisabled } from "./button-group/disabled"
-import { FullWidth as ButtonGroupFullWidth } from "./button-group/full-width"
-import { Orientation as ButtonGroupOrientation } from "./button-group/orientation"
-import { Sizes as ButtonGroupSizes } from "./button-group/sizes"
-import { Variants as ButtonGroupVariants } from "./button-group/variants"
-import { WithIcons as ButtonGroupWithIcons } from "./button-group/with-icons"
-import { WithoutSeparator as ButtonGroupWithoutSeparator } from "./button-group/without-separator"
 import { Default as CardDefault } from "./card/default"
 import { Horizontal as CardHorizontal } from "./card/horizontal"
 import { Variants as CardVariants } from "./card/variants"
@@ -64,27 +40,7 @@ import { ChipStatuses } from "./chip/statuses"
 import { ChipVariants } from "./chip/variants"
 import { ChipVibrantPalette } from "./chip/vibrant-palette"
 import { ChipWithIcon } from "./chip/with-icon"
-import { Default as CloseButtonDefault } from "./close-button/default"
-import { Interactive as CloseButtonInteractive } from "./close-button/interactive"
-import { Variants as CloseButtonVariants } from "./close-button/variants"
-import { WithCustomIcon as CloseButtonWithCustomIcon } from "./close-button/with-custom-icon"
 import { Basic as DescriptionBasic } from "./description/basic"
-import { Controlled as DropdownControlled } from "./dropdown/controlled"
-import { ControlledOpenState as DropdownControlledOpenState } from "./dropdown/controlled-open-state"
-import { CustomTrigger as DropdownCustomTrigger } from "./dropdown/custom-trigger"
-import { Default as DropdownDefault } from "./dropdown/default"
-import { LongPressTrigger as DropdownLongPressTrigger } from "./dropdown/long-press-trigger"
-import { SingleWithCustomIndicator as DropdownSingleWithCustomIndicator } from "./dropdown/single-with-custom-indicator"
-import { WithCustomSubmenuIndicator as DropdownWithCustomSubmenuIndicator } from "./dropdown/with-custom-submenu-indicator"
-import { WithDescriptions as DropdownWithDescriptions } from "./dropdown/with-descriptions"
-import { WithDisabledItems as DropdownWithDisabledItems } from "./dropdown/with-disabled-items"
-import { WithIcons as DropdownWithIcons } from "./dropdown/with-icons"
-import { WithKeyboardShortcuts as DropdownWithKeyboardShortcuts } from "./dropdown/with-keyboard-shortcuts"
-import { WithMultipleSelection as DropdownWithMultipleSelection } from "./dropdown/with-multiple-selection"
-import { WithSectionLevelSelection as DropdownWithSectionLevelSelection } from "./dropdown/with-section-level-selection"
-import { WithSections as DropdownWithSections } from "./dropdown/with-sections"
-import { WithSingleSelection as DropdownWithSingleSelection } from "./dropdown/with-single-selection"
-import { WithSubmenus as DropdownWithSubmenus } from "./dropdown/with-submenus"
 import { ErrorMessageBasic } from "./error-message/basic"
 import { Basic as FieldErrorBasic } from "./field-error/basic"
 import { Basic as FormBasic } from "./form/basic"
@@ -121,19 +77,6 @@ import { HideScrollBar as ScrollShadowHideScrollBar } from "./scroll-shadow/hide
 import { Orientation as ScrollShadowOrientation } from "./scroll-shadow/orientation"
 import { VisibilityChange as ScrollShadowVisibilityChange } from "./scroll-shadow/visibility-change"
 import { WithCard as ScrollShadowWithCard } from "./scroll-shadow/with-card"
-import { Basic as SearchFieldBasic } from "./search-field/basic"
-import { Controlled as SearchFieldControlled } from "./search-field/controlled"
-import { CustomIcons as SearchFieldCustomIcons } from "./search-field/custom-icons"
-import { Disabled as SearchFieldDisabled } from "./search-field/disabled"
-import { FormExample as SearchFieldFormExample } from "./search-field/form-example"
-import { FullWidth as SearchFieldFullWidth } from "./search-field/full-width"
-import { OnSurface as SearchFieldOnSurface } from "./search-field/on-surface"
-import { Required as SearchFieldRequired } from "./search-field/required"
-import { Validation as SearchFieldValidation } from "./search-field/validation"
-import { Variants as SearchFieldVariants } from "./search-field/variants"
-import { WithDescription as SearchFieldWithDescription } from "./search-field/with-description"
-import { WithKeyboardShortcut as SearchFieldWithKeyboardShortcut } from "./search-field/with-keyboard-shortcut"
-import { WithValidation as SearchFieldWithValidation } from "./search-field/with-validation"
 import { Controlled as SelectControlled } from "./select/controlled"
 import { ControlledMultiple as SelectControlledMultiple } from "./select/controlled-multiple"
 import { ControlledOpenState as SelectControlledOpenState } from "./select/controlled-open-state"
@@ -169,19 +112,11 @@ import { Secondary as TabsSecondary } from "./tabs/secondary"
 import { SecondaryVertical as TabsSecondaryVertical } from "./tabs/secondary-vertical"
 import { Vertical as TabsVertical } from "./tabs/vertical"
 import { WithSeparator as TabsWithSeparator } from "./tabs/with-separator"
-import { TagGroupBasic } from "./tag-group/basic"
-import { TagGroupControlled } from "./tag-group/controlled"
-import { TagGroupDisabled } from "./tag-group/disabled"
-import { TagGroupSelectionModes } from "./tag-group/selection-modes"
-import { TagGroupSizes } from "./tag-group/sizes"
-import { TagGroupVariants } from "./tag-group/variants"
-import { TagGroupWithErrorMessage } from "./tag-group/with-error-message"
-import { TagGroupWithPrefix } from "./tag-group/with-prefix"
-import { TagGroupWithRemoveButton } from "./tag-group/with-remove-button"
 import { AutoResize as TextAreaAutoResize } from "./textarea/auto-resize"
 import { Basic as TextAreaBasic } from "./textarea/basic"
 import { Controlled as TextAreaControlled } from "./textarea/controlled"
 import { FullWidth as TextAreaFullWidth } from "./textarea/full-width"
+import { Invalid as TextAreaInvalid } from "./textarea/invalid"
 import { OnSurface as TextAreaOnSurface } from "./textarea/on-surface"
 import { Rows as TextAreaRows } from "./textarea/rows"
 import { Variants as TextAreaVariants } from "./textarea/variants"
@@ -218,20 +153,6 @@ export const demos: Record<string, Component> = {
   "accordion-surface": AccordionSurface,
   "accordion-without-separator": AccordionWithoutSeparator,
   "alert-basic": AlertBasic,
-  "alert-dialog-default": AlertDialogDefault,
-  "alert-dialog-statuses": AlertDialogStatuses,
-  "alert-dialog-placements": AlertDialogPlacements,
-  "alert-dialog-backdrop-variants": AlertDialogBackdropVariants,
-  "alert-dialog-sizes": AlertDialogSizes,
-  "alert-dialog-custom-icon": AlertDialogCustomIcon,
-  "alert-dialog-custom-backdrop": AlertDialogCustomBackdrop,
-  "alert-dialog-dismiss-behavior": AlertDialogDismissBehavior,
-  "alert-dialog-close-methods": AlertDialogCloseMethods,
-  "alert-dialog-controlled": AlertDialogControlled,
-  "alert-dialog-custom-trigger": AlertDialogCustomTrigger,
-  "alert-dialog-custom-animations": AlertDialogCustomAnimations,
-  "alert-dialog-custom-portal": AlertDialogCustomPortal,
-  "alert-dialog-with-close-button": AlertDialogWithCloseButton,
   "avatar-basic": AvatarBasic,
   "avatar-sizes": AvatarSizes,
   "avatar-colors": AvatarColors,
@@ -245,22 +166,12 @@ export const demos: Record<string, Component> = {
   "button-icon-only": IconOnly,
   "button-loading": Loading,
   "button-loading-state": LoadingState,
-  "button-outline-variant": OutlineVariant,
-  "button-ripple": ButtonRipple,
   "button-sizes": Sizes,
   "button-full-width": FullWidth,
   "button-disabled": Disabled,
   "button-social": Social,
   "button-custom-element": CustomElement,
   "button-custom-variants": CustomVariants,
-  "button-group-basic": ButtonGroupBasic,
-  "button-group-variants": ButtonGroupVariants,
-  "button-group-sizes": ButtonGroupSizes,
-  "button-group-orientation": ButtonGroupOrientation,
-  "button-group-with-icons": ButtonGroupWithIcons,
-  "button-group-full-width": ButtonGroupFullWidth,
-  "button-group-disabled": ButtonGroupDisabled,
-  "button-group-without-separator": ButtonGroupWithoutSeparator,
   "card-default": CardDefault,
   "card-variants": CardVariants,
   "card-horizontal": CardHorizontal,
@@ -272,27 +183,7 @@ export const demos: Record<string, Component> = {
   "chip-with-icon": ChipWithIcon,
   "chip-statuses": ChipStatuses,
   "chip-vibrant-palette": ChipVibrantPalette,
-  "close-button-default": CloseButtonDefault,
-  "close-button-with-custom-icon": CloseButtonWithCustomIcon,
-  "close-button-interactive": CloseButtonInteractive,
-  "close-button-variants": CloseButtonVariants,
   "description-basic": DescriptionBasic,
-  "dropdown-default": DropdownDefault,
-  "dropdown-with-single-selection": DropdownWithSingleSelection,
-  "dropdown-single-with-custom-indicator": DropdownSingleWithCustomIndicator,
-  "dropdown-with-multiple-selection": DropdownWithMultipleSelection,
-  "dropdown-with-section-level-selection": DropdownWithSectionLevelSelection,
-  "dropdown-with-keyboard-shortcuts": DropdownWithKeyboardShortcuts,
-  "dropdown-with-icons": DropdownWithIcons,
-  "dropdown-long-press-trigger": DropdownLongPressTrigger,
-  "dropdown-with-descriptions": DropdownWithDescriptions,
-  "dropdown-with-sections": DropdownWithSections,
-  "dropdown-with-disabled-items": DropdownWithDisabledItems,
-  "dropdown-with-submenus": DropdownWithSubmenus,
-  "dropdown-with-custom-submenu-indicator": DropdownWithCustomSubmenuIndicator,
-  "dropdown-controlled": DropdownControlled,
-  "dropdown-controlled-open-state": DropdownControlledOpenState,
-  "dropdown-custom-trigger": DropdownCustomTrigger,
   "error-message-basic": ErrorMessageBasic,
   "field-error-basic": FieldErrorBasic,
   "form-basic": FormBasic,
@@ -345,19 +236,6 @@ export const demos: Record<string, Component> = {
   "scroll-shadow-custom-size": ScrollShadowCustomSize,
   "scroll-shadow-visibility-change": ScrollShadowVisibilityChange,
   "scroll-shadow-with-card": ScrollShadowWithCard,
-  "search-field-basic": SearchFieldBasic,
-  "search-field-with-description": SearchFieldWithDescription,
-  "search-field-required": SearchFieldRequired,
-  "search-field-validation": SearchFieldValidation,
-  "search-field-disabled": SearchFieldDisabled,
-  "search-field-controlled": SearchFieldControlled,
-  "search-field-with-validation": SearchFieldWithValidation,
-  "search-field-custom-icons": SearchFieldCustomIcons,
-  "search-field-full-width": SearchFieldFullWidth,
-  "search-field-variants": SearchFieldVariants,
-  "search-field-on-surface": SearchFieldOnSurface,
-  "search-field-form-example": SearchFieldFormExample,
-  "search-field-with-keyboard-shortcut": SearchFieldWithKeyboardShortcut,
   "separator-basic": SeparatorBasic,
   "separator-vertical": SeparatorVertical,
   "separator-with-content": SeparatorWithContent,
@@ -375,6 +253,7 @@ export const demos: Record<string, Component> = {
   "textarea-full-width": TextAreaFullWidth,
   "textarea-variants": TextAreaVariants,
   "textarea-on-surface": TextAreaOnSurface,
+  "textarea-invalid": TextAreaInvalid,
   "textfield-basic": TextFieldBasic,
   "textfield-with-description": TextFieldWithDescription,
   "textfield-required": TextFieldRequired,
@@ -395,15 +274,6 @@ export const demos: Record<string, Component> = {
   "tabs-secondary": TabsSecondary,
   "tabs-secondary-vertical": TabsSecondaryVertical,
   "tabs-custom-element": TabsCustomElement,
-  "tag-group-basic": TagGroupBasic,
-  "tag-group-sizes": TagGroupSizes,
-  "tag-group-variants": TagGroupVariants,
-  "tag-group-disabled": TagGroupDisabled,
-  "tag-group-controlled": TagGroupControlled,
-  "tag-group-selection-modes": TagGroupSelectionModes,
-  "tag-group-with-prefix": TagGroupWithPrefix,
-  "tag-group-with-remove-button": TagGroupWithRemoveButton,
-  "tag-group-with-error-message": TagGroupWithErrorMessage,
   "tooltip-basic": TooltipBasic,
   "tooltip-with-arrow": TooltipWithArrow,
   "tooltip-placement": TooltipPlacement,

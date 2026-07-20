@@ -1,4 +1,4 @@
-import { Button, Card, CloseButton } from "heroui-solid"
+import { Button, Card } from "heroui-solid"
 
 export function Horizontal() {
   return (
@@ -13,15 +13,11 @@ export function Horizontal() {
       </div>
       <div class="flex flex-1 flex-col gap-3">
         <Card.Header class="gap-1">
-          <Card.Title class="pr-8">Become an ACME Creator!</Card.Title>
+          <Card.Title>Become an ACME Creator!</Card.Title>
           <Card.Description>
             Lorem ipsum dolor sit amet consectetur. Sed arcu donec id aliquam
             dolor sed amet faucibus etiam.
           </Card.Description>
-          <CloseButton
-            aria-label="Close banner"
-            class="absolute top-3 right-3"
-          />
         </Card.Header>
         <Card.Footer class="mt-auto flex w-full items-center justify-between gap-3">
           <div class="flex flex-col">

@@ -49,9 +49,7 @@ const TooltipRoot = (props: TooltipRootProps) => {
   })
 
   const merged = mergeProps(
-    // Nudge the trigger gap to match HeroUI, which sits ~1px further out than
-    // Kobalte's 0 gutter (Kobalte adds the arrow allowance on top of this).
-    { gutter: 2, placement: "top" } satisfies TooltipRootProps,
+    { gutter: 3, placement: "top" } satisfies TooltipRootProps,
     rest,
     {
       get openDelay() {

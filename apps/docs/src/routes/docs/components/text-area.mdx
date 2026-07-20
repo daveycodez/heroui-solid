@@ -82,6 +82,16 @@ When used inside a [Surface](/docs/components/surface) component, use `variant="
 
 ```
 
+### Invalid
+
+For validation, wrap the TextArea in a [TextField](/docs/components/text-field). The field stamps `data-invalid` on the TextArea and renders the `FieldError`.
+
+<ComponentPreview name="textarea-invalid" />
+
+```tsx file=../../../demos/textarea/invalid.tsx title=""
+
+```
+
 ## Related Components
 
 - **TextField**: Composition-friendly fields with labels and validation
@@ -162,7 +172,7 @@ Override the shared `.textarea` class once with Tailwind's `@layer components`.
 
 *Plus standard `<textarea>` attributes (`value`, `placeholder`, `rows`, `disabled`, `readOnly`, `required`, `onInput`, …).*
 
-> For validation props like `isInvalid` and `isRequired`, use **[TextField](/docs/components/text-field)** with TextArea as a child component.
+> For validation props like `isInvalid`, `isRequired`, and error handling, use **[TextField](/docs/components/text-field)** with TextArea as a child component.
 
 ## Rendered Elements
 

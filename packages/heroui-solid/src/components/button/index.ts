@@ -1,26 +1,16 @@
-import type { ComponentProps } from "solid-js"
-
-import { ButtonRoot } from "./button"
+import { ButtonRoot, type ButtonRootProps } from "./button"
 
 /* -------------------------------------------------------------------------------------------------
- * Compound Component
+ * Component
  * -----------------------------------------------------------------------------------------------*/
-export const Button = Object.assign(ButtonRoot, {
-  Root: ButtonRoot
-})
+export const Button = ButtonRoot
 
 export type Button = {
-  Props: ComponentProps<typeof ButtonRoot>
-  RootProps: ComponentProps<typeof ButtonRoot>
+  Props: ButtonRootProps
 }
 
-export type { ButtonVariants } from "@heroui/styles"
 /* -------------------------------------------------------------------------------------------------
  * Variants
  * -----------------------------------------------------------------------------------------------*/
+export type { ButtonVariants } from "@heroui/styles"
 export { buttonVariants } from "@heroui/styles"
-export type { ButtonRootProps, ButtonRootProps as ButtonProps } from "./button"
-/* -------------------------------------------------------------------------------------------------
- * Named Component
- * -----------------------------------------------------------------------------------------------*/
-export { ButtonRoot }

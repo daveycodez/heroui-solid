@@ -1,8 +1,0 @@
-/* Kobalte's Button stamps no data-focus-visible (React Aria does upstream) and
-   the native fallback :focus-visible:not(:focus) never matches, so the focus
-   ring rides native :focus-visible — modality-gated like the base button ring
-   (button.overrides.css) since a dialog may programmatically focus its close
-   button on open. */
-html:not([data-heroui-modality="pointer"]) .close-button:focus-visible {
-  @apply status-focused;
-}

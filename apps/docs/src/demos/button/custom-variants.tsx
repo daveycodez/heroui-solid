@@ -1,4 +1,3 @@
-import type { ButtonProps } from "heroui-solid"
 import { Button, buttonVariants } from "heroui-solid"
 import { splitProps } from "solid-js"
 import type { VariantProps } from "tailwind-variants"
@@ -32,7 +31,7 @@ const myButtonVariants = tv({
 })
 
 type MyButtonVariants = VariantProps<typeof myButtonVariants>
-export type MyButtonProps = Omit<ButtonProps, "class"> &
+export type MyButtonProps = Omit<Button["Props"], "class"> &
   MyButtonVariants & { class?: string }
 
 function CustomButton(props: MyButtonProps) {

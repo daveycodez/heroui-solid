@@ -1,4 +1,4 @@
-import { Alert, Button, CloseButton, Spinner } from "heroui-solid"
+import { Alert, Button, Spinner } from "heroui-solid"
 
 export function Basic() {
   return (
@@ -61,7 +61,6 @@ export function Basic() {
         <Alert.Content>
           <Alert.Title>Profile updated successfully</Alert.Title>
         </Alert.Content>
-        <CloseButton />
       </Alert>
 
       {/* Custom indicator - Loading state */}

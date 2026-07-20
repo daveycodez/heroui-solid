@@ -1,5 +1,5 @@
 import { CircleDollar } from "gravity-icons-solid"
-import { Avatar, Button, Card, CloseButton, Link } from "heroui-solid"
+import { Avatar, Button, Card, Link } from "heroui-solid"
 
 export function WithImages() {
   return (
@@ -17,15 +17,11 @@ export function WithImages() {
           </div>
           <div class="flex flex-1 flex-col gap-3">
             <Card.Header class="gap-1">
-              <Card.Title class="pr-8">Become an ACME Creator!</Card.Title>
+              <Card.Title>Become an ACME Creator!</Card.Title>
               <Card.Description>
                 Lorem ipsum dolor sit amet consectetur. Sed arcu donec id
                 aliquam dolor sed amet faucibus etiam.
               </Card.Description>
-              <CloseButton
-                aria-label="Close banner"
-                class="absolute top-3 right-3"
-              />
             </Card.Header>
             <Card.Footer class="mt-auto flex w-full flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div class="flex flex-col">
@@ -45,9 +41,6 @@ export function WithImages() {
           <div class="col-span-12 grid grid-cols-12 gap-4 lg:col-span-6">
             {/* Top Card */}
             <Card class="col-span-12">
-              <div class="absolute top-3 right-3 z-10">
-                <CloseButton aria-label="Close notification" />
-              </div>
               <Card.Header class="gap-3">
                 <CircleDollar
                   aria-label="Dollar sign icon"

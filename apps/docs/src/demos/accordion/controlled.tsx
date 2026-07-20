@@ -50,7 +50,7 @@ export function Controlled() {
         <div class="flex gap-2">
           <Button
             aria-label="Previous item"
-            isDisabled={isPrevDisabled()}
+            disabled={isPrevDisabled()}
             size="sm"
             variant="secondary"
             onClick={onPrevious}
@@ -59,7 +59,7 @@ export function Controlled() {
           </Button>
           <Button
             aria-label="Next item"
-            isDisabled={isNextDisabled()}
+            disabled={isNextDisabled()}
             size="sm"
             variant="secondary"
             onClick={onNext}
