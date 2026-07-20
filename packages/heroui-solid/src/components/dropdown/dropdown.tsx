@@ -11,10 +11,12 @@ import {
   createContext,
   createMemo,
   mergeProps,
+  Show,
   splitProps,
   useContext,
   type ValidComponent
 } from "solid-js"
+import { PreventScroll } from "../../utils/prevent-scroll"
 import { Button } from "../button"
 import { Header } from "../header"
 
@@ -23,6 +25,7 @@ import { Header } from "../header"
  * -----------------------------------------------------------------------------------------------*/
 type DropdownContextValue = {
   slots?: ReturnType<typeof dropdownVariants>
+  preventScroll?: boolean
 }
 
 const DropdownContext = createContext<DropdownContextValue>({})
@@ -33,14 +36,26 @@ const DropdownContext = createContext<DropdownContextValue>({})
 type DropdownRootProps = ComponentProps<typeof DropdownMenuPrimitive>
 
 const DropdownRoot = (props: DropdownRootProps) => {
-  const merged = mergeProps({ gutter: 8 }, props)
+  // Kobalte's own scroll lock sets overflow:hidden on <body>, which makes body
+  // the scroll container and collapses every position:sticky element in the page
+  // (header/sidebar vanish). Always disable it and let Popover mount
+  // <PreventScroll /> (locks <html>, preserves sticky — see AGENTS.md). The
+  // consumer's `preventScroll` (default true) drives whether we lock at all, so
+  // `preventScroll={false}` truly disables the lock rather than swapping which
+  // element Kobalte freezes.
+  const [local, rest] = splitProps(props, ["preventScroll"])
+  const merged = mergeProps({ gutter: 8, preventScroll: false }, rest)
   const slots = createMemo(() => dropdownVariants())
+  const preventScroll = () => local.preventScroll ?? true
 
   return (
     <DropdownContext.Provider
       value={{
         get slots() {
           return slots()
+        },
+        get preventScroll() {
+          return preventScroll()
         }
       }}
     >
@@ -91,14 +106,24 @@ type DropdownPopoverProps<T extends ValidComponent = "div"> = ComponentProps<
 const DropdownPopover = <T extends ValidComponent = "div">(
   props: DropdownPopoverProps<T>
 ) => {
-  const [local, rest] = splitProps(props as DropdownPopoverProps, ["class"])
+  const [local, rest] = splitProps(props as DropdownPopoverProps, [
+    "class",
+    "children"
+  ])
   const context = useContext(DropdownContext)
   return (
     <DropdownMenuPrimitive.Content
       class={cn(context.slots?.popover(), local.class)}
       data-slot="dropdown-popover"
       {...rest}
-    />
+    >
+      {/* Locks <html> for the popover's lifetime (SSR-inert, renders null).
+          Skipped when the root got preventScroll={false}. */}
+      <Show when={context.preventScroll}>
+        <PreventScroll />
+      </Show>
+      {local.children}
+    </DropdownMenuPrimitive.Content>
   )
 }
 
