@@ -2,7 +2,7 @@ import { type ButtonVariants, buttonVariants, cn } from "@heroui/styles"
 import { Root as ButtonPrimitive } from "@kobalte/core/button"
 import type { PolymorphicProps } from "@kobalte/core/polymorphic"
 import { callHandler } from "@kobalte/utils"
-import { type JSX, splitProps, type ValidComponent } from "solid-js"
+import { createMemo, type JSX, splitProps, type ValidComponent } from "solid-js"
 import { dataAttr } from "../../utils/assertion"
 
 type ButtonRootProps<T extends ValidComponent = "button"> = PolymorphicProps<
@@ -19,6 +19,14 @@ const ButtonRoot = <T extends ValidComponent = "button">(
     ["isPending", "disabled", "class", "onClick"]
   )
 
+  // Resolve the blocked state in an owned memo at render, not inside the click
+  // handler: when this Button is a polymorphic child (e.g. a Dropdown trigger),
+  // `local.disabled` chains through Kobalte's memoized `get disabled`, and
+  // reading it from the handler — which runs with no reactive owner — would
+  // create that memo outside a root ("...will never be disposed"). The memo
+  // reads the props under the component owner instead; the handler just reads it.
+  const isBlocked = createMemo(() => local.isPending || local.disabled)
+
   // A pending or disabled button must not activate. Our at-target `on:click`
   // runs ahead of consumer listeners, so stopImmediatePropagation silences
   // them all — covering keyboard activation and polymorphic elements with no
@@ -26,7 +34,7 @@ const ButtonRoot = <T extends ValidComponent = "button">(
   const handleClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (
     event
   ) => {
-    if (local.isPending || local.disabled) {
+    if (isBlocked()) {
       event.preventDefault()
       event.stopImmediatePropagation()
       return
